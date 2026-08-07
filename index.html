@@ -26,7 +26,10 @@
     color:var(--ink); display:flex; justify-content:center;
     position:fixed; inset:0; width:100%; overflow:hidden;
     touch-action:manipulation; -webkit-text-size-adjust:100%;
+    -webkit-user-select:none; user-select:none; -webkit-touch-callout:none;
   }
+  input,textarea{-webkit-user-select:text;user-select:text}
+  .rp-text{-webkit-user-select:text;user-select:text}
   #phone{
     width:100%; max-width:430px; height:100dvh;
     background:var(--bg); position:relative; overflow:hidden;
@@ -320,6 +323,16 @@ function dayGroupTitle(k){ return fmtKey(k) + ' · ' + weekCN(k); }
 function key2iso(k){ const a = k.split('.').map(Number); return a[0] + '-' + String(a[1]).padStart(2, '0') + '-' + String(a[2]).padStart(2, '0'); }
 function iso2key(s){ const a = s.split('-').map(Number); return a[0] + '.' + a[1] + '.' + a[2]; }
 function nextMondayKey(){ const d = parseKey(TODAY); d.setDate(d.getDate() + ((8 - d.getDay()) % 7 || 7)); return dkey(d); }
+const WKMAP = {'一':1,'二':2,'三':3,'四':4,'五':5,'六':6,'日':0,'天':0};
+function upcomingWeekday(w){
+  const d = parseKey(TODAY); let diff = (w - d.getDay() + 7) % 7; if (!diff) diff = 7;
+  d.setDate(d.getDate() + diff); return dkey(d);
+}
+function nextWeekWeekday(w){
+  const d = parseKey(TODAY);
+  const mon = new Date(d); mon.setDate(d.getDate() - ((d.getDay() + 6) % 7) + 7);
+  mon.setDate(mon.getDate() + ((w + 6) % 7)); return dkey(mon);
+}
 /* ---- 本地存储 ---- */
 const LSKEY = 'bujo_local_v1';
 let PAGES = {}, SEEN = {}, GCOLOR = {};
@@ -518,8 +531,29 @@ function commit(e){
     let key = ty + '.' + (+dm[1]) + '.' + (+dm[2]);
     if (parseKey(key) < parseKey(TODAY)) key = (ty + 1) + '.' + (+dm[1]) + '.' + (+dm[2]);
     if (e.due !== key){ e.due = key; changed = true; toast('已同步到 ' + fmtKey(key)); } }
-  else if (/后天/.test(t) && !e.due){ e.due = addDaysK(TODAY, 2); changed = true; toast('已同步到后天（' + fmtKey(e.due) + '）'); }
-  else if (/明天/.test(t) && !e.due){ e.due = TOMORROW; changed = true; toast('已同步到明天（' + fmtKey(TOMORROW) + '）'); }
+  else if (!e.due){
+    let rel = null, mr = null;
+    if (/大后天/.test(t)) rel = addDaysK(TODAY, 3);
+    else if (/后天/.test(t)) rel = addDaysK(TODAY, 2);
+    else if (/明天/.test(t)) rel = TOMORROW;
+    else if ((mr = t.match(/下+周([一二三四五六日天])/))) rel = nextWeekWeekday(WKMAP[mr[1]]);
+    else if (!/上周/.test(t) && (mr = t.match(/(?:这周|本周|周)([一二三四五六日天])/))) rel = upcomingWeekday(WKMAP[mr[1]]);
+    else if ((mr = t.match(/下个?月(\d{1,2})[号日]/))){
+      const d = parseKey(TODAY); d.setDate(1); d.setMonth(d.getMonth() + 1); d.setDate(+mr[1]); rel = dkey(d);
+    }
+    else if (/下个?月/.test(t)){
+      const d = parseKey(TODAY); const day = d.getDate(); d.setDate(1); d.setMonth(d.getMonth() + 1);
+      const mx = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+      d.setDate(Math.min(day, mx)); rel = dkey(d);
+    }
+    else if ((mr = t.match(/(\d{1,2})月(\d{1,2})[号日]/))){
+      const ty = parseKey(TODAY).getFullYear();
+      let k = ty + '.' + (+mr[1]) + '.' + (+mr[2]);
+      if (parseKey(k) < parseKey(TODAY)) k = (ty + 1) + '.' + (+mr[1]) + '.' + (+mr[2]);
+      rel = k;
+    }
+    if (rel){ e.due = rel; changed = true; toast('已同步到 ' + fmtKey(rel) + '（' + weekCN(rel) + '）'); }
+  }
   if (SET.recog && !e.userSet && t){
     let g = null;
     if (/^(见了|去了|开完|参加了|聊了|吃了|逛了|看了|开了)/.test(t)) g = 'event';
@@ -533,7 +567,7 @@ function commit(e){
 }
 
 /* ============ 条目渲染 ============ */
-function chipRow(e){
+function chipRow(e, editable){
   const hasG = e.groups && e.groups.length;
   if (!e.badge && !e.time && !e.due && !hasG) return null;
   const c = document.createElement('div'); c.className = 'chips';
@@ -543,8 +577,16 @@ function chipRow(e){
     b.textContent = '#' + g; c.appendChild(b);
   });
   if (e.badge){ const b = document.createElement('span'); b.className = 'badge'; b.textContent = e.badge; c.appendChild(b); }
-  if (e.time){ const b = document.createElement('span'); b.className = 'badge'; b.textContent = '⏰ ' + e.time; c.appendChild(b); }
-  if (e.due){ const b = document.createElement('span'); b.className = 'badge acc'; b.textContent = '→' + fmtShort(e.due); c.appendChild(b); }
+  if (e.time){
+    const b = document.createElement('span'); b.className = 'badge'; b.textContent = '⏰ ' + e.time;
+    if (editable){ b.style.cursor = 'pointer'; b.onclick = ev => { ev.stopPropagation(); openTimeSheet(e); }; }
+    c.appendChild(b);
+  }
+  if (e.due){
+    const b = document.createElement('span'); b.className = 'badge acc'; b.textContent = '→' + fmtShort(e.due);
+    if (editable){ b.style.cursor = 'pointer'; b.onclick = ev => { ev.stopPropagation(); openDueSheet(e); }; }
+    c.appendChild(b);
+  }
   return c;
 }
 function entryNode(e, editable){
@@ -612,7 +654,7 @@ function entryNode(e, editable){
     const tx = document.createElement('div'); tx.className = 'entry-text'; tx.textContent = e.text;
     body.appendChild(tx);
   }
-  const chips = chipRow(e); if (chips) body.appendChild(chips);
+  const chips = chipRow(e, editable); if (chips) body.appendChild(chips);
   if (e.images && e.images.length){
     const tw = document.createElement('div'); tw.className = 'thumbs';
     e.images.forEach((src, idx) => {
@@ -848,7 +890,7 @@ function render(){
         setTimeout(() => pendingRestore = false, 5000); return; }
       pendingRestore = false; $('#jsonInput').click();
     });
-    mkRow('版本记录', sub('v1.3 ›'), showChangelog);
+    mkRow('版本记录', sub('v1.4 ›'), showChangelog);
     mkRow('应用锁', sub('原生版支持 FaceID'), () => toast('网页版暂不支持 · 原生开发阶段实现'));
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
@@ -1140,6 +1182,49 @@ function openLightbox(e, idx, canDel){
     e.images.splice(idx, 1);
     L.classList.remove('on'); toast('已删除 · 可撤回'); render();
   };
+}
+
+/* ============ 芯片点击：改日期 / 改时间 ============ */
+let dueTarget = null;
+function openDueSheet(e){
+  dismissKB(); dueTarget = e;
+  const S = $('#gsheet');
+  S.innerHTML = '<div class="gs-title">修改日期 · ' + (((e.text || '').slice(0, 12)) || '未命名') + '</div>'
+    + '<div class="mig-quick" id="dQuick"></div>'
+    + '<input type="date" class="qdate" id="dDate">'
+    + '<div class="gs-new" style="margin-top:4px">'
+    + '<button class="gm-btn" id="dClear" style="flex:1;padding:10px">清除日期</button>'
+    + '<button class="gm-btn" id="dOk" style="flex:1;padding:10px;background:var(--ink);color:#fff;border-color:var(--ink)">确定</button>'
+    + '</div>';
+  setupDatePick('dQuick', 'dDate');
+  if (e.due){ try{ $('#dDate').value = key2iso(e.due); }catch(_){} }
+  $('#dClear').onclick = () => { snapshot('修改日期'); delete dueTarget.due; toast('已清除日期'); closeSheet(); };
+  $('#dOk').onclick = () => {
+    const v = $('#dDate').value; if (!v){ closeSheet(); return; }
+    snapshot('修改日期'); const k = iso2key(v);
+    dueTarget.due = k;
+    if (dueTarget.badge && dueTarget.badge.indexOf('→') === 0)
+      dueTarget.badge = dueTarget.badge.replace(/→[\d.]+/, '→' + fmtShort(k));
+    toast('已改到 ' + fmtKey(k) + '（' + weekCN(k) + '）'); closeSheet();
+  };
+  S.classList.add('on'); $('#mask').classList.add('on'); placeToolbar();
+}
+function openTimeSheet(e){
+  dismissKB(); dueTarget = e;
+  const S = $('#gsheet');
+  S.innerHTML = '<div class="gs-title">修改提醒时间 · ' + (((e.text || '').slice(0, 12)) || '未命名') + '</div>'
+    + '<input type="time" class="qdate" id="tTime" value="' + (e.time || '09:00') + '">'
+    + '<div class="gs-new" style="margin-top:4px">'
+    + '<button class="gm-btn" id="tClear" style="flex:1;padding:10px">清除时间</button>'
+    + '<button class="gm-btn" id="tOk" style="flex:1;padding:10px;background:var(--ink);color:#fff;border-color:var(--ink)">确定</button>'
+    + '</div>';
+  $('#tClear').onclick = () => { snapshot('修改时间'); delete dueTarget.time; toast('已清除时间'); closeSheet(); };
+  $('#tOk').onclick = () => {
+    const v = $('#tTime').value;
+    if (v){ snapshot('修改时间'); dueTarget.time = v; toast('已改为 ' + v); }
+    closeSheet();
+  };
+  S.classList.add('on'); $('#mask').classList.add('on'); placeToolbar();
 }
 
 /* ============ 推迟日期选择（快捷 + 日历） ============ */
@@ -1518,7 +1603,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v1.3（当前）\n· 键盘遮挡彻底修复：按可视区域计算，当前行始终保持在键盘上方\n· 图片可删除：空行退格先删图再删行；点大图有「删除这张图片」\n· 任务状态随时可改：任何状态长按（或点符号）重开四选一，可恢复待办\n· 打开处理面板 / 复盘时自动收起键盘；底部面板抬到键盘上方\n· 复盘页底部留白加大，进度备注不再被键盘盖住\n\n'
+    + 'v1.4（当前）\n· 修复长按时触发系统全选的蓝框\n· 识别更多日期说法：下周X / 周X / 大后天 / 下个月X号 / X月Y号\n· 点 → 日期芯片可改到任意日期或清除；点 ⏰ 可改提醒时间\n\n'
+    + 'v1.3\n· 键盘遮挡彻底修复：按可视区域计算，当前行始终保持在键盘上方\n· 图片可删除：空行退格先删图再删行；点大图有「删除这张图片」\n· 任务状态随时可改：任何状态长按（或点符号）重开四选一，可恢复待办\n· 打开处理面板 / 复盘时自动收起键盘；底部面板抬到键盘上方\n\n'
     + 'v1.2\n· 推迟可选任意日期：明天 / 后天 / 下周一 / 日历选择\n· 修复：空行插图后看不到缩略图\n· 分组可选颜色（长按分组 → 颜色）；设置新增主题色\n· 导出 Markdown 带年份分区；新增导入合并（以现有为准只补缺）\n· 新增完整备份 / 恢复（.json 含图片）\n\n'
     + 'v1.1\n· 顶栏避开刘海 / 灵动岛（安全区适配）\n· 修复输入聚焦时页面缩放窜动\n\n'
     + 'v1.0\n· 首个可日用版本：真实日期自动建页、本地持久化、晨间承接迁移、晚间复盘、总日历、分组、报告、搜索、图片、Markdown 导出、首次引导'
