@@ -237,7 +237,7 @@
   .rv-head{display:flex;align-items:center;gap:8px;padding:calc(10px + env(safe-area-inset-top)) 16px 12px;border-bottom:1px solid var(--line)}
   .rv-title{flex:1;font-size:16px;font-weight:600}
   .rv-prog{font-size:12px;color:var(--ink-soft)}
-  .rv-body{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column}
+  .rv-body{flex:1;overflow-y:auto;padding:20px 20px 160px;display:flex;flex-direction:column}
   .rv-done-note{font-size:13px;color:var(--green);background:#EDF3EE;border-radius:12px;padding:10px 14px;margin-bottom:18px}
   .rv-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 20px;box-shadow:0 8px 28px rgba(51,49,43,.07)}
   .rv-task{font-size:17px;font-weight:600;display:flex;gap:10px;align-items:flex-start}
@@ -358,28 +358,49 @@ function placeToolbar(){
   const S = $('#tagSug');
   if (S) S.style.bottom = (kb + (toolbar.classList.contains('on') ? (toolbar.offsetHeight || 54) : 0)) + 'px';
   view.style.paddingBottom = (150 + kb) + 'px';
+  ['gsheet', 'qsheet'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.bottom = (el.classList.contains('on') ? kb : 0) + 'px';
+  });
+}
+function findScroller(el){
+  let sc = el.parentElement;
+  while (sc && sc !== document.body){
+    const cs = getComputedStyle(sc);
+    if (sc.scrollHeight > sc.clientHeight + 4 && /(auto|scroll)/.test(cs.overflowY)) return sc;
+    sc = sc.parentElement;
+  }
+  return null;
+}
+function keepAboveKeyboard(el){
+  if (!el || !el.getBoundingClientRect || !el.isConnected) return;
+  const vv = window.visualViewport;
+  const vBottom = vv ? (vv.offsetTop + vv.height) : window.innerHeight;
+  const isLine = el.classList && el.classList.contains('line-input');
+  const tbH = (isLine && toolbar.classList.contains('on')) ? (toolbar.offsetHeight || 54) : 0;
+  const sugH = (isLine && $('#tagSug').classList.contains('on')) ? ($('#tagSug').offsetHeight || 44) : 0;
+  const limit = vBottom - tbH - sugH - 14;
+  const r = el.getBoundingClientRect();
+  const sc = findScroller(el);
+  if (!sc) return;
+  if (r.bottom > limit) sc.scrollTop += (r.bottom - limit);
+  else if (r.top < 70) sc.scrollTop -= (70 - r.top);
 }
 function scrollFocused(){
   const ae = document.activeElement;
-  if (ae && ae.classList && ae.classList.contains('line-input')){
-    try{ ae.scrollIntoView({block:'center'}); }catch(_){}
-  }
+  if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')) keepAboveKeyboard(ae);
 }
-let tbPoll = null;
 function updateToolbarVis(){
   const ae = document.activeElement;
   const editing = cur.name === 'today' && ae && ae.classList && ae.classList.contains('line-input');
   toolbar.classList.toggle('on', editing);
   if (!editing) $('#tagSug').classList.remove('on');
   placeToolbar();
-  if (editing){
-    if (!tbPoll) tbPoll = setInterval(placeToolbar, 250);
-    setTimeout(scrollFocused, 80);
-    setTimeout(scrollFocused, 350);
-  } else if (tbPoll){
-    clearInterval(tbPoll); tbPoll = null;
+  if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')){
+    setTimeout(scrollFocused, 120); setTimeout(scrollFocused, 420);
   }
 }
+setInterval(placeToolbar, 300);
 
 /* ============ # 联想（输入 # 弹出分组建议） ============ */
 let sugTarget = null;
@@ -532,7 +553,7 @@ function entryNode(e, editable){
   const row = document.createElement('div');
   row.className = 'entry ' + e.sym + ' ' + (e.state || '');
   const s = symNode(e);
-  if (editable && e.sym === 'task' && (e.state === 'open' || e.state === 'done')){
+  if (editable && e.sym === 'task'){
     let lpTimer = null, lpFired = false;
     s.addEventListener('pointerdown', () => {
       lpFired = false;
@@ -542,8 +563,10 @@ function entryNode(e, editable){
     s.addEventListener('pointerleave', () => clearTimeout(lpTimer));
     s.addEventListener('click', () => {
       if (lpFired){ lpFired = false; return; }
-      e.state = (e.state === 'open') ? 'done' : 'open';
-      toast(e.state === 'done' ? '已完成 ✓' : '恢复待办'); render();
+      if (e.state === 'open' || e.state === 'done'){
+        e.state = (e.state === 'open') ? 'done' : 'open';
+        toast(e.state === 'done' ? '已完成 ✓' : '恢复待办'); render();
+      } else { qsTarget = e; openQSheet(); }
     });
     s.title = '点按完成 · 长按处理';
   } else s.classList.add('static');
@@ -552,7 +575,7 @@ function entryNode(e, editable){
     const inp = document.createElement('input');
     inp.className = 'line-input'; inp.value = e.text; inp.dataset.eid = e._id;
     inp.setAttribute('autocomplete', 'off');
-    inp.addEventListener('input', () => { e.text = inp.value; updateTagSug(e, inp); });
+    inp.addEventListener('input', () => { e.text = inp.value; updateTagSug(e, inp); keepAboveKeyboard(inp); });
     inp.addEventListener('focus', () => { focusRef = e; pendingDel = null; });
     inp.addEventListener('keydown', ev => {
       if (ev.isComposing) return;
@@ -565,7 +588,12 @@ function entryNode(e, editable){
         focusRef = ne; render();
       }
       if (ev.key === 'Backspace' && !inp.value){
-        ev.preventDefault(); snapshot('删除行'); removeEntry(e);
+        ev.preventDefault();
+        if (e.images && e.images.length){
+          snapshot('删除图片'); e.images.pop();
+          toast('已删除 1 张图片 · 可撤回'); render(); return;
+        }
+        snapshot('删除行'); removeEntry(e);
         if (focusRef === e) focusRef = null; render();
       }
     });
@@ -573,7 +601,8 @@ function entryNode(e, editable){
       setTimeout(() => {
         if (!inp.isConnected) return;
         const changed = commit(e);
-        const keep = (e.images && e.images.length) || (e.children && e.children.length) || e._imgPending;
+        const keep = (e.images && e.images.length) || (e.children && e.children.length) || e._imgPending
+          || (sheetTarget === e && $('#gsheet').classList.contains('on'));
         if (!e.text.trim() && !keep){ removeEntry(e); if (focusRef === e) focusRef = null; render(); return; }
         if (changed) render();
       }, 60);
@@ -586,9 +615,9 @@ function entryNode(e, editable){
   const chips = chipRow(e); if (chips) body.appendChild(chips);
   if (e.images && e.images.length){
     const tw = document.createElement('div'); tw.className = 'thumbs';
-    e.images.forEach(src => {
+    e.images.forEach((src, idx) => {
       const im = document.createElement('img'); im.src = src;
-      im.onclick = ev => { ev.stopPropagation(); openLightbox(src); };
+      im.onclick = ev => { ev.stopPropagation(); openLightbox(e, idx, editable); };
       tw.appendChild(im);
     });
     body.appendChild(tw);
@@ -819,7 +848,7 @@ function render(){
         setTimeout(() => pendingRestore = false, 5000); return; }
       pendingRestore = false; $('#jsonInput').click();
     });
-    mkRow('版本记录', sub('v1.2 ›'), showChangelog);
+    mkRow('版本记录', sub('v1.3 ›'), showChangelog);
     mkRow('应用锁', sub('原生版支持 FaceID'), () => toast('网页版暂不支持 · 原生开发阶段实现'));
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
@@ -866,7 +895,7 @@ function render(){
     if (inp){
       try{ inp.focus({preventScroll:true}); }catch(_){ inp.focus(); }
       const L = inp.value.length; try{ inp.setSelectionRange(L, L); }catch(_){}
-      try{ inp.scrollIntoView({block:'nearest'}); }catch(_){}
+      keepAboveKeyboard(inp);
     }
   }
   updateToolbarVis();
@@ -1100,11 +1129,17 @@ $('#imgInput').addEventListener('change', ev => {
 window.addEventListener('focus', () => setTimeout(() => {
   if (imgTarget && imgTarget._imgPending && !(imgTarget.images || []).length) delete imgTarget._imgPending;
 }, 800));
-function openLightbox(src){
+function openLightbox(e, idx, canDel){
   const L = $('#lightbox');
-  L.innerHTML = '<img src="' + src + '">';
+  L.innerHTML = '<img src="' + e.images[idx] + '">'
+    + (canDel ? '<button class="rv-confirm" id="lbDel" style="position:absolute;left:24px;right:24px;width:auto;bottom:calc(28px + env(safe-area-inset-bottom));background:#C0604E">删除这张图片</button>' : '');
   L.classList.add('on');
   L.onclick = () => L.classList.remove('on');
+  if (canDel) $('#lbDel').onclick = ev => {
+    ev.stopPropagation(); snapshot('删除图片');
+    e.images.splice(idx, 1);
+    L.classList.remove('on'); toast('已删除 · 可撤回'); render();
+  };
 }
 
 /* ============ 推迟日期选择（快捷 + 日历） ============ */
@@ -1127,7 +1162,12 @@ function pickDate(dateId){
 
 /* ============ 随时处理（长按四选一） ============ */
 let qsTarget = null;
-function openQSheet(){ buildQSheet(); $('#qsheet').classList.add('on'); $('#mask').classList.add('on'); }
+function dismissKB(){
+  const ae = document.activeElement;
+  if (ae && ae.blur) ae.blur();
+  focusRef = null;
+}
+function openQSheet(){ dismissKB(); buildQSheet(); $('#qsheet').classList.add('on'); $('#mask').classList.add('on'); placeToolbar(); }
 function closeQSheet(){
   $('#qsheet').classList.remove('on');
   if (!$('#drawer').classList.contains('on')) $('#mask').classList.remove('on');
@@ -1137,7 +1177,7 @@ function buildQSheet(){
   const t = qsTarget, S = $('#qsheet');
   S.innerHTML = '<div class="gs-title">处理 · ' + ((t.text || '未命名').slice(0, 14)) + '</div>'
     + '<div class="rv-grid">'
-    + '<button class="rv-btn b-done" id="qDone"><span class="g">✓</span>' + (t.state === 'done' ? '恢复待办' : '完成') + '</button>'
+    + '<button class="rv-btn b-done" id="qDone"><span class="g">✓</span>' + (t.state && t.state !== 'open' ? '恢复待办' : '完成') + '</button>'
     + '<button class="rv-btn b-mig"  id="qMig"><span class="g">›</span>推迟</button>'
     + '<button class="rv-btn b-drop" id="qDrop"><span class="g">✕</span>不做了</button>'
     + '<button class="rv-btn b-del"  id="qDel"><span class="g">→</span>转交</button>'
@@ -1151,7 +1191,15 @@ function buildQSheet(){
     + '<button class="rv-confirm" id="qGo">确认推迟</button>'
     + '</div>';
   const fin = msg => { toast(msg); closeQSheet(); };
-  $('#qDone').onclick = () => { snapshot('处理任务'); t.state = (t.state === 'done') ? 'open' : 'done'; fin(t.state === 'done' ? '✓ 已完成' : '已恢复待办'); };
+  $('#qDone').onclick = () => {
+    snapshot('处理任务');
+    if (t.state && t.state !== 'open'){
+      t.state = 'open';
+      t.badge = t.mig ? ('>×' + t.mig + (t.progress ? ' · 已完成' + t.progress + '%' : '')) : undefined;
+      if (t.due && parseKey(t.due) > parseKey(TODAY)) t.due = undefined;
+      fin('已恢复待办');
+    } else { t.state = 'done'; fin('✓ 已完成'); }
+  };
   $('#qDrop').onclick = () => { snapshot('处理任务'); t.state = 'dropped'; t.badge = '不做了'; fin('✕ 已放弃 · 保留划痕'); };
   $('#qDel').onclick  = () => { snapshot('处理任务'); t.state = 'delegated'; t.badge = '已转交 · 待跟进'; fin('→ 已转交'); };
   $('#qMig').onclick  = () => $('#qMigPanel').classList.toggle('on');
@@ -1187,10 +1235,13 @@ $('#searchBox').addEventListener('keydown', ev => {
 });
 
 /* ============ 分组面板 ============ */
-function openSheet(){ buildSheet(); $('#gsheet').classList.add('on'); $('#mask').classList.add('on'); }
+function openSheet(){ dismissKB(); buildSheet(); $('#gsheet').classList.add('on'); $('#mask').classList.add('on'); placeToolbar(); }
 function closeSheet(){
   $('#gsheet').classList.remove('on');
   if (!$('#drawer').classList.contains('on')) $('#mask').classList.remove('on');
+  const t = sheetTarget; sheetTarget = null;
+  if (t && !(t.text || '').trim() && !(t.groups && t.groups.length)
+      && !(t.images && t.images.length) && !(t.children && t.children.length)) removeEntry(t);
   render();
 }
 function buildSheet(){
@@ -1291,6 +1342,7 @@ reviewBtn.onclick = () => { if (cur.name === 'today') openReview(); else { cur =
 /* ============ 晚间复盘 ============ */
 let queue = [], qi = 0, stat = null;
 function openReview(){
+  dismissKB();
   queue = []; qi = 0; stat = {mig:0, drop:0, del:0};
   walkPage(TODAY, e => { if (e.sym === 'task' && e.state === 'open' && !e.due) queue.push(e); });
   $('#review').classList.add('on'); renderReview();
@@ -1466,7 +1518,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v1.2（当前）\n· 推迟可选任意日期：明天 / 后天 / 下周一 / 日历选择\n· 打字时页面跟随键盘滚动，当前行不再被遮挡\n· 修复：空行插图后看不到缩略图\n· 工具条与 # 联想条在主屏幕模式下的定位加固\n· 分组可选颜色（长按分组 → 颜色）；设置新增主题色\n· 导出 Markdown 带年份分区；新增导入合并（以现有为准只补缺）\n· 新增完整备份 / 恢复（.json 含图片）\n\n'
+    + 'v1.3（当前）\n· 键盘遮挡彻底修复：按可视区域计算，当前行始终保持在键盘上方\n· 图片可删除：空行退格先删图再删行；点大图有「删除这张图片」\n· 任务状态随时可改：任何状态长按（或点符号）重开四选一，可恢复待办\n· 打开处理面板 / 复盘时自动收起键盘；底部面板抬到键盘上方\n· 复盘页底部留白加大，进度备注不再被键盘盖住\n\n'
+    + 'v1.2\n· 推迟可选任意日期：明天 / 后天 / 下周一 / 日历选择\n· 修复：空行插图后看不到缩略图\n· 分组可选颜色（长按分组 → 颜色）；设置新增主题色\n· 导出 Markdown 带年份分区；新增导入合并（以现有为准只补缺）\n· 新增完整备份 / 恢复（.json 含图片）\n\n'
     + 'v1.1\n· 顶栏避开刘海 / 灵动岛（安全区适配）\n· 修复输入聚焦时页面缩放窜动\n\n'
     + 'v1.0\n· 首个可日用版本：真实日期自动建页、本地持久化、晨间承接迁移、晚间复盘、总日历、分组、报告、搜索、图片、Markdown 导出、首次引导'
     + '</div></div>';
