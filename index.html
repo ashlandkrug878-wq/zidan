@@ -104,6 +104,10 @@
     font-size:19px;line-height:1;cursor:pointer;border-radius:9px;
   }
   .addchild:active{background:var(--accent-soft);color:var(--accent)}
+  @keyframes flashbg{0%{background:var(--accent-soft)}100%{background:transparent}}
+  .flash{animation:flashbg 1.6s;border-radius:12px}
+  .daynav{width:26px;height:30px;border:none;background:none;color:var(--ink-faint);font-size:19px;cursor:pointer;border-radius:8px;flex:none;padding:0}
+  .daynav:active{background:var(--accent-soft);color:var(--accent)}
   .children .entry{padding:6px 0}
   .tapzone{color:var(--ink-faint);font-size:13px;cursor:text;padding:9px 2px}
   .tapzone.big{min-height:150px;padding-top:14px;display:flex;align-items:flex-start;gap:10px;font-size:14px}
@@ -292,7 +296,9 @@
 <div id="phone">
   <header>
     <button class="icon-btn" id="menuBtn" aria-label="菜单"><span class="hamburger"><i></i><i></i><i></i></span></button>
-    <div id="topTitle">8月6日 · 周三</div>
+    <button class="daynav" id="prevDay">‹</button>
+    <div id="topTitle" style="text-align:center">今天</div>
+    <button class="daynav" id="nextDay">›</button>
     <button class="pill-btn" id="reviewBtn">复盘</button>
   </header>
   <main id="view"></main>
@@ -367,6 +373,7 @@ const P = () => PAGES[TODAY];
 
 /* ============ 基础工具 ============ */
 const $ = s => document.querySelector(s);
+const escAttr = s => String(s || '').replace(/"/g, '&quot;');
 const view = $('#view'), topTitle = $('#topTitle'), reviewBtn = $('#reviewBtn'), toolbar = $('#toolbar');
 let cur = {name:'today'};
 let focusRef = null, pendingDel = null;
@@ -416,7 +423,7 @@ function scrollFocused(){
 }
 function updateToolbarVis(){
   const ae = document.activeElement;
-  const editing = cur.name === 'today' && ae && ae.classList && ae.classList.contains('line-input');
+  const editing = (cur.name === 'today' || cur.name === 'history') && ae && ae.classList && ae.classList.contains('line-input');
   toolbar.classList.toggle('on', editing);
   if (!editing) $('#tagSug').classList.remove('on');
   placeToolbar();
@@ -461,6 +468,28 @@ if (window.visualViewport){
   window.visualViewport.addEventListener('scroll', placeToolbar);
 }
 window.addEventListener('scroll', () => { if (window.scrollY) window.scrollTo(0, 0); });
+
+/* ============ 翻天：顶栏箭头 + 左右滑 ============ */
+function curDayKey(){
+  return cur.name === 'today' ? TODAY : cur.name === 'history' ? cur.date : cur.name === 'day' ? cur.key : null;
+}
+function navDay(d){
+  const k0 = curDayKey(); if (!k0) return;
+  gotoDay(addDaysK(k0, d));
+}
+document.getElementById('prevDay').onclick = () => navDay(-1);
+document.getElementById('nextDay').onclick = () => navDay(1);
+let swX = null, swY = null;
+view.addEventListener('pointerdown', ev => { swX = ev.clientX; swY = ev.clientY; });
+view.addEventListener('pointerup', ev => {
+  if (swX === null) return;
+  const dx = ev.clientX - swX, dy = ev.clientY - swY, sx = swX;
+  swX = null;
+  const ae = document.activeElement;
+  if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')) return;
+  if (sx < 24) return;
+  if (Math.abs(dx) > 60 && Math.abs(dy) < 40 && curDayKey()) navDay(dx > 0 ? -1 : 1);
+});
 document.addEventListener('focusin', updateToolbarVis);
 document.addEventListener('focusout', () => setTimeout(updateToolbarVis, 80));
 
@@ -500,6 +529,12 @@ function walkWithParent(cb){
     rec(PAGES[k].plan, null); rec(PAGES[k].flow, null);
   });
 }
+function editKey(){ return cur.name === 'history' ? cur.date : TODAY; }
+function EP(){
+  const k = editKey();
+  if (!PAGES[k]) PAGES[k] = {plan:[], flow:[]};
+  return PAGES[k];
+}
 function findEntry(e){
   const search = (list, parent) => {
     for (let i = 0; i < list.length; i++){
@@ -508,7 +543,7 @@ function findEntry(e){
     }
     return null;
   };
-  return search(P().plan, null) || search(P().flow, null);
+  return search(EP().plan, null) || search(EP().flow, null);
 }
 function removeEntry(e){ const loc = findEntry(e); if (loc) loc.list.splice(loc.idx, 1); }
 
@@ -542,6 +577,20 @@ function commit(e){
   }
   const tm = t.match(/([01]?\d|2[0-3])[:：][0-5]\d/);
   if (tm){ const v = tm[0].replace('：', ':'); if (e.time !== v){ e.time = v; changed = true; } }
+  else if (!e.time){
+    const cm = t.match(/(上午|早上|中午|下午|晚上)([一二三四五六七八九十两\d]{1,3})点(半|一刻|三刻|(\d{1,2})分)?/);
+    if (cm){
+      const M = {'一':1,'二':2,'两':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10,'十一':11,'十二':12};
+      let h = /^\d+$/.test(cm[2]) ? +cm[2] : M[cm[2]];
+      if (h != null && h <= 23){
+        if ((cm[1] === '下午' || cm[1] === '晚上') && h < 12) h += 12;
+        if (cm[1] === '中午' && h <= 2) h += 12;
+        const mi = cm[3] === '半' ? 30 : cm[3] === '一刻' ? 15 : cm[3] === '三刻' ? 45 : (cm[4] ? +cm[4] : 0);
+        e.time = String(h).padStart(2, '0') + ':' + String(mi).padStart(2, '0');
+        changed = true; toast('已识别时间 ' + e.time);
+      }
+    }
+  }
   const dm = t.match(/(\d{1,2})\.(\d{1,2})号?/);
   if (dm){
     const ty = parseKey(TODAY).getFullYear();
@@ -592,7 +641,7 @@ function commit(e){
 /* ============ 条目渲染 ============ */
 function chipRow(e, editable){
   const hasG = e.groups && e.groups.length;
-  if (!e.badge && !e.time && !e.due && !hasG && !e.src) return null;
+  if (!e.badge && !e.time && !e.due && !hasG && !e.src && !e.srcDay && !e.note) return null;
   const c = document.createElement('div'); c.className = 'chips';
   if (hasG) e.groups.forEach(g => {
     const b = document.createElement('span'); b.className = 'badge';
@@ -600,9 +649,19 @@ function chipRow(e, editable){
     b.textContent = '#' + g; c.appendChild(b);
   });
   if (e.badge){ const b = document.createElement('span'); b.className = 'badge'; b.textContent = e.badge; c.appendChild(b); }
-  if (e.src){
+  if (e.srcDay){
+    const b = document.createElement('span'); b.className = 'badge acc';
+    b.textContent = '◂ ' + fmtShort(e.srcDay) + ' 转来';
+    b.style.cursor = 'pointer';
+    b.onclick = ev => { ev.stopPropagation(); jumpToEntry(e.srcDay, e.srcId); };
+    c.appendChild(b);
+  } else if (e.src){
     const b = document.createElement('span'); b.className = 'badge';
     b.textContent = '◂ ' + String(e.src).slice(0, 12); c.appendChild(b);
+  }
+  if (e.note){
+    const b = document.createElement('span'); b.className = 'badge';
+    b.textContent = '✎ ' + String(e.note).slice(0, 14); c.appendChild(b);
   }
   if (e.time){
     const b = document.createElement('span'); b.className = 'badge'; b.textContent = '⏰ ' + e.time;
@@ -611,18 +670,21 @@ function chipRow(e, editable){
   }
   if (e.due){
     const b = document.createElement('span'); b.className = 'badge acc'; b.textContent = '→' + fmtShort(e.due);
-    if (editable){ b.style.cursor = 'pointer'; b.onclick = ev => { ev.stopPropagation(); openDueSheet(e); }; }
+    b.style.cursor = 'pointer';
+    if (editable){ b.onclick = ev => { ev.stopPropagation(); openDueSheet(e); }; }
+    else { b.onclick = ev => { ev.stopPropagation(); gotoDay(e.due); }; }
     c.appendChild(b);
   }
   return c;
 }
-function entryNode(e, editable, isChild){
+function entryNode(e, editable, isChild, flat, liveSym){
   e._id = e._id || (++uid);
   const wrap = document.createElement('div');
+  wrap.dataset.eid = e._id;
   const row = document.createElement('div');
   row.className = 'entry ' + e.sym + ' ' + (e.state || '');
   const s = symNode(e);
-  if (editable && e.sym === 'task'){
+  if ((editable || liveSym) && e.sym === 'task'){
     let lpTimer = null, lpFired = false;
     s.addEventListener('pointerdown', () => {
       lpFired = false;
@@ -632,9 +694,12 @@ function entryNode(e, editable, isChild){
     s.addEventListener('pointerleave', () => clearTimeout(lpTimer));
     s.addEventListener('click', () => {
       if (lpFired){ lpFired = false; return; }
-      if (e.state === 'open' || e.state === 'done'){
-        e.state = (e.state === 'open') ? 'done' : 'open';
-        toast(e.state === 'done' ? '已完成 ✓' : '恢复待办'); render();
+      if (e.state === 'open'){
+        snapshot('处理任务');
+        e.state = 'done'; render();
+        askMemo(e);
+      } else if (e.state === 'done'){
+        e.state = 'open'; toast('恢复待办'); render();
       } else { qsTarget = e; openQSheet(); }
     });
     s.title = '点按完成 · 长按处理';
@@ -731,18 +796,35 @@ function entryNode(e, editable, isChild){
     if (rt.children.length) row.appendChild(rt);
   }
   wrap.appendChild(row);
-  if (e.children && e.children.length && !e.collapsed){
+  if (e.children && e.children.length && !e.collapsed && !flat){
     const c = document.createElement('div'); c.className = 'children';
     e.children.forEach(ch => c.appendChild(entryNode(ch, editable, true)));
     wrap.appendChild(c);
   }
   return wrap;
 }
+function gotoDay(k){
+  cur = (k === TODAY) ? {name:'today'}
+    : (PAGES[k] && parseKey(k) < parseKey(TODAY)) ? {name:'history', date:k}
+    : {name:'day', key:k};
+  render();
+}
+function jumpToEntry(date, id){
+  gotoDay(date);
+  setTimeout(() => {
+    const el = view.querySelector('[data-eid="' + id + '"]');
+    if (el){
+      try{ el.scrollIntoView({block:'center'}); }catch(_){}
+      el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1700);
+    }
+  }, 80);
+}
 function sectionLabel(t){ const d = document.createElement('div'); d.className = 'section-label'; d.textContent = t; return d; }
 function jumpRow(date, e){
-  const w = document.createElement('div'); w.style.cursor = 'pointer';
-  w.appendChild(entryNode({...e, children:null, _id:0}, false));
-  w.onclick = () => { cur = (date === TODAY) ? {name:'today'} : {name:'history', date}; render(); };
+  const w = document.createElement('div');
+  w.appendChild(entryNode(e, false, true, true, true));
+  const tx = w.querySelector('.entry-text');
+  if (tx){ tx.style.cursor = 'pointer'; tx.onclick = () => jumpToEntry(date, e._id); }
   return w;
 }
 function dateGroupList(box, filter){
@@ -764,13 +846,13 @@ function tapZone(text, big, onTap, pen){
   z.addEventListener('click', onTap); return z;
 }
 function defFor(list){
-  return (list === P().flow) ? {sym:'event', defSym:true} : {sym:'task', state:'open'};
+  return (list === EP().flow) ? {sym:'event', defSym:true} : {sym:'task', state:'open'};
 }
 function addLine(list){
   const ne = Object.assign({text:'', _id:++uid}, defFor(list));
   list.push(ne); focusRef = ne; render();
-  if (list === P().plan){
-    const n = P().plan.filter(x => x.sym === 'task' && x.state === 'open').length;
+  if (list === EP().plan){
+    const n = EP().plan.filter(x => x.sym === 'task' && x.state === 'open').length;
     if (n >= 8) toast('已经第 ' + n + ' 件了——真的都是今天吗？');
   }
 }
@@ -899,7 +981,7 @@ function render(){
       if (date !== lastDate){ lastDate = date;
         const g = document.createElement('div'); g.className = 'date-group';
         g.textContent = dayGroupTitle(date); view.appendChild(g); }
-      view.appendChild(entryNode({...e, children:null, _id:0}, false));
+      view.appendChild(jumpRow(date, e));
     });
     if (!n){ const d = document.createElement('div'); d.className = 'empty-hint'; d.textContent = '这里还是空的'; view.appendChild(d); }
   }
@@ -945,6 +1027,7 @@ function render(){
       dd.onclick = ev => { ev.stopPropagation(); SET.accent = i; applyAccent(); scheduleSave(); render(); };
       accWrap.appendChild(dd);
     });
+    mkRow('使用引导 · 功能手册', sub('随时回看 ›'), showManual);
     mkRow('主题色', accWrap, null);
     const sw = document.createElement('div'); sw.className = 'switch' + (SET.recog ? ' on' : ''); sw.innerHTML = '<i></i>';
     sw.onclick = ev => { ev.stopPropagation(); SET.recog = !SET.recog;
@@ -962,7 +1045,7 @@ function render(){
         setTimeout(() => pendingRestore = false, 5000); return; }
       pendingRestore = false; $('#jsonInput').click();
     });
-    mkRow('版本记录', sub('v1.5 ›'), showChangelog);
+    mkRow('版本记录', sub('v1.6 ›'), showChangelog);
     mkRow('应用锁', sub('原生版支持 FaceID'), () => toast('网页版暂不支持 · 原生开发阶段实现'));
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
@@ -983,7 +1066,7 @@ function render(){
     let n = 0;
     walk((date, e) => {
       if (e.due !== cur.key || e.state === 'done' || e.state === 'dropped') return;
-      n++; view.appendChild(entryNode({...e, children:null, _id:0}, false));
+      n++; view.appendChild(jumpRow(date, e));
     });
     if (n){
       const tip = document.createElement('div'); tip.className = 'readonly-tip';
@@ -1003,13 +1086,14 @@ function render(){
       sm.style.fontStyle = 'italic';
       sm.textContent = '“' + PAGES[cur.date].summary + '”'; view.appendChild(sm);
     }
-    renderPageInto(view, cur.date, false);
-    const tip = document.createElement('div'); tip.className = 'readonly-tip';
-    tip.textContent = '历史页只读 · 保留当天原貌（含 › 和划掉的痕迹）'; view.appendChild(tip);
+    renderPageInto(view, cur.date, true);
   }
+  const dayNavOn = (cur.name === 'today' || cur.name === 'history' || cur.name === 'day');
+  $('#prevDay').style.visibility = dayNavOn ? 'visible' : 'hidden';
+  $('#nextDay').style.visibility = dayNavOn ? 'visible' : 'hidden';
   buildDrawer();
   scheduleSave();
-  if (cur.name === 'today' && focusRef){
+  if ((cur.name === 'today' || cur.name === 'history') && focusRef){
     const inp = view.querySelector('input[data-eid="' + focusRef._id + '"]');
     if (inp){
       try{ inp.focus({preventScroll:true}); }catch(_){ inp.focus(); }
@@ -1237,7 +1321,7 @@ $('#imgInput').addEventListener('change', ev => {
       (imgTarget.images = imgTarget.images || []).push(out);
       if (--left === 0){
         delete imgTarget._imgPending;
-        if (!findEntry(imgTarget)) P().flow.push(imgTarget);
+        if (!findEntry(imgTarget)) EP().flow.push(imgTarget);
         focusRef = imgTarget;
         toast('已插入图片 · 点缩略图看大图'); render();
       }
@@ -1349,6 +1433,19 @@ function dismissKB(){
   focusRef = null;
 }
 function openQSheet(){ dismissKB(); buildQSheet(); $('#qsheet').classList.add('on'); $('#mask').classList.add('on'); placeToolbar(); }
+function askMemo(t){
+  dismissKB();
+  const S = $('#qsheet');
+  S.innerHTML = '<div class="gs-title">✓ 已完成 · 补一句备注？（会进日报周报）</div>'
+    + '<input id="qMemo" class="qdate" placeholder="比如：对方已确认 / 结果如何…" value="' + escAttr(t.note) + '">'
+    + '<div class="gs-new" style="margin-top:4px">'
+    + '<button class="gm-btn" id="qSkip" style="flex:1;padding:10px">跳过</button>'
+    + '<button class="gm-btn" id="qSave" style="flex:1;padding:10px;background:var(--ink);color:#fff;border-color:var(--ink)">保存备注</button>'
+    + '</div>';
+  $('#qSkip').onclick = () => closeQSheet();
+  $('#qSave').onclick = () => { const m = $('#qMemo').value.trim(); if (m) t.note = m; closeQSheet(); };
+  S.classList.add('on'); $('#mask').classList.add('on'); placeToolbar();
+}
 function closeQSheet(){
   $('#qsheet').classList.remove('on');
   if (!$('#drawer').classList.contains('on')) $('#mask').classList.remove('on');
@@ -1386,7 +1483,7 @@ function buildQSheet(){
       if (t.due && parseKey(t.due) > parseKey(TODAY)) t.due = undefined;
       delete t.delegate; delete t.followArrived;
       fin('已恢复待办');
-    } else { t.state = 'done'; fin('✓ 已完成'); }
+    } else { t.state = 'done'; askMemo(t); }
   };
   $('#qDrop').onclick = () => { snapshot('处理任务'); t.state = 'dropped'; t.badge = '不做了'; fin('✕ 已放弃 · 保留划痕'); };
   $('#qDel').onclick  = () => { $('#qMigPanel').classList.remove('on'); $('#qDelPanel').classList.toggle('on'); };
@@ -1484,8 +1581,8 @@ function genReport(g, kind, incMood){
     if (!(e.groups && e.groups.includes(g)) || !inR(date)) return;
     const dd = fmtShort(date);
     if (e.sym === 'task'){
-      if (e.state === 'done') cat.done.push('· ' + e.text + '（' + dd + '）');
-      else if (e.state === 'dropped') cat.drop.push('· ' + e.text + (e.badge ? '（' + e.badge + '）' : ''));
+      if (e.state === 'done') cat.done.push('· ' + e.text + (e.note ? '——' + e.note : '') + '（' + dd + '）');
+      else if (e.state === 'dropped') cat.drop.push('· ' + e.text + (e.note ? '——' + e.note : '') + (e.badge ? '（' + e.badge + '）' : ''));
       else if (e.state === 'delegated') cat.doing.push('· ' + e.text + '（已转交' + (e.delegate ? '给 ' + e.delegate.to : '') + '）');
       else if (e.state === 'migrated' && !e.due) return;
       else if (e.state === 'migrated' && e.due && parseKey(e.due) <= parseKey(TODAY)) return;
@@ -1597,7 +1694,18 @@ function renderReview(){
   const tt = document.createElement('span'); tt.textContent = t.text; taskBox.appendChild(tt);
   $('#rvClose').onclick = closeReview;
   const next = () => { qi++; renderReview(); };
-  $('#bDone').onclick = () => { t.state = 'done'; toast('✓ 已完成'); next(); };
+  const rvMemoStep = () => {
+    const card = R.querySelector('.rv-card');
+    card.innerHTML = '<div class="rv-task"><span class="glyph done" style="font-size:17px">✓</span><span>已完成</span></div>'
+      + '<div class="rv-q">补一句备注？会进日报周报（可跳过）</div>'
+      + '<input id="rvMemo" class="qdate" placeholder="比如：对方已确认 / 结果如何…" value="' + escAttr(t.note) + '">'
+      + '<div class="rv-grid" style="margin-top:12px">'
+      + '<button class="rv-btn" id="rvMSkip">跳过</button>'
+      + '<button class="rv-btn b-done" id="rvMSave"><span class="g">✓</span>保存备注</button></div>';
+    $('#rvMSkip').onclick = next;
+    $('#rvMSave').onclick = () => { const m = $('#rvMemo').value.trim(); if (m) t.note = m; next(); };
+  };
+  $('#bDone').onclick = () => { t.state = 'done'; rvMemoStep(); };
   $('#bDrop').onclick = () => { t.state = 'dropped'; t.badge = '不做了'; stat.drop++; toast('✕ 已放弃 · 页面保留划痕'); next(); };
   $('#bDel').onclick  = () => { $('#migPanel').classList.remove('on'); $('#rvDelPanel').classList.toggle('on'); };
   $('#bMig').onclick  = () => { $('#rvDelPanel').classList.remove('on'); $('#migPanel').classList.toggle('on'); };
@@ -1730,18 +1838,37 @@ $('#jsonInput').addEventListener('change', ev => {
   r.readAsText(f);
 });
 
+/* ============ 功能手册 ============ */
+function showManual(){
+  const R = $('#report');
+  R.innerHTML = '<div class="rv-head"><div class="rv-title">功能手册</div>'
+    + '<button class="pill-btn" id="mnClose">收起</button></div>'
+    + '<div class="rp-body"><div class="rp-text">'
+    + '【四种符号】\n•  待办——要做的事，点符号打勾完成\n○  事件——发生的事，是一天的锚点\n—  笔记——想法与信息\n＝  心情——当下的情绪\n\n'
+    + '【书写】\n「今天要做」默认 •，「今天发生」默认 ○\n写「明天 / 下周四 / 8.15号」自动挂日期；写「下午三点 / 16:00」自动挂时间\n敲 # 弹出分组联想；带日期的默认事件会自动转成待办\n\n'
+    + '【因果记录】\n事件行回车：下一行自动挂在这件事下面\n空的子行再回车：回到顶层\n事件行尾「＋」：随时在这件事下补一笔；「▾3」点击折叠\n\n'
+    + '【处理任务】\n点符号 = 完成；长按符号 = 推迟 / 不做了 / 转交 / 恢复\n推迟可选任意日期并填进度；转交要填给谁和跟进日，到期自动提醒\n处理面板里的备注会进日报周报\n\n'
+    + '【翻阅】\n今日页左右滑（或顶栏 ‹ ›）翻到前一天 / 后一天\n☰ 抽屉：总日历（点日子翻本）、分组集子、各类汇总、搜索\n汇总里点符号可直接勾掉，点文字跳回当天并高亮\n「◂ 8.6 转来」芯片点击跳回源头；历史页的「→8.12」跳去目标日\n\n'
+    + '【复盘与报告】\n右上「复盘」逐条过未完成任务，结束有今日快照和一句话小结\n分组视图里一键生成日报 / 周报 / 月报，可选含心情\n\n'
+    + '【数据安全】\n数据只存在本机；设置里定期「完整备份(.json)」\n⏰ 芯片不会响，点它「加入系统日历」才有真提醒'
+    + '</div></div>';
+  $('#mnClose').onclick = () => R.classList.remove('on');
+  R.classList.add('on');
+}
+
 /* ============ 版本记录 ============ */
 function showChangelog(){
   const R = $('#report');
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v1.5（当前）\n【因果记录显性化】\n· 事件行回车：下一行自动挂在这件事下面（空行再回车升回顶层）\n· 事件行尾新增「＋」：随时在这件事下补一笔\n· 子条目计数与折叠（▾3）；跨天承接的任务带「◂ 源自」溯源签\n· 周报里事件显示「引发 N 条」\n· 分区默认符号：「要做」默认 •，「发生」默认 ○（写了日期自动转待办）\n· 子条目仅事件可挂：缩进与「＋」只在事件（○）上生效\n· 「发生」区提示加铅笔图标\n【短板修复】\n· ⏰ 面板新增「加入系统日历」：生成日历文件，系统会真的响\n· 转交需填对象和跟进日期，到期自动生成「问问XX」待办\n· 复盘结束页改为今日快照 + 一句话小结（历史页可见）\n\n'
-    + 'v1.4\n· 修复长按触发系统全选的蓝框\n· 识别下周X / 周X / 大后天 / 下个月X号 / X月Y号\n· 点日期 / 时间芯片可修改或清除\n\n'
-    + 'v1.3\n· 键盘遮挡彻底修复：按可视区域计算，当前行始终保持在键盘上方\n· 图片可删除：空行退格先删图再删行；点大图有「删除这张图片」\n· 任务状态随时可改：任何状态长按（或点符号）重开四选一，可恢复待办\n· 打开处理面板 / 复盘时自动收起键盘；底部面板抬到键盘上方\n\n'
-    + 'v1.2\n· 推迟可选任意日期：明天 / 后天 / 下周一 / 日历选择\n· 修复：空行插图后看不到缩略图\n· 分组可选颜色（长按分组 → 颜色）；设置新增主题色\n· 导出 Markdown 带年份分区；新增导入合并（以现有为准只补缺）\n· 新增完整备份 / 恢复（.json 含图片）\n\n'
-    + 'v1.1\n· 顶栏避开刘海 / 灵动岛（安全区适配）\n· 修复输入聚焦时页面缩放窜动\n\n'
-    + 'v1.0\n· 首个可日用版本：真实日期自动建页、本地持久化、晨间承接迁移、晚间复盘、总日历、分组、报告、搜索、图片、Markdown 导出、首次引导'
+    + 'v1.6（当前 · 2026.8.8）\n· 任何方式完成（打勾 / 面板 / 复盘）后追问一句备注，可跳过，备注进日报周报\n· 历史页可直接编辑补记\n· 汇总视图升级：点符号就地勾掉/长按处理，点文字跳回当天并高亮定位\n· 今日页左右滑翻天（顶栏新增 ‹ › 箭头）\n· 双向溯源：「◂ 8.6 转来」点击跳回源头条目；历史页「→日期」跳去目标日\n· 识别中文时间：下午三点 / 晚上八点半 / 中午12点\n· 设置新增「使用引导 · 功能手册」，随时回看\n· 版本记录标注日期\n\n'
+    + 'v1.5（2026.8.8）\n【因果记录显性化】\n· 事件行回车：下一行自动挂在这件事下面（空行再回车升回顶层）\n· 事件行尾新增「＋」：随时在这件事下补一笔\n· 子条目计数与折叠（▾3）；跨天承接的任务带「◂ 源自」溯源签\n· 周报里事件显示「引发 N 条」\n· 分区默认符号：「要做」默认 •，「发生」默认 ○（写了日期自动转待办）\n· 子条目仅事件可挂：缩进与「＋」只在事件（○）上生效\n· 「发生」区提示加铅笔图标\n【短板修复】\n· ⏰ 面板新增「加入系统日历」：生成日历文件，系统会真的响\n· 转交需填对象和跟进日期，到期自动生成「问问XX」待办\n· 复盘结束页改为今日快照 + 一句话小结（历史页可见）\n\n'
+    + 'v1.4（2026.8.8）\n· 修复长按触发系统全选的蓝框\n· 识别下周X / 周X / 大后天 / 下个月X号 / X月Y号\n· 点日期 / 时间芯片可修改或清除\n\n'
+    + 'v1.3（2026.8.8）\n· 键盘遮挡彻底修复：按可视区域计算，当前行始终保持在键盘上方\n· 图片可删除：空行退格先删图再删行；点大图有「删除这张图片」\n· 任务状态随时可改：任何状态长按（或点符号）重开四选一，可恢复待办\n· 打开处理面板 / 复盘时自动收起键盘；底部面板抬到键盘上方\n\n'
+    + 'v1.2（2026.8.8）\n· 推迟可选任意日期：明天 / 后天 / 下周一 / 日历选择\n· 修复：空行插图后看不到缩略图\n· 分组可选颜色（长按分组 → 颜色）；设置新增主题色\n· 导出 Markdown 带年份分区；新增导入合并（以现有为准只补缺）\n· 新增完整备份 / 恢复（.json 含图片）\n\n'
+    + 'v1.1（2026.8.7）\n· 顶栏避开刘海 / 灵动岛（安全区适配）\n· 修复输入聚焦时页面缩放窜动\n\n'
+    + 'v1.0（2026.8.7）\n· 首个可日用版本：真实日期自动建页、本地持久化、晨间承接迁移、晚间复盘、总日历、分组、报告、搜索、图片、Markdown 导出、首次引导'
     + '</div></div>';
   $('#clClose').onclick = () => R.classList.remove('on');
   R.classList.add('on');
@@ -1760,13 +1887,14 @@ function ensureToday(){
       P().plan.push({sym:'task', state:'open', text:e.text,
         groups:e.groups ? [...e.groups] : undefined, progress:e.progress, mig:e.mig,
         src:e.src || (parent && parent.text) || undefined,
+        srcDay:k, srcId:e._id || (e._id = ++uid),
         badge:'>×' + e.mig + (e.progress ? ' · 已完成' + e.progress + '%' : ''), _id:++uid});
     }
     if (e.state === 'delegated' && e.delegate && e.delegate.follow === TODAY && !e.followArrived){
       e.followArrived = true;
       P().plan.push({sym:'task', state:'open',
         text:'问问 ' + e.delegate.to + '：' + (e.text || '').slice(0, 16),
-        src:e.text, _id:++uid});
+        src:e.text, srcDay:k, srcId:e._id || (e._id = ++uid), _id:++uid});
     }
   });
 }
@@ -1774,7 +1902,7 @@ function morningCheck(){
   const page = P(); if (page.morningAsked) return;
   const left = [];
   walkWithParent((k, e, parent) => {
-    if (k !== TODAY && e.sym === 'task' && e.state === 'open' && !e.due) left.push({e, parent});
+    if (k !== TODAY && e.sym === 'task' && e.state === 'open' && !e.due) left.push({e, parent, k});
   });
   page.morningAsked = true;
   if (!left.length){ scheduleSave(); return; }
@@ -1792,6 +1920,7 @@ function morningCheck(){
       P().plan.push({sym:'task', state:'open', text:e.text,
         groups:e.groups ? [...e.groups] : undefined, progress:e.progress, mig:e.mig,
         src:e.src || (x.parent && x.parent.text) || undefined,
+        srcDay:x.k || undefined, srcId:e._id || (e._id = ++uid),
         badge:'>×' + e.mig + (e.progress ? ' · 已完成' + e.progress + '%' : ''), _id:++uid});
     });
     toast('已带来 ' + left.length + ' 件'); closeSheet(); scheduleSave();
