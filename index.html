@@ -6,17 +6,17 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="子弹手账">
-<meta name="theme-color" content="#FAF8F1">
+<meta name="apple-mobile-web-app-title" content="点点手帐">
+<meta name="theme-color" content="#F6EFE3">
 <link rel="apple-touch-icon" href="./icon.png">
 <link rel="icon" type="image/png" href="./icon.png">
-<title>子弹手账</title>
+<title>点点手帐 Dot</title>
 <style>
   :root{
-    --bg:#FAF8F1; --bg-deep:#EFEBE0; --card:#FFFFFF;
-    --ink:#33312B; --ink-soft:#8B867B; --ink-faint:#B8B2A4;
-    --line:#E9E3D5; --accent:#C97B4A; --accent-soft:#F6EADF;
-    --green:#5F8F66; --red:#C0604E; --badge-bg:#F1EBDC; --badge-ink:#8B7E63;
+    --bg:#F6EFE3; --bg-deep:#EAE0CC; --card:#FFFDF6;
+    --ink:#1F1C17; --ink-soft:#8A8171; --ink-faint:#B6AC99;
+    --line:#E6DBC6; --accent:#F45D08; --accent-soft:#FBE7D4;
+    --green:#5F8F66; --red:#C0604E; --badge-bg:#EFE7D3; --badge-ink:#8A7C5F;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{height:100%}
@@ -38,7 +38,7 @@
   }
   header{
     flex:none; display:flex; align-items:center; gap:10px;
-    padding:calc(10px + env(safe-area-inset-top)) 16px 10px; background:rgba(250,248,241,.92);
+    padding:calc(10px + env(safe-area-inset-top)) 16px 10px; background:rgba(246,239,227,.92);
     backdrop-filter:blur(8px); border-bottom:1px solid var(--line); z-index:5;
   }
   .icon-btn{
@@ -48,16 +48,16 @@
   .icon-btn:active{background:var(--accent-soft)}
   .hamburger{display:flex;flex-direction:column;gap:4.5px}
   .hamburger i{display:block;width:17px;height:1.8px;background:var(--ink);border-radius:2px}
-  #topTitle{flex:1;font-size:16px;font-weight:600;letter-spacing:.5px}
+  #topTitle{flex:1;font-size:17px;font-weight:700;letter-spacing:.5px}
   .pill-btn{
     border:1px solid var(--line);background:var(--card);color:var(--accent);
-    font-size:13px;padding:6px 14px;border-radius:999px;cursor:pointer;font-weight:500;font-family:inherit;
+    font-size:13.5px;padding:7px 15px;border-radius:999px;cursor:pointer;font-weight:600;font-family:inherit;
   }
   .pill-btn:active{background:var(--accent-soft)}
   main{flex:1;overflow-y:auto;padding:4px 20px 150px;scrollbar-width:none;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
   main::-webkit-scrollbar{display:none}
-  .section-label{font-size:11px;color:var(--ink-faint);letter-spacing:2.5px;margin:20px 0 2px 2px;font-weight:500}
-  .date-group{font-size:12px;color:var(--ink-soft);margin:18px 0 2px 2px;font-weight:600}
+  .section-label{font-size:12px;color:var(--ink-faint);letter-spacing:3px;margin:22px 0 3px 2px;font-weight:600}
+  .date-group{font-size:13px;color:var(--ink-soft);margin:18px 0 2px 2px;font-weight:600}
   /* ---------- 条目行 ---------- */
   .entry{display:flex;align-items:flex-start;gap:12px;padding:7px 0}
   .sym{
@@ -77,10 +77,10 @@
   .glyph.dropped{color:var(--red);opacity:.75;font-weight:600}
   .glyph.delegated{color:var(--badge-ink);font-weight:700}
   .entry-body{flex:1;min-width:0}
-  .entry-text{font-size:16px;line-height:1.55;word-break:break-all}
+  .entry-text{font-size:16px;line-height:1.6;word-break:break-all}
   .line-input{
     width:100%;border:none;outline:none;background:none;font-family:inherit;
-    font-size:16px;line-height:1.55;color:var(--ink);padding:0;caret-color:var(--accent);
+    font-size:16px;line-height:1.6;color:var(--ink);padding:0;caret-color:var(--accent);
   }
   .entry.done .entry-text,.entry.done .line-input{color:var(--ink-faint);text-decoration:line-through;text-decoration-color:rgba(95,143,102,.5)}
   .entry.migrated .entry-text,.entry.delegated .entry-text{color:var(--ink-soft)}
@@ -89,7 +89,7 @@
   .entry.note .entry-text,.entry.note .line-input{color:var(--ink-soft)}
   .chips{margin-top:3px}
   .badge{
-    display:inline-block;font-size:11px;background:var(--badge-bg);color:var(--badge-ink);
+    display:inline-block;font-size:11.5px;background:var(--badge-bg);color:var(--badge-ink);
     padding:2px 9px;border-radius:999px;margin-right:6px;
   }
   .badge.acc{background:var(--accent-soft);color:var(--accent)}
@@ -109,10 +109,10 @@
   .daynav{width:26px;height:30px;border:none;background:none;color:var(--ink-faint);font-size:19px;cursor:pointer;border-radius:8px;flex:none;padding:0}
   .daynav:active{background:var(--accent-soft);color:var(--accent)}
   .children .entry{padding:6px 0}
-  .tapzone{color:var(--ink-faint);font-size:13px;cursor:text;padding:9px 2px}
-  .tapzone.big{min-height:150px;padding-top:14px;display:flex;align-items:flex-start;gap:10px;font-size:14px}
+  .tapzone{color:var(--ink-faint);font-size:14px;cursor:text;padding:9px 2px}
+  .tapzone.big{min-height:150px;padding-top:14px;display:flex;align-items:flex-start;gap:10px;font-size:15px}
   .penicon{width:20px;height:20px;flex:none;color:var(--accent);margin-top:-1px}
-  .empty-hint{font-size:13px;color:var(--ink-faint);padding:14px 2px}
+  .empty-hint{font-size:14px;color:var(--ink-faint);padding:14px 2px;line-height:1.7}
   .readonly-tip{
     font-size:12px;color:var(--ink-faint);background:var(--badge-bg);
     border-radius:10px;padding:8px 12px;margin-top:18px;display:inline-block;
@@ -121,12 +121,12 @@
   #toolbar{
     position:absolute;left:0;right:0;bottom:0;display:none;align-items:center;gap:6px;overflow-x:auto;
     padding:9px 14px calc(12px + env(safe-area-inset-bottom));
-    background:rgba(255,255,255,.96);border-top:1px solid var(--line);z-index:6;
+    background:rgba(255,253,246,.96);border-top:1px solid var(--line);z-index:6;
   }
   #toolbar.on{display:flex}
   #tagSug{
     position:absolute;left:0;right:0;display:none;gap:8px;align-items:center;
-    padding:8px 14px;background:rgba(252,250,243,.97);border-top:1px solid var(--line);
+    padding:8px 14px;background:rgba(250,246,236,.97);border-top:1px solid var(--line);
     z-index:6;overflow-x:auto;
   }
   #tagSug.on{display:flex}
@@ -143,7 +143,7 @@
   .tb-hint{margin-left:auto;font-size:11px;color:var(--ink-faint)}
   /* ---------- 总日历 ---------- */
   .cal-head{display:flex;align-items:center;margin-top:18px}
-  .cal-title{flex:1;text-align:center;font-size:15px;font-weight:600}
+  .cal-title{flex:1;text-align:center;font-size:16px;font-weight:700}
   .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-top:8px}
   .cal-wd{text-align:center;font-size:11px;color:var(--ink-faint);padding:8px 0 4px}
   .cal-day{
@@ -163,17 +163,17 @@
   #mask{position:absolute;inset:0;background:rgba(40,36,28,.32);opacity:0;pointer-events:none;transition:opacity .25s;z-index:8}
   #mask.on{opacity:1;pointer-events:auto}
   #drawer{
-    position:absolute;top:0;bottom:0;left:0;width:78%;max-width:300px;background:#FCFAF3;z-index:9;
+    position:absolute;top:0;bottom:0;left:0;width:78%;max-width:300px;background:#FBF6EB;z-index:9;
     transform:translateX(-105%);transition:transform .28s cubic-bezier(.22,.9,.36,1);
     display:flex;flex-direction:column;box-shadow:8px 0 30px rgba(0,0,0,.08);
   }
   #drawer.on{transform:translateX(0)}
   .drawer-head{padding:calc(20px + env(safe-area-inset-top)) 22px 10px}
-  .drawer-title{font-size:19px;font-weight:700;letter-spacing:1px}
+  .drawer-title{font-size:20px;font-weight:700;letter-spacing:1px}
   .drawer-sub{font-size:12px;color:var(--ink-soft);margin-top:4px}
   .drawer-scroll{flex:1;overflow-y:auto;padding:0 12px 24px;scrollbar-width:none}
   .drawer-label{font-size:11px;color:var(--ink-faint);letter-spacing:2px;margin:16px 10px 6px}
-  .d-item{display:flex;align-items:center;gap:12px;padding:10px 10px;border-radius:12px;cursor:pointer;font-size:14.5px}
+  .d-item{display:flex;align-items:center;gap:12px;padding:10px 10px;border-radius:12px;cursor:pointer;font-size:15px}
   .d-item:active{background:var(--accent-soft)}
   .d-item .sym{margin:0;cursor:inherit}
   .d-item .count{margin-left:auto;font-size:12px;color:var(--ink-faint)}
@@ -190,7 +190,7 @@
     z-index:11;display:none;
   }
   #gsheet.on{display:block}
-  .gs-title{font-size:14px;font-weight:600;margin-bottom:12px}
+  .gs-title{font-size:15px;font-weight:700;margin-bottom:12px}
   .gs-chips{display:flex;flex-wrap:wrap;gap:8px}
   .gs-chip{font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg);cursor:pointer;font-family:inherit;color:var(--ink)}
   .gs-chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
@@ -202,10 +202,10 @@
   #report.on{display:flex}
   .rp-body{flex:1;overflow-y:auto;padding:16px 20px}
   .rp-tabs{display:flex;gap:8px;margin:2px 0 14px}
-  .rp-text{white-space:pre-wrap;font-size:13.5px;line-height:1.8;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .rp-text{white-space:pre-wrap;font-size:14px;line-height:1.85;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
   .rp-note{font-size:12px;color:var(--ink-faint);margin-top:12px}
   .chip{
-    font-size:13px;padding:6px 14px;border-radius:999px;border:1px solid var(--line);
+    font-size:13.5px;padding:6px 14px;border-radius:999px;border:1px solid var(--line);
     background:var(--card);cursor:pointer;color:var(--ink-soft);font-family:inherit;
   }
   .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
@@ -220,7 +220,7 @@
     z-index:11;display:none;
   }
   #qsheet.on{display:block}
-  .set-row{display:flex;align-items:center;gap:12px;padding:15px 4px;border-bottom:1px solid var(--line);font-size:14.5px;cursor:pointer}
+  .set-row{display:flex;align-items:center;gap:12px;padding:15px 4px;border-bottom:1px solid var(--line);font-size:15px;cursor:pointer}
   .set-row .sub{margin-left:auto;font-size:12px;color:var(--ink-faint);text-align:right}
   .switch{margin-left:auto;width:44px;height:26px;border-radius:999px;background:var(--line);position:relative;transition:.2s;flex:none;cursor:pointer}
   .switch.on{background:var(--green)}
@@ -253,18 +253,18 @@
   #review{position:absolute;inset:0;background:var(--bg);z-index:12;display:none;flex-direction:column}
   #review.on{display:flex}
   .rv-head{display:flex;align-items:center;gap:8px;padding:calc(10px + env(safe-area-inset-top)) 16px 12px;border-bottom:1px solid var(--line)}
-  .rv-title{flex:1;font-size:16px;font-weight:600}
+  .rv-title{flex:1;font-size:17px;font-weight:700}
   .rv-prog{font-size:12px;color:var(--ink-soft)}
   .rv-body{flex:1;overflow-y:auto;padding:20px 20px 160px;display:flex;flex-direction:column}
   .rv-done-note{font-size:13px;color:var(--green);background:#EDF3EE;border-radius:12px;padding:10px 14px;margin-bottom:18px}
   .rv-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 20px;box-shadow:0 8px 28px rgba(51,49,43,.07)}
-  .rv-task{font-size:17px;font-weight:600;display:flex;gap:10px;align-items:flex-start}
+  .rv-task{font-size:18px;font-weight:600;display:flex;gap:10px;align-items:flex-start}
   .rv-meta{margin-top:8px}
   .rv-q{font-size:13px;color:var(--ink-soft);margin:18px 0 12px}
   .rv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .rv-btn{
     border:1px solid var(--line);background:var(--bg);border-radius:14px;padding:13px 8px;
-    font-size:14.5px;cursor:pointer;font-family:inherit;color:var(--ink);
+    font-size:15px;cursor:pointer;font-family:inherit;color:var(--ink);
     display:flex;align-items:center;justify-content:center;gap:7px;font-weight:500;
   }
   .rv-btn:active{background:var(--accent-soft)}
@@ -281,12 +281,12 @@
     width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:16px;
     font-family:inherit;margin-top:12px;background:var(--bg);outline:none;color:var(--ink);
   }
-  .rv-confirm{margin-top:14px;width:100%;border:none;background:var(--ink);color:#fff;border-radius:12px;padding:12px;font-size:14.5px;cursor:pointer;font-family:inherit}
-  .rv-finish{margin:auto;text-align:center;color:var(--ink-soft);font-size:15px;line-height:2}
-  .rv-finish b{font-size:17px;color:var(--ink)}
+  .rv-confirm{margin-top:14px;width:100%;border:none;background:var(--ink);color:#fff;border-radius:12px;padding:12px;font-size:15px;cursor:pointer;font-family:inherit}
+  .rv-finish{margin:auto;text-align:center;color:var(--ink-soft);font-size:15.5px;line-height:2}
+  .rv-finish b{font-size:18px;color:var(--ink)}
   #toast{
     position:absolute;left:50%;bottom:96px;transform:translateX(-50%) translateY(8px);
-    background:rgba(51,49,43,.92);color:#FAF8F1;font-size:13px;padding:9px 18px;border-radius:999px;
+    background:rgba(31,28,23,.93);color:#F6EFE3;font-size:13.5px;padding:9px 18px;border-radius:999px;
     opacity:0;transition:.25s;pointer-events:none;z-index:20;white-space:nowrap;
   }
   #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -307,7 +307,7 @@
   <div id="mask"></div>
   <aside id="drawer">
     <div class="drawer-head">
-      <div class="drawer-title">子弹手账</div>
+      <div class="drawer-title" style="display:flex;align-items:center;gap:9px"><span id="drawerDot" style="display:flex"></span><span>点点手帐 <span style="color:var(--accent)">Dot</span></span></div>
       <div class="drawer-sub" id="drawerSub"></div>
       <input id="searchBox" class="search-input" placeholder="搜索，或输入 #分组名" autocomplete="off">
     </div>
@@ -367,6 +367,7 @@ function scheduleSave(){
   saveTm = setTimeout(() => {
     try{ localStorage.setItem(LSKEY, JSON.stringify({pages:PAGES, extraGroups, set:SET, seen:SEEN, gcolor:GCOLOR})); }
     catch(_){ toast('存储已满：请删除一些图片，或先导出备份'); }
+    try{ ghSchedule(); }catch(_){}
   }, 300);
 }
 const P = () => PAGES[TODAY];
@@ -503,7 +504,7 @@ function gStyle(name){
   if (GCOLOR[name] != null && GPAL[GCOLOR[name]]) return GPAL[GCOLOR[name]];
   let h = 0; for (const c of name) h += c.charCodeAt(0); return GPAL[h % 4];
 }
-const ACCENTS = [['#C97B4A','#F6EADF'],['#5F8F66','#E8F0E9'],['#4E7A9B','#E3EDF4'],['#8A6FB1','#ECE7F4'],['#C2607A','#F6E4EA']];
+const ACCENTS = [['#F45D08','#FBE7D4'],['#C97B4A','#F6EADF'],['#5F8F66','#E8F0E9'],['#4E7A9B','#E3EDF4'],['#8A6FB1','#ECE7F4'],['#C2607A','#F6E4EA']];
 function applyAccent(){
   const a = ACCENTS[SET.accent] || ACCENTS[0];
   const r = document.documentElement.style;
@@ -863,7 +864,7 @@ function renderPageInto(box, date, editable){
   if (editable) box.appendChild(tapZone('＋ 补一条要做的', false, () => addLine(p.plan)));
   box.appendChild(sectionLabel('今天发生'));
   p.flow.forEach(e => box.appendChild(entryNode(e, editable)));
-  if (editable) box.appendChild(tapZone('点这里，记下今天发生的事…（事件○ · 心情待办随手写）', true, () => addLine(p.flow), true));
+  if (editable) box.appendChild(tapZone('点这里，记下今天发生的事…（○ 会接住它引发的一切）', true, () => addLine(p.flow), true));
   else if (!p.flow.length){ const d = document.createElement('div'); d.className = 'empty-hint'; d.textContent = '这天没有流水记录'; box.appendChild(d); }
 }
 
@@ -995,7 +996,7 @@ function render(){
     view.appendChild(tabs);
     const n = dateGroupList(view, e => e.groups && e.groups.includes(cur.g));
     if (!n){ const d = document.createElement('div'); d.className = 'empty-hint';
-      d.textContent = '这个分组还没有内容 · 在行里打 #' + cur.g + ' 即可归入'; view.appendChild(d); }
+      d.textContent = '这个分组还空着 · 在任意一行打 #' + cur.g + ' 就能归进来'; view.appendChild(d); }
     else { const tip = document.createElement('div'); tip.className = 'readonly-tip';
       tip.textContent = '这就是自动长出来的「集子」 · 点条目跳到当天'; view.appendChild(tip); }
   }
@@ -1039,13 +1040,14 @@ function render(){
     mkRow('导出 Markdown 备份', sub('生成文件 ›'), exportMD);
     mkRow('导入 Markdown（合并）', sub('以现有为准，只补缺 ›'), () => $('#mdInput').click());
     mkRow('完整备份（.json 含图片）', sub('生成文件 ›'), exportJSON);
+    mkRow('云备份（GitHub 私有仓库）', sub(ghCfg().on ? ('自动 · ' + (ghCfg().last || '待首次备份')) : '未开启 ›'), openGhSheet);
     mkRow('恢复备份（.json）', sub('整体替换 ›'), () => {
       if (!pendingRestore){ pendingRestore = true;
         toast('恢复将完全替换当前数据 · 再点一次选择文件');
         setTimeout(() => pendingRestore = false, 5000); return; }
       pendingRestore = false; $('#jsonInput').click();
     });
-    mkRow('版本记录', sub('v1.6 ›'), showChangelog);
+    mkRow('版本记录', sub('v1.8 ›'), showChangelog);
     mkRow('应用锁', sub('原生版支持 FaceID'), () => toast('网页版暂不支持 · 原生开发阶段实现'));
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
@@ -1072,7 +1074,8 @@ function render(){
       const tip = document.createElement('div'); tip.className = 'readonly-tip';
       tip.textContent = '到了这一天，这些会自动出现在当天的「今天要做」里'; view.appendChild(tip);
     } else {
-      const d = document.createElement('div'); d.className = 'empty-hint'; d.textContent = '这天还没有记录，也没有安排'; view.appendChild(d);
+      const d = document.createElement('div'); d.className = 'empty-hint'; d.style.textAlign = 'center'; d.style.padding = '30px 2px 10px';
+      d.innerHTML = dotSVG(64) + '<div style="margin-top:10px">这天空空的 · 点点什么也没记到</div>'; view.appendChild(d);
     }
     view.appendChild(tapZone('提示：在今天页写「' + fmtShort(cur.key) + '号 某某事」即可预埋到这一天', false, () => toast('在今日页输入日期即可自动预埋')));
   }
@@ -1356,7 +1359,7 @@ function makeICS(e){
   const ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//bujo//CN\r\n'
     + 'BEGIN:VEVENT\r\nUID:' + (e._id || 0) + '-' + dt + '@bujo\r\nDTSTART:' + dt + '\r\n'
     + 'SUMMARY:' + String(e.text || '提醒').replace(/[\r\n,;]/g, ' ') + '\r\n'
-    + 'BEGIN:VALARM\r\nACTION:DISPLAY\r\nTRIGGER:-PT0M\r\nDESCRIPTION:子弹手账\r\nEND:VALARM\r\n'
+    + 'BEGIN:VALARM\r\nACTION:DISPLAY\r\nTRIGGER:-PT0M\r\nDESCRIPTION:点点手帐\r\nEND:VALARM\r\n'
     + 'END:VEVENT\r\nEND:VCALENDAR\r\n';
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([ics], {type:'text/calendar'}));
@@ -1649,11 +1652,11 @@ function renderReview(){
     walkPage(TODAY, x => { recN++; if (x.sym === 'mood' && x.text) moods.push(x.text); if (x.sym === 'event') evN++; });
     R.innerHTML = '<div class="rv-head"><div class="rv-title">晚间复盘</div>'
       + '<button class="pill-btn" id="rvClose">收起</button></div>'
-      + '<div class="rv-body"><div class="rv-finish" style="margin:26px auto 0"><b>今日快照</b><br>'
+      + '<div class="rv-body"><div class="rv-finish" style="margin:14px auto 0">' + dotSVG(86) + '<br><b>今日快照</b><br>'
       + '记录 ' + recN + ' 条 · 完成 ' + doneN + ' 件 · 事件 ' + evN + ' 件<br>'
       + '迁移 ' + stat.mig + ' · 放弃 ' + stat.drop + ' · 转交 ' + stat.del
       + (moods.length ? ('<br>今天的心情：' + moods.slice(0, 3).join('、')) : '')
-      + '<br>明天的页面已经就绪</div>'
+      + '<br>明天的页面点点已经铺好</div>'
       + '<input id="rvSum" class="qdate" placeholder="给今天留一句话（可不填）" style="margin-top:24px" value="' + String(P().summary || '').replace(/"/g, '&quot;') + '">'
       + '<button class="rv-confirm" id="rvSave">保存小结并收起</button></div>';
     $('#rvClose').onclick = closeReview;
@@ -1732,7 +1735,7 @@ function renderReview(){
 
 /* ============ 导出备份 ============ */
 function exportMD(){
-  let out = '# 子弹手账备份（' + fmtKey(TODAY) + ' 导出）\n';
+  let out = '# 点点手帐备份（' + fmtKey(TODAY) + ' 导出）\n';
   const SY = {task:'•', event:'○', note:'—', mood:'='};
   Object.keys(PAGES).sort((a, b) => parseKey(a) - parseKey(b)).forEach(k => {
     out += '\n## ' + k.split('.')[0] + '年' + fmtKey(k) + ' ' + weekCN(k) + '\n';
@@ -1750,7 +1753,7 @@ function exportMD(){
   });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([out], {type:'text/markdown'}));
-  a.download = '子弹手账备份.md'; a.click();
+  a.download = '点点手帐备份.md'; a.click();
   toast('已生成备份文件');
 }
 let pendingWipe = false, pendingRestore = false;
@@ -1817,7 +1820,7 @@ function exportJSON(){
   const data = JSON.stringify({pages:PAGES, extraGroups, set:SET, seen:SEEN, gcolor:GCOLOR, exportedAt:TODAY});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([data], {type:'application/json'}));
-  a.download = '子弹手账全量备份.json'; a.click();
+  a.download = '点点手帐全量备份.json'; a.click();
   toast('已生成全量备份（含图片）');
 }
 $('#jsonInput').addEventListener('change', ev => {
@@ -1837,6 +1840,89 @@ $('#jsonInput').addEventListener('change', ev => {
   };
   r.readAsText(f);
 });
+
+/* ============ GitHub 云备份 ============ */
+let ghTm = null, ghBusy = false, pendingGhRestore = false;
+function ghCfg(){ SET.gh = SET.gh || {repo:'', token:'', on:false, last:''}; return SET.gh; }
+function ghHeaders(){ return {Authorization:'Bearer ' + ghCfg().token, Accept:'application/vnd.github+json'}; }
+function ghPayload(){
+  const setCopy = Object.assign({}, SET); delete setCopy.gh;
+  return JSON.stringify({pages:PAGES, extraGroups, set:setCopy, seen:SEEN, gcolor:GCOLOR, savedAt:new Date().toISOString()});
+}
+async function ghPush(manual){
+  const c = ghCfg();
+  if (!c.repo || !c.token){ if (manual) toast('先填仓库和令牌'); return; }
+  if (ghBusy) return; ghBusy = true;
+  try{
+    const url = 'https://api.github.com/repos/' + c.repo + '/contents/data.json';
+    let sha;
+    const r0 = await fetch(url, {headers:ghHeaders()});
+    if (r0.status === 200){ try{ sha = (await r0.json()).sha; }catch(_){} }
+    const body = {message:'点点手帐备份 ' + TODAY, content:btoa(unescape(encodeURIComponent(ghPayload())))};
+    if (sha) body.sha = sha;
+    const r = await fetch(url, {method:'PUT',
+      headers:Object.assign({'Content-Type':'application/json'}, ghHeaders()),
+      body:JSON.stringify(body)});
+    if (r.ok){
+      c.last = fmtKey(TODAY) + ' ' + new Date().toTimeString().slice(0, 5);
+      scheduleSave(); if (manual) toast('已备份到云端 ✓');
+    } else if (manual) toast('备份失败 ' + r.status + '（检查仓库名 / 令牌权限）');
+  }catch(_){ if (manual) toast('网络不通，稍后会自动重试'); }
+  ghBusy = false;
+}
+function ghSchedule(){
+  const c = SET.gh;
+  if (!c || !c.on || !c.repo || !c.token) return;
+  clearTimeout(ghTm); ghTm = setTimeout(() => ghPush(false), 60000);
+}
+async function ghRestore(){
+  const c = ghCfg();
+  if (!c.repo || !c.token){ toast('先填仓库和令牌'); return; }
+  try{
+    const r = await fetch('https://api.github.com/repos/' + c.repo + '/contents/data.json', {headers:ghHeaders()});
+    if (!r.ok){ toast('云端还没有备份（' + r.status + '）'); return; }
+    const j = await r.json();
+    const s = JSON.parse(decodeURIComponent(escape(atob(String(j.content).replace(/\n/g, '')))));
+    if (!s.pages) throw 0;
+    const keep = ghCfg();
+    PAGES = s.pages; extraGroups = s.extraGroups || extraGroups;
+    Object.assign(SET, s.set || {}); SET.gh = keep;
+    SEEN = s.seen || SEEN; GCOLOR = s.gcolor || {};
+    applyAccent(); undoStack = []; focusRef = null;
+    ensureToday(); scheduleSave();
+    toast('已从云端恢复'); cur = {name:'today'}; render();
+  }catch(_){ toast('恢复失败：云端数据无法解析'); }
+}
+function openGhSheet(){
+  dismissKB();
+  const c = ghCfg(), S = $('#gsheet');
+  S.innerHTML = '<div class="gs-title">GitHub 云备份' + (c.last ? '（上次：' + c.last + '）' : '') + '</div>'
+    + '<input id="ghRepo" class="qdate" placeholder="私有仓库：用户名/仓库名，如 xxx/dot-data" value="' + escAttr(c.repo) + '" style="margin-bottom:10px">'
+    + '<input id="ghToken" type="password" class="qdate" placeholder="Fine-grained Token（只授权这一个仓库）" value="' + escAttr(c.token) + '" style="margin-bottom:10px">'
+    + '<div class="gs-new" style="margin-top:2px">'
+    + '<button class="gm-btn" id="ghSave" style="flex:1;padding:10px">' + (c.on ? '保存修改' : '保存并开启自动备份') + '</button>'
+    + (c.on ? '<button class="gm-btn" id="ghOff" style="padding:10px">停用</button>' : '')
+    + '</div>'
+    + '<div class="gs-new" style="margin-top:10px">'
+    + '<button class="gm-btn" id="ghNow" style="flex:1;padding:10px">立即备份</button>'
+    + '<button class="gm-btn danger" id="ghPull" style="flex:1;padding:10px">从云端恢复</button>'
+    + '</div>'
+    + '<div class="rp-note" style="margin-top:10px">令牌只存在本机 · 数据在你的私有仓库 · 改动后约 1 分钟自动上传 · 仓库的提交历史即版本回滚</div>';
+  const grab = () => { const c2 = ghCfg(); c2.repo = $('#ghRepo').value.trim(); c2.token = $('#ghToken').value.trim(); return c2; };
+  $('#ghSave').onclick = () => {
+    const c2 = grab();
+    if (!c2.repo || !c2.token){ toast('仓库和令牌都要填'); return; }
+    c2.on = true; scheduleSave(); toast('已开启自动云备份'); closeSheet(); ghPush(true);
+  };
+  if (c.on) $('#ghOff').onclick = () => { grab().on = false; scheduleSave(); toast('已停用自动备份'); closeSheet(); };
+  $('#ghNow').onclick = () => { grab(); scheduleSave(); ghPush(true); };
+  $('#ghPull').onclick = () => {
+    if (!pendingGhRestore){ pendingGhRestore = true;
+      toast('会覆盖本机数据 · 再点一次确认'); setTimeout(() => pendingGhRestore = false, 5000); return; }
+    grab(); scheduleSave(); closeSheet(); ghRestore();
+  };
+  S.classList.add('on'); $('#mask').classList.add('on'); placeToolbar();
+}
 
 /* ============ 功能手册 ============ */
 function showManual(){
@@ -1862,7 +1948,9 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v1.6（当前 · 2026.8.8）\n· 任何方式完成（打勾 / 面板 / 复盘）后追问一句备注，可跳过，备注进日报周报\n· 历史页可直接编辑补记\n· 汇总视图升级：点符号就地勾掉/长按处理，点文字跳回当天并高亮定位\n· 今日页左右滑翻天（顶栏新增 ‹ › 箭头）\n· 双向溯源：「◂ 8.6 转来」点击跳回源头条目；历史页「→日期」跳去目标日\n· 识别中文时间：下午三点 / 晚上八点半 / 中午12点\n· 设置新增「使用引导 · 功能手册」，随时回看\n· 版本记录标注日期\n\n'
+    + 'v1.8（当前 · 2026.8.9）\n【品牌换装】\n· 全新配色：纸 / 墨 / 点亮橙对齐点点 Logo，主题色新增点亮橙并设为默认\n· 字号行距整体调升：标题、分区标签、正文层级更清楚\n· 点点吉祥物入驻：引导页、侧栏、复盘结束页、空白天\n· 提示文案改为点点语气，发生区提示点明因果挂载\n\n'
+    + 'v1.7（2026.8.8）\n· 品牌更名「点点手帐 Dot」\n· 新增 GitHub 私有仓库云备份：改动后自动上传、立即备份、从云端恢复；仓库提交历史即版本回滚，电脑浏览器打开同一网址配置后即可同步\n\n'
+    + 'v1.6（2026.8.8）\n· 任何方式完成（打勾 / 面板 / 复盘）后追问一句备注，可跳过，备注进日报周报\n· 历史页可直接编辑补记\n· 汇总视图升级：点符号就地勾掉/长按处理，点文字跳回当天并高亮定位\n· 今日页左右滑翻天（顶栏新增 ‹ › 箭头）\n· 双向溯源：「◂ 8.6 转来」点击跳回源头条目；历史页「→日期」跳去目标日\n· 识别中文时间：下午三点 / 晚上八点半 / 中午12点\n· 设置新增「使用引导 · 功能手册」，随时回看\n· 版本记录标注日期\n\n'
     + 'v1.5（2026.8.8）\n【因果记录显性化】\n· 事件行回车：下一行自动挂在这件事下面（空行再回车升回顶层）\n· 事件行尾新增「＋」：随时在这件事下补一笔\n· 子条目计数与折叠（▾3）；跨天承接的任务带「◂ 源自」溯源签\n· 周报里事件显示「引发 N 条」\n· 分区默认符号：「要做」默认 •，「发生」默认 ○（写了日期自动转待办）\n· 子条目仅事件可挂：缩进与「＋」只在事件（○）上生效\n· 「发生」区提示加铅笔图标\n【短板修复】\n· ⏰ 面板新增「加入系统日历」：生成日历文件，系统会真的响\n· 转交需填对象和跟进日期，到期自动生成「问问XX」待办\n· 复盘结束页改为今日快照 + 一句话小结（历史页可见）\n\n'
     + 'v1.4（2026.8.8）\n· 修复长按触发系统全选的蓝框\n· 识别下周X / 周X / 大后天 / 下个月X号 / X月Y号\n· 点日期 / 时间芯片可修改或清除\n\n'
     + 'v1.3（2026.8.8）\n· 键盘遮挡彻底修复：按可视区域计算，当前行始终保持在键盘上方\n· 图片可删除：空行退格先删图再删行；点大图有「删除这张图片」\n· 任务状态随时可改：任何状态长按（或点符号）重开四选一，可恢复待办\n· 打开处理面板 / 复盘时自动收起键盘；底部面板抬到键盘上方\n\n'
@@ -1872,6 +1960,31 @@ function showChangelog(){
     + '</div></div>';
   $('#clClose').onclick = () => R.classList.remove('on');
   R.classList.add('on');
+}
+
+/* ============ 点点吉祥物（与 Logo 同源测绘数据） ============ */
+function dotSVG(h){
+  const w = Math.round(h * 330 / 372);
+  return '<svg width="' + w + '" height="' + h + '" viewBox="345 232 330 372" fill="none" style="display:inline-block;vertical-align:middle">'
+    + '<path d="M362 262 L367 249 Q370.5 244.5 374 249 L379 262 Z" fill="var(--accent)"/>'
+    + '<rect x="357" y="267" width="27" height="64" rx="5" fill="var(--accent)"/>'
+    + '<line x1="395" y1="392" x2="373" y2="344" stroke="var(--ink)" stroke-width="13" stroke-linecap="round"/>'
+    + '<circle cx="370.5" cy="340" r="10.5" fill="var(--ink)"/>'
+    + '<line x1="627" y1="478" x2="649" y2="501" stroke="var(--ink)" stroke-width="13" stroke-linecap="round"/>'
+    + '<circle cx="651.5" cy="503.5" r="10.5" fill="var(--ink)"/>'
+    + '<line x1="490" y1="548" x2="490" y2="581" stroke="var(--ink)" stroke-width="13"/>'
+    + '<rect x="477.5" y="580" width="25" height="13" rx="6.5" fill="var(--ink)"/>'
+    + '<line x1="537" y1="548" x2="537" y2="581" stroke="var(--ink)" stroke-width="13"/>'
+    + '<rect x="524.5" y="580" width="25" height="13" rx="6.5" fill="var(--ink)"/>'
+    + '<circle cx="512.5" cy="434.5" r="123" fill="var(--ink)"/>'
+    + '<ellipse cx="483" cy="402" rx="18" ry="40" fill="var(--bg)"/>'
+    + '<ellipse cx="540" cy="402" rx="18" ry="40" fill="var(--bg)"/>'
+    + '<ellipse cx="483.5" cy="401" rx="7.5" ry="17" fill="var(--ink)"/>'
+    + '<ellipse cx="540" cy="401" rx="7.5" ry="17" fill="var(--ink)"/>'
+    + '<circle cx="432" cy="434" r="14" fill="var(--accent)"/>'
+    + '<circle cx="591.5" cy="434" r="14" fill="var(--accent)"/>'
+    + '<path d="M503 459.5 Q511.3 468 519.5 459.5" stroke="var(--bg)" stroke-width="4.4" fill="none" stroke-linecap="round"/>'
+    + '</svg>';
 }
 
 /* ============ 晨间开页 ============ */
@@ -1907,7 +2020,7 @@ function morningCheck(){
   page.morningAsked = true;
   if (!left.length){ scheduleSave(); return; }
   const S = $('#gsheet');
-  S.innerHTML = '<div class="gs-title">之前还留着 ' + left.length + ' 件没处理</div>'
+  S.innerHTML = '<div class="gs-title">有 ' + left.length + ' 件事还等着你表态</div>'
     + '<div class="rp-note" style="margin:0 0 12px">'
     + left.slice(0, 3).map(x => '· ' + x.e.text).join('<br>') + (left.length > 3 ? '<br>…' : '') + '</div>'
     + '<button class="gs-done" id="mAll">全部带到今天</button>'
@@ -1931,16 +2044,17 @@ function morningCheck(){
 function showOnboard(){
   if (SEEN.onboard) return; SEEN.onboard = true; scheduleSave();
   const R = $('#report');
-  R.innerHTML = '<div class="rv-head"><div class="rv-title">子弹手账 · 一分钟上手</div></div>'
-    + '<div class="rp-body"><div class="rp-text">'
-    + '这是你的每日一页，像备忘录一样点哪写哪。\n\n'
-    + '•  待办——点符号打勾完成，长按可推迟 / 放弃 / 转交\n'
-    + '○  事件——发生了的事，右滑子条目可挂在它下面\n'
+  R.innerHTML = '<div class="rv-head"><div class="rv-title">你好，我是点点</div></div>'
+    + '<div class="rp-body"><div style="text-align:center;padding:18px 0 4px">' + dotSVG(118) + '</div>'
+    + '<div class="rp-text">'
+    + '我是你每条记录前面的那颗小圆点。这一页像备忘录，点哪写哪，归档交给我。\n\n'
+    + '•  待办——点符号打勾，长按推迟 / 放弃 / 转交\n'
+    + '○  事件——发生的事；回车能在下面挂子条目，因果自动串成线\n'
     + '—  笔记——想法与信息\n'
-    + '＝  心情——记录当下情绪\n\n'
-    + '写字时敲 # 归入分组；写「明天」「8.15号」「16:00」会自动识别。\n'
-    + '晚上点右上「复盘」，把没做完的过一遍——第二天早上自动接上。\n'
-    + '左上 ☰：总日历、分组、搜索、设置（记得定期导出备份）。'
+    + '＝  心情——此刻的情绪\n\n'
+    + '写字敲 # 归分组；「明天」「8.15号」「16:00」这些我都认识。\n'
+    + '晚上点右上「复盘」，没做完的事逐件表态——第二天早上我自动接上。\n'
+    + '左上 ☰ 是总日历、分组、搜索和设置；设置里可以开云备份，交给我盯着。'
     + '</div><button class="rv-confirm" id="obGo" style="margin-top:14px">开始记录</button></div>';
   $('#obGo').onclick = () => R.classList.remove('on');
   R.classList.add('on');
@@ -1953,7 +2067,9 @@ if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0){
 applyAccent();
 ensureToday();
 buildToolbar(); render();
+$('#drawerDot').innerHTML = dotSVG(34);
 morningCheck(); showOnboard();
+if (SET.gh && SET.gh.on) setTimeout(() => ghPush(false), 4000);
 </script>
 </body>
 </html>
