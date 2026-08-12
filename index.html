@@ -770,15 +770,24 @@ function entryNode(e, editable, isChild, flat, liveSym){
       } else { qsTarget = e; openQSheet(); }
     });
     s.title = '点按完成 · 长按处理';
-  } else {
-    s.classList.add('static');
-    if (editable && e.sym !== 'task'){
-      let spT = null;
-      s.addEventListener('pointerdown', () => { spT = setTimeout(() => openShare(shEntryPayload(e)), 480); });
-      s.addEventListener('pointerup', () => clearTimeout(spT));
-      s.addEventListener('pointerleave', () => clearTimeout(spT));
-      s.classList.remove('static'); s.title = '长按生成分享图';
-    }
+  } else s.classList.add('static');
+  if (editable){
+    let rpT = null, sx = 0, sy = 0;
+    row.addEventListener('pointerdown', ev => {
+      if (e.sym === 'task' && ev.target.closest('.sym')) return;      /* 任务符号长按留给处理面板 */
+      if (ev.target.classList && ev.target.classList.contains('line-input') && document.activeElement === ev.target) return; /* 正在编辑不劫持 */
+      sx = ev.clientX; sy = ev.clientY;
+      clearTimeout(rpT);
+      rpT = setTimeout(() => {
+        try{ if (ev.target.blur) ev.target.blur(); }catch(_){ }
+        dismissKB(); openShare(shEntryPayload(e));
+      }, 550);
+    });
+    row.addEventListener('pointermove', ev => {
+      if (Math.abs(ev.clientX - sx) + Math.abs(ev.clientY - sy) > 12) clearTimeout(rpT);
+    });
+    row.addEventListener('pointerup', () => clearTimeout(rpT));
+    row.addEventListener('pointerleave', () => clearTimeout(rpT));
   }
   const body = document.createElement('div'); body.className = 'entry-body';
   if (editable){
@@ -1056,24 +1065,23 @@ function render(){
   else if (cur.name === 'group'){
     topTitle.textContent = '#' + cur.g; reviewBtn.textContent = '回今日';
     const tpl = tplOf(cur.g);
+    if (!cur.rngSel) cur.rngSel = 'year';
+    const rlab0 = RNG_LAB[cur.rngSel] || '今年';
     const tabs = document.createElement('div'); tabs.className = 'rp-tabs'; tabs.style.marginTop = '16px';
-    [['day','生成日报'],['week','生成周报'],['month','生成月报']].forEach(([k, n]) => {
-      const c = document.createElement('button'); c.className = 'chip'; c.textContent = n;
-      c.onclick = () => openReport(cur.g, k); tabs.appendChild(c);
-    });
-    const shc = document.createElement('button'); shc.className = 'chip'; shc.textContent = '▣ 分享集子';
+    if (tpl && tpl !== 'work'){
+      const rc = document.createElement('button'); rc.className = 'chip on'; rc.textContent = '盘点 · ' + rlab0 + ' ▾';
+      rc.onclick = () => { cur.rngSel = RNG_CYCLE[(RNG_CYCLE.indexOf(cur.rngSel) + 1) % RNG_CYCLE.length]; render(); };
+      tabs.appendChild(rc);
+    }
+    const rp = document.createElement('button'); rp.className = 'chip';
+    rp.textContent = tpl === 'work' ? '报告' : '生成月报';
+    rp.onclick = () => openReport(cur.g, tpl === 'work' ? 'week' : 'month');
+    tabs.appendChild(rp);
+    const shc = document.createElement('button'); shc.className = 'chip'; shc.textContent = '▣ 分享';
     shc.onclick = () => openShare({type:'group', head:'点点手帐 · 集子', cardTitle:'#' + cur.g + ' · 最近精选', g:cur.g});
     tabs.appendChild(shc);
-    const tc = document.createElement('button'); tc.className = 'chip'; tc.textContent = '模板·' + (tpl ? TPLS[tpl].n : '无');
-    tc.onclick = () => {
-      const i = TPL_ORDER.indexOf(tpl);
-      const next = TPL_ORDER[(i + 1) % TPL_ORDER.length];
-      SET.gtpl[cur.g] = next; scheduleSave(); render();
-      toast(next ? ('已套用「' + TPLS[next].n + '」模板 · 历史记录已自动识别') : '已取消模板');
-    };
-    tabs.appendChild(tc);
     view.appendChild(tabs);
-    if (tpl) renderTplPanel(cur.g, tpl);
+    if (tpl && tpl !== 'work') renderTplPanel(cur.g, tpl);
     const rows2 = tplRows(cur.g, null);
     if (!rows2.length){ const d = document.createElement('div'); d.className = 'empty-hint';
       d.textContent = '这个分组还空着 · 在任意一行打 #' + cur.g + ' 就能归进来'; view.appendChild(d); }
@@ -1145,7 +1153,7 @@ function render(){
         setTimeout(() => pendingRestore = false, 5000); return; }
       pendingRestore = false; $('#jsonInput').click();
     });
-    mkRow('版本记录', sub('v2.0 ›'), showChangelog);
+    mkRow('版本记录', sub('v2.2 ›'), showChangelog);
     mkRow('应用锁', sub('原生版支持 FaceID'), () => toast('网页版暂不支持 · 原生开发阶段实现'));
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
@@ -1315,7 +1323,27 @@ function buildDrawer(){
       it.appendChild(wrap);
       box.appendChild(it); return;
     }
+    if (gEdit && gEdit.name === g && gEdit.mode === 'tpl'){
+      const wrap = document.createElement('div'); wrap.className = 'cdots'; wrap.style.gap = '6px';
+      TPL_ORDER.forEach(k => {
+        const bt = document.createElement('button');
+        bt.className = 'gm-btn' + (tplOf(g) === k ? ' on' : '');
+        if (tplOf(g) === k){ bt.style.background = 'var(--ink)'; bt.style.color = '#fff'; bt.style.borderColor = 'var(--ink)'; }
+        bt.textContent = k ? TPLS[k].n : '无';
+        bt.onclick = ev => { ev.stopPropagation();
+          SET.gtpl[g] = k; scheduleSave(); gEdit = null;
+          toast(k ? ('#' + g + ' 已用「' + TPLS[k].n + '」模板 · 历史记录已识别') : ('#' + g + ' 已取消模板'));
+          render(); };
+        wrap.appendChild(bt);
+      });
+      it.appendChild(wrap);
+      box.appendChild(it); return;
+    }
     if (gEdit && gEdit.name === g && gEdit.mode === 'reveal'){
+      const tb = document.createElement('button'); tb.className = 'gm-btn';
+      tb.textContent = '模板' + (tplOf(g) ? '·' + TPLS[tplOf(g)].n : '');
+      tb.onclick = ev => { ev.stopPropagation(); gEdit = {name:g, mode:'tpl'}; buildDrawer(); };
+      it.appendChild(tb);
       const cl = document.createElement('button'); cl.className = 'gm-btn'; cl.textContent = '颜色';
       cl.onclick = ev => { ev.stopPropagation(); gEdit = {name:g, mode:'color'}; buildDrawer(); };
       it.appendChild(cl);
@@ -1358,14 +1386,38 @@ function buildDrawer(){
     const it = document.createElement('div'); it.className = 'd-item';
     const ic = document.createElement('span'); ic.className = 'd-ico'; ic.textContent = '＋'; it.appendChild(ic);
     const inp = document.createElement('input'); inp.className = 'gm-inline'; inp.placeholder = '分组名…'; it.appendChild(inp);
+    inp.addEventListener('click', ev => ev.stopPropagation());
+    inp.addEventListener('input', () => { const nt = $('#ngTplRow'); if (nt) nt.dataset.auto = ''; });
     const ok = document.createElement('button'); ok.className = 'gm-btn'; ok.textContent = '确定';
-    ok.onclick = ev => { ev.stopPropagation();
+    const commitNew = () => {
       const v = inp.value.trim().replace(/^#/, ''); if (!v){ gEdit = null; buildDrawer(); return; }
       if (!extraGroups.includes(v)) extraGroups.push(v);
-      gEdit = null; toast('已新建 #' + v); scheduleSave(); buildDrawer(); };
+      const pick = gEdit.tpl === undefined ? tplOf(v) : gEdit.tpl;
+      if (pick !== tplOf(v) || pick !== null) SET.gtpl[v] = pick || null;
+      gEdit = null; scheduleSave();
+      toast('已新建 #' + v + (pick ? ' · ' + TPLS[pick].n + '模板' : ''));
+      buildDrawer(); };
+    ok.onclick = ev => { ev.stopPropagation(); commitNew(); };
+    inp.addEventListener('keydown', ev => { if (ev.key === 'Enter' && !ev.isComposing){ ev.preventDefault(); commitNew(); } });
     it.appendChild(ok);
     box.appendChild(it);
-    setTimeout(() => inp.focus(), 30);
+    const tr = document.createElement('div'); tr.className = 'd-item'; tr.id = 'ngTplRow';
+    tr.style.cssText = 'padding-top:2px;flex-wrap:wrap;gap:6px';
+    const tl = document.createElement('span');
+    tl.style.cssText = 'font-size:11.5px;color:var(--ink-faint);letter-spacing:1px;width:100%;margin-bottom:2px';
+    tl.textContent = '套用模板（可不选，之后长按分组也能改）';
+    tr.appendChild(tl);
+    TPL_ORDER.forEach(k => {
+      const bt = document.createElement('button'); bt.className = 'gm-btn';
+      const sel = (gEdit.tpl === undefined ? null : gEdit.tpl) === k;
+      if (sel){ bt.style.background = 'var(--ink)'; bt.style.color = '#fff'; bt.style.borderColor = 'var(--ink)'; }
+      bt.textContent = k ? TPLS[k].n : '无';
+      bt.onclick = ev => { ev.stopPropagation(); gEdit.tpl = k; buildDrawer(); setTimeout(() => {
+        const i2 = box.querySelector('.gm-inline'); if (i2){ i2.value = inp.value; i2.focus(); } }, 20); };
+      tr.appendChild(bt);
+    });
+    box.appendChild(tr);
+    setTimeout(() => { inp.focus(); }, 30);
   } else {
     const it = document.createElement('div'); it.className = 'd-item plain';
     it.innerHTML = '<span class="d-ico">＋</span><span>新建分组</span>';
@@ -2063,7 +2115,9 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.0（当前 · 2026.8.12）\n【集子结构化 · 记录长成资产】\n· 六种识别：《作品》、评分、金额、城市、"店名"、判决词（会再来/避雷…）、和谁一起——全从你写的原话里读，记录方式不变，历史一并识别\n· 四个模板：电影 / 美食 / 读书 / 花钱；#电影 #美食 这类分组名自动套用，集子页「模板·」一键换\n· 盘点面板：数字大盘 + 高分榜 / 回购避雷榜 + 城市分布，按 今年/本月/去年/全部 切换\n· 美食不算总账：按「去过几次」算回头率，单品价格只做小签\n· 别名合并：《英雄无归》=《蜘蛛侠英雄无归》确认一次，统计归一\n· 没打分的作品轻轻问一句，点一下补分\n· 点点记得：写到以前记过的店/片，键盘上方浮出上次的记录，一点跳回去\n· 「▣ 分享盘点」直接产年报/盘点卡\n\n'
+    + 'v2.2（当前 · 2026.8.13）\n· 集子页顶部按示意图定稿：盘点·今年 ▾ ｜ 生成月报（工作模板为「报告」）｜ ▣ 分享\n· 模板选择搬进侧栏：新建分组时直接选；已有分组长按或左滑 →「模板」随时改\n· 美食「城市分布」升级为「我的美食地图」，点城市看该城清单\n\n'
+    + 'v2.1（2026.8.13）\n· 集子页顶部收成一行：模板 / 报告（工作模板才有）/ 分享集子\n· 日报周报月报归入「工作」模板（#工作类分组名自动套用，其他分组顶部不再挤报告按钮）\n· 时间范围收进盘点标题：点「盘点·今年 ▾」循环切 今年/本月/去年/全部；「▣ 分享」也在盘点标题行\n· 盘点数字可点开：看过/回头再去/回购/避雷/和谁看，点进去是完整列表，再点跳到当天原文\n· 高分榜「和独自」改为「独自」\n· 主页任何一条记录整行长按即可生成分享图（任务的符号长按仍是处理面板）\n\n'
+    + 'v2.0（2026.8.12）\n【集子结构化 · 记录长成资产】\n· 六种识别：《作品》、评分、金额、城市、"店名"、判决词（会再来/避雷…）、和谁一起——全从你写的原话里读，记录方式不变，历史一并识别\n· 四个模板：电影 / 美食 / 读书 / 花钱；#电影 #美食 这类分组名自动套用，集子页「模板·」一键换\n· 盘点面板：数字大盘 + 高分榜 / 回购避雷榜 + 城市分布，按 今年/本月/去年/全部 切换\n· 美食不算总账：按「去过几次」算回头率，单品价格只做小签\n· 别名合并：《英雄无归》=《蜘蛛侠英雄无归》确认一次，统计归一\n· 没打分的作品轻轻问一句，点一下补分\n· 点点记得：写到以前记过的店/片，键盘上方浮出上次的记录，一点跳回去\n· 「▣ 分享盘点」直接产年报/盘点卡\n\n'
     + 'v1.9.1（2026.8.12）\n· 分享卡自定义底图：往仓库传 share-bg.png（或分尺寸 share-bg-34 / 11 / 916.png），排版里自动多出「底图·深字 / 浅字」两个选项，删掉图片即恢复\n\n'
     + 'v1.9（2026.8.10）\n【一键分享图】\n· 四种卡片：单条（事件带因果串）/ 一天快照 / 日周月报 / 集子精选\n· 三种尺寸（3:4 / 1:1 / 竖屏）× 两套排版（手帐纸 / 墨色），带点点和纸纹\n· 入口：长按事件·笔记·心情的符号；任务长按面板；报告页与集子页的「▣」；复盘结束页\n· 支持系统分享面板直发，或长按预览图存相册；只分享你选中的内容\n\n'
     + 'v1.8.2（2026.8.10）\n· 点顶栏日期直接打开总日历选日子（标题带 ▾ 提示）\n· 修复：总日历点进过去的空白天进不了完整编辑页、左右滑一下才恢复的问题；未来天从日历进也统一为「提前安排」视图\n· 分割线整体转淡与纸色统一，输入框和按钮描边单独保留层次\n\n'
@@ -2136,11 +2190,12 @@ function parseLine(text){
   return r;
 }
 function canonTitle(t){ return SET.alias[t] || t; }
-const TPLS = {movie:{n:'电影', unit:'部'}, food:{n:'美食', unit:'家'}, book:{n:'读书', unit:'本'}, money:{n:'花钱', unit:'笔'}};
-const TPL_ORDER = [null, 'movie', 'food', 'book', 'money'];
+const TPLS = {work:{n:'工作', unit:'件'}, movie:{n:'电影', unit:'部'}, food:{n:'美食', unit:'家'}, book:{n:'读书', unit:'本'}, money:{n:'花钱', unit:'笔'}};
+const TPL_ORDER = [null, 'work', 'movie', 'food', 'book', 'money'];
 function tplOf(g){
   const o = SET.gtpl[g];
   if (o !== undefined) return o || null;
+  if (/工作|上班|公司|项目|业务|事业/.test(g)) return 'work';
   if (/电影|观影|影视/.test(g)) return 'movie';
   if (/美食|餐|吃/.test(g)) return 'food';
   if (/读书|阅读|书/.test(g)) return 'book';
@@ -2180,18 +2235,22 @@ function tplStats(tpl, rows){
     });
     const titles = Object.values(map);
     const scored = titles.filter(x => x.score != null);
+    const wsub = x => x.with ? (x.with === '独自' ? '独自' : '和' + x.with) : '';
+    const li = arr => arr.map(x => ({nm:x.name, sub:wsub(x), sc:x.score != null ? x.score + '分' : '', d:x.d, id:x.id}));
     const wcnt = {};
     rows.forEach(r => { if (r.p.with && r.p.with !== '独自') wcnt[r.p.with] = (wcnt[r.p.with] || 0) + 1; });
     const topW = Object.entries(wcnt).sort((a, b) => b[1] - a[1])[0];
+    const wRows = topW ? rows.filter(r => r.p.with === topW[0])
+      .map(r => ({nm:(r.p.title ? '《' + r.p.title + '》' : (r.e.text || '').slice(0, 16)), sub:fmtShort(r.d) + '日', sc:r.p.score != null ? r.p.score + '分' : '', d:r.d, id:r.e._id})) : [];
     S.tiles = [
-      [titles.length, TPLS[tpl].unit, tpl === 'movie' ? '看过' : '读过'],
-      [scored.length ? (scored.reduce((a, x) => a + x.score, 0) / scored.length).toFixed(1) : '—', '分', '平均打分'],
-      [scored.filter(x => x.score >= 10).length, TPLS[tpl].unit, '满分神作'],
-      topW ? [topW[1], '次', '和' + topW[0].slice(0, 3)] : [rows.length, '条', '记录']
+      [titles.length, TPLS[tpl].unit, tpl === 'movie' ? '看过' : '读过', li(titles)],
+      [scored.length ? (scored.reduce((a, x) => a + x.score, 0) / scored.length).toFixed(1) : '—', '分', '平均打分', li(scored.slice().sort((a, b) => b.score - a.score))],
+      [scored.filter(x => x.score >= 10).length, TPLS[tpl].unit, '满分神作', li(scored.filter(x => x.score >= 10))],
+      topW ? [topW[1], '次', '和' + topW[0].slice(0, 3), wRows] : [rows.length, '条', '记录', null]
     ];
     S.ranksTitle = '高分榜';
     S.ranks = scored.sort((a, b) => b.score - a.score).slice(0, 5)
-      .map((x, i) => ({no:String(i + 1), cls:i === 0 ? 'g' : '', nm:x.name, sub:x.with ? ('和' + x.with) : '', sc:x.score + '分', scCls:'', d:x.d, id:x.id}));
+      .map((x, i) => ({no:String(i + 1), cls:i === 0 ? 'g' : '', nm:x.name, sub:wsub(x), sc:x.score + '分', scCls:'', d:x.d, id:x.id}));
     // 别名合并候选
     const names = titles.map(x => x.name);
     outer: for (let i = 0; i < names.length; i++) for (let j = 0; j < names.length; j++){
@@ -2210,11 +2269,12 @@ function tplStats(tpl, rows){
       if (o.price == null && r.p.prices) o.price = r.p.prices[0];
     });
     const stores = Object.values(map);
+    const sli = arr => arr.map(x => ({nm:x.name, sub:(x.city || '') + (x.price != null ? ' ¥' + x.price : '') + (x.cnt > 1 ? ' 去过' + x.cnt + '次' : ''), sc:x.v || '', scCls:x.v ? (x.vNeg ? 'no2' : 'ok') : '', d:x.d, id:x.id}));
     S.tiles = [
-      [stores.length, '家', '吃过探过'],
-      [stores.filter(x => x.cnt >= 2).length, '家', '回头再去'],
-      [stores.filter(x => x.v && !x.vNeg).length, '家', '值得回购'],
-      [stores.filter(x => x.vNeg).length, '家', '踩雷避开']
+      [stores.length, '家', '吃过探过', sli(stores.slice().sort((a, b) => b.cnt - a.cnt))],
+      [stores.filter(x => x.cnt >= 2).length, '家', '回头再去', sli(stores.filter(x => x.cnt >= 2).sort((a, b) => b.cnt - a.cnt))],
+      [stores.filter(x => x.v && !x.vNeg).length, '家', '值得回购', sli(stores.filter(x => x.v && !x.vNeg))],
+      [stores.filter(x => x.vNeg).length, '家', '踩雷避开', sli(stores.filter(x => x.vNeg))]
     ];
     S.ranksTitle = '回购榜 · 避雷榜';
     const pos = stores.filter(x => x.v && !x.vNeg).sort((a, b) => b.cnt - a.cnt).slice(0, 3)
@@ -2222,14 +2282,16 @@ function tplStats(tpl, rows){
     const neg = stores.filter(x => x.vNeg).slice(0, 2)
       .map(x => ({no:'↓', cls:'r', nm:x.name, sub:x.city || '', sc:x.v, scCls:'no2', d:x.d, id:x.id}));
     S.ranks = pos.concat(neg);
-    const ccnt = {};
-    rows.forEach(r => { if (r.p.city) ccnt[r.p.city] = (ccnt[r.p.city] || 0) + 1; });
-    S.bars = Object.entries(ccnt).sort((a, b) => b[1] - a[1]).slice(0, 3);
+    const ccnt = {}; S.cityMap = {};
+    stores.forEach(x => { if (!x.city) return;
+      ccnt[x.city] = (ccnt[x.city] || 0) + 1;
+      (S.cityMap[x.city] = S.cityMap[x.city] || []).push(sli([x])[0]); });
+    S.bars = Object.entries(ccnt).sort((a, b) => b[1] - a[1]).slice(0, 6);
   }
   if (tpl === 'money'){
     let n = 0, sum = 0, mx = 0;
     rows.forEach(r => (r.p.prices || []).forEach(v => { n++; sum += v; mx = Math.max(mx, v); }));
-    S.tiles = [[rows.length, '条', '记录'], [n, '笔', '识别到金额'], ['¥' + Math.round(sum), '', '合计'], ['¥' + Math.round(mx), '', '最大一笔']];
+    S.tiles = [[rows.length, '条', '记录', null], [n, '笔', '识别到金额', null], ['¥' + Math.round(sum), '', '合计', null], ['¥' + Math.round(mx), '', '最大一笔', null]];
   }
   return S;
 }
@@ -2263,28 +2325,27 @@ function openScoreSheet(e){
   });
   S.classList.add('on'); $('#mask').classList.add('on');
 }
+const RNG_CYCLE = ['year', 'month', 'lastyear', 'all'];
+const RNG_LAB = {all:'全部', year:'今年', month:'本月', lastyear:'去年'};
 function renderTplPanel(g, tpl){
   if (!cur.rngSel) cur.rngSel = 'year';
   const rng = rngOf(cur.rngSel);
   const rows = tplRows(g, rng);
   const st = tplStats(tpl, rows);
-  const rlab = {all:'全部', year:'今年', month:'本月', lastyear:'去年'}[cur.rngSel] || '区间';
-  /* 范围选择 */
-  const rr = document.createElement('div'); rr.className = 'rp-tabs'; rr.style.margin = '10px 0 0';
-  [['year','今年'],['month','本月'],['lastyear','去年'],['all','全部']].forEach(([k, n]) => {
-    const c = document.createElement('button'); c.className = 'chip' + (cur.rngSel === k ? ' on' : '');
-    c.textContent = n; c.onclick = () => { cur.rngSel = k; render(); }; rr.appendChild(c);
-  });
-  const sc = document.createElement('button'); sc.className = 'chip'; sc.textContent = '▣ 分享盘点';
-  sc.onclick = () => openShare(statsPayload(g, tpl, st, rlab));
-  rr.appendChild(sc);
-  view.appendChild(rr);
-  /* 数字盘 */
+  const rlab = RNG_LAB[cur.rngSel] || '区间';
   const pan = document.createElement('div'); pan.className = 'tp-pan';
-  pan.innerHTML = '<div class="tt">自动盘点 · ' + rlab + '（' + rows.length + ' 条记录）</div>'
-    + '<div class="tp-nums">' + st.tiles.map(t =>
-      '<div class="n"><b>' + t[0] + (t[1] ? '<i>' + t[1] + '</i>' : '') + '</b><span>' + t[2] + '</span></div>').join('') + '</div>';
+  pan.innerHTML = '<div class="tt" style="display:flex;align-items:center;gap:8px">'
+    + '<span>自动盘点 · ' + rlab + '</span>'
+    + '<span style="color:var(--ink-faint);letter-spacing:0">' + rows.length + ' 条</span>'
+    + '<span id="tpShare" style="margin-left:auto;color:var(--accent);cursor:pointer;letter-spacing:0">▣ 分享盘点</span></div>'
+    + '<div class="tp-nums">' + st.tiles.map((t, i) =>
+      '<div class="n" data-ti="' + i + '"' + (t[3] && t[3].length ? ' style="cursor:pointer"' : '') + '><b>' + t[0] + (t[1] ? '<i>' + t[1] + '</i>' : '') + '</b><span>' + t[2] + (t[3] && t[3].length ? ' ›' : '') + '</span></div>').join('') + '</div>';
   view.appendChild(pan);
+  pan.querySelector('#tpShare').onclick = () => openShare(statsPayload(g, tpl, st, rlab));
+  pan.querySelectorAll('.n[data-ti]').forEach(el => {
+    el.onclick = () => { const t = st.tiles[+el.dataset.ti];
+      if (t[3] && t[3].length) openTileSheet(t[2] + ' · ' + rlab, t[3]); };
+  });
   /* 榜单 */
   if (st.ranks.length){
     const rk = document.createElement('div'); rk.className = 'tp-pan';
@@ -2303,9 +2364,16 @@ function renderTplPanel(g, tpl){
   if (st.bars.length){
     const bp = document.createElement('div'); bp.className = 'tp-pan';
     const mx = st.bars[0][1];
-    bp.innerHTML = '<div class="tt">城市分布</div>' + st.bars.map(([c, v]) =>
-      '<div class="tp-bar"><span class="c">' + c + '</span><div class="tr"><i style="width:' + Math.round(v / mx * 100) + '%"></i></div><span class="v">' + v + '</span></div>').join('');
+    bp.innerHTML = '<div class="tt">我的美食地图 · 点城市看清单</div>' + st.bars.map(([c, v]) =>
+      '<div class="tp-bar" data-city="' + c + '" style="cursor:pointer"><span class="c">' + c + '</span><div class="tr"><i style="width:' + Math.round(v / mx * 100) + '%"></i></div><span class="v">' + v + ' ›</span></div>').join('');
     view.appendChild(bp);
+    bp.querySelectorAll('[data-city]').forEach(el => {
+      el.onclick = () => {
+        const c = el.dataset.city;
+        const list = (st.cityMap && st.cityMap[c]) || [];
+        if (list.length) openTileSheet(c + ' · ' + list.length + ' 家', list);
+      };
+    });
   }
   /* 别名合并 */
   if (st.merges){
@@ -2317,6 +2385,20 @@ function renderTplPanel(g, tpl){
     mg.querySelector('#mgYes').onclick = () => { SET.alias[a] = b; scheduleSave(); render(); toast('已合并，统计按《' + b + '》算'); };
     mg.querySelector('#mgNo').onclick = () => { SET.aliasNo[a + '|' + b] = 1; scheduleSave(); render(); };
   }
+}
+function openTileSheet(title, items){
+  const S = $('#gsheet');
+  S.innerHTML = '<div class="gs-title">' + title + '</div><div id="tsList" style="max-height:52vh;overflow-y:auto"></div>';
+  const box = $('#tsList');
+  items.forEach((x, i) => {
+    const row = document.createElement('div'); row.className = 'tp-rk';
+    row.innerHTML = '<span class="no ' + (x.cls || '') + '">' + (x.no || (i + 1)) + '</span>'
+      + '<span class="nm">' + x.nm + (x.sub ? '<small>' + x.sub + '</small>' : '') + '</span>'
+      + '<span class="sc ' + (x.scCls || '') + '">' + (x.sc || '') + '</span>';
+    if (x.d) row.querySelector('.nm').onclick = () => { closeSheet(); jumpToEntry(x.d, x.id); };
+    box.appendChild(row);
+  });
+  S.classList.add('on'); $('#mask').classList.add('on');
 }
 function statsPayload(g, tpl, st, rlab){
   return {type:'stats', head:'点点手帐 · ' + rlab + '盘点',
