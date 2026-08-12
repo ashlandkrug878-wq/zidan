@@ -286,6 +286,18 @@
   .rv-confirm{margin-top:14px;width:100%;border:none;background:var(--ink);color:#fff;border-radius:12px;padding:12px;font-size:15px;cursor:pointer;font-family:inherit}
   .rv-finish{margin:auto;text-align:center;color:var(--ink-soft);font-size:15.5px;line-height:2}
   .rv-finish b{font-size:18px;color:var(--ink)}
+  /* ---------- 分享图 ---------- */
+  #shSheet{position:absolute;inset:0;background:rgba(31,28,23,.45);z-index:14;display:none;align-items:flex-end}
+  #shSheet.on{display:flex}
+  .sh-panel{background:var(--bg);border-radius:20px 20px 0 0;width:100%;max-height:92%;overflow-y:auto;padding:16px 18px calc(18px + env(safe-area-inset-bottom));scrollbar-width:none}
+  .sh-prev{display:flex;justify-content:center;margin:10px 0 2px}
+  .sh-prev img{max-width:76%;max-height:44vh;border-radius:12px;box-shadow:0 8px 30px rgba(31,28,23,.18)}
+  .sh-row{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
+  .sh-lab{font-size:12px;color:var(--ink-faint);flex:none;width:32px}
+  .sh-actions{display:flex;gap:10px;margin-top:16px}
+  .sh-actions .rv-confirm{margin-top:0;flex:1.4}
+  .sh-ghost{flex:1;border:1px solid var(--line-strong);background:var(--card);color:var(--ink);border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;padding:12px}
+  .sh-hint{font-size:12px;color:var(--ink-faint);text-align:center;margin-top:10px}
   #toast{
     position:absolute;left:50%;bottom:96px;transform:translateX(-50%) translateY(8px);
     background:rgba(31,28,23,.93);color:#F6EFE3;font-size:13.5px;padding:9px 18px;border-radius:999px;
@@ -320,6 +332,7 @@
   <div id="qsheet"></div>
   <div id="report"></div>
   <div id="lightbox"></div>
+  <div id="shSheet"><div class="sh-panel" id="shPanel"></div></div>
   <input type="file" id="imgInput" accept="image/*" multiple style="display:none">
 <input type="file" id="mdInput" accept=".md,.markdown,.txt" style="display:none">
 <input type="file" id="jsonInput" accept=".json,application/json" style="display:none">
@@ -712,7 +725,16 @@ function entryNode(e, editable, isChild, flat, liveSym){
       } else { qsTarget = e; openQSheet(); }
     });
     s.title = '点按完成 · 长按处理';
-  } else s.classList.add('static');
+  } else {
+    s.classList.add('static');
+    if (editable && e.sym !== 'task'){
+      let spT = null;
+      s.addEventListener('pointerdown', () => { spT = setTimeout(() => openShare(shEntryPayload(e)), 480); });
+      s.addEventListener('pointerup', () => clearTimeout(spT));
+      s.addEventListener('pointerleave', () => clearTimeout(spT));
+      s.classList.remove('static'); s.title = '长按生成分享图';
+    }
+  }
   const body = document.createElement('div'); body.className = 'entry-body';
   if (editable){
     const inp = document.createElement('textarea');
@@ -992,6 +1014,9 @@ function render(){
       const c = document.createElement('button'); c.className = 'chip'; c.textContent = n;
       c.onclick = () => openReport(cur.g, k); tabs.appendChild(c);
     });
+    const shc = document.createElement('button'); shc.className = 'chip'; shc.textContent = '▣ 分享集子';
+    shc.onclick = () => openShare({type:'group', head:'点点手帐 · 集子', cardTitle:'#' + cur.g + ' · 最近精选', g:cur.g});
+    tabs.appendChild(shc);
     view.appendChild(tabs);
     const n = dateGroupList(view, e => e.groups && e.groups.includes(cur.g));
     if (!n){ const d = document.createElement('div'); d.className = 'empty-hint';
@@ -1046,7 +1071,7 @@ function render(){
         setTimeout(() => pendingRestore = false, 5000); return; }
       pendingRestore = false; $('#jsonInput').click();
     });
-    mkRow('版本记录', sub('v1.8.2 ›'), showChangelog);
+    mkRow('版本记录', sub('v1.9.1 ›'), showChangelog);
     mkRow('应用锁', sub('原生版支持 FaceID'), () => toast('网页版暂不支持 · 原生开发阶段实现'));
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
@@ -1482,7 +1507,8 @@ function buildQSheet(){
     + '<div class="mig-quick" id="qDelQuick"></div>'
     + '<input type="date" class="qdate" id="qDelDate">'
     + '<button class="rv-confirm" id="qDelGo">确认转交 · 到期提醒我跟进</button>'
-    + '</div>';
+    + '</div>'
+    + '<button class="gm-btn" id="qShare" style="width:100%;margin-top:12px;padding:10px">▣ 把这条做成分享图</button>';
   const fin = msg => { toast(msg); closeQSheet(); };
   $('#qDone').onclick = () => {
     snapshot('处理任务');
@@ -1502,10 +1528,12 @@ function buildQSheet(){
   $('#qDelGo').onclick = () => {
     const to = $('#qDelTo').value.trim(); if (!to){ toast('先填转交给谁'); return; }
     snapshot('处理任务'); const f = pickDate('qDelDate');
-    t.state = 'delegated'; t.delegate = {to, follow:f}; delete t.followArrived;
+    t.state = 'delegated'; t.delegate = {to, follow:f};
+    delete t.followArrived;
     t.badge = '→ ' + to + ' · ' + fmtShort(f) + ' 跟进';
     fin('→ 已转交给 ' + to + '，' + fmtKey(f) + ' 提醒跟进');
   };
+  $('#qShare').onclick = () => { closeSheet(); openShare(shEntryPayload(qsTarget)); };
   $('#qRange').oninput = e => $('#qVal').textContent = e.target.value + '%';
   $('#qGo').onclick = () => {
     snapshot('处理任务');
@@ -1626,6 +1654,11 @@ function openReport(g, kind, incMood){
   });
   const mc = document.createElement('button'); mc.className = 'chip' + (incMood ? ' on' : '');
   mc.textContent = '含心情'; mc.onclick = () => openReport(g, kind, !incMood); tabs.appendChild(mc);
+  const sc = document.createElement('button'); sc.className = 'chip'; sc.textContent = '▣ 分享图';
+  sc.onclick = () => openShare({type:'report', head:'点点手帐 · 报告',
+    cardTitle:'#' + g + ' · ' + ({day:'日报', week:'周报', month:'月报'}[kind] || '报告'),
+    text:genReport(g, kind, incMood)});
+  tabs.appendChild(sc);
   $('#rpText').textContent = genReport(g, kind, incMood);
   $('#rpClose').onclick = () => $('#report').classList.remove('on');
   $('#rpCopy').onclick = () => {
@@ -1664,9 +1697,11 @@ function renderReview(){
       + (moods.length ? ('<br>今天的心情：' + moods.slice(0, 3).join('、')) : '')
       + '<br>明天的页面点点已经铺好</div>'
       + '<input id="rvSum" class="qdate" placeholder="给今天留一句话（可不填）" style="margin-top:24px" value="' + String(P().summary || '').replace(/"/g, '&quot;') + '">'
-      + '<button class="rv-confirm" id="rvSave">保存小结并收起</button></div>';
+      + '<button class="rv-confirm" id="rvSave">保存小结并收起</button>'
+      + '<button class="gm-btn" id="rvShare" style="width:100%;margin-top:12px;padding:10px">▣ 把今天做成分享图</button></div>';
     $('#rvClose').onclick = closeReview;
     $('#rvSave').onclick = () => { P().summary = $('#rvSum').value.trim(); scheduleSave(); closeReview(); };
+    $('#rvShare').onclick = () => { P().summary = $('#rvSum').value.trim(); scheduleSave(); openShare(shDayPayload(TODAY)); };
     return;
   }
   const t = queue[qi];
@@ -1954,7 +1989,9 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v1.8.2（当前 · 2026.8.10）\n· 点顶栏日期直接打开总日历选日子（标题带 ▾ 提示）\n· 修复：总日历点进过去的空白天进不了完整编辑页、左右滑一下才恢复的问题；未来天从日历进也统一为「提前安排」视图\n· 分割线整体转淡与纸色统一，输入框和按钮描边单独保留层次\n\n'
+    + 'v1.9.1（当前 · 2026.8.12）\n· 分享卡自定义底图：往仓库传 share-bg.png（或分尺寸 share-bg-34 / 11 / 916.png），排版里自动多出「底图·深字 / 浅字」两个选项，删掉图片即恢复\n\n'
+    + 'v1.9（2026.8.10）\n【一键分享图】\n· 四种卡片：单条（事件带因果串）/ 一天快照 / 日周月报 / 集子精选\n· 三种尺寸（3:4 / 1:1 / 竖屏）× 两套排版（手帐纸 / 墨色），带点点和纸纹\n· 入口：长按事件·笔记·心情的符号；任务长按面板；报告页与集子页的「▣」；复盘结束页\n· 支持系统分享面板直发，或长按预览图存相册；只分享你选中的内容\n\n'
+    + 'v1.8.2（2026.8.10）\n· 点顶栏日期直接打开总日历选日子（标题带 ▾ 提示）\n· 修复：总日历点进过去的空白天进不了完整编辑页、左右滑一下才恢复的问题；未来天从日历进也统一为「提前安排」视图\n· 分割线整体转淡与纸色统一，输入框和按钮描边单独保留层次\n\n'
     + 'v1.8.1（2026.8.9）\n· 未来任何一天都能直接「＋ 提前安排一条」，到期自动进当天；别的日子挂过来的单独列出\n· 长内容自动换行：行输入改为自动增高，不再一行截断\n· 历史页去掉「返回日历」链接，页面更干净\n\n'
     + 'v1.8（2026.8.9）\n【品牌换装】\n· 全新配色：纸 / 墨 / 点亮橙对齐点点 Logo，主题色新增点亮橙并设为默认\n· 字号行距整体调升：标题、分区标签、正文层级更清楚\n· 点点吉祥物入驻：引导页、侧栏、复盘结束页、空白天\n· 提示文案改为点点语气，发生区提示点明因果挂载\n· 图标换新文件名 icon-dot.png，绕开 iOS 对旧图标的顽固缓存\n\n'
     + 'v1.7（2026.8.8）\n· 品牌更名「点点手帐 Dot」\n· 新增 GitHub 私有仓库云备份：改动后自动上传、立即备份、从云端恢复；仓库提交历史即版本回滚，电脑浏览器打开同一网址配置后即可同步\n\n'
@@ -1994,6 +2031,271 @@ function dotSVG(h){
     + '<path d="M503 459.5 Q511.3 468 519.5 459.5" stroke="var(--bg)" stroke-width="4.4" fill="none" stroke-linecap="round"/>'
     + '</svg>';
 }
+
+/* ============ 分享图（v1.9） ============ */
+const SH_SIZES = [['xhs','3:4',1080,1440],['sq','1:1',1080,1080],['story','竖屏',1080,1920]];
+let shPayload = null, shSize = 'xhs', shTheme = 'paper', shCanvas = null;
+/* 自定义底图：仓库里放 share-bg.png（通用）或 share-bg-34/11/916.png（分尺寸）即自动生效 */
+const SH_BG = {tried:false, block:false, imgs:{}};
+function shLoadBGs(){
+  if (SH_BG.tried) return; SH_BG.tried = true;
+  [['34','share-bg-34.png'],['11','share-bg-11.png'],['916','share-bg-916.png'],['base','share-bg.png']]
+  .forEach(([k, f]) => {
+    const im = new Image();
+    im.onload = () => { SH_BG.imgs[k] = im; if ($('#shSheet').classList.contains('on')) shRender(); };
+    im.src = './' + f;
+  });
+}
+function shBgFor(size){
+  const m = {xhs:'34', sq:'11', story:'916'}[size];
+  return SH_BG.block ? null : (SH_BG.imgs[m] || SH_BG.imgs.base || null);
+}
+function shThemeList(){
+  const base = [['paper','手帐纸'],['ink','墨色']];
+  if (shBgFor(shSize)) base.push(['bgd','底图·深字'], ['bgl','底图·浅字']);
+  return base;
+}
+
+function shT(){
+  return (shTheme === 'ink' || shTheme === 'bgl')
+    ? {bg:'#211E19', ink:'#F6EFE3', soft:'#B9AF9C', faint:'#7E7666', acc:'#F86A15', pill:'#2E2A23',
+       mBody:'#F6EFE3', mEye:'#211E19', mPupil:'#F6EFE3', mSmile:'#211E19', grain:'#000'}
+    : {bg:'#F6EFE3', ink:'#1F1C17', soft:'#8A8171', faint:'#B6AC99', acc:'#F45D08', pill:'#EDE3D0',
+       mBody:'#1F1C17', mEye:'#F6EFE3', mPupil:'#1F1C17', mSmile:'#F6EFE3', grain:'#5A5140'}
+}
+function shFont(w, px){ return w + ' ' + px + 'px -apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif'; }
+function shWrap(ctx, text, maxW){
+  const out = [];
+  String(text == null ? '' : text).split('\n').forEach(par => {
+    let line = '';
+    for (const ch of par){
+      if (line && ctx.measureText(line + ch).width > maxW){ out.push(line); line = ch; }
+      else line += ch;
+    }
+    out.push(line);
+  });
+  return out;
+}
+function shRR(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+}
+function shMascot(ctx, cx, cy, h, T){
+  const s = h / 372;
+  const C = (x, y, r) => { ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill(); };
+  const E = (x, y, rx, ry) => { ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, 7); ctx.fill(); };
+  const L = (a, b, c, d) => { ctx.beginPath(); ctx.moveTo(a, b); ctx.lineTo(c, d); ctx.stroke(); };
+  ctx.save(); ctx.translate(cx, cy); ctx.scale(s, s); ctx.translate(-510, -418);
+  ctx.fillStyle = T.acc;
+  ctx.beginPath(); ctx.moveTo(362,262); ctx.lineTo(367,249); ctx.quadraticCurveTo(370.5,244.5,374,249); ctx.lineTo(379,262); ctx.closePath(); ctx.fill();
+  shRR(ctx, 357, 267, 27, 64, 5); ctx.fill();
+  ctx.strokeStyle = T.mBody; ctx.lineWidth = 13; ctx.lineCap = 'round';
+  L(395,392,373,344); L(627,478,649,501);
+  ctx.lineCap = 'butt'; L(490,548,490,581); L(537,548,537,581);
+  ctx.fillStyle = T.mBody;
+  C(370.5,340,10.5); C(651.5,503.5,10.5);
+  shRR(ctx,477.5,580,25,13,6.5); ctx.fill(); shRR(ctx,524.5,580,25,13,6.5); ctx.fill();
+  C(512.5,434.5,123);
+  ctx.fillStyle = T.mEye; E(483,402,18,40); E(540,402,18,40);
+  ctx.fillStyle = T.mPupil; E(483.5,401,7.5,17); E(540,401,7.5,17);
+  ctx.fillStyle = T.acc; C(432,434,14); C(591.5,434,14);
+  ctx.strokeStyle = T.mSmile; ctx.lineWidth = 4.4; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(503,459.5); ctx.quadraticCurveTo(511.3,468,519.5,459.5); ctx.stroke();
+  ctx.restore();
+}
+function shGlyph(e){
+  if (e.sym === 'task') return {t:{open:'•', done:'✓', migrated:'›', dropped:'✕', delegated:'→'}[e.state] || '•',
+    c:{done:'#5F8F66', dropped:'#C0604E'}[e.state] || null};
+  return {t:{event:'○', note:'—', mood:'＝'}[e.sym] || '•', c:null};
+}
+function shGrain(ctx, W, H, T){
+  ctx.save(); ctx.globalAlpha = shTheme === 'ink' ? 0.06 : 0.05; ctx.fillStyle = T.grain;
+  const n = Math.round(W * H / 380);
+  for (let i = 0; i < n; i++) ctx.fillRect(Math.random() * W, Math.random() * H, 1.5, 1.5);
+  ctx.restore();
+}
+function shFooter(ctx, W, H, T){
+  shMascot(ctx, W / 2, H - 208, 96, T);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+  ctx.font = shFont(700, 32);
+  const a = '点点手帐 ', b = 'Dot';
+  const wa = ctx.measureText(a).width, wb = ctx.measureText(b).width;
+  ctx.fillStyle = T.ink; ctx.fillText(a, W / 2 - wb / 2, H - 118);
+  ctx.fillStyle = T.acc; ctx.fillText(b, W / 2 + wa / 2, H - 118);
+  ctx.font = shFont(400, 22); ctx.fillStyle = T.faint;
+  ctx.fillText('快过遗忘 · 慢成习惯', W / 2, H - 76);
+  ctx.textAlign = 'left';
+}
+/* 把一组条目画成列表，返回用掉的高度；fit 模式只测量不落笔 */
+function shList(ctx, items, x, y0, maxW, F, T, fit){
+  let y = y0;
+  const lh = F * 1.62, gap = F * 0.72, childF = Math.round(F * 0.82);
+  for (const it of items){
+    const g = shGlyph(it.e), indent = it.child ? F * 1.5 : 0;
+    const tx = x + indent + F * 1.35, tw = maxW - indent - F * 1.35;
+    ctx.font = shFont(it.child ? 400 : 500, it.child ? childF : F);
+    const lines = shWrap(ctx, it.e.text || '', tw);
+    if (!fit){
+      ctx.fillStyle = g.c || (it.e.sym === 'mood' ? '#8A79A8' : (it.child ? T.soft : T.ink));
+      ctx.font = shFont(600, it.child ? childF : F);
+      ctx.fillText(g.t, x + indent, y + (it.child ? childF : F));
+      ctx.font = shFont(it.child ? 400 : 500, it.child ? childF : F);
+      if (it.child){ ctx.strokeStyle = T.pill; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(x + F * 0.6, y - gap * 0.4); ctx.lineTo(x + F * 0.6, y + lines.length * lh * 0.9); ctx.stroke(); }
+      lines.forEach((ln, i) => {
+        ctx.fillStyle = g.c && it.e.state === 'done' ? T.faint : (it.child ? T.soft : (it.e.sym === 'mood' ? '#8A79A8' : T.ink));
+        ctx.fillText(ln, tx, y + (it.child ? childF : F) + i * lh * 0.92);
+        if (it.e.state === 'done' || it.e.state === 'dropped'){
+          const lw = ctx.measureText(ln).width;
+          ctx.strokeStyle = T.faint; ctx.lineWidth = 2.4;
+          ctx.beginPath(); ctx.moveTo(tx, y + (it.child ? childF : F) * 0.68 + i * lh * 0.92);
+          ctx.lineTo(tx + lw, y + (it.child ? childF : F) * 0.68 + i * lh * 0.92); ctx.stroke();
+        }
+      });
+      if (it.e.note){
+        ctx.font = shFont(400, Math.round(childF * 0.86)); ctx.fillStyle = T.soft;
+        ctx.fillText('✎ ' + it.e.note, tx, y + (it.child ? childF : F) + lines.length * lh * 0.92 - lh * 0.18 + childF * 0.9);
+      }
+    }
+    y += (it.child ? childF : F) + (lines.length - 1) * lh * 0.92 + (it.e.note ? childF * 1.15 : 0) + gap;
+  }
+  return y - y0;
+}
+function shItemsOf(payload){
+  if (payload.type === 'entry'){
+    const arr = [{e: payload.e, child: false}];
+    (payload.e.children || []).forEach(ch => arr.push({e: ch, child: true}));
+    return arr;
+  }
+  if (payload.type === 'day'){
+    const p = PAGES[payload.date] || {plan: [], flow: []};
+    const arr = [];
+    [...p.plan, ...p.flow].forEach(e => {
+      arr.push({e, child: false});
+      (e.children || []).forEach(ch => arr.push({e: ch, child: true}));
+    });
+    return arr;
+  }
+  if (payload.type === 'group'){
+    const rows = [];
+    walk((d, e) => { if (e.groups && e.groups.includes(payload.g)) rows.push({d, e}); });
+    rows.sort((a, b) => parseKey(b.d) - parseKey(a.d));
+    return rows.slice(0, 6).map(r => ({e: Object.assign({}, r.e, {text: fmtShort(r.d) + '日 · ' + (r.e.text || '')}), child: false}));
+  }
+  return [];
+}
+function shDraw(){
+  const sz = SH_SIZES.find(x => x[0] === shSize), W = sz[2], H = sz[3];
+  const T = shT(), P = shPayload;
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = T.bg; ctx.fillRect(0, 0, W, H);
+  const bgImg = (shTheme === 'bgd' || shTheme === 'bgl') ? shBgFor(shSize) : null;
+  if (bgImg){
+    const sc = Math.max(W / bgImg.width, H / bgImg.height);
+    ctx.drawImage(bgImg, (W - bgImg.width * sc) / 2, (H - bgImg.height * sc) / 2, bgImg.width * sc, bgImg.height * sc);
+  }
+  const M = 88, CW = W - M * 2, top = 128, bottom = H - 320;
+  ctx.textBaseline = 'alphabetic';
+  /* 头部 */
+  ctx.font = shFont(600, 30); ctx.fillStyle = T.faint;
+  const head = P.head || '';
+  ctx.fillText(head, M, top);
+  ctx.font = shFont(700, 46); ctx.fillStyle = T.ink;
+  const title = P.cardTitle || '';
+  if (title) ctx.fillText(title, M, top + 68);
+  const y0 = top + (title ? 130 : 56);
+  /* 正文自适应字号 */
+  if (P.type === 'report'){
+    let F = 34;
+    while (F > 24){
+      ctx.font = shFont(400, F);
+      const lines = shWrap(ctx, P.text, CW);
+      if (y0 + lines.length * F * 1.72 < bottom) break; F -= 2;
+    }
+    ctx.font = shFont(400, F); ctx.fillStyle = T.ink;
+    let lines = shWrap(ctx, P.text, CW);
+    const maxN = Math.floor((bottom - y0) / (F * 1.72));
+    let cut = false;
+    if (lines.length > maxN){ lines = lines.slice(0, maxN - 1); cut = true; }
+    lines.forEach((ln, i) => {
+      ctx.fillStyle = /^[【#]/.test(ln) ? T.acc : T.ink;
+      ctx.fillText(ln, M, y0 + (i + 1) * F * 1.72);
+    });
+    if (cut){ ctx.fillStyle = T.faint; ctx.fillText('……换竖屏尺寸能装下更多', M, y0 + (lines.length + 1) * F * 1.72); }
+  } else {
+    const items = shItemsOf(P);
+    let F = P.type === 'entry' ? 56 : 44;
+    while (F > 30 && shList(ctx, items, M, y0, CW, F, T, true) > bottom - y0) F -= 3;
+    let used = shList(ctx, items, M, y0, CW, F, T, true), cut = 0, its = items.slice();
+    while (its.length > 1 && used > bottom - y0){ its.pop(); cut++; used = shList(ctx, its, M, y0, CW, F, T, true); }
+    const avail = bottom - y0;
+    const yS = y0 + (used < avail * 0.62 ? Math.min(avail - used, avail * 0.62 - used) * 0.52 : 0);
+    shList(ctx, its, M, yS, CW, F, T, false);
+    if (cut){ ctx.font = shFont(400, 30); ctx.fillStyle = T.faint;
+      ctx.fillText('……还有 ' + cut + ' 条，换竖屏尺寸能装下更多', M, yS + used + 44); }
+    if (P.sub){ ctx.font = shFont(400, 30); ctx.fillStyle = T.soft;
+      ctx.fillText(P.sub, M, bottom + 58); }
+  }
+  shFooter(ctx, W, H, T);
+  if (!bgImg) shGrain(ctx, W, H, T);
+  return c;
+}
+function shEntryPayload(e){
+  const k = curDayKey() || TODAY;
+  return {type:'entry', head:fmtKey(k) + ' · ' + weekCN(k), cardTitle:'', e};
+}
+function shDayPayload(k){
+  const p = PAGES[k] || {plan:[], flow:[]};
+  let rec = 0, done = 0, ev = 0;
+  walkPage(k, e => { rec++; if (e.state === 'done') done++; if (e.sym === 'event') ev++; });
+  return {type:'day', head:'点点手帐 · 一日', cardTitle:fmtKey(k) + ' ' + weekCN(k), date:k,
+    sub:'记录 ' + rec + ' 条 · 完成 ' + done + ' 件 · 事件 ' + ev + ' 件' + (p.summary ? ('　「' + p.summary + '」') : '')};
+}
+function openShare(payload){
+  shPayload = payload; shSize = 'xhs'; shTheme = 'paper';
+  shLoadBGs();
+  dismissKB(); $('#shSheet').classList.add('on'); shRender();
+}
+function shRender(){
+  const P = $('#shPanel');
+  let h = '<div class="gs-title">分享图</div>'
+    + '<div class="sh-prev"><img id="shImg" alt="分享预览"></div>'
+    + '<div class="sh-row"><span class="sh-lab">尺寸</span>'
+    + SH_SIZES.map(x => '<button class="gs-chip' + (shSize === x[0] ? ' on' : '') + '" data-sz="' + x[0] + '">' + x[1] + '</button>').join('')
+    + '</div><div class="sh-row"><span class="sh-lab">排版</span>'
+    + shThemeList().map(x => '<button class="gs-chip' + (shTheme === x[0] ? ' on' : '') + '" data-th="' + x[0] + '">' + x[1] + '</button>').join('')
+    + '</div><div class="sh-actions">'
+    + '<button class="sh-ghost" id="shClose">关闭</button>'
+    + '<button class="rv-confirm" id="shGo">分享 / 保存</button></div>'
+    + '<div class="sh-hint">长按上方预览图可直接存入相册</div>';
+  P.innerHTML = h;
+  if ((shTheme === 'bgd' || shTheme === 'bgl') && !shBgFor(shSize)) shTheme = 'paper';
+  shCanvas = shDraw();
+  try{ $('#shImg').src = shCanvas.toDataURL('image/png'); }
+  catch(_){ SH_BG.block = true; shTheme = 'paper'; shCanvas = shDraw(); $('#shImg').src = shCanvas.toDataURL('image/png'); }
+  P.querySelectorAll('[data-sz]').forEach(b => b.onclick = () => { shSize = b.dataset.sz; shRender(); });
+  P.querySelectorAll('[data-th]').forEach(b => b.onclick = () => { shTheme = b.dataset.th; shRender(); });
+  $('#shClose').onclick = closeShare;
+  $('#shGo').onclick = shExport;
+}
+function closeShare(){ $('#shSheet').classList.remove('on'); }
+function shExport(){
+  if (!shCanvas) return;
+  shCanvas.toBlob(async blob => {
+    if (!blob){ toast('生成失败，重试一下'); return; }
+    const file = new File([blob], '点点手帐分享.png', {type: 'image/png'});
+    if (navigator.canShare && navigator.canShare({files: [file]})){
+      try{ await navigator.share({files: [file]}); return; }catch(_){ }
+    }
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = '点点手帐分享.png'; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    toast('已生成图片 · 也可长按预览图存相册');
+  }, 'image/png');
+}
+$('#shSheet').addEventListener('click', ev => { if (ev.target.id === 'shSheet') closeShare(); });
 
 /* ============ 晨间开页 ============ */
 function ensureToday(){
