@@ -15,7 +15,7 @@
   :root{
     --bg:#F6EFE3; --bg-deep:#EAE0CC; --card:#FFFDF6;
     --ink:#1F1C17; --ink-soft:#8A8171; --ink-faint:#B6AC99;
-    --line:#E6DBC6; --accent:#F45D08; --accent-soft:#FBE7D4;
+    --line:#EFE7D5; --line-strong:#E2D7C1; --accent:#F45D08; --accent-soft:#FBE7D4;
     --green:#5F8F66; --red:#C0604E; --badge-bg:#EFE7D3; --badge-ink:#8A7C5F;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -48,9 +48,10 @@
   .icon-btn:active{background:var(--accent-soft)}
   .hamburger{display:flex;flex-direction:column;gap:4.5px}
   .hamburger i{display:block;width:17px;height:1.8px;background:var(--ink);border-radius:2px}
-  #topTitle{flex:1;font-size:17px;font-weight:700;letter-spacing:.5px}
+  #topTitle{flex:1;font-size:17px;font-weight:700;letter-spacing:.5px;cursor:pointer}
+  #topTitle.t-nav::after{content:' ▾';font-size:11px;opacity:.4;font-weight:400}
   .pill-btn{
-    border:1px solid var(--line);background:var(--card);color:var(--accent);
+    border:1px solid var(--line-strong);background:var(--card);color:var(--accent);
     font-size:13.5px;padding:7px 15px;border-radius:999px;cursor:pointer;font-weight:600;font-family:inherit;
   }
   .pill-btn:active{background:var(--accent-soft)}
@@ -94,7 +95,7 @@
     padding:2px 9px;border-radius:999px;margin-right:6px;
   }
   .badge.acc{background:var(--accent-soft);color:var(--accent)}
-  .children{margin-left:34px;border-left:2px solid var(--line);padding-left:14px}
+  .children{margin-left:34px;border-left:2px solid var(--line-strong);padding-left:14px}
   .rowtools{flex:none;display:flex;align-items:center;gap:2px}
   .kidpill{
     font-size:11px;color:var(--badge-ink);background:var(--badge-bg);border:none;border-radius:999px;
@@ -134,7 +135,7 @@
   #tagSug .gs-chip{flex:none}
   .ts-label{font-size:12px;color:var(--ink-faint);flex:none}
   .tb-btn{
-    flex:none;min-width:36px;height:34px;border:1px solid var(--line);border-radius:9px;background:var(--bg);
+    flex:none;min-width:36px;height:34px;border:1px solid var(--line-strong);border-radius:9px;background:var(--bg);
     display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--ink);
     font-family:inherit;padding:0 8px;white-space:nowrap;
   }
@@ -181,7 +182,7 @@
   .d-item.plain{font-weight:500}
   .d-item .d-ico{width:22px;text-align:center;font-size:15px}
   .search-input{
-    width:100%;margin-top:12px;border:1px solid var(--line);background:var(--card);border-radius:10px;
+    width:100%;margin-top:12px;border:1px solid var(--line-strong);background:var(--card);border-radius:10px;
     padding:8px 12px;font-size:16px;font-family:inherit;outline:none;color:var(--ink);
   }
   .search-input::placeholder{color:var(--ink-faint)}
@@ -193,10 +194,10 @@
   #gsheet.on{display:block}
   .gs-title{font-size:15px;font-weight:700;margin-bottom:12px}
   .gs-chips{display:flex;flex-wrap:wrap;gap:8px}
-  .gs-chip{font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg);cursor:pointer;font-family:inherit;color:var(--ink)}
+  .gs-chip{font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid var(--line-strong);background:var(--bg);cursor:pointer;font-family:inherit;color:var(--ink)}
   .gs-chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
   .gs-new{display:flex;gap:8px;margin-top:14px}
-  .gs-new input{flex:1;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-family:inherit;font-size:16px;background:var(--bg);outline:none;color:var(--ink)}
+  .gs-new input{flex:1;border:1px solid var(--line-strong);border-radius:10px;padding:8px 12px;font-family:inherit;font-size:16px;background:var(--bg);outline:none;color:var(--ink)}
   .gs-new button{border:none;background:var(--ink);color:#fff;border-radius:10px;padding:0 14px;font-family:inherit;cursor:pointer;font-size:13px}
   .gs-done{margin-top:14px;width:100%;border:none;background:var(--accent);color:#fff;border-radius:12px;padding:11px;font-family:inherit;font-size:14px;cursor:pointer}
   #report{position:absolute;inset:0;background:var(--bg);z-index:13;display:none;flex-direction:column}
@@ -206,7 +207,7 @@
   .rp-text{white-space:pre-wrap;font-size:14px;line-height:1.85;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
   .rp-note{font-size:12px;color:var(--ink-faint);margin-top:12px}
   .chip{
-    font-size:13.5px;padding:6px 14px;border-radius:999px;border:1px solid var(--line);
+    font-size:13.5px;padding:6px 14px;border-radius:999px;border:1px solid var(--line-strong);
     background:var(--card);cursor:pointer;color:var(--ink-soft);font-family:inherit;
   }
   .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
@@ -223,23 +224,23 @@
   #qsheet.on{display:block}
   .set-row{display:flex;align-items:center;gap:12px;padding:15px 4px;border-bottom:1px solid var(--line);font-size:15px;cursor:pointer}
   .set-row .sub{margin-left:auto;font-size:12px;color:var(--ink-faint);text-align:right}
-  .switch{margin-left:auto;width:44px;height:26px;border-radius:999px;background:var(--line);position:relative;transition:.2s;flex:none;cursor:pointer}
+  .switch{margin-left:auto;width:44px;height:26px;border-radius:999px;background:var(--line-strong);position:relative;transition:.2s;flex:none;cursor:pointer}
   .switch.on{background:var(--green)}
   .switch i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
   .switch.on i{left:21px}
   .gm-row{display:flex;align-items:center;gap:10px;padding:12px 4px;border-bottom:1px solid var(--line)}
   .gm-name{font-size:14.5px;flex:1;display:flex;align-items:center;gap:8px}
   .gm-name .gdot{width:10px;height:10px;border-radius:50%;flex:none}
-  .gm-name input{flex:1;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-family:inherit;font-size:13.5px;background:var(--bg);outline:none;color:var(--ink)}
-  .gm-btn{font-size:12px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:5px 12px;cursor:pointer;font-family:inherit;color:var(--ink-soft);flex:none}
+  .gm-name input{flex:1;border:1px solid var(--line-strong);border-radius:8px;padding:6px 10px;font-family:inherit;font-size:13.5px;background:var(--bg);outline:none;color:var(--ink)}
+  .gm-btn{font-size:12px;border:1px solid var(--line-strong);background:var(--card);border-radius:999px;padding:5px 12px;cursor:pointer;font-family:inherit;color:var(--ink-soft);flex:none}
   .gm-btn.danger{color:var(--red)}
   .gm-inline{
-    flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;padding:6px 10px;
+    flex:1;min-width:0;border:1px solid var(--line-strong);border-radius:8px;padding:6px 10px;
     font-family:inherit;font-size:16px;background:var(--bg);outline:none;color:var(--ink);
   }
   .mig-quick{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
   .qdate{
-    width:100%;border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-bottom:12px;
+    width:100%;border:1px solid var(--line-strong);border-radius:10px;padding:8px 12px;margin-bottom:12px;
     font-family:inherit;font-size:16px;background:var(--bg);color:var(--ink);outline:none;
   }
   .cdots{display:flex;gap:10px;flex-wrap:wrap;padding:4px 0;align-items:center}
@@ -264,7 +265,7 @@
   .rv-q{font-size:13px;color:var(--ink-soft);margin:18px 0 12px}
   .rv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .rv-btn{
-    border:1px solid var(--line);background:var(--bg);border-radius:14px;padding:13px 8px;
+    border:1px solid var(--line-strong);background:var(--bg);border-radius:14px;padding:13px 8px;
     font-size:15px;cursor:pointer;font-family:inherit;color:var(--ink);
     display:flex;align-items:center;justify-content:center;gap:7px;font-weight:500;
   }
@@ -279,7 +280,7 @@
   .rv-mig-row{font-size:13px;color:var(--ink-soft);margin-bottom:8px;display:flex;justify-content:space-between}
   #migRange,#qRange{width:100%;accent-color:var(--accent)}
   #migNote,#qNote{
-    width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:16px;
+    width:100%;border:1px solid var(--line-strong);border-radius:10px;padding:9px 12px;font-size:16px;
     font-family:inherit;margin-top:12px;background:var(--bg);outline:none;color:var(--ink);
   }
   .rv-confirm{margin-top:14px;width:100%;border:none;background:var(--ink);color:#fff;border-radius:12px;padding:12px;font-size:15px;cursor:pointer;font-family:inherit}
@@ -479,6 +480,11 @@ function navDay(d){
   const k0 = curDayKey(); if (!k0) return;
   gotoDay(addDaysK(k0, d));
 }
+topTitle.addEventListener('click', () => {
+  const k = curDayKey(); if (!k) return;
+  const a = k.split('.').map(Number);
+  cur = {name:'cal', y:a[0], m:a[1]}; render();
+});
 document.getElementById('prevDay').onclick = () => navDay(-1);
 document.getElementById('nextDay').onclick = () => navDay(1);
 let swX = null, swY = null;
@@ -931,13 +937,7 @@ function renderCal(){
       if (mk.fut){ const f = document.createElement('i'); f.className = 'fut'; dots.appendChild(f); }
     }
     cell.appendChild(dots);
-    cell.onclick = () => {
-      const key = y + '.' + m + '.' + d;
-      if (key === TODAY) cur = {name:'today'};
-      else if (PAGES[key] && key !== TODAY) cur = {name:'history', date:key};
-      else cur = {name:'day', key};
-      render();
-    };
+    cell.onclick = () => gotoDay(y + '.' + m + '.' + d);
     grid.appendChild(cell);
   }
   view.appendChild(grid);
@@ -1046,7 +1046,7 @@ function render(){
         setTimeout(() => pendingRestore = false, 5000); return; }
       pendingRestore = false; $('#jsonInput').click();
     });
-    mkRow('版本记录', sub('v1.8.1 ›'), showChangelog);
+    mkRow('版本记录', sub('v1.8.2 ›'), showChangelog);
     mkRow('应用锁', sub('原生版支持 FaceID'), () => toast('网页版暂不支持 · 原生开发阶段实现'));
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
@@ -1097,6 +1097,7 @@ function render(){
     renderPageInto(view, cur.date, true);
   }
   const dayNavOn = (cur.name === 'today' || cur.name === 'history' || cur.name === 'day');
+  topTitle.classList.toggle('t-nav', dayNavOn);
   $('#prevDay').style.visibility = dayNavOn ? 'visible' : 'hidden';
   $('#nextDay').style.visibility = dayNavOn ? 'visible' : 'hidden';
   buildDrawer();
@@ -1953,7 +1954,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v1.8.1（当前 · 2026.8.9）\n· 未来任何一天都能直接「＋ 提前安排一条」，到期自动进当天；别的日子挂过来的单独列出\n· 长内容自动换行：行输入改为自动增高，不再一行截断\n· 历史页去掉「返回日历」链接，页面更干净\n\n'
+    + 'v1.8.2（当前 · 2026.8.10）\n· 点顶栏日期直接打开总日历选日子（标题带 ▾ 提示）\n· 修复：总日历点进过去的空白天进不了完整编辑页、左右滑一下才恢复的问题；未来天从日历进也统一为「提前安排」视图\n· 分割线整体转淡与纸色统一，输入框和按钮描边单独保留层次\n\n'
+    + 'v1.8.1（2026.8.9）\n· 未来任何一天都能直接「＋ 提前安排一条」，到期自动进当天；别的日子挂过来的单独列出\n· 长内容自动换行：行输入改为自动增高，不再一行截断\n· 历史页去掉「返回日历」链接，页面更干净\n\n'
     + 'v1.8（2026.8.9）\n【品牌换装】\n· 全新配色：纸 / 墨 / 点亮橙对齐点点 Logo，主题色新增点亮橙并设为默认\n· 字号行距整体调升：标题、分区标签、正文层级更清楚\n· 点点吉祥物入驻：引导页、侧栏、复盘结束页、空白天\n· 提示文案改为点点语气，发生区提示点明因果挂载\n· 图标换新文件名 icon-dot.png，绕开 iOS 对旧图标的顽固缓存\n\n'
     + 'v1.7（2026.8.8）\n· 品牌更名「点点手帐 Dot」\n· 新增 GitHub 私有仓库云备份：改动后自动上传、立即备份、从云端恢复；仓库提交历史即版本回滚，电脑浏览器打开同一网址配置后即可同步\n\n'
     + 'v1.6（2026.8.8）\n· 任何方式完成（打勾 / 面板 / 复盘）后追问一句备注，可跳过，备注进日报周报\n· 历史页可直接编辑补记\n· 汇总视图升级：点符号就地勾掉/长按处理，点文字跳回当天并高亮定位\n· 今日页左右滑翻天（顶栏新增 ‹ › 箭头）\n· 双向溯源：「◂ 8.6 转来」点击跳回源头条目；历史页「→日期」跳去目标日\n· 识别中文时间：下午三点 / 晚上八点半 / 中午12点\n· 设置新增「使用引导 · 功能手册」，随时回看\n· 版本记录标注日期\n\n'
