@@ -420,6 +420,7 @@ try{
 }catch(_){}
 let saveTm = null;
 function scheduleSave(){
+  if (typeof KNOWN_PPL !== 'undefined') KNOWN_PPL = null;
   clearTimeout(saveTm);
   saveTm = setTimeout(() => {
     try{ localStorage.setItem(LSKEY, JSON.stringify({pages:PAGES, extraGroups, set:SET, seen:SEEN, gcolor:GCOLOR})); }
@@ -1066,19 +1067,33 @@ function render(){
     topTitle.textContent = '#' + cur.g; reviewBtn.textContent = '回今日';
     const tpl = tplOf(cur.g);
     if (!cur.rngSel) cur.rngSel = 'year';
-    const rlab0 = RNG_LAB[cur.rngSel] || '今年';
     const tabs = document.createElement('div'); tabs.className = 'rp-tabs'; tabs.style.marginTop = '16px';
     if (tpl && tpl !== 'work'){
-      const rc = document.createElement('button'); rc.className = 'chip on'; rc.textContent = '盘点 · ' + rlab0 + ' ▾';
+      const rc = document.createElement('button'); rc.className = 'chip on'; rc.textContent = '盘点 · ' + rngLabel(cur.rngSel) + ' ▾';
       rc.onclick = () => { cur.rngSel = RNG_CYCLE[(RNG_CYCLE.indexOf(cur.rngSel) + 1) % RNG_CYCLE.length]; render(); };
       tabs.appendChild(rc);
     }
-    const rp = document.createElement('button'); rp.className = 'chip';
-    rp.textContent = tpl === 'work' ? '报告' : '生成月报';
-    rp.onclick = () => openReport(cur.g, tpl === 'work' ? 'week' : 'month');
-    tabs.appendChild(rp);
+    if (tpl === 'work'){
+      const rp = document.createElement('button'); rp.className = 'chip'; rp.textContent = '报告';
+      rp.onclick = () => openReport(cur.g, 'week'); tabs.appendChild(rp);
+    } else if (tpl === 'food'){
+      const mp = document.createElement('button'); mp.className = 'chip'; mp.textContent = '我的美食地图';
+      mp.onclick = () => openFoodMap(cur.g); tabs.appendChild(mp);
+    } else if (tpl){
+      const rp = document.createElement('button'); rp.className = 'chip'; rp.textContent = '生成月报';
+      rp.onclick = () => {
+        const rows = tplRows(cur.g, rngOf('month'));
+        openShare(statsPayload(cur.g, tpl, tplStats(tpl, rows), 'month'));
+      };
+      tabs.appendChild(rp);
+    }
     const shc = document.createElement('button'); shc.className = 'chip'; shc.textContent = '▣ 分享';
-    shc.onclick = () => openShare({type:'group', head:'点点手帐 · 集子', cardTitle:'#' + cur.g + ' · 最近精选', g:cur.g});
+    shc.onclick = () => {
+      if (tpl && tpl !== 'work'){
+        const rows = tplRows(cur.g, rngOf(cur.rngSel));
+        openShare(statsPayload(cur.g, tpl, tplStats(tpl, rows), cur.rngSel));
+      } else openShare({type:'group', head:'点点手帐 · 集子', cardTitle:'#' + cur.g + ' · 最近精选', g:cur.g});
+    };
     tabs.appendChild(shc);
     view.appendChild(tabs);
     if (tpl && tpl !== 'work') renderTplPanel(cur.g, tpl);
@@ -1153,7 +1168,7 @@ function render(){
         setTimeout(() => pendingRestore = false, 5000); return; }
       pendingRestore = false; $('#jsonInput').click();
     });
-    mkRow('版本记录', sub('v2.2 ›'), showChangelog);
+    mkRow('版本记录', sub('v2.3 ›'), showChangelog);
     mkRow('应用锁', sub('原生版支持 FaceID'), () => toast('网页版暂不支持 · 原生开发阶段实现'));
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
@@ -2115,7 +2130,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.2（当前 · 2026.8.13）\n· 集子页顶部按示意图定稿：盘点·今年 ▾ ｜ 生成月报（工作模板为「报告」）｜ ▣ 分享\n· 模板选择搬进侧栏：新建分组时直接选；已有分组长按或左滑 →「模板」随时改\n· 美食「城市分布」升级为「我的美食地图」，点城市看该城清单\n\n'
+    + 'v2.3（当前 · 2026.8.13）\n【按定稿示意图纠偏】\n· 「生成月报」改为直接生成本月盘点分享卡（数字+榜单+原话引用），不再打开文字版报告；文字版日/周/月报只在工作模板的「报告」里\n· 美食顶部中间改为「我的美食地图」：按城市展开店清单，点店跳原文\n· 盘点分享卡装全内容：美食卡新增城市分布条\n· 范围与标题用真实年月：盘点·2026 ▾ / 盘点·8月 ▾；卡片标题如「2026 我的观影年报」「8月 美食小结」\n· 「和谁」只认人名：限 1~3 字并紧跟动作词，转交过的人名优先识别\n· 未套模板的分组顶部只保留「▣ 分享」\n\n'
+    + 'v2.2（2026.8.13）\n· 集子页顶部按示意图定稿：盘点·今年 ▾ ｜ 生成月报（工作模板为「报告」）｜ ▣ 分享（分享的就是当前盘点，含数字、榜单与美食地图，不再另设入口）\n· 模板选择搬进侧栏：新建分组时直接选；已有分组长按或左滑 →「模板」随时改\n· 美食「城市分布」升级为「我的美食地图」，点城市看该城清单\n\n'
     + 'v2.1（2026.8.13）\n· 集子页顶部收成一行：模板 / 报告（工作模板才有）/ 分享集子\n· 日报周报月报归入「工作」模板（#工作类分组名自动套用，其他分组顶部不再挤报告按钮）\n· 时间范围收进盘点标题：点「盘点·今年 ▾」循环切 今年/本月/去年/全部；「▣ 分享」也在盘点标题行\n· 盘点数字可点开：看过/回头再去/回购/避雷/和谁看，点进去是完整列表，再点跳到当天原文\n· 高分榜「和独自」改为「独自」\n· 主页任何一条记录整行长按即可生成分享图（任务的符号长按仍是处理面板）\n\n'
     + 'v2.0（2026.8.12）\n【集子结构化 · 记录长成资产】\n· 六种识别：《作品》、评分、金额、城市、"店名"、判决词（会再来/避雷…）、和谁一起——全从你写的原话里读，记录方式不变，历史一并识别\n· 四个模板：电影 / 美食 / 读书 / 花钱；#电影 #美食 这类分组名自动套用，集子页「模板·」一键换\n· 盘点面板：数字大盘 + 高分榜 / 回购避雷榜 + 城市分布，按 今年/本月/去年/全部 切换\n· 美食不算总账：按「去过几次」算回头率，单品价格只做小签\n· 别名合并：《英雄无归》=《蜘蛛侠英雄无归》确认一次，统计归一\n· 没打分的作品轻轻问一句，点一下补分\n· 点点记得：写到以前记过的店/片，键盘上方浮出上次的记录，一点跳回去\n· 「▣ 分享盘点」直接产年报/盘点卡\n\n'
     + 'v1.9.1（2026.8.12）\n· 分享卡自定义底图：往仓库传 share-bg.png（或分尺寸 share-bg-34 / 11 / 916.png），排版里自动多出「底图·深字 / 浅字」两个选项，删掉图片即恢复\n\n'
@@ -2184,12 +2200,23 @@ function parseLine(text){
   for (const c of CITY_LIST){ if (t.includes(c)){ r.city = c; break; } }
   const qm = t.match(/[“"『「]([^”"』」]{1,14})[”"』」]/); if (qm) r.store = qm[1];
   if (/独自|一个人/.test(t)) r.with = '独自';
-  else { const wm = t.match(/和([\u4e00-\u9fa5A-Za-z]{1,5}?)(?:一起|看|吃|去|玩|逛|见|喝|聊|补)/); if (wm) r.with = wm[1]; }
+  else {
+    for (const n of peopleSet()){ if (n && t.includes('和' + n)){ r.with = n; break; } }
+    if (!r.with){ const wm = t.match(/和([\u4e00-\u9fa5A-Za-z]{1,3}?)(?:一起|看|吃|去|玩|逛|见|喝|聊|补)/); if (wm) r.with = wm[1]; }
+  }
   for (const w of V_NEG){ if (t.includes(w)){ r.verdict = w; r.vNeg = true; break; } }
   if (!r.verdict) for (const w of V_POS){ if (t.includes(w) && !t.includes('不' + w)){ r.verdict = w; break; } }
   return r;
 }
 function canonTitle(t){ return SET.alias[t] || t; }
+let KNOWN_PPL = null;
+function peopleSet(){
+  if (!KNOWN_PPL){
+    KNOWN_PPL = new Set();
+    walk((d, e) => { if (e.delegate && e.delegate.to && e.delegate.to.length <= 4) KNOWN_PPL.add(e.delegate.to); });
+  }
+  return KNOWN_PPL;
+}
 const TPLS = {work:{n:'工作', unit:'件'}, movie:{n:'电影', unit:'部'}, food:{n:'美食', unit:'家'}, book:{n:'读书', unit:'本'}, money:{n:'花钱', unit:'笔'}};
 const TPL_ORDER = [null, 'work', 'movie', 'food', 'book', 'money'];
 function tplOf(g){
@@ -2326,22 +2353,24 @@ function openScoreSheet(e){
   S.classList.add('on'); $('#mask').classList.add('on');
 }
 const RNG_CYCLE = ['year', 'month', 'lastyear', 'all'];
-const RNG_LAB = {all:'全部', year:'今年', month:'本月', lastyear:'去年'};
+function rngLabel(sel){
+  const ta = TODAY.split('.').map(Number);
+  return sel === 'year' ? String(ta[0]) : sel === 'month' ? (ta[1] + '月')
+    : sel === 'lastyear' ? String(ta[0] - 1) : '全部';
+}
 function renderTplPanel(g, tpl){
   if (!cur.rngSel) cur.rngSel = 'year';
   const rng = rngOf(cur.rngSel);
   const rows = tplRows(g, rng);
   const st = tplStats(tpl, rows);
-  const rlab = RNG_LAB[cur.rngSel] || '区间';
+  const rlab = rngLabel(cur.rngSel);
   const pan = document.createElement('div'); pan.className = 'tp-pan';
   pan.innerHTML = '<div class="tt" style="display:flex;align-items:center;gap:8px">'
     + '<span>自动盘点 · ' + rlab + '</span>'
-    + '<span style="color:var(--ink-faint);letter-spacing:0">' + rows.length + ' 条</span>'
-    + '<span id="tpShare" style="margin-left:auto;color:var(--accent);cursor:pointer;letter-spacing:0">▣ 分享盘点</span></div>'
+    + '<span style="margin-left:auto;color:var(--ink-faint);letter-spacing:0">' + rows.length + ' 条记录</span></div>'
     + '<div class="tp-nums">' + st.tiles.map((t, i) =>
       '<div class="n" data-ti="' + i + '"' + (t[3] && t[3].length ? ' style="cursor:pointer"' : '') + '><b>' + t[0] + (t[1] ? '<i>' + t[1] + '</i>' : '') + '</b><span>' + t[2] + (t[3] && t[3].length ? ' ›' : '') + '</span></div>').join('') + '</div>';
   view.appendChild(pan);
-  pan.querySelector('#tpShare').onclick = () => openShare(statsPayload(g, tpl, st, rlab));
   pan.querySelectorAll('.n[data-ti]').forEach(el => {
     el.onclick = () => { const t = st.tiles[+el.dataset.ti];
       if (t[3] && t[3].length) openTileSheet(t[2] + ' · ' + rlab, t[3]); };
@@ -2400,10 +2429,46 @@ function openTileSheet(title, items){
   });
   S.classList.add('on'); $('#mask').classList.add('on');
 }
-function statsPayload(g, tpl, st, rlab){
-  return {type:'stats', head:'点点手帐 · ' + rlab + '盘点',
-    cardTitle:rlab + ' 我的' + TPLS[tpl].n + (cur.rngSel === 'year' || cur.rngSel === 'lastyear' ? '年报' : '盘点'),
-    tiles:st.tiles.slice(0, 3), list:st.ranks.slice(0, 5), quote:st.quote};
+const TPL_NOUN = {movie:'观影', food:'美食', book:'阅读', money:'花销'};
+function statsPayload(g, tpl, st, sel){
+  const ta = TODAY.split('.').map(Number);
+  const noun = TPL_NOUN[tpl] || TPLS[tpl].n;
+  const title = sel === 'year' ? (ta[0] + ' 我的' + noun + '年报')
+    : sel === 'lastyear' ? ((ta[0] - 1) + ' 我的' + noun + '年报')
+    : sel === 'month' ? (ta[1] + '月 ' + noun + '小结')
+    : ('我的' + noun + '全记录');
+  return {type:'stats', head:'点点手帐 · 盘点',
+    cardTitle:title, tiles:st.tiles.slice(0, 3),
+    list:st.ranks.slice(0, tpl === 'food' ? 4 : 5),
+    bars:tpl === 'food' ? (st.bars || []).slice(0, 4) : null,
+    quote:st.quote};
+}
+function openFoodMap(g){
+  const rows = tplRows(g, rngOf(cur.rngSel));
+  const st = tplStats('food', rows);
+  const S = $('#gsheet');
+  S.innerHTML = '<div class="gs-title">我的美食地图 · ' + rngLabel(cur.rngSel) + '</div>'
+    + '<div id="fmList" style="max-height:56vh;overflow-y:auto"></div>';
+  const box = $('#fmList');
+  if (!st.bars.length){
+    const d = document.createElement('div'); d.className = 'empty-hint';
+    d.textContent = '还没识别到城市 · 写「上海"店名"」这样点点就能归到城市里';
+    box.appendChild(d);
+  }
+  st.bars.forEach(([c, v]) => {
+    const h = document.createElement('div');
+    h.style.cssText = 'font-size:12px;color:var(--ink-faint);letter-spacing:2px;font-weight:600;margin:12px 0 2px';
+    h.textContent = c + ' · ' + v + ' 家';
+    box.appendChild(h);
+    ((st.cityMap && st.cityMap[c]) || []).forEach(x => {
+      const row = document.createElement('div'); row.className = 'tp-rk';
+      row.innerHTML = '<span class="nm">' + x.nm + (x.sub ? '<small>' + x.sub + '</small>' : '') + '</span>'
+        + '<span class="sc ' + (x.scCls || '') + '">' + (x.sc || '') + '</span>';
+      if (x.d) row.querySelector('.nm').onclick = () => { closeSheet(); jumpToEntry(x.d, x.id); };
+      box.appendChild(row);
+    });
+  });
+  S.classList.add('on'); $('#mask').classList.add('on');
 }
 
 /* ============ 点点记得：写到老地方老片子时浮出来 ============ */
@@ -2629,8 +2694,9 @@ function shDraw(){
       ctx.fillText(t[2], x + tw / 2, y + 142);
     });
     ctx.textAlign = 'left';
-    y += 176 + 54;
-    (P.list || []).forEach(x => {
+    y += 176 + 60;
+    for (const x of (P.list || [])){
+      if (y > bottom - 30) break;
       ctx.font = shFont(700, 34); ctx.fillStyle = T.acc;
       ctx.fillText(x.no, M + 4, y);
       ctx.font = shFont(500, 34); ctx.fillStyle = T.ink;
@@ -2640,9 +2706,26 @@ function shDraw(){
       ctx.font = shFont(700, 32); ctx.fillStyle = x.scCls === 'no2' ? '#C0604E' : (x.scCls === 'ok' ? '#5F8F66' : T.ink);
       ctx.fillText(x.sc, M + CW - ctx.measureText(x.sc).width, y);
       y += 62;
-    });
-    if (P.quote){
-      y += 16;
+    }
+    if (P.bars && P.bars.length && y < bottom - 90){
+      y += 14;
+      ctx.font = shFont(600, 24); ctx.fillStyle = T.faint;
+      ctx.fillText('城 市 分 布', M, y); y += 40;
+      const bmax = P.bars[0][1];
+      for (const [c, v] of P.bars){
+        if (y > bottom - 20) break;
+        ctx.font = shFont(400, 27); ctx.fillStyle = T.soft;
+        ctx.fillText(c, M, y);
+        const bx = M + 128, bw = CW - 128 - 70;
+        ctx.fillStyle = T.pill; shRR(ctx, bx, y - 22, bw, 24, 12); ctx.fill();
+        ctx.fillStyle = T.acc; shRR(ctx, bx, y - 22, Math.max(24, bw * v / bmax), 24, 12); ctx.fill();
+        ctx.font = shFont(400, 24); ctx.fillStyle = T.faint;
+        ctx.fillText(String(v), bx + bw + 22, y);
+        y += 52;
+      }
+    }
+    if (P.quote && y < bottom - 100){
+      y += 22;
       ctx.fillStyle = T.pill; shRR(ctx, M, y - 34, CW, 92, 14); ctx.fill();
       ctx.font = shFont(400, 26); ctx.fillStyle = T.soft;
       let qt = '“' + P.quote.text + '”';
