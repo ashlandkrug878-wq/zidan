@@ -286,6 +286,11 @@
   .rv-confirm{margin-top:14px;width:100%;border:none;background:var(--ink);color:#fff;border-radius:12px;padding:12px;font-size:15px;cursor:pointer;font-family:inherit}
   .rv-finish{margin:auto;text-align:center;color:var(--ink-soft);font-size:15.5px;line-height:2}
   .rv-finish b{font-size:18px;color:var(--ink)}
+  /* ---------- 迁移链折叠 ---------- */
+  .chainfold{margin-top:6px;font-size:11.5px;color:var(--ink-faint);cursor:pointer;display:inline-block;
+    background:var(--badge-bg);border-radius:999px;padding:3px 10px}
+  .chainline{margin-top:6px;font-size:12px;color:var(--ink-soft);line-height:1.8;
+    border-left:2px solid var(--line-strong);padding-left:10px}
   /* ---------- 账号小本 ---------- */
   .vt-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-top:12px}
   .vt-item .vt-site{font-size:15.5px;font-weight:700;display:flex;align-items:center;gap:8px}
@@ -438,12 +443,15 @@ try{
     Object.assign(SET, s.set || {}); SEEN = s.seen || {}; GCOLOR = s.gcolor || {}; }
 }catch(_){}
 let saveTm = null;
+let PARSE_GEN = 1;
+function jstrip(k, v){ return k === '_pc' ? undefined : v; }
 function scheduleSave(){
   if (typeof KNOWN_PPL !== 'undefined') KNOWN_PPL = null;
   if (typeof KNOWN_STORE !== 'undefined') KNOWN_STORE = null;
+  PARSE_GEN++;
   clearTimeout(saveTm);
   saveTm = setTimeout(() => {
-    try{ localStorage.setItem(LSKEY, JSON.stringify({pages:PAGES, extraGroups, set:SET, seen:SEEN, gcolor:GCOLOR})); }
+    try{ localStorage.setItem(LSKEY, JSON.stringify({pages:PAGES, extraGroups, set:SET, seen:SEEN, gcolor:GCOLOR}, jstrip)); }
     catch(_){ toast('存储已满：请删除一些图片，或先导出备份'); }
     try{ ghSchedule(); }catch(_){}
   }, 300);
@@ -791,7 +799,7 @@ function entryNode(e, editable, isChild, flat, liveSym){
       if (lpFired){ lpFired = false; return; }
       if (e.state === 'open'){
         snapshot('处理任务');
-        e.state = 'done'; e.doneDay = TODAY; render();
+        e.state = 'done'; e.doneDay = TODAY; cycOnDone(e); render();
         askMemo(e);
       } else if (e.state === 'done'){
         e.state = 'open'; delete e.doneDay; toast('恢复待办'); render();
@@ -951,15 +959,20 @@ function jumpRow(date, e){
   return w;
 }
 function dateGroupList(box, filter){
-  let n = 0, lastDate = null;
-  walk((date, e) => {
-    if (!filter(e)) return; n++;
-    if (date !== lastDate){ lastDate = date;
+  const hits = [];
+  walk((date, e) => { if (filter(e)) hits.push({date, e}); });
+  const ids = new Set(hits.map(h => h.e._id));
+  const superseded = new Set();
+  hits.forEach(h => { if (h.e.srcId && ids.has(h.e.srcId)) superseded.add(h.e.srcId); });
+  const shown = hits.filter(h => !(superseded.has(h.e._id) && h.e.state === 'migrated'));
+  let lastDate = null;
+  shown.forEach(h => {
+    if (h.date !== lastDate){ lastDate = h.date;
       const g = document.createElement('div'); g.className = 'date-group';
-      g.textContent = dayGroupTitle(date); box.appendChild(g); }
-    box.appendChild(jumpRow(date, e));
+      g.textContent = dayGroupTitle(h.date); box.appendChild(g); }
+    box.appendChild(jumpRow(h.date, h.e));
   });
-  return n;
+  return shown.length;
 }
 function tapZone(text, big, onTap, pen){
   const z = document.createElement('div'); z.className = 'tapzone' + (big ? ' big' : '');
@@ -1016,6 +1029,15 @@ function calMarks(y, m){
     const a = e.due.split('.').map(Number);
     if (a[0] === y && a[1] === m){ marks[a[2]] = marks[a[2]] || {rec:0}; marks[a[2]].fut = true; }
   });
+  if ((SET.cycles || []).length){
+    const days = new Date(y, m, 0).getDate();
+    const tK = parseKey(TODAY);
+    for (let dd = 1; dd <= days; dd++){
+      const k = y + '.' + m + '.' + dd;
+      if (parseKey(k) <= tK) continue;
+      if (SET.cycles.some(c => cycHits(c, k))){ marks[dd] = marks[dd] || {rec:0}; marks[dd].fut = true; }
+    }
+  }
   return marks;
 }
 function renderCal(){
@@ -1136,10 +1158,18 @@ function render(){
       d.textContent = '这个分组还空着 · 在任意一行打 #' + cur.g + ' 就能归进来'; view.appendChild(d); }
     else {
       const lab = document.createElement('div'); lab.className = 'section-label'; lab.textContent = '全部记录'; view.appendChild(lab);
+      /* 迁移链归并：被后继引用、状态为「已迁移」的中间节点收起 */
+      const byId = {};
+      rows2.forEach(r => { if (r.e._id) byId[r.e._id] = r; });
+      const superseded = new Set();
+      rows2.forEach(r => { if (r.e.srcId && byId[r.e.srcId]) superseded.add(r.e.srcId); });
+      const shown = rows2.filter(r => !(superseded.has(r.e._id) && r.e.state === 'migrated'));
+      if (!cur.listN) cur.listN = 30;
+      const pageRows = shown.slice(0, cur.listN);
       let lastDate = null;
       const scoredSet = new Set();
       rows2.forEach(r => { if (r.p.title && r.p.score != null) scoredSet.add(canonTitle(r.p.title)); });
-      rows2.forEach(r => {
+      pageRows.forEach(r => {
         if (r.d !== lastDate){ lastDate = r.d;
           const g2 = document.createElement('div'); g2.className = 'date-group';
           g2.textContent = dayGroupTitle(r.d); view.appendChild(g2); }
@@ -1148,8 +1178,15 @@ function render(){
           const tg = ptagRow(r, tpl, scoredSet);
           if (tg){ const body = w.querySelector('.entry-body'); if (body) body.appendChild(tg); }
         }
+        appendChainFold(w, r, byId);
         view.appendChild(w);
       });
+      if (shown.length > cur.listN){
+        const more = document.createElement('div'); more.className = 'tapzone'; more.style.textAlign = 'center';
+        more.textContent = '▾ 加载更早（还有 ' + (shown.length - cur.listN) + ' 条）';
+        more.onclick = () => { cur.listN += 50; render(); };
+        view.appendChild(more);
+      }
       const tip = document.createElement('div'); tip.className = 'readonly-tip';
       tip.textContent = tpl ? '小签是从你的原话里读出来的 · 点条目跳到当天' : '这就是自动长出来的「集子」 · 点条目跳到当天';
       view.appendChild(tip);
@@ -1202,7 +1239,7 @@ function render(){
         setTimeout(() => pendingRestore = false, 5000); return; }
       pendingRestore = false; $('#jsonInput').click();
     });
-    mkRow('版本记录', sub('v2.5 ›'), showChangelog);
+    mkRow('版本记录', sub('v2.7 ›'), showChangelog);
     mkRow('应用锁', sub('原生版支持 FaceID'), () => toast('网页版暂不支持 · 原生开发阶段实现'));
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
@@ -1210,6 +1247,10 @@ function render(){
       pendingWipe = true; toast('再点一次确认清空（建议先导出备份）');
       setTimeout(() => pendingWipe = false, 4000);
     });
+  }
+  else if (cur.name === 'cycles'){
+    topTitle.textContent = '循环提醒'; reviewBtn.textContent = '回今日';
+    renderCycles();
   }
   else if (cur.name === 'vault'){
     topTitle.textContent = '账号小本'; reviewBtn.textContent = '回今日';
@@ -1228,6 +1269,15 @@ function render(){
     view.appendChild(sectionLabel('这天要做'));
     p.plan.forEach(e => view.appendChild(entryNode(e, true)));
     view.appendChild(tapZone('＋ 提前安排一条', false, () => addLine(p.plan)));
+    const cycHitsHere = (SET.cycles || []).filter(c => cycHits(c, cur.key));
+    if (cycHitsHere.length){
+      view.appendChild(sectionLabel('这天有循环提醒'));
+      cycHitsHere.forEach(c => {
+        const d2 = document.createElement('div'); d2.className = 'empty-hint'; d2.style.padding = '6px 2px';
+        d2.textContent = '🔁 ' + c.name + ' · ' + cycDesc(c);
+        view.appendChild(d2);
+      });
+    }
     let n = 0; const inc = document.createDocumentFragment();
     walk((date, e) => {
       if (date === cur.key) return;
@@ -1240,7 +1290,7 @@ function render(){
       const tip = document.createElement('div'); tip.className = 'readonly-tip';
       tip.textContent = '这些从别的日子挂过来 · 点文字可跳回源头'; view.appendChild(tip);
     }
-    if (!n && !p.plan.length){
+    if (!n && !p.plan.length && !cycHitsHere.length){
       const d = document.createElement('div'); d.className = 'empty-hint'; d.style.textAlign = 'center'; d.style.padding = '30px 2px 10px';
       d.innerHTML = dotSVG(64) + '<div style="margin-top:10px">这天还空着 · 提前安排的事，到点我会摆进当天</div>'; view.appendChild(d);
     }
@@ -1344,8 +1394,13 @@ function buildDrawer(){
   walk((d, e) => { const a = d.split('.').map(Number); if (a[0] === taSub[0] && a[1] === taSub[1]) mc++; });
   $('#drawerSub').textContent = taSub[0] + ' 年 ' + taSub[1] + ' 月 · 本月已记 ' + mc + ' 条';
   const glab = document.createElement('div'); glab.className = 'drawer-label'; glab.textContent = '分组 · 长按或左滑管理'; box.appendChild(glab);
+  const GCNT = {}, ACNT = {};
+  walk((d, e) => {
+    (e.groups || []).forEach(g2 => GCNT[g2] = (GCNT[g2] || 0) + 1);
+    Object.keys(AGG).forEach(k2 => { if (AGG[k2].f(e)) ACNT[k2] = (ACNT[k2] || 0) + 1; });
+  });
   allGroupNames().forEach(g => {
-    let n = 0; walk((d, e) => { if (e.groups && e.groups.includes(g)) n++; });
+    const n = GCNT[g] || 0;
     const it = document.createElement('div'); it.className = 'd-item';
     const ic = document.createElement('span'); ic.className = 'd-ico';
     const [, fg] = gStyle(g); ic.style.color = fg; ic.style.fontWeight = '700'; ic.textContent = '#';
@@ -1479,7 +1534,7 @@ function buildDrawer(){
   }
   const lab = document.createElement('div'); lab.className = 'drawer-label'; lab.textContent = '按标记汇总'; box.appendChild(lab);
   Object.keys(AGG).forEach(key => {
-    let n = 0; walk((d, e) => { if (AGG[key].f(e)) n++; });
+    const n = ACNT[key] || 0;
     const it = document.createElement('div'); it.className = 'd-item';
     const fake = {sym:{task:'task',event:'event',note:'note',mood:'mood'}[key] || 'task',
                   state:{done:'done',delegated:'delegated',dropped:'dropped'}[key] || 'open'};
@@ -1491,6 +1546,7 @@ function buildDrawer(){
   });
   const line = document.createElement('div'); line.className = 'drawer-line'; box.appendChild(line);
   [['☾','晚间复盘', () => { closeDrawer(); openReview(); }],
+   ['🔁','循环提醒', () => { cur = {name:'cycles'}; closeDrawer(); render(); }],
    ['🔐','账号小本', () => { cur = {name:'vault'}; closeDrawer(); render(); }],
    ['⚙','设置', () => { cur = {name:'settings'}; closeDrawer(); render(); }]]
   .forEach(([ico, name, fn]) => {
@@ -1698,7 +1754,7 @@ function buildQSheet(){
       if (t.due && parseKey(t.due) > parseKey(TODAY)) t.due = undefined;
       delete t.delegate; delete t.followArrived; delete t.doneDay;
       fin('已恢复待办');
-    } else { t.state = 'done'; t.doneDay = TODAY; askMemo(t); }
+    } else { t.state = 'done'; t.doneDay = TODAY; cycOnDone(t); askMemo(t); }
   };
   $('#qDrop').onclick = () => { snapshot('处理任务'); t.state = 'dropped'; t.badge = '不做了'; fin('✕ 已放弃 · 保留划痕'); };
   $('#qDel').onclick  = () => { $('#qMigPanel').classList.remove('on'); $('#qDelPanel').classList.toggle('on'); };
@@ -1934,7 +1990,7 @@ function renderReview(){
     $('#rvMSkip').onclick = next;
     $('#rvMSave').onclick = () => { const m = $('#rvMemo').value.trim(); if (m) t.note = m; next(); };
   };
-  $('#bDone').onclick = () => { t.state = 'done'; t.doneDay = TODAY; rvMemoStep(); };
+  $('#bDone').onclick = () => { t.state = 'done'; t.doneDay = TODAY; cycOnDone(t); rvMemoStep(); };
   $('#bDrop').onclick = () => { t.state = 'dropped'; t.badge = '不做了'; stat.drop++; toast('✕ 已放弃 · 页面保留划痕'); next(); };
   $('#bDel').onclick  = () => { $('#migPanel').classList.remove('on'); $('#rvDelPanel').classList.toggle('on'); };
   $('#bMig').onclick  = () => { $('#rvDelPanel').classList.remove('on'); $('#migPanel').classList.toggle('on'); };
@@ -2174,7 +2230,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.5（当前 · 2026.8.18）\n· 同行人介词全覆盖：和/与/跟/同 都认（跟赵赵、与琨、同事一起都可以）；「跟进」「同时」这类词不会误判\n· 新增「账号小本」（侧栏 🔐）：独立于手帐流，主口令加密（AES），本机和云备份里只存密文；密码默认打码、点一下显示、一键复制；离开页面自动上锁\n· 小本内容不进搜索、报告、分享；主口令无找回，请记牢；适合 wifi/会员号级别，银行级请用系统钥匙串\n\n'
+    + 'v2.7（当前 · 2026.8.18）\n【更快】\n· 识别结果全面缓存，集子页不再重复解析；抽屉计数一次遍历\n· 集子列表先展示最近 30 条，底部「加载更早」，数据再多也秒开\n【更干净】\n· 迁移链归并：反复推迟的待办在集子和搜索里只显示最新一条（>×N 照旧），行下「▸ 一路 N 次」点开看途中进度小时间线；原页划痕不动\n【循环提醒】\n· 侧栏新增「🔁 循环提醒」：每年（生日纪念日）/ 每月（发工资）/ 每 N 天（周期），可设提前几天提示\n· 到那天自动出现在「今天要做」，正常打勾复盘；每 N 天类打完勾自动从今天重新起算（大姨妈越用越准）\n· 总日历和未来页提前可见；「📅 入系统日历」生成重复日历文件，手机会真的响\n\n'
+    + 'v2.5（2026.8.18）\n· 同行人介词全覆盖：和/与/跟/同 都认（跟赵赵、与琨、同事一起都可以）；「跟进」「同时」这类词不会误判\n· 新增「账号小本」（侧栏 🔐）：独立于手帐流，主口令加密（AES），本机和云备份里只存密文；密码默认打码、点一下显示、一键复制；离开页面自动上锁\n· 小本内容不进搜索、报告、分享；主口令无找回，请记牢；适合 wifi/会员号级别，银行级请用系统钥匙串\n\n'
     + 'v2.4（2026.8.18）\n【识别再进化】\n· 多人同伴：「和赵赵、Orion和家人二刷」三个人都认出来，各记一次；家人/爸妈/同事等称呼有效\n· 点点的熟人簿与熟店簿：认过一次的人和店（含转交对象），之后不带引号、不带动作词也认识——"又吃了子午路肉夹馍"会计入去过次数\n· 二刷标注：同一部片多条记录，榜单和列表里标 ×2、"看了2次"\n· 店的判决＝括号外离店名最近的判决词；括号里的（惊艳/拉胯）只算单品评价\n· 金额不再误判日期：60.28元、6.28元这类都不会变成日期；月>12、日>31 不认；已有的错日期自动清掉\n· 外卖识别：挂「外卖」小签，美食地图单列「外卖」栏\n【节奏修正】\n· 晨间承接改为逐条勾选：勾谁带谁，配全选；不带的留在原页与待办汇总\n· 哪天做完算哪天：在待办汇总或历史页勾掉旧任务，记入当天——日报周报按完成日归属，复盘快照多一行"还清了 N 件旧账"，汇总里带「✓ 8.18 清账」签\n\n'
     + 'v2.3（2026.8.13）\n【按定稿示意图纠偏】\n· 「生成月报」改为直接生成本月盘点分享卡（数字+榜单+原话引用），不再打开文字版报告；文字版日/周/月报只在工作模板的「报告」里\n· 美食顶部中间改为「我的美食地图」：按城市展开店清单，点店跳原文\n· 盘点分享卡装全内容：美食卡新增城市分布条\n· 范围与标题用真实年月：盘点·2026 ▾ / 盘点·8月 ▾；卡片标题如「2026 我的观影年报」「8月 美食小结」\n· 「和谁」只认人名：限 1~3 字并紧跟动作词，转交过的人名优先识别\n· 未套模板的分组顶部只保留「▣ 分享」\n\n'
     + 'v2.2（2026.8.13）\n· 集子页顶部按示意图定稿：盘点·今年 ▾ ｜ 生成月报（工作模板为「报告」）｜ ▣ 分享（分享的就是当前盘点，含数字、榜单与美食地图，不再另设入口）\n· 模板选择搬进侧栏：新建分组时直接选；已有分组长按或左滑 →「模板」随时改\n· 美食「城市分布」升级为「我的美食地图」，点城市看该城清单\n\n'
@@ -2253,6 +2310,13 @@ function parseLine(text){
   if (ws.length){ r.withs = ws; r.with = ws[0]; }
   const vd = parseVerdict(t);
   if (vd){ r.verdict = vd.w; if (vd.neg) r.vNeg = true; }
+  return r;
+}
+function parseEntry(e){
+  const t = String(e.text || '');
+  if (e._pc && e._pc.t === t && e._pc.g === PARSE_GEN) return e._pc.r;
+  const r = parseLine(t);
+  e._pc = {t, g:PARSE_GEN, r};
   return r;
 }
 function canonTitle(t){ return SET.alias[t] || t; }
@@ -2347,7 +2411,7 @@ function tplRows(g, rng){
   walk((d, e) => {
     if (!(e.groups && e.groups.includes(g))) return;
     if (rng){ const t = parseKey(d); if (t < rng.from || t > rng.to) return; }
-    rows.push({d, e, p:parseLine(e.text)});
+    rows.push({d, e, p:parseEntry(e)});
   });
   rows.sort((a, b) => parseKey(b.d) - parseKey(a.d));
   return rows;
@@ -2433,6 +2497,44 @@ function tplStats(tpl, rows){
 }
 
 /* ============ v2.0 盘点面板 ============ */
+let CHAIN_OPEN = new Set();
+function appendChainFold(w, r, byId){
+  const hops = [];
+  let cur2 = r.e; const seen2 = new Set();
+  while (cur2 && cur2.srcId && byId[cur2.srcId] && !seen2.has(cur2.srcId)){
+    seen2.add(cur2.srcId);
+    const prev = byId[cur2.srcId];
+    hops.push(prev); cur2 = prev.e;
+  }
+  if (!hops.length) return;
+  const body = w.querySelector('.entry-body'); if (!body) return;
+  const hopInfo = h => {
+    const bits = [];
+    if (h.e.progress) bits.push('已完成' + h.e.progress + '%');
+    if (h.e.note) bits.push(h.e.note);
+    if (!bits.length && h.e.badge){
+      const m2 = String(h.e.badge).replace(/^→[\d.]+\s*·?\s*/, '').replace(/^已完成0%\s*·?\s*/, '').trim();
+      if (m2) bits.push(m2);
+    }
+    return bits.join('——');
+  };
+  const notable = hops.map(h => ({d:h.d, info:hopInfo(h)})).filter(x => x.info).reverse();
+  const first = hops[hops.length - 1], open = CHAIN_OPEN.has(r.e._id);
+  const fold = document.createElement('div'); fold.className = 'chainfold';
+  fold.textContent = (open ? '▾' : '▸') + ' 一路 ' + (hops.length + 1) + ' 次 · 从 ' + fmtShort(first.d) + ' 跟到 ' + fmtShort(r.d)
+    + (notable.length ? ' · ' + notable.length + ' 条进度' : '');
+  fold.onclick = ev => { ev.stopPropagation();
+    if (open) CHAIN_OPEN.delete(r.e._id); else CHAIN_OPEN.add(r.e._id);
+    render(); };
+  body.appendChild(fold);
+  if (open){
+    const line = document.createElement('div'); line.className = 'chainline';
+    line.innerHTML = notable.length
+      ? notable.map(x => '<div>' + fmtShort(x.d) + ' · ' + x.info + '</div>').join('')
+      : '<div>途中没有留进度备注 · 只是被一天天带过来</div>';
+    body.appendChild(line);
+  }
+}
 function ptagRow(r, tpl, scoredSet){
   const p = r.p; const d = document.createElement('div'); d.className = 'ptags';
   const add = (cls, txt, fn) => { const x = document.createElement('span'); x.className = 'ptg ' + cls; x.textContent = txt; if (fn) x.onclick = fn; d.appendChild(x); };
@@ -2597,7 +2699,7 @@ function updateRecall(e, inp){
     const hits = [];
     walk((d, x) => {
       if (x._id === e._id || !x.text) return;
-      const xp = parseLine(x.text);
+      const xp = parseEntry(x);
       if (isStore ? (xp.store === key || x.text.includes(key)) : (xp.title && canonTitle(xp.title) === canonTitle(key)))
         hits.push({d, x, xp});
     });
@@ -2935,6 +3037,125 @@ function shExport(){
 }
 $('#shSheet').addEventListener('click', ev => { if (ev.target.id === 'shSheet') closeShare(); });
 
+/* ============ v2.7 循环提醒 ============ */
+SET.cycles = SET.cycles || [];
+let cycUiOpen = false, cycKind = 'month', pendingCDel = null;
+function cycDesc(c){
+  if (c.kind === 'year') return '每年 ' + c.m + ' 月 ' + c.d + ' 日';
+  if (c.kind === 'month') return '每月 ' + c.day + ' 号';
+  return '每 ' + c.n + ' 天 · 上次 ' + fmtShort(c.anchor) + ' 日';
+}
+function cycHits(c, k){
+  const a = k.split('.').map(Number);
+  if (c.kind === 'year') return a[1] === +c.m && a[2] === +c.d;
+  if (c.kind === 'month'){
+    const last = new Date(a[0], a[1], 0).getDate();
+    return a[2] === Math.min(+c.day, last);
+  }
+  const diff = Math.round((parseKey(k) - parseKey(c.anchor)) / 86400000);
+  return diff > 0 && diff % (+c.n) === 0;
+}
+function cycNext(c, fromK){
+  const d = parseKey(fromK);
+  for (let i = 0; i < 800; i++){
+    const k = dkey(d);
+    if (cycHits(c, k)) return k;
+    d.setDate(d.getDate() + 1);
+  }
+  return null;
+}
+function cycOnDone(e){
+  if (!e.cyc) return;
+  const c = (SET.cycles || []).find(x => x.id === e.cyc);
+  if (c && c.kind === 'ndays'){ c.anchor = TODAY; scheduleSave(); toast('🔁 周期已从今天重新起算'); }
+}
+function cycIcs(c){
+  const nk = cycNext(c, TODAY); if (!nk){ toast('算不出下一次时间'); return; }
+  const fmt = k => { const a = k.split('.').map(Number); return a[0] + String(a[1]).padStart(2, '0') + String(a[2]).padStart(2, '0'); };
+  const d2 = parseKey(nk); d2.setDate(d2.getDate() + 1);
+  const rr = c.kind === 'year' ? 'FREQ=YEARLY' : c.kind === 'month' ? 'FREQ=MONTHLY' : ('FREQ=DAILY;INTERVAL=' + c.n);
+  const ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//dot//CN\r\nBEGIN:VEVENT\r\n'
+    + 'UID:dotcyc-' + c.id + '@dot\r\nDTSTART;VALUE=DATE:' + fmt(nk) + '\r\nDTEND;VALUE=DATE:' + fmt(dkey(d2))
+    + '\r\nRRULE:' + rr + '\r\nSUMMARY:🔁 ' + (c.name || '循环提醒') + '\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n';
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([ics], {type:'text/calendar'}));
+  a.download = (c.name || '循环提醒').slice(0, 12) + '.ics'; a.click();
+  toast('已生成日历文件 · 打开即可加入系统日历（会真的响）');
+}
+function renderCycles(){
+  const bar = document.createElement('div'); bar.className = 'rp-tabs'; bar.style.marginTop = '16px';
+  const addC = document.createElement('button'); addC.className = 'chip on'; addC.textContent = '＋ 添加';
+  bar.appendChild(addC); view.appendChild(bar);
+  const form = document.createElement('div'); form.className = 'vt-card';
+  form.style.display = cycUiOpen ? 'block' : 'none';
+  const kindChips = [['month','每月'],['year','每年'],['ndays','每N天']]
+    .map(([k, n]) => '<button class="gs-chip' + (cycKind === k ? ' on' : '') + '" data-k="' + k + '">' + n + '</button>').join('');
+  form.innerHTML = '<input class="vt-in" id="cyName" placeholder="提醒什么（如：发工资 / 妈妈生日 / 大姨妈）" style="margin-top:0">'
+    + '<div class="gs-chips" style="margin-top:10px">' + kindChips + '</div>'
+    + (cycKind === 'year'
+        ? '<div style="display:flex;gap:8px"><input class="vt-in" id="cyM" type="number" min="1" max="12" placeholder="几月"><input class="vt-in" id="cyD" type="number" min="1" max="31" placeholder="几日"></div>'
+      : cycKind === 'month'
+        ? '<input class="vt-in" id="cyDay" type="number" min="1" max="31" placeholder="每月几号（超过月底自动取最后一天）">'
+        : '<div style="display:flex;gap:8px"><input class="vt-in" id="cyN" type="number" min="2" max="365" placeholder="间隔天数（如 28）"><input class="vt-in" id="cyAnchor" type="date"></div>')
+    + '<input class="vt-in" id="cyAhead" type="number" min="0" max="30" placeholder="提前几天提示（可不填）">'
+    + '<button class="rv-confirm" id="cySave">保存</button>';
+  view.appendChild(form);
+  addC.onclick = () => { cycUiOpen = !cycUiOpen; render(); };
+  form.querySelectorAll('[data-k]').forEach(b => b.onclick = () => { cycKind = b.dataset.k; render(); });
+  const anc = form.querySelector('#cyAnchor');
+  if (anc){ const a = TODAY.split('.').map(Number);
+    anc.value = a[0] + '-' + String(a[1]).padStart(2, '0') + '-' + String(a[2]).padStart(2, '0'); }
+  $('#cySave').onclick = () => {
+    const name = $('#cyName').value.trim();
+    if (!name){ toast('先写提醒什么'); return; }
+    const c = {id:++uid, name, kind:cycKind, ahead:+($('#cyAhead').value || 0)};
+    if (cycKind === 'year'){
+      c.m = +$('#cyM').value; c.d = +$('#cyD').value;
+      if (!(c.m >= 1 && c.m <= 12 && c.d >= 1 && c.d <= 31)){ toast('月份日期没填对'); return; }
+    } else if (cycKind === 'month'){
+      c.day = +$('#cyDay').value;
+      if (!(c.day >= 1 && c.day <= 31)){ toast('几号没填对'); return; }
+    } else {
+      c.n = +$('#cyN').value;
+      const av = $('#cyAnchor').value;
+      if (!(c.n >= 2)){ toast('间隔天数至少 2'); return; }
+      if (!av){ toast('选一个起算日'); return; }
+      const aa = av.split('-').map(Number);
+      c.anchor = aa[0] + '.' + aa[1] + '.' + aa[2];
+    }
+    SET.cycles.push(c); cycUiOpen = false; scheduleSave();
+    toast('已添加 · 到那天会自动出现在「今天要做」'); render();
+  };
+  if (!SET.cycles.length){
+    const d = document.createElement('div'); d.className = 'empty-hint'; d.style.textAlign = 'center'; d.style.padding = '26px 2px 8px';
+    d.innerHTML = dotSVG(56) + '<div style="margin-top:8px">还没有循环提醒 · 生日、发工资日、周期都交给我记</div>';
+    view.appendChild(d);
+  }
+  SET.cycles.forEach(c => {
+    const card = document.createElement('div'); card.className = 'vt-card';
+    const nk = cycNext(c, TODAY);
+    card.innerHTML = '<div class="vt-site">🔁 ' + vEsc(c.name)
+      + '<button class="gm-btn danger" data-a="del">' + (pendingCDel === c.id ? '确认删除' : '删') + '</button></div>'
+      + '<div class="vt-note">' + cycDesc(c) + (c.ahead ? ' · 提前 ' + c.ahead + ' 天提示' : '')
+      + (nk ? '<br>下次：' + fmtKey(nk) + '（' + weekCN(nk) + '）' : '') + '</div>'
+      + '<div class="rp-tabs" style="margin-top:10px">'
+      + '<button class="chip" data-a="ics">📅 入系统日历</button>'
+      + (c.kind === 'ndays' ? '<button class="chip" data-a="reset">今天来了 · 重新起算</button>' : '')
+      + '</div>';
+    card.querySelector('[data-a="del"]').onclick = () => {
+      if (pendingCDel !== c.id){ pendingCDel = c.id; toast('再点一次确认删除'); render(); return; }
+      SET.cycles = SET.cycles.filter(x => x.id !== c.id); pendingCDel = null; scheduleSave(); render();
+    };
+    card.querySelector('[data-a="ics"]').onclick = () => cycIcs(c);
+    const rs = card.querySelector('[data-a="reset"]');
+    if (rs) rs.onclick = () => { c.anchor = TODAY; scheduleSave(); toast('已从今天重新起算'); render(); };
+    view.appendChild(card);
+  });
+  const tip = document.createElement('div'); tip.className = 'vt-tip';
+  tip.textContent = '到那天打开 App，提醒会出现在「今天要做」；网页版没有系统推送，想让手机真的响就点「入系统日历」。';
+  view.appendChild(tip);
+}
+
 /* ============ v2.5 账号小本（主口令加密，云端只存密文） ============ */
 let vaultKey = null, vaultItems = null, vtReveal = new Set(), pendingVDel = null;
 function vB64(buf){ let s2 = ''; const u = new Uint8Array(buf); for (let i = 0; i < u.length; i++) s2 += String.fromCharCode(u[i]); return btoa(s2); }
@@ -3101,6 +3322,27 @@ function ensureToday(){
     }
   });
 }
+function cycMaterialize(){
+  let ins = false;
+  (SET.cycles || []).forEach(c => {
+    if (c.lastIns !== TODAY && cycHits(c, TODAY)){
+      c.lastIns = TODAY;
+      P().plan.push({sym:'task', state:'open',
+        text:'🔁 ' + c.name + (c.kind === 'ndays' ? '（按周期预计是今天）' : ''), cyc:c.id, _id:++uid}); ins = true;
+    }
+    if (c.ahead > 0 && c.lastPre !== TODAY){
+      const nk = cycNext(c, addDaysK(TODAY, 1));
+      if (nk){
+        const diff = Math.round((parseKey(nk) - parseKey(TODAY)) / 86400000);
+        if (diff === +c.ahead){
+          c.lastPre = TODAY;
+          P().plan.push({sym:'note', text:'🔁 ' + diff + ' 天后 · ' + c.name + '（' + fmtShort(nk) + ' 日）', cyc:c.id, _id:++uid}); ins = true;
+        }
+      }
+    }
+  });
+  if (ins) scheduleSave();
+}
 function morningCheck(){
   const page = P(); if (page.morningAsked) return;
   const left = [];
@@ -3177,6 +3419,7 @@ if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0){
 }
 applyAccent();
 ensureToday();
+cycMaterialize();
 buildToolbar(); render();
 $('#drawerDot').innerHTML = dotSVG(34);
 morningCheck(); showOnboard();
