@@ -286,6 +286,17 @@
   .rv-confirm{margin-top:14px;width:100%;border:none;background:var(--ink);color:#fff;border-radius:12px;padding:12px;font-size:15px;cursor:pointer;font-family:inherit}
   .rv-finish{margin:auto;text-align:center;color:var(--ink-soft);font-size:15.5px;line-height:2}
   .rv-finish b{font-size:18px;color:var(--ink)}
+  /* ---------- 账号小本 ---------- */
+  .vt-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-top:12px}
+  .vt-item .vt-site{font-size:15.5px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .vt-item .vt-site .gm-btn{margin-left:auto}
+  .vt-line{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:14px}
+  .vt-line .lab{width:34px;flex:none;font-size:11.5px;color:var(--ink-faint)}
+  .vt-line .val{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:ui-monospace,Menlo,monospace;font-size:13.5px;letter-spacing:.5px}
+  .vt-line .val.masked{letter-spacing:3px;color:var(--ink-soft)}
+  .vt-note{margin-top:8px;font-size:12.5px;color:var(--ink-soft)}
+  .vt-tip{font-size:12.5px;color:var(--ink-faint);line-height:1.8;margin-top:14px}
+  .vt-in{width:100%;border:1px solid var(--line-strong);border-radius:10px;padding:9px 12px;margin-top:10px;font-family:inherit;font-size:16px;background:var(--card);color:var(--ink);outline:none}
   /* ---------- 晨间勾选 ---------- */
   .mg-item{display:flex;gap:10px;align-items:flex-start;padding:9px 2px;font-size:14.5px;border-bottom:1px dashed var(--line);cursor:pointer}
   .mg-item:last-child{border-bottom:none}
@@ -1051,6 +1062,7 @@ function renderCal(){
 
 /* ============ 视图渲染 ============ */
 function render(){
+  if (cur.name !== 'vault' && vaultKey) vaultLock();
   view.innerHTML = '';
   if (cur.name === 'today'){
     topTitle.textContent = dayGroupTitle(TODAY); reviewBtn.textContent = '复盘';
@@ -1190,7 +1202,7 @@ function render(){
         setTimeout(() => pendingRestore = false, 5000); return; }
       pendingRestore = false; $('#jsonInput').click();
     });
-    mkRow('版本记录', sub('v2.4 ›'), showChangelog);
+    mkRow('版本记录', sub('v2.5 ›'), showChangelog);
     mkRow('应用锁', sub('原生版支持 FaceID'), () => toast('网页版暂不支持 · 原生开发阶段实现'));
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
@@ -1198,6 +1210,10 @@ function render(){
       pendingWipe = true; toast('再点一次确认清空（建议先导出备份）');
       setTimeout(() => pendingWipe = false, 4000);
     });
+  }
+  else if (cur.name === 'vault'){
+    topTitle.textContent = '账号小本'; reviewBtn.textContent = '回今日';
+    renderVault();
   }
   else if (cur.name === 'cal'){
     topTitle.textContent = '总日历'; reviewBtn.textContent = '回今日';
@@ -1475,6 +1491,7 @@ function buildDrawer(){
   });
   const line = document.createElement('div'); line.className = 'drawer-line'; box.appendChild(line);
   [['☾','晚间复盘', () => { closeDrawer(); openReview(); }],
+   ['🔐','账号小本', () => { cur = {name:'vault'}; closeDrawer(); render(); }],
    ['⚙','设置', () => { cur = {name:'settings'}; closeDrawer(); render(); }]]
   .forEach(([ico, name, fn]) => {
     const it = document.createElement('div'); it.className = 'd-item plain';
@@ -2157,7 +2174,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.4（当前 · 2026.8.18）\n【识别再进化】\n· 多人同伴：「和赵赵、Orion和家人二刷」三个人都认出来，各记一次；家人/爸妈/同事等称呼有效\n· 点点的熟人簿与熟店簿：认过一次的人和店（含转交对象），之后不带引号、不带动作词也认识——"又吃了子午路肉夹馍"会计入去过次数\n· 二刷标注：同一部片多条记录，榜单和列表里标 ×2、"看了2次"\n· 店的判决＝括号外离店名最近的判决词；括号里的（惊艳/拉胯）只算单品评价\n· 金额不再误判日期：60.28元、6.28元这类都不会变成日期；月>12、日>31 不认；已有的错日期自动清掉\n· 外卖识别：挂「外卖」小签，美食地图单列「外卖」栏\n【节奏修正】\n· 晨间承接改为逐条勾选：勾谁带谁，配全选；不带的留在原页与待办汇总\n· 哪天做完算哪天：在待办汇总或历史页勾掉旧任务，记入当天——日报周报按完成日归属，复盘快照多一行"还清了 N 件旧账"，汇总里带「✓ 8.18 清账」签\n\n'
+    + 'v2.5（当前 · 2026.8.18）\n· 同行人介词全覆盖：和/与/跟/同 都认（跟赵赵、与琨、同事一起都可以）；「跟进」「同时」这类词不会误判\n· 新增「账号小本」（侧栏 🔐）：独立于手帐流，主口令加密（AES），本机和云备份里只存密文；密码默认打码、点一下显示、一键复制；离开页面自动上锁\n· 小本内容不进搜索、报告、分享；主口令无找回，请记牢；适合 wifi/会员号级别，银行级请用系统钥匙串\n\n'
+    + 'v2.4（2026.8.18）\n【识别再进化】\n· 多人同伴：「和赵赵、Orion和家人二刷」三个人都认出来，各记一次；家人/爸妈/同事等称呼有效\n· 点点的熟人簿与熟店簿：认过一次的人和店（含转交对象），之后不带引号、不带动作词也认识——"又吃了子午路肉夹馍"会计入去过次数\n· 二刷标注：同一部片多条记录，榜单和列表里标 ×2、"看了2次"\n· 店的判决＝括号外离店名最近的判决词；括号里的（惊艳/拉胯）只算单品评价\n· 金额不再误判日期：60.28元、6.28元这类都不会变成日期；月>12、日>31 不认；已有的错日期自动清掉\n· 外卖识别：挂「外卖」小签，美食地图单列「外卖」栏\n【节奏修正】\n· 晨间承接改为逐条勾选：勾谁带谁，配全选；不带的留在原页与待办汇总\n· 哪天做完算哪天：在待办汇总或历史页勾掉旧任务，记入当天——日报周报按完成日归属，复盘快照多一行"还清了 N 件旧账"，汇总里带「✓ 8.18 清账」签\n\n'
     + 'v2.3（2026.8.13）\n【按定稿示意图纠偏】\n· 「生成月报」改为直接生成本月盘点分享卡（数字+榜单+原话引用），不再打开文字版报告；文字版日/周/月报只在工作模板的「报告」里\n· 美食顶部中间改为「我的美食地图」：按城市展开店清单，点店跳原文\n· 盘点分享卡装全内容：美食卡新增城市分布条\n· 范围与标题用真实年月：盘点·2026 ▾ / 盘点·8月 ▾；卡片标题如「2026 我的观影年报」「8月 美食小结」\n· 「和谁」只认人名：限 1~3 字并紧跟动作词，转交过的人名优先识别\n· 未套模板的分组顶部只保留「▣ 分享」\n\n'
     + 'v2.2（2026.8.13）\n· 集子页顶部按示意图定稿：盘点·今年 ▾ ｜ 生成月报（工作模板为「报告」）｜ ▣ 分享（分享的就是当前盘点，含数字、榜单与美食地图，不再另设入口）\n· 模板选择搬进侧栏：新建分组时直接选；已有分组长按或左滑 →「模板」随时改\n· 美食「城市分布」升级为「我的美食地图」，点城市看该城清单\n\n'
     + 'v2.1（2026.8.13）\n· 集子页顶部收成一行：模板 / 报告（工作模板才有）/ 分享集子\n· 日报周报月报归入「工作」模板（#工作类分组名自动套用，其他分组顶部不再挤报告按钮）\n· 时间范围收进盘点标题：点「盘点·今年 ▾」循环切 今年/本月/去年/全部；「▣ 分享」也在盘点标题行\n· 盘点数字可点开：看过/回头再去/回购/避雷/和谁看，点进去是完整列表，再点跳到当天原文\n· 高分榜「和独自」改为「独自」\n· 主页任何一条记录整行长按即可生成分享图（任务的符号长按仍是处理面板）\n\n'
@@ -2239,17 +2257,29 @@ function parseLine(text){
 }
 function canonTitle(t){ return SET.alias[t] || t; }
 let KNOWN_PPL = null, KNOWN_STORE = null;
-const PPL_LIST_RE = /和((?:[\u4e00-\u9fa5A-Za-z0-9]{1,6}[、，,]?(?:和)?)+?)(?:一起|二刷|三刷|补看|看了|看|吃|去|玩|逛|见|喝|聊)/;
-const PPL_BLACK = ['他','她','它','我','你','大家','别人','我们','你们','他们','自己'];
+const PPL_LIST_RE = /([和与跟同])((?:[\u4e00-\u9fa5A-Za-z0-9]{1,6}?[、，,]?(?:和)?)+?)(?:一起|二刷|三刷|补看|看了|看|吃|去|玩|逛|见面|见|喝|聊|交流|讨论)/;
+const PPL_BLACK = ['他','她','它','我','你','大家','别人','我们','你们','他们','自己','进','出','上','下','来','回','走','着','们','人','这','那'];
+const PPL_PREPS = ['和', '与', '跟', '同'];
+/* 从一句话里抽同行人名单（含「同事/同学」词头与「跟进/参与」类误判防护） */
+function extractPplList(t){
+  const lm = String(t || '').match(PPL_LIST_RE);
+  if (!lm) return [];
+  let seg = lm[2];
+  if (lm[1] === '同'){
+    const w2 = '同' + seg.slice(0, 1);
+    if (['同时', '同意', '同样', '同期', '同城', '同步', '同款'].includes(w2)) return [];
+    if (['同事', '同学', '同行'].includes(w2)) return [w2];
+  }
+  return seg.split(/[、，,和与跟同]/).map(n => n.trim())
+    .filter(n => n && n.length <= 6 && !PPL_BLACK.includes(n) && !/[了的呢吗吧啊是在有]/.test(n));
+}
 function peopleSet(){
   if (!KNOWN_PPL){
     KNOWN_PPL = new Set();
     walk((d, e) => {
       if (e.delegate && e.delegate.to && e.delegate.to.length <= 4) KNOWN_PPL.add(e.delegate.to);
-      const lm = String(e.text || '').match(PPL_LIST_RE);
-      if (lm) lm[1].split(/[、，,和]/).forEach(n => {
-        n = n.trim();
-        if (n && n.length >= 2 && n.length <= 4 && !/\d/.test(n) && !PPL_BLACK.includes(n)) KNOWN_PPL.add(n);
+      extractPplList(e.text).forEach(n => {
+        if (n.length >= 2 && n.length <= 4 && !/\d/.test(n)) KNOWN_PPL.add(n);
       });
     });
   }
@@ -2272,10 +2302,9 @@ function parseCompanions(t){
   const out = [];
   const add = n => { n = (n || '').trim();
     if (n && n.length <= 6 && !PPL_BLACK.includes(n) && !out.includes(n)) out.push(n); };
-  const lm = t.match(PPL_LIST_RE);
-  if (lm) lm[1].split(/[、，,和]/).forEach(add);
-  for (const n of peopleSet()){ if (n && t.includes('和' + n)) add(n); }
-  for (const g of GENERIC_PPL){ if (t.includes('和' + g)) add(g); }
+  extractPplList(t).forEach(add);
+  for (const n of peopleSet()){ if (n && PPL_PREPS.some(pp => t.includes(pp + n))) add(n); }
+  for (const g of GENERIC_PPL){ if (PPL_PREPS.some(pp => t.includes(pp + g))) add(g); }
   return out;
 }
 /* 店的判决＝括号外、位置最早的判决词；括号内视为单品评价 */
@@ -2905,6 +2934,144 @@ function shExport(){
   }, 'image/png');
 }
 $('#shSheet').addEventListener('click', ev => { if (ev.target.id === 'shSheet') closeShare(); });
+
+/* ============ v2.5 账号小本（主口令加密，云端只存密文） ============ */
+let vaultKey = null, vaultItems = null, vtReveal = new Set(), pendingVDel = null;
+function vB64(buf){ let s2 = ''; const u = new Uint8Array(buf); for (let i = 0; i < u.length; i++) s2 += String.fromCharCode(u[i]); return btoa(s2); }
+function vBuf(b64){ const s2 = atob(b64); const u = new Uint8Array(s2.length); for (let i = 0; i < s2.length; i++) u[i] = s2.charCodeAt(i); return u.buffer; }
+async function vDerive(pass, saltB64){
+  const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2', salt:vBuf(saltB64), iterations:120000, hash:'SHA-256'},
+    km, {name:'AES-GCM', length:256}, false, ['encrypt', 'decrypt']);
+}
+async function vEnc(key, str){
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = await crypto.subtle.encrypt({name:'AES-GCM', iv}, key, new TextEncoder().encode(str));
+  const out = new Uint8Array(12 + ct.byteLength); out.set(iv); out.set(new Uint8Array(ct), 12);
+  return vB64(out.buffer);
+}
+async function vDec(key, b64){
+  const u = new Uint8Array(vBuf(b64));
+  const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv:u.slice(0, 12)}, key, u.slice(12));
+  return new TextDecoder().decode(pt);
+}
+async function vaultCreate(pass){
+  const salt = vB64(crypto.getRandomValues(new Uint8Array(16)).buffer);
+  const key = await vDerive(pass, salt);
+  SET.vault = {salt, check:await vEnc(key, 'dot-vault-ok'), data:await vEnc(key, '[]')};
+  vaultKey = key; vaultItems = []; scheduleSave();
+}
+async function vaultUnlock(pass){
+  const v = SET.vault; if (!v) return false;
+  try{
+    const key = await vDerive(pass, v.salt);
+    if ((await vDec(key, v.check)) !== 'dot-vault-ok') return false;
+    vaultItems = JSON.parse(await vDec(key, v.data));
+    vaultKey = key; return true;
+  }catch(_){ return false; }
+}
+async function vaultPersist(){
+  if (!vaultKey || !SET.vault) return;
+  SET.vault.data = await vEnc(vaultKey, JSON.stringify(vaultItems));
+  scheduleSave();
+}
+function vaultLock(){ vaultKey = null; vaultItems = null; vtReveal = new Set(); }
+function vCopy(txt, msg){
+  const done = () => toast(msg || '已复制');
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done).catch(() => done());
+  } else done();
+}
+function vEsc(x){ return String(x || '').replace(/[<>&"]/g, c => ({'<':'&lt;', '>':'&gt;', '&':'&amp;', '"':'&quot;'}[c])); }
+function renderVault(){
+  const wrap = document.createElement('div');
+  if (!(window.crypto && crypto.subtle)){
+    wrap.innerHTML = '<div class="vt-tip" style="margin-top:26px">这台设备的浏览器环境不支持加密接口，账号小本无法使用。</div>';
+    view.appendChild(wrap); return;
+  }
+  if (!SET.vault){
+    wrap.innerHTML = '<div class="vt-card">'
+      + '<div style="text-align:center;padding:6px 0 2px">' + dotSVG(72) + '</div>'
+      + '<div style="font-size:15px;font-weight:700;margin-top:8px">给小本设一个主口令</div>'
+      + '<div class="vt-tip" style="margin-top:6px">所有内容用它加密后才保存，本机和云备份里都只有密文。'
+      + '<b style="color:var(--red)">主口令忘了没有任何找回办法</b>，请记牢。<br>'
+      + '适合存 wifi 密码、会员号、水电户号这类；银行级密码建议放系统钥匙串，原生版会配 FaceID。</div>'
+      + '<input type="password" class="vt-in" id="vtP1" placeholder="主口令（至少 4 位）">'
+      + '<input type="password" class="vt-in" id="vtP2" placeholder="再输一遍">'
+      + '<button class="rv-confirm" id="vtNew">创建小本</button></div>';
+    view.appendChild(wrap);
+    $('#vtNew').onclick = async () => {
+      const a = $('#vtP1').value, b2 = $('#vtP2').value;
+      if (a.length < 4){ toast('口令至少 4 位'); return; }
+      if (a !== b2){ toast('两次输入不一致'); return; }
+      await vaultCreate(a); toast('小本已创建 · 记牢主口令'); render();
+    };
+    return;
+  }
+  if (!vaultKey){
+    wrap.innerHTML = '<div class="vt-card">'
+      + '<div style="text-align:center;padding:6px 0 2px">' + dotSVG(72) + '</div>'
+      + '<div style="font-size:15px;font-weight:700;margin-top:8px;text-align:center">小本已上锁</div>'
+      + '<input type="password" class="vt-in" id="vtP" placeholder="输入主口令解锁">'
+      + '<button class="rv-confirm" id="vtGo">解锁</button></div>';
+    view.appendChild(wrap);
+    const go = async () => {
+      const ok = await vaultUnlock($('#vtP').value);
+      if (ok){ toast('已解锁'); render(); } else toast('口令不对（或数据损坏）');
+    };
+    $('#vtGo').onclick = go;
+    $('#vtP').addEventListener('keydown', ev => { if (ev.key === 'Enter') go(); });
+    setTimeout(() => $('#vtP') && $('#vtP').focus(), 60);
+    return;
+  }
+  /* 已解锁 */
+  const bar = document.createElement('div'); bar.className = 'rp-tabs'; bar.style.marginTop = '16px';
+  const addC = document.createElement('button'); addC.className = 'chip on'; addC.textContent = '＋ 添加';
+  const lockC = document.createElement('button'); lockC.className = 'chip'; lockC.textContent = '锁定';
+  bar.appendChild(addC); bar.appendChild(lockC); view.appendChild(bar);
+  lockC.onclick = () => { vaultLock(); toast('已锁定'); render(); };
+  const form = document.createElement('div'); form.className = 'vt-card'; form.style.display = 'none';
+  form.innerHTML = '<input class="vt-in" id="vtSite" placeholder="哪里的账号（如：小区wifi / 京东）" style="margin-top:0">'
+    + '<input class="vt-in" id="vtUser" placeholder="账号（可不填）">'
+    + '<input class="vt-in" id="vtPwd" placeholder="密码">'
+    + '<input class="vt-in" id="vtNote" placeholder="备注（可不填）">'
+    + '<button class="rv-confirm" id="vtSave">保存</button>';
+  view.appendChild(form);
+  addC.onclick = () => { form.style.display = form.style.display === 'none' ? 'block' : 'none'; if (form.style.display === 'block') $('#vtSite').focus(); };
+  $('#vtSave').onclick = async () => {
+    const site = $('#vtSite').value.trim();
+    if (!site){ toast('先写这是哪里的账号'); return; }
+    vaultItems.unshift({site, user:$('#vtUser').value.trim(), pwd:$('#vtPwd').value, note:$('#vtNote').value.trim(), _id:++uid});
+    await vaultPersist(); toast('已加密保存'); render();
+  };
+  if (!vaultItems.length){
+    const d = document.createElement('div'); d.className = 'empty-hint'; d.style.textAlign = 'center'; d.style.padding = '26px 2px 8px';
+    d.innerHTML = dotSVG(56) + '<div style="margin-top:8px">小本还空着 · 点上面「＋ 添加」记第一条</div>';
+    view.appendChild(d);
+  }
+  vaultItems.forEach(it => {
+    const c = document.createElement('div'); c.className = 'vt-card vt-item';
+    const rev = vtReveal.has(it._id);
+    c.innerHTML = '<div class="vt-site">' + vEsc(it.site)
+      + '<button class="gm-btn danger" data-a="del">' + (pendingVDel === it._id ? '确认删除' : '删') + '</button></div>'
+      + (it.user ? '<div class="vt-line"><span class="lab">账号</span><span class="val">' + vEsc(it.user) + '</span><button class="gm-btn" data-a="cu">复制</button></div>' : '')
+      + '<div class="vt-line"><span class="lab">密码</span><span class="val' + (rev ? '' : ' masked') + '" data-a="rv" style="cursor:pointer">'
+      + (rev ? vEsc(it.pwd) : '••••••••') + '</span><button class="gm-btn" data-a="cp">复制</button></div>'
+      + (it.note ? '<div class="vt-note">' + vEsc(it.note) + '</div>' : '');
+    c.querySelector('[data-a="del"]').onclick = async () => {
+      if (pendingVDel !== it._id){ pendingVDel = it._id; toast('再点一次确认删除'); render(); return; }
+      vaultItems = vaultItems.filter(x => x._id !== it._id); pendingVDel = null;
+      await vaultPersist(); toast('已删除'); render();
+    };
+    const cu = c.querySelector('[data-a="cu"]'); if (cu) cu.onclick = () => vCopy(it.user, '账号已复制');
+    c.querySelector('[data-a="cp"]').onclick = () => vCopy(it.pwd, '密码已复制');
+    c.querySelector('[data-a="rv"]').onclick = () => { if (vtReveal.has(it._id)) vtReveal.delete(it._id); else vtReveal.add(it._id); render(); };
+    view.appendChild(c);
+  });
+  const tip = document.createElement('div'); tip.className = 'vt-tip';
+  tip.textContent = '本机与云备份里只有密文 · 内容不进搜索、报告和分享 · 离开或点「锁定」后需重新输入主口令';
+  view.appendChild(tip);
+}
 
 /* ============ 晨间开页 ============ */
 function ensureToday(){
