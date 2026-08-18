@@ -286,6 +286,14 @@
   .rv-confirm{margin-top:14px;width:100%;border:none;background:var(--ink);color:#fff;border-radius:12px;padding:12px;font-size:15px;cursor:pointer;font-family:inherit}
   .rv-finish{margin:auto;text-align:center;color:var(--ink-soft);font-size:15.5px;line-height:2}
   .rv-finish b{font-size:18px;color:var(--ink)}
+  /* ---------- 晨间勾选 ---------- */
+  .mg-item{display:flex;gap:10px;align-items:flex-start;padding:9px 2px;font-size:14.5px;border-bottom:1px dashed var(--line);cursor:pointer}
+  .mg-item:last-child{border-bottom:none}
+  .mg-item .mg-ck{flex:none;color:var(--ink-faint);font-size:15px;margin-top:1px}
+  .mg-item.on .mg-ck{color:var(--accent)}
+  .mg-item .mg-tx{flex:1;min-width:0;line-height:1.5}
+  .mg-item.on .mg-tx{color:var(--ink)}
+  .mg-item .mg-d{flex:none;font-size:11px;color:var(--ink-faint);margin-top:3px}
   /* ---------- v2.0 盘点 ---------- */
   .tp-pan{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-top:12px}
   .tp-pan .tt{font-size:11.5px;color:var(--ink-faint);letter-spacing:2px;margin-bottom:10px;font-weight:600}
@@ -421,6 +429,7 @@ try{
 let saveTm = null;
 function scheduleSave(){
   if (typeof KNOWN_PPL !== 'undefined') KNOWN_PPL = null;
+  if (typeof KNOWN_STORE !== 'undefined') KNOWN_STORE = null;
   clearTimeout(saveTm);
   saveTm = setTimeout(() => {
     try{ localStorage.setItem(LSKEY, JSON.stringify({pages:PAGES, extraGroups, set:SET, seen:SEEN, gcolor:GCOLOR})); }
@@ -659,7 +668,14 @@ function commit(e){
     }
   }
   const dm = t.match(/(\d{1,2})\.(\d{1,2})号?/);
-  if (dm){
+  const dmOK = dm && (() => {
+    const mo = +dm[1], dy = +dm[2];
+    const pre = t[dm.index - 1] || '';
+    const post = t.slice(dm.index + dm[0].length, dm.index + dm[0].length + 1);
+    return mo >= 1 && mo <= 12 && dy >= 1 && dy <= 31
+      && !/[\d.]/.test(pre) && !/[\d元块钱％%折]/.test(post);
+  })();
+  if (dmOK){
     const ty = parseKey(TODAY).getFullYear();
     let key = ty + '.' + (+dm[1]) + '.' + (+dm[2]);
     if (parseKey(key) < parseKey(TODAY)) key = (ty + 1) + '.' + (+dm[1]) + '.' + (+dm[2]);
@@ -764,10 +780,10 @@ function entryNode(e, editable, isChild, flat, liveSym){
       if (lpFired){ lpFired = false; return; }
       if (e.state === 'open'){
         snapshot('处理任务');
-        e.state = 'done'; render();
+        e.state = 'done'; e.doneDay = TODAY; render();
         askMemo(e);
       } else if (e.state === 'done'){
-        e.state = 'open'; toast('恢复待办'); render();
+        e.state = 'open'; delete e.doneDay; toast('恢复待办'); render();
       } else { qsTarget = e; openQSheet(); }
     });
     s.title = '点按完成 · 长按处理';
@@ -915,6 +931,12 @@ function jumpRow(date, e){
   w.appendChild(entryNode(e, false, true, true, true));
   const tx = w.querySelector('.entry-text');
   if (tx){ tx.style.cursor = 'pointer'; tx.onclick = () => jumpToEntry(date, e._id); }
+  if (e.state === 'done' && e.doneDay && e.doneDay !== date){
+    const body = w.querySelector('.entry-body');
+    if (body){ const c = document.createElement('div'); c.className = 'chips';
+      c.innerHTML = '<span class="badge acc">✓ ' + fmtShort(e.doneDay) + ' 清账</span>';
+      body.appendChild(c); }
+  }
   return w;
 }
 function dateGroupList(box, filter){
@@ -1168,7 +1190,7 @@ function render(){
         setTimeout(() => pendingRestore = false, 5000); return; }
       pendingRestore = false; $('#jsonInput').click();
     });
-    mkRow('版本记录', sub('v2.3 ›'), showChangelog);
+    mkRow('版本记录', sub('v2.4 ›'), showChangelog);
     mkRow('应用锁', sub('原生版支持 FaceID'), () => toast('网页版暂不支持 · 原生开发阶段实现'));
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
@@ -1657,9 +1679,9 @@ function buildQSheet(){
       t.state = 'open';
       t.badge = t.mig ? ('>×' + t.mig + (t.progress ? ' · 已完成' + t.progress + '%' : '')) : undefined;
       if (t.due && parseKey(t.due) > parseKey(TODAY)) t.due = undefined;
-      delete t.delegate; delete t.followArrived;
+      delete t.delegate; delete t.followArrived; delete t.doneDay;
       fin('已恢复待办');
-    } else { t.state = 'done'; askMemo(t); }
+    } else { t.state = 'done'; t.doneDay = TODAY; askMemo(t); }
   };
   $('#qDrop').onclick = () => { snapshot('处理任务'); t.state = 'dropped'; t.badge = '不做了'; fin('✕ 已放弃 · 保留划痕'); };
   $('#qDel').onclick  = () => { $('#qMigPanel').classList.remove('on'); $('#qDelPanel').classList.toggle('on'); };
@@ -1756,8 +1778,10 @@ function genReport(g, kind, incMood){
     : dk.startsWith(ta[0] + '.' + ta[1] + '.');
   const cat = {done:[], doing:[], plan:[], drop:[], ev:[], note:[], mood:[]};
   walk((date, e) => {
-    if (!(e.groups && e.groups.includes(g)) || !inR(date)) return;
-    const dd = fmtShort(date);
+    if (!(e.groups && e.groups.includes(g))) return;
+    const ed = (e.sym === 'task' && e.state === 'done' && e.doneDay) ? e.doneDay : date;
+    if (!inR(ed)) return;
+    const dd = fmtShort(ed);
     if (e.sym === 'task'){
       if (e.state === 'done') cat.done.push('· ' + e.text + (e.note ? '——' + e.note : '') + '（' + dd + '）');
       else if (e.state === 'dropped') cat.drop.push('· ' + e.text + (e.note ? '——' + e.note : '') + (e.badge ? '（' + e.badge + '）' : ''));
@@ -1830,11 +1854,14 @@ function renderReview(){
   if (qi >= queue.length){
     let recN = 0, evN = 0; const moods = [];
     walkPage(TODAY, x => { recN++; if (x.sym === 'mood' && x.text) moods.push(x.text); if (x.sym === 'event') evN++; });
+    let oldDone = 0;
+    walk((k, x) => { if (k !== TODAY && x.sym === 'task' && x.state === 'done' && x.doneDay === TODAY) oldDone++; });
     R.innerHTML = '<div class="rv-head"><div class="rv-title">晚间复盘</div>'
       + '<button class="pill-btn" id="rvClose">收起</button></div>'
       + '<div class="rv-body"><div class="rv-finish" style="margin:14px auto 0">' + dotSVG(86) + '<br><b>今日快照</b><br>'
       + '记录 ' + recN + ' 条 · 完成 ' + doneN + ' 件 · 事件 ' + evN + ' 件<br>'
       + '迁移 ' + stat.mig + ' · 放弃 ' + stat.drop + ' · 转交 ' + stat.del
+      + (oldDone ? ('<br>还清了 ' + oldDone + ' 件旧账 ✓') : '')
       + (moods.length ? ('<br>今天的心情：' + moods.slice(0, 3).join('、')) : '')
       + '<br>明天的页面点点已经铺好</div>'
       + '<input id="rvSum" class="qdate" placeholder="给今天留一句话（可不填）" style="margin-top:24px" value="' + String(P().summary || '').replace(/"/g, '&quot;') + '">'
@@ -1890,7 +1917,7 @@ function renderReview(){
     $('#rvMSkip').onclick = next;
     $('#rvMSave').onclick = () => { const m = $('#rvMemo').value.trim(); if (m) t.note = m; next(); };
   };
-  $('#bDone').onclick = () => { t.state = 'done'; rvMemoStep(); };
+  $('#bDone').onclick = () => { t.state = 'done'; t.doneDay = TODAY; rvMemoStep(); };
   $('#bDrop').onclick = () => { t.state = 'dropped'; t.badge = '不做了'; stat.drop++; toast('✕ 已放弃 · 页面保留划痕'); next(); };
   $('#bDel').onclick  = () => { $('#migPanel').classList.remove('on'); $('#rvDelPanel').classList.toggle('on'); };
   $('#bMig').onclick  = () => { $('#rvDelPanel').classList.remove('on'); $('#migPanel').classList.toggle('on'); };
@@ -2130,7 +2157,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.3（当前 · 2026.8.13）\n【按定稿示意图纠偏】\n· 「生成月报」改为直接生成本月盘点分享卡（数字+榜单+原话引用），不再打开文字版报告；文字版日/周/月报只在工作模板的「报告」里\n· 美食顶部中间改为「我的美食地图」：按城市展开店清单，点店跳原文\n· 盘点分享卡装全内容：美食卡新增城市分布条\n· 范围与标题用真实年月：盘点·2026 ▾ / 盘点·8月 ▾；卡片标题如「2026 我的观影年报」「8月 美食小结」\n· 「和谁」只认人名：限 1~3 字并紧跟动作词，转交过的人名优先识别\n· 未套模板的分组顶部只保留「▣ 分享」\n\n'
+    + 'v2.4（当前 · 2026.8.18）\n【识别再进化】\n· 多人同伴：「和赵赵、Orion和家人二刷」三个人都认出来，各记一次；家人/爸妈/同事等称呼有效\n· 点点的熟人簿与熟店簿：认过一次的人和店（含转交对象），之后不带引号、不带动作词也认识——"又吃了子午路肉夹馍"会计入去过次数\n· 二刷标注：同一部片多条记录，榜单和列表里标 ×2、"看了2次"\n· 店的判决＝括号外离店名最近的判决词；括号里的（惊艳/拉胯）只算单品评价\n· 金额不再误判日期：60.28元、6.28元这类都不会变成日期；月>12、日>31 不认；已有的错日期自动清掉\n· 外卖识别：挂「外卖」小签，美食地图单列「外卖」栏\n【节奏修正】\n· 晨间承接改为逐条勾选：勾谁带谁，配全选；不带的留在原页与待办汇总\n· 哪天做完算哪天：在待办汇总或历史页勾掉旧任务，记入当天——日报周报按完成日归属，复盘快照多一行"还清了 N 件旧账"，汇总里带「✓ 8.18 清账」签\n\n'
+    + 'v2.3（2026.8.13）\n【按定稿示意图纠偏】\n· 「生成月报」改为直接生成本月盘点分享卡（数字+榜单+原话引用），不再打开文字版报告；文字版日/周/月报只在工作模板的「报告」里\n· 美食顶部中间改为「我的美食地图」：按城市展开店清单，点店跳原文\n· 盘点分享卡装全内容：美食卡新增城市分布条\n· 范围与标题用真实年月：盘点·2026 ▾ / 盘点·8月 ▾；卡片标题如「2026 我的观影年报」「8月 美食小结」\n· 「和谁」只认人名：限 1~3 字并紧跟动作词，转交过的人名优先识别\n· 未套模板的分组顶部只保留「▣ 分享」\n\n'
     + 'v2.2（2026.8.13）\n· 集子页顶部按示意图定稿：盘点·今年 ▾ ｜ 生成月报（工作模板为「报告」）｜ ▣ 分享（分享的就是当前盘点，含数字、榜单与美食地图，不再另设入口）\n· 模板选择搬进侧栏：新建分组时直接选；已有分组长按或左滑 →「模板」随时改\n· 美食「城市分布」升级为「我的美食地图」，点城市看该城清单\n\n'
     + 'v2.1（2026.8.13）\n· 集子页顶部收成一行：模板 / 报告（工作模板才有）/ 分享集子\n· 日报周报月报归入「工作」模板（#工作类分组名自动套用，其他分组顶部不再挤报告按钮）\n· 时间范围收进盘点标题：点「盘点·今年 ▾」循环切 今年/本月/去年/全部；「▣ 分享」也在盘点标题行\n· 盘点数字可点开：看过/回头再去/回购/避雷/和谁看，点进去是完整列表，再点跳到当天原文\n· 高分榜「和独自」改为「独自」\n· 主页任何一条记录整行长按即可生成分享图（任务的符号长按仍是处理面板）\n\n'
     + 'v2.0（2026.8.12）\n【集子结构化 · 记录长成资产】\n· 六种识别：《作品》、评分、金额、城市、"店名"、判决词（会再来/避雷…）、和谁一起——全从你写的原话里读，记录方式不变，历史一并识别\n· 四个模板：电影 / 美食 / 读书 / 花钱；#电影 #美食 这类分组名自动套用，集子页「模板·」一键换\n· 盘点面板：数字大盘 + 高分榜 / 回购避雷榜 + 城市分布，按 今年/本月/去年/全部 切换\n· 美食不算总账：按「去过几次」算回头率，单品价格只做小签\n· 别名合并：《英雄无归》=《蜘蛛侠英雄无归》确认一次，统计归一\n· 没打分的作品轻轻问一句，点一下补分\n· 点点记得：写到以前记过的店/片，键盘上方浮出上次的记录，一点跳回去\n· 「▣ 分享盘点」直接产年报/盘点卡\n\n'
@@ -2199,23 +2227,70 @@ function parseLine(text){
   if (prices.length) r.prices = [...new Set(prices)].slice(0, 3);
   for (const c of CITY_LIST){ if (t.includes(c)){ r.city = c; break; } }
   const qm = t.match(/[“"『「]([^”"』」]{1,14})[”"』」]/); if (qm) r.store = qm[1];
-  if (/独自|一个人/.test(t)) r.with = '独自';
-  else {
-    for (const n of peopleSet()){ if (n && t.includes('和' + n)){ r.with = n; break; } }
-    if (!r.with){ const wm = t.match(/和([\u4e00-\u9fa5A-Za-z]{1,3}?)(?:一起|看|吃|去|玩|逛|见|喝|聊|补)/); if (wm) r.with = wm[1]; }
+  if (!r.store){
+    for (const st of storeSet()){ if (st.length >= 3 && t.includes(st)){ r.store = st; break; } }
   }
-  for (const w of V_NEG){ if (t.includes(w)){ r.verdict = w; r.vNeg = true; break; } }
-  if (!r.verdict) for (const w of V_POS){ if (t.includes(w) && !t.includes('不' + w)){ r.verdict = w; break; } }
+  if (/外卖/.test(t)) r.delivery = true;
+  const ws = parseCompanions(t);
+  if (ws.length){ r.withs = ws; r.with = ws[0]; }
+  const vd = parseVerdict(t);
+  if (vd){ r.verdict = vd.w; if (vd.neg) r.vNeg = true; }
   return r;
 }
 function canonTitle(t){ return SET.alias[t] || t; }
-let KNOWN_PPL = null;
+let KNOWN_PPL = null, KNOWN_STORE = null;
+const PPL_LIST_RE = /和((?:[\u4e00-\u9fa5A-Za-z0-9]{1,6}[、，,]?(?:和)?)+?)(?:一起|二刷|三刷|补看|看了|看|吃|去|玩|逛|见|喝|聊)/;
+const PPL_BLACK = ['他','她','它','我','你','大家','别人','我们','你们','他们','自己'];
 function peopleSet(){
   if (!KNOWN_PPL){
     KNOWN_PPL = new Set();
-    walk((d, e) => { if (e.delegate && e.delegate.to && e.delegate.to.length <= 4) KNOWN_PPL.add(e.delegate.to); });
+    walk((d, e) => {
+      if (e.delegate && e.delegate.to && e.delegate.to.length <= 4) KNOWN_PPL.add(e.delegate.to);
+      const lm = String(e.text || '').match(PPL_LIST_RE);
+      if (lm) lm[1].split(/[、，,和]/).forEach(n => {
+        n = n.trim();
+        if (n && n.length >= 2 && n.length <= 4 && !/\d/.test(n) && !PPL_BLACK.includes(n)) KNOWN_PPL.add(n);
+      });
+    });
   }
   return KNOWN_PPL;
+}
+function storeSet(){
+  if (!KNOWN_STORE){
+    KNOWN_STORE = new Set();
+    walk((d, e) => {
+      const re = /[“"『「]([^”"』」]{2,14})[”"』」]/g; let m;
+      const t = String(e.text || '');
+      while ((m = re.exec(t))) KNOWN_STORE.add(m[1]);
+    });
+  }
+  return KNOWN_STORE;
+}
+const GENERIC_PPL = ['家人','爸妈','爸爸','妈妈','朋友','同事','闺蜜','室友'];
+function parseCompanions(t){
+  if (/独自|一个人/.test(t)) return ['独自'];
+  const out = [];
+  const add = n => { n = (n || '').trim();
+    if (n && n.length <= 6 && !PPL_BLACK.includes(n) && !out.includes(n)) out.push(n); };
+  const lm = t.match(PPL_LIST_RE);
+  if (lm) lm[1].split(/[、，,和]/).forEach(add);
+  for (const n of peopleSet()){ if (n && t.includes('和' + n)) add(n); }
+  for (const g of GENERIC_PPL){ if (t.includes('和' + g)) add(g); }
+  return out;
+}
+/* 店的判决＝括号外、位置最早的判决词；括号内视为单品评价 */
+function parseVerdict(t){
+  const masked = t.replace(/（[^）]*）|\([^)]*\)/g, m => '＃'.repeat(m.length));
+  const scan = src => {
+    let best = null;
+    for (const w of V_NEG){ const i = src.indexOf(w);
+      if (i >= 0 && (!best || i < best.i)) best = {i, w, neg:true}; }
+    for (const w of V_POS){ if (src.includes('不' + w)) continue;
+      const i = src.indexOf(w);
+      if (i >= 0 && (!best || i < best.i)) best = {i, w, neg:false}; }
+    return best;
+  };
+  return scan(masked) || scan(t);
 }
 const TPLS = {work:{n:'工作', unit:'件'}, movie:{n:'电影', unit:'部'}, food:{n:'美食', unit:'家'}, book:{n:'读书', unit:'本'}, money:{n:'花钱', unit:'笔'}};
 const TPL_ORDER = [null, 'work', 'movie', 'food', 'book', 'money'];
@@ -2256,18 +2331,20 @@ function tplStats(tpl, rows){
     const map = {};
     rows.forEach(r => { if (!r.p.title) return;
       const c = canonTitle(r.p.title);
-      const o = map[c] || (map[c] = {name:c, score:null, with:null, d:r.d, id:r.e._id});
+      const o = map[c] || (map[c] = {name:c, score:null, withs:null, cnt:0, d:r.d, id:r.e._id});
+      o.cnt++;
       if (r.p.score != null && (o.score == null || r.p.score > o.score)) o.score = r.p.score;
-      if (r.p.with && !o.with) o.with = r.p.with;
+      if (r.p.withs && !o.withs) o.withs = r.p.withs;
     });
     const titles = Object.values(map);
     const scored = titles.filter(x => x.score != null);
-    const wsub = x => x.with ? (x.with === '独自' ? '独自' : '和' + x.with) : '';
-    const li = arr => arr.map(x => ({nm:x.name, sub:wsub(x), sc:x.score != null ? x.score + '分' : '', d:x.d, id:x.id}));
+    const wsub = x => x.withs ? (x.withs[0] === '独自' ? '独自' : '和' + x.withs.slice(0, 3).join('、')) : '';
+    const nmx = x => x.name + (x.cnt >= 2 ? ' ×' + x.cnt : '');
+    const li = arr => arr.map(x => ({nm:nmx(x), sub:(x.cnt >= 2 ? '看了' + x.cnt + '次 ' : '') + wsub(x), sc:x.score != null ? x.score + '分' : '', d:x.d, id:x.id}));
     const wcnt = {};
-    rows.forEach(r => { if (r.p.with && r.p.with !== '独自') wcnt[r.p.with] = (wcnt[r.p.with] || 0) + 1; });
+    rows.forEach(r => (r.p.withs || []).forEach(w => { if (w !== '独自') wcnt[w] = (wcnt[w] || 0) + 1; }));
     const topW = Object.entries(wcnt).sort((a, b) => b[1] - a[1])[0];
-    const wRows = topW ? rows.filter(r => r.p.with === topW[0])
+    const wRows = topW ? rows.filter(r => (r.p.withs || []).includes(topW[0]))
       .map(r => ({nm:(r.p.title ? '《' + r.p.title + '》' : (r.e.text || '').slice(0, 16)), sub:fmtShort(r.d) + '日', sc:r.p.score != null ? r.p.score + '分' : '', d:r.d, id:r.e._id})) : [];
     S.tiles = [
       [titles.length, TPLS[tpl].unit, tpl === 'movie' ? '看过' : '读过', li(titles)],
@@ -2277,7 +2354,7 @@ function tplStats(tpl, rows){
     ];
     S.ranksTitle = '高分榜';
     S.ranks = scored.sort((a, b) => b.score - a.score).slice(0, 5)
-      .map((x, i) => ({no:String(i + 1), cls:i === 0 ? 'g' : '', nm:x.name, sub:wsub(x), sc:x.score + '分', scCls:'', d:x.d, id:x.id}));
+      .map((x, i) => ({no:String(i + 1), cls:i === 0 ? 'g' : '', nm:nmx(x), sub:wsub(x), sc:x.score + '分', scCls:'', d:x.d, id:x.id}));
     // 别名合并候选
     const names = titles.map(x => x.name);
     outer: for (let i = 0; i < names.length; i++) for (let j = 0; j < names.length; j++){
@@ -2289,14 +2366,15 @@ function tplStats(tpl, rows){
   if (tpl === 'food'){
     const map = {};
     rows.forEach(r => { if (!r.p.store) return;
-      const o = map[r.p.store] || (map[r.p.store] = {name:r.p.store, cnt:0, v:null, vNeg:false, city:null, price:null, d:r.d, id:r.e._id});
+      const o = map[r.p.store] || (map[r.p.store] = {name:r.p.store, cnt:0, v:null, vNeg:false, city:null, price:null, delivery:false, d:r.d, id:r.e._id});
       o.cnt++;
       if (!o.v && r.p.verdict){ o.v = r.p.verdict; o.vNeg = !!r.p.vNeg; }
       if (!o.city && r.p.city) o.city = r.p.city;
+      if (r.p.delivery) o.delivery = true;
       if (o.price == null && r.p.prices) o.price = r.p.prices[0];
     });
     const stores = Object.values(map);
-    const sli = arr => arr.map(x => ({nm:x.name, sub:(x.city || '') + (x.price != null ? ' ¥' + x.price : '') + (x.cnt > 1 ? ' 去过' + x.cnt + '次' : ''), sc:x.v || '', scCls:x.v ? (x.vNeg ? 'no2' : 'ok') : '', d:x.d, id:x.id}));
+    const sli = arr => arr.map(x => ({nm:x.name, sub:(x.delivery ? '外卖' : (x.city || '')) + (x.price != null ? ' ¥' + x.price : '') + (x.cnt > 1 ? ' 去过' + x.cnt + '次' : ''), sc:x.v || '', scCls:x.v ? (x.vNeg ? 'no2' : 'ok') : '', d:x.d, id:x.id}));
     S.tiles = [
       [stores.length, '家', '吃过探过', sli(stores.slice().sort((a, b) => b.cnt - a.cnt))],
       [stores.filter(x => x.cnt >= 2).length, '家', '回头再去', sli(stores.filter(x => x.cnt >= 2).sort((a, b) => b.cnt - a.cnt))],
@@ -2310,9 +2388,11 @@ function tplStats(tpl, rows){
       .map(x => ({no:'↓', cls:'r', nm:x.name, sub:x.city || '', sc:x.v, scCls:'no2', d:x.d, id:x.id}));
     S.ranks = pos.concat(neg);
     const ccnt = {}; S.cityMap = {};
-    stores.forEach(x => { if (!x.city) return;
-      ccnt[x.city] = (ccnt[x.city] || 0) + 1;
-      (S.cityMap[x.city] = S.cityMap[x.city] || []).push(sli([x])[0]); });
+    stores.forEach(x => {
+      const bucket = x.delivery ? '外卖' : x.city;
+      if (!bucket) return;
+      ccnt[bucket] = (ccnt[bucket] || 0) + 1;
+      (S.cityMap[bucket] = S.cityMap[bucket] || []).push(sli([x])[0]); });
     S.bars = Object.entries(ccnt).sort((a, b) => b[1] - a[1]).slice(0, 6);
   }
   if (tpl === 'money'){
@@ -2330,10 +2410,12 @@ function ptagRow(r, tpl, scoredSet){
   if ((tpl === 'movie' || tpl === 'book')){
     if (p.score != null) add('sc', '★ ' + p.score + '分');
     else if (p.title && !(scoredSet && scoredSet.has(canonTitle(p.title)))) add('ask', '没打分 · 补一个？', ev => { ev.stopPropagation(); openScoreSheet(r.e); });
-    if (p.with) add('', p.with === '独自' ? '独自' : '和' + p.with);
+    (p.withs || []).slice(0, 3).forEach(w => add('', w === '独自' ? '独自' : '和' + w));
   }
   if (tpl === 'food'){
-    if (p.city) add('', p.city);
+    if (p.store) add('', p.store.slice(0, 8));
+    if (p.delivery) add('', '外卖');
+    else if (p.city) add('', p.city);
     (p.prices || []).slice(0, 2).forEach(v => add('sc', '¥' + v));
   }
   if (tpl === 'money') (p.prices || []).forEach(v => add('sc', '¥' + v));
@@ -2827,6 +2909,10 @@ $('#shSheet').addEventListener('click', ev => { if (ev.target.id === 'shSheet') 
 /* ============ 晨间开页 ============ */
 function ensureToday(){
   if (!PAGES[TODAY]) PAGES[TODAY] = {plan:[], flow:[]};
+  walk((k, e) => {
+    if (e.due){ const pp = String(e.due).split('.').map(Number);
+      if (!(pp.length === 3 && pp[1] >= 1 && pp[1] <= 12 && pp[2] >= 1 && pp[2] <= 31)) delete e.due; }
+  });
   walk((k, e) => { if (e._id && e._id > uid) uid = e._id; });
   walkWithParent((k, e, parent) => {
     if (k === TODAY) return;
@@ -2857,13 +2943,33 @@ function morningCheck(){
   page.morningAsked = true;
   if (!left.length){ scheduleSave(); return; }
   const S = $('#gsheet');
-  S.innerHTML = '<div class="gs-title">有 ' + left.length + ' 件事还等着你表态</div>'
-    + '<div class="rp-note" style="margin:0 0 12px">'
-    + left.slice(0, 3).map(x => '· ' + x.e.text).join('<br>') + (left.length > 3 ? '<br>…' : '') + '</div>'
-    + '<button class="gs-done" id="mAll">全部带到今天</button>'
-    + '<button class="gm-btn" id="mSkip" style="width:100%;margin-top:10px;padding:10px">先留在原页（长按任务可单独处理）</button>';
+  const esc = x => String(x || '').replace(/[<>&]/g, c => ({'<':'&lt;', '>':'&gt;', '&':'&amp;'}[c]));
+  S.innerHTML = '<div class="gs-title" style="display:flex;align-items:center;gap:8px">有 ' + left.length + ' 件事还等着你表态'
+    + '<button class="gm-btn" id="mSel" style="margin-left:auto">全选</button></div>'
+    + '<div id="mgList" style="max-height:44vh;overflow-y:auto;margin:0 0 4px">'
+    + left.map((x, i) => '<div class="mg-item" data-i="' + i + '"><span class="mg-ck">○</span>'
+      + '<span class="mg-tx">' + esc(x.e.text) + '</span>'
+      + '<span class="mg-d">' + fmtShort(x.k) + '</span></div>').join('')
+    + '</div>'
+    + '<button class="gs-done" id="mAll">带来选中的</button>'
+    + '<button class="gm-btn" id="mSkip" style="width:100%;margin-top:10px;padding:10px">都不带 · 待办汇总里都有底</button>';
+  const sel = new Set();
+  const refresh = () => {
+    S.querySelectorAll('.mg-item').forEach(el => {
+      const on = sel.has(+el.dataset.i);
+      el.classList.toggle('on', on);
+      el.querySelector('.mg-ck').textContent = on ? '●' : '○';
+    });
+    $('#mAll').textContent = sel.size ? ('带来选中的（' + sel.size + '）') : '带来选中的';
+    $('#mSel').textContent = (sel.size === left.length) ? '全不选' : '全选';
+  };
+  S.querySelectorAll('.mg-item').forEach(el => {
+    el.onclick = () => { const i = +el.dataset.i; if (sel.has(i)) sel.delete(i); else sel.add(i); refresh(); };
+  });
+  $('#mSel').onclick = () => { if (sel.size === left.length) sel.clear(); else left.forEach((_, i) => sel.add(i)); refresh(); };
   $('#mAll').onclick = () => {
-    left.forEach(x => {
+    if (!sel.size){ toast('先勾选要带的 · 不带就点下面'); return; }
+    [...sel].map(i => left[i]).forEach(x => {
       const e = x.e;
       e.state = 'migrated'; e.mig = (e.mig || 0) + 1;
       e.badge = '→' + fmtShort(TODAY) + (e.progress ? ' · 已完成' + e.progress + '%' : '');
@@ -2873,9 +2979,10 @@ function morningCheck(){
         srcDay:x.k || undefined, srcId:e._id || (e._id = ++uid),
         badge:'>×' + e.mig + (e.progress ? ' · 已完成' + e.progress + '%' : ''), _id:++uid});
     });
-    toast('已带来 ' + left.length + ' 件'); closeSheet(); scheduleSave();
+    toast('已带来 ' + sel.size + ' 件 · 其余在待办汇总里'); closeSheet(); scheduleSave();
   };
-  $('#mSkip').onclick = () => closeSheet();
+  $('#mSkip').onclick = () => { toast('都留在原页 · 待办汇总随时能翻'); closeSheet(); };
+  refresh();
   S.classList.add('on'); $('#mask').classList.add('on');
 }
 function showOnboard(){
