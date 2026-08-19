@@ -342,6 +342,19 @@
   .ptg.ok{background:#EDF3EE;color:var(--green)}
   .ptg.neg{background:#F6E7E3;color:var(--red)}
   .ptg.ask{background:none;border:1.5px dashed var(--accent);color:var(--accent);cursor:pointer}
+  .ptg.bao{background:var(--accent-soft);color:#C4520A;font-weight:600}
+  .ptg.jia{background:var(--badge-bg);color:var(--ink-soft);font-weight:600}
+  .tp-rk .sc.bao{color:var(--accent);font-size:12.5px;font-weight:700}
+  .tp-rk .sc.jia{color:var(--ink-soft);font-size:12.5px;font-weight:600}
+  .tp-rk .sc.lei{color:var(--red);font-size:12.5px;font-weight:600}
+  .tp-more{font-size:12.5px;color:var(--accent);padding:10px 2px 2px;cursor:pointer;font-weight:500}
+  .hw-row{padding:10px 2px;border-bottom:1px solid var(--line)}
+  .hw-row b{font-size:13px;color:var(--ink-soft);display:block;margin-bottom:4px}
+  .hw-row code{display:block;font-family:inherit;font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;line-height:1.5}
+  .hw-row span{display:block;font-size:12px;color:var(--ink-faint);margin-top:5px;line-height:1.5}
+  .hw-tier{font-size:12.5px;color:var(--ink-soft);line-height:1.7;padding:12px 2px 0}
+  .hw-tier b{color:var(--accent)}
+  .hw-tip{font-size:12px;color:var(--ink-faint);padding:10px 2px 0;line-height:1.5}
   #recall{
     position:absolute;left:0;right:0;display:none;gap:9px;align-items:center;
     padding:9px 14px;background:var(--accent-soft);border-top:1px solid var(--line);
@@ -1136,7 +1149,7 @@ function render(){
       const rp = document.createElement('button'); rp.className = 'chip'; rp.textContent = '报告';
       rp.onclick = () => openReport(cur.g, 'week'); tabs.appendChild(rp);
     } else if (tpl === 'food'){
-      const mp = document.createElement('button'); mp.className = 'chip'; mp.textContent = '我的美食地图';
+      const mp = document.createElement('button'); mp.className = 'chip'; mp.textContent = '美食地图';
       mp.onclick = () => openFoodMap(cur.g); tabs.appendChild(mp);
     } else if (tpl){
       const rp = document.createElement('button'); rp.className = 'chip'; rp.textContent = '生成月报';
@@ -1154,6 +1167,9 @@ function render(){
       } else openShare({type:'group', head:'点点手帐 · 集子', cardTitle:'#' + cur.g + ' · 最近精选', g:cur.g});
     };
     tabs.appendChild(shc);
+    const hw = document.createElement('button'); hw.className = 'chip'; hw.textContent = '怎么写?';
+    hw.onclick = () => openHowSheet(tpl);
+    tabs.appendChild(hw);
     view.appendChild(tabs);
     if (tpl && tpl !== 'work') renderTplPanel(cur.g, tpl);
     const rows2 = tplRows(cur.g, null);
@@ -1240,7 +1256,7 @@ function render(){
         setTimeout(() => pendingRestore = false, 5000); return; }
       pendingRestore = false; $('#jsonInput').click();
     });
-    mkRow('版本记录', sub('v2.10 ›'), showChangelog);
+    mkRow('版本记录', sub('v2.11 ›'), showChangelog);
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
       if (pendingWipe){ localStorage.removeItem(LSKEY); location.reload(); return; }
@@ -2274,7 +2290,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.10（当前 · 2026.8.19）\n【提速】\n· 修复一条长句让识别卡死 11 秒的灾难性回溯——从侧栏进分组不再等 2 秒，瞬开\n· 保存后不再全量重算识别，只有熟店簿/熟人簿变了才重算\n【循环提醒】\n· 每条提醒新增「改」按钮：名字、周期、日期、提前天数都能直接修改，不用删了重建\n【叫法】\n· 「待办」统一改叫「任务」\n\n'
+    + 'v2.11（当前 · 2026.8.19）\n【美食盘点三档制】\n· 全页统一三个词：宝藏 / 家常 / 避雷——磁贴、榜单、小签一个说法，不再五花八门\n· 没写判决、只打了分也能归档：8分以上宝藏，6–8家常，6以下避雷；明确写「避雷 / 会再来」的以你的话为准\n· 榜单拆成「宝藏榜」和「避雷榜」，右侧统一显示分数或你的原话\n· 磁贴下多一行「还有 N 家没表态」，点开看清单、跳回当天补一句\n【怎么写】\n· 集子页新增「怎么写?」例句卡：每个模板一行范例\n· 写美食时没读出店名和表态，点点会轻声提示写法\n\n'
+    + 'v2.10（2026.8.19）\n【提速】\n· 修复一条长句让识别卡死 11 秒的灾难性回溯——从侧栏进分组不再等 2 秒，瞬开\n· 保存后不再全量重算识别，只有熟店簿/熟人簿变了才重算\n【循环提醒】\n· 每条提醒新增「改」按钮：名字、周期、日期、提前天数都能直接修改，不用删了重建\n【叫法】\n· 「待办」统一改叫「任务」\n\n'
     + 'v2.9（2026.8.18）\n【☾ Someday · 给"改天做"一个正经的家】\n· 长按任务、晚间复盘、晨间勾选里都能把事放进 Someday：不催、不追、不算拖延，退出每日循环\n· 侧栏汇总新增「☾ Someday」，点任务符号一键「⤴ 捞回今天」\n· 跟了 3 天以上的任务，复盘时点点会提议放 Someday；晨间列表每行标「已跟 N 天」；「没勾的放 Someday」一键清场\n· Someday 不进报告不进任务列表——那是你表过态的事，不是欠着的账\n【识别修正（来自你的真实数据）】\n· 引号强调不再被当成店名（"自传"事件）：店名只跟美食分组学习\n· 正面判决词补充：可再来 / 好吃 / 很香 / 可回购（叹锅、烤匠这类都能认了）\n【数据卫生】\n· 导出与云备份不再夹带解析缓存；空白历史页和空白子行自动清理\n\n'
     + 'v2.8（2026.8.18）\n【找到卡顿真凶】\n· 列表里的照片过去直接渲染原图（每张几百KB），这是标签页慢的根源——现在插图自动生成小缩略图，列表只加载缩略图＋懒加载，点开看大图不变；老照片打开 App 后台自动补一遍缩略图\n· 侧栏改为打开时才构建，不再每次刷新页面都重算\n【做减法】\n· 设置删掉三个未实现的占位项（周报起始日 / 复盘提醒 / 应用锁），真做出来再回来\n· 推迟不再有进度滑杆：只留「一句话进度」，它会进报告和折叠时间线；旧数据里难看的「已完成0%」徽章自动清掉\n\n'
     + 'v2.7（2026.8.18）\n【更快】\n· 识别结果全面缓存，集子页不再重复解析；抽屉计数一次遍历\n· 集子列表先展示最近 30 条，底部「加载更早」，数据再多也秒开\n【更干净】\n· 迁移链归并：反复推迟的任务在集子和搜索里只显示最新一条（>×N 照旧），行下「▸ 一路 N 次」点开看途中进度小时间线；原页划痕不动\n【循环提醒】\n· 侧栏新增「🔁 循环提醒」：每年（生日纪念日）/ 每月（发工资）/ 每 N 天（周期），可设提前几天提示\n· 到那天自动出现在「今天要做」，正常打勾复盘；每 N 天类打完勾自动从今天重新起算（大姨妈越用越准）\n· 总日历和未来页提前可见；「📅 入系统日历」生成重复日历文件，手机会真的响\n\n'
@@ -2332,11 +2349,23 @@ SET.gtpl = SET.gtpl || {}; SET.alias = SET.alias || {}; SET.aliasNo = SET.aliasN
 const CITY_LIST = ['上海','北京','杭州','广州','深圳','成都','重庆','武汉','西安','南京','苏州','天津','长沙','青岛','厦门','宁波','合肥','郑州','济南','福州','昆明','大连','沈阳','哈尔滨','长春','石家庄','太原','南昌','贵阳','南宁','兰州','海口','三亚','无锡','佛山','东莞','珠海','扬州','绍兴','嘉兴','温州','潮汕','顺德'];
 /* 一级＝明确的去留判决（优先），二级＝口味形容（兜底） */
 const V_NEG1 = ['非必要不去','不会再来','避雷','踩雷','别去了','别买'];
-const V_POS1 = ['会再来','可再来','还会来','会回购','可回购','要回购','回购','要二刷','二刷','必吃'];
+const V_POS1 = ['会再来','可再来','还会来','会回购','可回购','要回购','回购','要二刷','二刷','必吃','宝藏','绝了','必回'];
 const V_NEG2 = ['拉胯','难吃','翻车','不推荐'];
-const V_POS2 = ['大满足','惊艳','好吃','很香','神作','yyds','推荐','值得'];
+const V_POS2 = ['大满足','惊艳','好吃','很香','神作','yyds','推荐','值得','还行','凑合','很一般','一般般','味道一般','中规中矩'];
 const V_NEG = V_NEG1.concat(V_NEG2);
 const V_POS = V_POS1.concat(V_POS2);
+/* ===== 美食三档（v2.11）：宝藏 / 家常 / 避雷 =====
+   优先级：负面词 > 明确回头意愿词 > 分数（≥8宝藏 · 6–8家常 · <6避雷）> 口味词 */
+const T_BAO2 = ['大满足','惊艳','神作','yyds'];
+const TIER_NM = {bao:'宝藏', jia:'家常', lei:'避雷'};
+function foodTier(p){
+  const w = p.verdict || null;
+  if (w && (V_NEG1.includes(w) || V_NEG2.includes(w))) return 'lei';
+  if (w && V_POS1.includes(w)) return 'bao';
+  if (p.score != null) return p.score >= 8 ? 'bao' : (p.score >= 6 ? 'jia' : 'lei');
+  if (w) return T_BAO2.includes(w) ? 'bao' : 'jia';
+  return null;
+}
 function parseLine(text){
   const t = String(text || ''), r = {};
   const tm = t.match(/《([^》]{1,25})》/); if (tm) r.title = tm[1];
@@ -2514,27 +2543,37 @@ function tplStats(tpl, rows){
   if (tpl === 'food'){
     const map = {};
     rows.forEach(r => { if (!r.p.store) return;
-      const o = map[r.p.store] || (map[r.p.store] = {name:r.p.store, cnt:0, v:null, vNeg:false, city:null, price:null, delivery:false, d:r.d, id:r.e._id});
+      const o = map[r.p.store] || (map[r.p.store] = {name:r.p.store, cnt:0, v:null, vNeg:false, tier:null, tv:null, tsc:null, city:null, price:null, delivery:false, d:r.d, id:r.e._id});
       o.cnt++;
       if (!o.v && r.p.verdict){ o.v = r.p.verdict; o.vNeg = !!r.p.vNeg; }
+      if (!o.tier){ const tr = foodTier(r.p);
+        if (tr){ o.tier = tr; o.tv = r.p.verdict || null; o.tsc = (r.p.score != null ? r.p.score : null); } }
       if (!o.city && r.p.city) o.city = r.p.city;
       if (r.p.delivery) o.delivery = true;
       if (o.price == null && r.p.prices) o.price = r.p.prices[0];
     });
     const stores = Object.values(map);
-    const sli = arr => arr.map(x => ({nm:x.name, sub:(x.delivery ? '外卖' : (x.city || '')) + (x.price != null ? ' ¥' + x.price : '') + (x.cnt > 1 ? ' 去过' + x.cnt + '次' : ''), sc:x.v || '', scCls:x.v ? (x.vNeg ? 'no2' : 'ok') : '', d:x.d, id:x.id}));
+    const tCls = t => t || '';
+    const sli = arr => arr.map(x => ({nm:x.name,
+      sub:(x.delivery ? '外卖' : (x.city || '')) + (x.price != null ? ' ¥' + x.price : '') + (x.cnt > 1 ? ' 去过' + x.cnt + '次' : '') + (x.tsc != null && x.tv ? ' “' + x.tv + '”' : ''),
+      sc:(x.tsc != null ? x.tsc + '分' : (x.tv || '')), scCls:tCls(x.tier), d:x.d, id:x.id}));
+    const bao = stores.filter(x => x.tier === 'bao').sort((a, b) => (b.tsc || 0) - (a.tsc || 0) || b.cnt - a.cnt);
+    const jia = stores.filter(x => x.tier === 'jia').sort((a, b) => b.cnt - a.cnt);
+    const lei = stores.filter(x => x.tier === 'lei');
+    const mute = stores.filter(x => !x.tier).sort((a, b) => b.cnt - a.cnt);
     S.tiles = [
-      [stores.length, '家', '吃过探过', sli(stores.slice().sort((a, b) => b.cnt - a.cnt))],
-      [stores.filter(x => x.cnt >= 2).length, '家', '回头再去', sli(stores.filter(x => x.cnt >= 2).sort((a, b) => b.cnt - a.cnt))],
-      [stores.filter(x => x.v && !x.vNeg).length, '家', '值得回购', sli(stores.filter(x => x.v && !x.vNeg))],
-      [stores.filter(x => x.vNeg).length, '家', '踩雷避开', sli(stores.filter(x => x.vNeg))]
+      [stores.length, '家', '吃过', sli(stores.slice().sort((a, b) => b.cnt - a.cnt))],
+      [bao.length, '家', '宝藏', sli(bao)],
+      [jia.length, '家', '家常', sli(jia)],
+      [lei.length, '家', '避雷', sli(lei)]
     ];
-    S.ranksTitle = '回购榜 · 避雷榜';
-    const pos = stores.filter(x => x.v && !x.vNeg).sort((a, b) => b.cnt - a.cnt).slice(0, 3)
-      .map(x => ({no:'↑', cls:'g', nm:x.name, sub:(x.city || '') + (x.price != null ? ' ¥' + x.price : '') + (x.cnt > 1 ? ' 去过' + x.cnt + '次' : ''), sc:x.v, scCls:'ok', d:x.d, id:x.id}));
-    const neg = stores.filter(x => x.vNeg).slice(0, 2)
-      .map(x => ({no:'↓', cls:'r', nm:x.name, sub:x.city || '', sc:x.v, scCls:'no2', d:x.d, id:x.id}));
-    S.ranks = pos.concat(neg);
+    if (mute.length) S.noteLink = {txt:'还有 ' + mute.length + ' 家没表态 · 补个分数或一句话就归档', items:sli(mute)};
+    S.ranksTitle = '宝藏榜';
+    S.ranks = sli(bao.slice(0, 4)).map((x, i) => Object.assign(x, {no:String(i + 1), cls:i === 0 ? 'g' : ''}));
+    if (lei.length){
+      S.ranksBTitle = '避雷榜';
+      S.ranksB = sli(lei.slice(0, 3)).map((x, i) => Object.assign(x, {no:String(i + 1), cls:'r'}));
+    }
     const ccnt = {}; S.cityMap = {};
     stores.forEach(x => {
       const bucket = x.delivery ? '外卖' : x.city;
@@ -2602,10 +2641,18 @@ function ptagRow(r, tpl, scoredSet){
     if (p.store) add('', p.store.slice(0, 8));
     if (p.delivery) add('', '外卖');
     else if (p.city) add('', p.city);
+    if (p.score != null) add('sc', '★ ' + p.score + '分');
     (p.prices || []).slice(0, 2).forEach(v => add('sc', '¥' + v));
   }
   if (tpl === 'money') (p.prices || []).forEach(v => add('sc', '¥' + v));
-  if (p.verdict) add(p.vNeg ? 'neg' : 'ok', p.verdict);
+  if (p.verdict){
+    if (tpl === 'food'){ const tr = foodTier(p) || 'jia';
+      add(tr === 'lei' ? 'neg' : tr, p.verdict); }
+    else add(p.vNeg ? 'neg' : 'ok', p.verdict);
+  } else if (tpl === 'food'){
+    const tr = foodTier(p);
+    if (tr) add(tr === 'lei' ? 'neg' : tr, TIER_NM[tr]);
+  }
   return d.children.length ? d : null;
 }
 function openScoreSheet(e){
@@ -2643,6 +2690,12 @@ function renderTplPanel(g, tpl){
     el.onclick = () => { const t = st.tiles[+el.dataset.ti];
       if (t[3] && t[3].length) openTileSheet(t[2] + ' · ' + rlab, t[3]); };
   });
+  if (st.noteLink){
+    const nl = document.createElement('div'); nl.className = 'tp-more';
+    nl.textContent = st.noteLink.txt + ' ›';
+    nl.onclick = () => openTileSheet('还没表态 · ' + rlab, st.noteLink.items);
+    pan.appendChild(nl);
+  }
   /* 榜单 */
   if (st.ranks.length){
     const rk = document.createElement('div'); rk.className = 'tp-pan';
@@ -2656,6 +2709,19 @@ function renderTplPanel(g, tpl){
       rk.appendChild(row);
     });
     view.appendChild(rk);
+  }
+  if (st.ranksB && st.ranksB.length){
+    const rk2 = document.createElement('div'); rk2.className = 'tp-pan';
+    rk2.innerHTML = '<div class="tt">' + st.ranksBTitle + '</div>';
+    st.ranksB.forEach(x => {
+      const row = document.createElement('div'); row.className = 'tp-rk';
+      row.innerHTML = '<span class="no ' + x.cls + '">' + x.no + '</span>'
+        + '<span class="nm">' + x.nm + (x.sub ? '<small>' + x.sub + '</small>' : '') + '</span>'
+        + '<span class="sc ' + x.scCls + '">' + x.sc + '</span>';
+      row.querySelector('.nm').onclick = () => jumpToEntry(x.d, x.id);
+      rk2.appendChild(row);
+    });
+    view.appendChild(rk2);
   }
   /* 城市分布 */
   if (st.bars.length){
@@ -2697,6 +2763,23 @@ function openTileSheet(title, items){
   });
   S.classList.add('on'); $('#mask').classList.add('on');
 }
+function openHowSheet(tpl){
+  const S = $('#gsheet');
+  const row = (t, ex, note) => '<div class="hw-row"><b>' + t + '</b><code>' + ex + '</code>' + (note ? '<span>' + note + '</span>' : '') + '</div>';
+  const per = {
+    food: row('美食', '在「烤匠」吃了麻辣烤鱼（鱼皮酥脆），人均¥89，8.5分，会再来', '「」里是店名 · 括号里评价菜，不算店的整体表态 · 整体表态放句末'),
+    movie: row('电影', '《沙丘2》9分，和赵赵二刷', '《》里是片名 · X分=评分 · 和X=同行人'),
+    book: row('读书', '《毫无意义的工作》读完，8分', '《》里是书名 · X分=评分'),
+    money: row('花销', '打车 23元，咖啡 ¥18', '写 元 / ¥ 就自动记账'),
+    work: row('工作', '完成周报初稿，明天给老板', '写「明天 / 8.25」自动挂日期')
+  };
+  const order = [tpl].concat(Object.keys(per).filter(k => k !== tpl)).filter(k => k && per[k]);
+  S.innerHTML = '<div class="gs-title">怎么写，点点才看得懂</div>'
+    + order.map(k => per[k]).join('')
+    + '<div class="hw-tier"><b>美食三档</b>　宝藏＝8分以上，或写「会再来 / 回购 / 必吃」；家常＝6–8分，或写「好吃 / 还行」；避雷＝6分以下，或写「避雷 / 难吃 / 非必要不去」。有分按分，明确说避雷或会再来的，以你的话为准。</div>'
+    + '<div class="hw-tip">都是普通中文，不用死记——写 #分组名 归进集子，「明天下午三点」自动挂时间。</div>';
+  S.classList.add('on'); $('#mask').classList.add('on');
+}
 const TPL_NOUN = {movie:'观影', food:'美食', book:'阅读', money:'花销'};
 function statsPayload(g, tpl, st, sel){
   const ta = TODAY.split('.').map(Number);
@@ -2706,8 +2789,11 @@ function statsPayload(g, tpl, st, sel){
     : sel === 'month' ? (ta[1] + '月 ' + noun + '小结')
     : ('我的' + noun + '全记录');
   return {type:'stats', head:'点点手帐 · 盘点',
-    cardTitle:title, tiles:st.tiles.slice(0, 3),
-    list:st.ranks.slice(0, tpl === 'food' ? 4 : 5),
+    cardTitle:title,
+    tiles:(tpl === 'food' && st.tiles.length === 4) ? [st.tiles[0], st.tiles[1], st.tiles[3]] : st.tiles.slice(0, 3),
+    list:(tpl === 'food')
+      ? st.ranks.slice(0, 3).concat((st.ranksB || []).slice(0, 2).map(x => Object.assign({}, x, {no:'↓'})))
+      : st.ranks.slice(0, 5),
     bars:tpl === 'food' ? (st.bars || []).slice(0, 4) : null,
     quote:st.quote};
 }
@@ -2750,7 +2836,16 @@ function updateRecall(e, inp){
     const p = parseLine(e.text || '');
     const storeKey = p.store && storeSet().has(p.store) ? p.store : null;
     const key = storeKey || p.title;
-    if (!key || key.length < 2){ RC.classList.remove('on'); return; }
+    if (!key || key.length < 2){
+      const gs = (e.groups && e.groups.length) ? e.groups
+        : ((e.text || '').match(/#([^\s#]{1,12})/g) || []).map(x => x.slice(1));
+      if (gs.some(g2 => tplOf(g2) === 'food') && (e.text || '').length >= 10 && !p.store && !foodTier(p)){
+        RC.innerHTML = '<span class="rc-ico">✍️</span><span class="rc-tx">店名加「」、句末给个分数或表态，点点就能帮你记榜</span><span class="rc-go">看写法 ›</span>';
+        RC.onclick = () => { RC.classList.remove('on'); dismissKB(); openHowSheet('food'); };
+        RC.classList.add('on'); placeToolbar(); return;
+      }
+      RC.classList.remove('on'); return;
+    }
     const isStore = !!storeKey;
     const hits = [];
     walk((d, x) => {
@@ -2972,7 +3067,7 @@ function shDraw(){
       let nm = x.nm; while (ctx.measureText(nm).width > CW - 220 && nm.length > 2) nm = nm.slice(0, -1);
       if (nm !== x.nm) nm += '…';
       ctx.fillText(nm, M + 58, y);
-      ctx.font = shFont(700, 32); ctx.fillStyle = x.scCls === 'no2' ? '#C0604E' : (x.scCls === 'ok' ? '#5F8F66' : T.ink);
+      ctx.font = shFont(700, 32); ctx.fillStyle = (x.scCls === 'no2' || x.scCls === 'lei') ? '#C0604E' : x.scCls === 'ok' ? '#5F8F66' : x.scCls === 'bao' ? T.acc : x.scCls === 'jia' ? T.soft : T.ink;
       ctx.fillText(x.sc, M + CW - ctx.measureText(x.sc).width, y);
       y += 62;
     }
