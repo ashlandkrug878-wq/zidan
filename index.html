@@ -1256,7 +1256,7 @@ function render(){
         setTimeout(() => pendingRestore = false, 5000); return; }
       pendingRestore = false; $('#jsonInput').click();
     });
-    mkRow('版本记录', sub('v2.11 ›'), showChangelog);
+    mkRow('版本记录', sub('v2.12 ›'), showChangelog);
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
       if (pendingWipe){ localStorage.removeItem(LSKEY); location.reload(); return; }
@@ -2290,7 +2290,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.11（当前 · 2026.8.19）\n【美食盘点三档制】\n· 全页统一三个词：宝藏 / 家常 / 避雷——磁贴、榜单、小签一个说法，不再五花八门\n· 没写判决、只打了分也能归档：8分以上宝藏，6–8家常，6以下避雷；明确写「避雷 / 会再来」的以你的话为准\n· 榜单拆成「宝藏榜」和「避雷榜」，右侧统一显示分数或你的原话\n· 磁贴下多一行「还有 N 家没表态」，点开看清单、跳回当天补一句\n【怎么写】\n· 集子页新增「怎么写?」例句卡：每个模板一行范例\n· 写美食时没读出店名和表态，点点会轻声提示写法\n\n'
+    + 'v2.12（当前 · 2026.8.19）\n【循环提醒场景化】\n· 添加时先选场景：🎂生日 · 💍纪念日 · 🩸生理期 · 💳还款日 · 🔁自定义，表单跟着变，提前天数给好默认\n· 生日支持阴历：内置 1900–2100 农历表离线换算，填一次「农历冬月廿三」，每年自动算出阳历日子\n· 填出生年份/起始年份，提醒自动带岁数和周年：「🎂 妈妈生日（58 岁）」\n· 农历日子入系统日历＝一次写入未来 5 年各自算好的日期\n\n'
+    + 'v2.11（2026.8.19）\n【美食盘点三档制】\n· 全页统一三个词：宝藏 / 家常 / 避雷——磁贴、榜单、小签一个说法，不再五花八门\n· 没写判决、只打了分也能归档：8分以上宝藏，6–8家常，6以下避雷；明确写「避雷 / 会再来」的以你的话为准\n· 榜单拆成「宝藏榜」和「避雷榜」，右侧统一显示分数或你的原话\n· 磁贴下多一行「还有 N 家没表态」，点开看清单、跳回当天补一句\n【怎么写】\n· 集子页新增「怎么写?」例句卡：每个模板一行范例\n· 写美食时没读出店名和表态，点点会轻声提示写法\n\n'
     + 'v2.10（2026.8.19）\n【提速】\n· 修复一条长句让识别卡死 11 秒的灾难性回溯——从侧栏进分组不再等 2 秒，瞬开\n· 保存后不再全量重算识别，只有熟店簿/熟人簿变了才重算\n【循环提醒】\n· 每条提醒新增「改」按钮：名字、周期、日期、提前天数都能直接修改，不用删了重建\n【叫法】\n· 「待办」统一改叫「任务」\n\n'
     + 'v2.9（2026.8.18）\n【☾ Someday · 给"改天做"一个正经的家】\n· 长按任务、晚间复盘、晨间勾选里都能把事放进 Someday：不催、不追、不算拖延，退出每日循环\n· 侧栏汇总新增「☾ Someday」，点任务符号一键「⤴ 捞回今天」\n· 跟了 3 天以上的任务，复盘时点点会提议放 Someday；晨间列表每行标「已跟 N 天」；「没勾的放 Someday」一键清场\n· Someday 不进报告不进任务列表——那是你表过态的事，不是欠着的账\n【识别修正（来自你的真实数据）】\n· 引号强调不再被当成店名（"自传"事件）：店名只跟美食分组学习\n· 正面判决词补充：可再来 / 好吃 / 很香 / 可回购（叹锅、烤匠这类都能认了）\n【数据卫生】\n· 导出与云备份不再夹带解析缓存；空白历史页和空白子行自动清理\n\n'
     + 'v2.8（2026.8.18）\n【找到卡顿真凶】\n· 列表里的照片过去直接渲染原图（每张几百KB），这是标签页慢的根源——现在插图自动生成小缩略图，列表只加载缩略图＋懒加载，点开看大图不变；老照片打开 App 后台自动补一遍缩略图\n· 侧栏改为打开时才构建，不再每次刷新页面都重算\n【做减法】\n· 设置删掉三个未实现的占位项（周报起始日 / 复盘提醒 / 应用锁），真做出来再回来\n· 推迟不再有进度滑杆：只留「一句话进度」，它会进报告和折叠时间线；旧数据里难看的「已完成0%」徽章自动清掉\n\n'
@@ -3190,14 +3191,87 @@ $('#shSheet').addEventListener('click', ev => { if (ev.target.id === 'shSheet') 
 
 /* ============ v2.7 循环提醒 ============ */
 SET.cycles = SET.cycles || [];
-let cycUiOpen = false, cycKind = 'month', pendingCDel = null, cycEdit = null, cycDraft = null;
+/* ===== 农历引擎（1900–2100 · 离线，几百字节查表） ===== */
+const LUNAR_INFO = [
+0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+0x06566,0x0d4a0,0x0ea50,0x16a95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b6a0,0x195a6,
+0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0,
+0x0c960,0x0d954,0x0d4a0,0x0da50,0x07552,0x056a0,0x0abb7,0x025d0,0x092d0,0x0cab5,
+0x0a950,0x0b4a0,0x0baa4,0x0ad50,0x055d9,0x04ba0,0x0a5b0,0x15176,0x052b0,0x0a930,
+0x07954,0x06aa0,0x0ad50,0x05b52,0x04b60,0x0a6e6,0x0a4e0,0x0d260,0x0ea65,0x0d530,
+0x05aa0,0x076a3,0x096d0,0x04afb,0x04ad0,0x0a4d0,0x1d0b6,0x0d250,0x0d520,0x0dd45,
+0x0b5a0,0x056d0,0x055b2,0x049b0,0x0a577,0x0a4b0,0x0aa50,0x1b255,0x06d20,0x0ada0,
+0x14b63,0x09370,0x049f8,0x04970,0x064b0,0x168a6,0x0ea50,0x06aa0,0x1a6c4,0x0aae0,
+0x092e0,0x0d2e3,0x0c960,0x0d557,0x0d4a0,0x0da50,0x05d55,0x056a0,0x0a6d0,0x055d4,
+0x052d0,0x0a9b8,0x0a950,0x0b4a0,0x0b6a6,0x0ad50,0x055a0,0x0aba4,0x0a5b0,0x052b0,
+0x0b273,0x06930,0x07337,0x06aa0,0x0ad50,0x14b55,0x04b60,0x0a570,0x054e4,0x0d160,
+0x0e968,0x0d520,0x0daa0,0x16aa6,0x056d0,0x04ae0,0x0a9d4,0x0a2d0,0x0d150,0x0f252,
+0x0d520];
+function lLeapMonth(y){ return LUNAR_INFO[y - 1900] & 0xf; }
+function lLeapDays(y){ return lLeapMonth(y) ? ((LUNAR_INFO[y - 1900] & 0x10000) ? 30 : 29) : 0; }
+function lMonthDays(y, m){ return (LUNAR_INFO[y - 1900] & (0x10000 >> m)) ? 30 : 29; }
+function lYearDays(y){
+  let s2 = 348;
+  for (let i = 0x8000; i > 0x8; i >>= 1) if (LUNAR_INFO[y - 1900] & i) s2++;
+  return s2 + lLeapDays(y);
+}
+/* 农历某年某月某日 → 阳历 Date。闰月按正常月算；生在三十、当年只有廿九则取当月最后一天 */
+function lunarToSolar(ly, lm, ld){
+  if (ly < 1900 || ly > 2099 || lm < 1 || lm > 12 || ld < 1 || ld > 30) return null;
+  let off = 0;
+  for (let y = 1900; y < ly; y++) off += lYearDays(y);
+  const leap = lLeapMonth(ly);
+  for (let m = 1; m < lm; m++){ off += lMonthDays(ly, m); if (m === leap) off += lLeapDays(ly); }
+  off += Math.min(ld, lMonthDays(ly, lm)) - 1;
+  const t = new Date(1900, 0, 31); t.setDate(t.getDate() + off);
+  return t;
+}
+const LM_NM = ['正','二','三','四','五','六','七','八','九','十','冬','腊'];
+function lDayNm(d){
+  if (d === 10) return '初十'; if (d === 20) return '二十'; if (d === 30) return '三十';
+  const dig = '一二三四五六七八九'[(d % 10) - 1];
+  return (d < 10 ? '初' : d < 20 ? '十' : '廿') + dig;
+}
+function lunarLabel(lm, ld){ return '农历' + LM_NM[lm - 1] + '月' + lDayNm(ld); }
+function lunarNextK(lm, ld, fromK){
+  const fy = +fromK.split('.')[0], from = parseKey(fromK);
+  let best = null;
+  for (let ly = fy - 1; ly <= fy + 1; ly++){
+    const t = lunarToSolar(ly, lm, ld);
+    if (t && t >= from && (!best || t < best)) best = t;
+  }
+  return best ? dkey(best) : null;
+}
+const CYC_ICON = {birthday:'🎂', anniv:'💍', period:'🩸', bill:'💳'};
+function cycIcon(c){ return CYC_ICON[c.tag] || '🔁'; }
+function cycAgeStr(c, k){
+  if (!c.y0) return '';
+  const n2 = +k.split('.')[0] - c.y0;
+  return n2 > 0 ? (n2 + (c.tag === 'anniv' ? ' 周年' : ' 岁')) : '';
+}
+let cycUiOpen = false, cycKind = 'month', pendingCDel = null, cycEdit = null, cycDraft = null, cycTag = 'birthday', cycCal = 'solar';
 function cycDesc(c){
+  if (c.kind === 'lunar') return '每年 ' + lunarLabel(c.lm, c.ld);
   if (c.kind === 'year') return '每年 ' + c.m + ' 月 ' + c.d + ' 日';
   if (c.kind === 'month') return '每月 ' + c.day + ' 号';
   return '每 ' + c.n + ' 天 · 上次 ' + fmtShort(c.anchor) + ' 日';
 }
 function cycHits(c, k){
   const a = k.split('.').map(Number);
+  if (c.kind === 'lunar'){
+    for (let ly = a[0] - 1; ly <= a[0]; ly++){
+      const t = lunarToSolar(ly, c.lm, c.ld);
+      if (t && dkey(t) === k) return true;
+    }
+    return false;
+  }
   if (c.kind === 'year') return a[1] === +c.m && a[2] === +c.d;
   if (c.kind === 'month'){
     const last = new Date(a[0], a[1], 0).getDate();
@@ -3207,6 +3281,7 @@ function cycHits(c, k){
   return diff > 0 && diff % (+c.n) === 0;
 }
 function cycNext(c, fromK){
+  if (c.kind === 'lunar') return lunarNextK(c.lm, c.ld, fromK);
   const d = parseKey(fromK);
   for (let i = 0; i < 800; i++){
     const k = dkey(d);
@@ -3221,17 +3296,33 @@ function cycOnDone(e){
   if (c && c.kind === 'ndays'){ c.anchor = TODAY; scheduleSave(); toast('🔁 周期已从今天重新起算'); }
 }
 function cycIcs(c){
-  const nk = cycNext(c, TODAY); if (!nk){ toast('算不出下一次时间'); return; }
   const fmt = k => { const a = k.split('.').map(Number); return a[0] + String(a[1]).padStart(2, '0') + String(a[2]).padStart(2, '0'); };
-  const d2 = parseKey(nk); d2.setDate(d2.getDate() + 1);
-  const rr = c.kind === 'year' ? 'FREQ=YEARLY' : c.kind === 'month' ? 'FREQ=MONTHLY' : ('FREQ=DAILY;INTERVAL=' + c.n);
-  const ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//dot//CN\r\nBEGIN:VEVENT\r\n'
-    + 'UID:dotcyc-' + c.id + '@dot\r\nDTSTART;VALUE=DATE:' + fmt(nk) + '\r\nDTEND;VALUE=DATE:' + fmt(dkey(d2))
-    + '\r\nRRULE:' + rr + '\r\nSUMMARY:🔁 ' + (c.name || '循环提醒') + '\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n';
+  const ev = (k, i) => {
+    const d2 = parseKey(k); d2.setDate(d2.getDate() + 1);
+    return 'BEGIN:VEVENT\r\nUID:dotcyc-' + c.id + '-' + i + '@dot\r\nDTSTART;VALUE=DATE:' + fmt(k)
+      + '\r\nDTEND;VALUE=DATE:' + fmt(dkey(d2))
+      + (i === 0 && c.kind !== 'lunar'
+          ? '\r\nRRULE:' + (c.kind === 'year' ? 'FREQ=YEARLY' : c.kind === 'month' ? 'FREQ=MONTHLY' : ('FREQ=DAILY;INTERVAL=' + c.n))
+          : '')
+      + '\r\nSUMMARY:' + cycIcon(c) + ' ' + (c.name || '循环提醒')
+      + (c.kind === 'lunar' ? '（' + lunarLabel(c.lm, c.ld) + '）' : '')
+      + '\r\nEND:VEVENT\r\n';
+  };
+  let evs = '';
+  if (c.kind === 'lunar'){
+    /* RRULE 表达不了农历——直接把未来 5 年各自算好的日子逐条写入 */
+    let k = cycNext(c, TODAY);
+    for (let i = 0; i < 5 && k; i++){ evs += ev(k, i); k = cycNext(c, addDaysK(k, 1)); }
+  } else {
+    const nk = cycNext(c, TODAY);
+    if (nk) evs = ev(nk, 0);
+  }
+  if (!evs){ toast('算不出下一次时间'); return; }
+  const ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//dot//CN\r\n' + evs + 'END:VCALENDAR\r\n';
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([ics], {type:'text/calendar'}));
   a.download = (c.name || '循环提醒').slice(0, 12) + '.ics'; a.click();
-  toast('已生成日历文件 · 打开即可加入系统日历（会真的响）');
+  toast(c.kind === 'lunar' ? '农历日子已按未来 5 年算好写进日历文件' : '已生成日历文件 · 打开即可加入系统日历（会真的响）');
 }
 function renderCycles(){
   const bar = document.createElement('div'); bar.className = 'rp-tabs'; bar.style.marginTop = '16px';
@@ -3239,53 +3330,98 @@ function renderCycles(){
   bar.appendChild(addC); view.appendChild(bar);
   const form = document.createElement('div'); form.className = 'vt-card';
   form.style.display = cycUiOpen ? 'block' : 'none';
+  const tagChips = [['birthday','🎂 生日'],['anniv','💍 纪念日'],['period','🩸 生理期'],['bill','💳 还款日'],['custom','🔁 自定义']]
+    .map(([t, n]) => '<button class="gs-chip' + (cycTag === t ? ' on' : '') + '" data-t="' + t + '">' + n + '</button>').join('');
   const kindChips = [['month','每月'],['year','每年'],['ndays','每N天']]
     .map(([k, n]) => '<button class="gs-chip' + (cycKind === k ? ' on' : '') + '" data-k="' + k + '">' + n + '</button>').join('');
-  form.innerHTML = '<input class="vt-in" id="cyName" placeholder="提醒什么（如：发工资 / 妈妈生日 / 大姨妈）" style="margin-top:0">'
-    + '<div class="gs-chips" style="margin-top:10px">' + kindChips + '</div>'
-    + (cycKind === 'year'
-        ? '<div style="display:flex;gap:8px"><input class="vt-in" id="cyM" type="number" min="1" max="12" placeholder="几月"><input class="vt-in" id="cyD" type="number" min="1" max="31" placeholder="几日"></div>'
-      : cycKind === 'month'
-        ? '<input class="vt-in" id="cyDay" type="number" min="1" max="31" placeholder="每月几号（超过月底自动取最后一天）">'
-        : '<div style="display:flex;gap:8px"><input class="vt-in" id="cyN" type="number" min="2" max="365" placeholder="间隔天数（如 28）"><input class="vt-in" id="cyAnchor" type="date"></div>')
-    + '<input class="vt-in" id="cyAhead" type="number" min="0" max="30" placeholder="提前几天提示（可不填）">'
+  const calChips = [['solar','阳历'],['lunar','阴历（农历）']]
+    .map(([k, n]) => '<button class="gs-chip' + (cycCal === k ? ' on' : '') + '" data-c="' + k + '">' + n + '</button>').join('');
+  const solarMD = '<div style="display:flex;gap:8px"><input class="vt-in" id="cyM" type="number" min="1" max="12" placeholder="几月"><input class="vt-in" id="cyD" type="number" min="1" max="31" placeholder="几日"></div>';
+  const dayIn = '<input class="vt-in" id="cyDay" type="number" min="1" max="31" placeholder="每月几号（超过月底自动取最后一天）">';
+  const ndIn = '<div style="display:flex;gap:8px"><input class="vt-in" id="cyN" type="number" min="2" max="365" placeholder="间隔天数（如 28）"><input class="vt-in" id="cyAnchor" type="date"></div>';
+  const y0In = '<input class="vt-in" id="cyY0" type="number" min="1900" max="2100" placeholder="'
+    + (cycTag === 'anniv' ? '起始年份（可不填 · 填了帮你算周年）' : '出生年份（可不填 · 填了帮你算岁数）') + '">';
+  const NAME_PH = {birthday:'谁的生日（如：妈妈）', anniv:'什么纪念日（如：结婚纪念日）', period:'提醒什么（如：大姨妈）', bill:'哪笔账（如：房贷 / 信用卡）', custom:'提醒什么'};
+  const AH_DEF = {birthday:'3', anniv:'3', period:'1', bill:'2', custom:''};
+  let mid = '';
+  if (cycTag === 'birthday'){
+    mid = '<div class="gs-chips" style="margin-top:10px">' + calChips + '</div>'
+      + (cycCal === 'lunar'
+          ? '<div style="display:flex;gap:8px"><select class="vt-in" id="cyLM" style="flex:1">'
+            + LM_NM.map((n, i) => '<option value="' + (i + 1) + '">' + n + '月</option>').join('')
+            + '</select><input class="vt-in" id="cyLD" type="number" min="1" max="30" placeholder="哪天，填数字（廿三=23）" style="flex:1.5"></div>'
+          : solarMD)
+      + y0In;
+  } else if (cycTag === 'anniv'){ mid = solarMD + y0In; }
+  else if (cycTag === 'period'){
+    mid = ndIn + '<div class="hw-tip" style="padding:4px 2px 0">左边填周期天数 · 右边选上次来的日子 · 到时打勾会自动重新起算</div>';
+  } else if (cycTag === 'bill'){ mid = dayIn; }
+  else {
+    mid = '<div class="gs-chips" style="margin-top:10px">' + kindChips + '</div>'
+      + (cycKind === 'year' ? solarMD : cycKind === 'month' ? dayIn : ndIn);
+  }
+  form.innerHTML = '<div class="gs-chips" style="margin-top:0">' + tagChips + '</div>'
+    + '<input class="vt-in" id="cyName" placeholder="' + NAME_PH[cycTag] + '"'
+    + ((cycTag === 'period' && (!cycDraft || !cycDraft.name)) ? ' value="大姨妈"' : '') + '>'
+    + mid
+    + '<input class="vt-in" id="cyAhead" type="number" min="0" max="30" placeholder="提前几天提示（可不填）"'
+    + ((AH_DEF[cycTag] && (!cycDraft || cycDraft.ahead == null)) ? ' value="' + AH_DEF[cycTag] + '"' : '') + '>'
     + '<button class="rv-confirm" id="cySave">' + (cycEdit ? '保存修改' : '保存') + '</button>';
+  const nEl = form.querySelector('#cyN');
+  if (nEl && cycTag === 'period' && (!cycDraft || !cycDraft.n) && !nEl.value) nEl.value = 28;
   view.appendChild(form);
   addC.onclick = () => { cycUiOpen = !cycUiOpen; cycEdit = null; cycDraft = null; render(); };
-  form.querySelectorAll('[data-k]').forEach(b => b.onclick = () => {
-    cycDraft = Object.assign(cycDraft || {}, {name:$('#cyName').value, ahead:$('#cyAhead').value});   /* 切类型不丢已填内容 */
-    cycKind = b.dataset.k; render();
-  });
+  const cycStash = () => { cycDraft = Object.assign(cycDraft || {}, {name:$('#cyName').value, ahead:$('#cyAhead').value}); };   /* 切换不丢已填内容 */
+  form.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { cycStash(); if (cycDraft) delete cycDraft.ahead; cycTag = b.dataset.t; render(); });
+  form.querySelectorAll('[data-c]').forEach(b => b.onclick = () => { cycStash(); cycCal = b.dataset.c; render(); });
+  form.querySelectorAll('[data-k]').forEach(b => b.onclick = () => { cycStash(); cycKind = b.dataset.k; render(); });
   const anc = form.querySelector('#cyAnchor');
   if (anc){ const a = TODAY.split('.').map(Number);
     anc.value = a[0] + '-' + String(a[1]).padStart(2, '0') + '-' + String(a[2]).padStart(2, '0'); }
-  if (cycDraft){   /* 编辑预填（或切类型后回填） */
+  if (cycDraft){   /* 编辑预填（或切换后回填）：有哪个框就填哪个 */
+    const q = id => form.querySelector(id);
     if (cycDraft.name) $('#cyName').value = cycDraft.name;
-    if (cycDraft.ahead) $('#cyAhead').value = cycDraft.ahead;
-    if (cycKind === 'year'){ if (cycDraft.m) form.querySelector('#cyM').value = cycDraft.m;
-      if (cycDraft.d) form.querySelector('#cyD').value = cycDraft.d; }
-    else if (cycKind === 'month'){ if (cycDraft.day) form.querySelector('#cyDay').value = cycDraft.day; }
-    else { if (cycDraft.n) form.querySelector('#cyN').value = cycDraft.n;
-      if (cycDraft.anchor && anc){ const a2 = String(cycDraft.anchor).split('.').map(Number);
-        anc.value = a2[0] + '-' + String(a2[1]).padStart(2, '0') + '-' + String(a2[2]).padStart(2, '0'); } }
+    if (cycDraft.ahead !== '' && cycDraft.ahead != null) $('#cyAhead').value = cycDraft.ahead;
+    if (q('#cyM') && cycDraft.m) q('#cyM').value = cycDraft.m;
+    if (q('#cyD') && cycDraft.d) q('#cyD').value = cycDraft.d;
+    if (q('#cyDay') && cycDraft.day) q('#cyDay').value = cycDraft.day;
+    if (q('#cyN') && cycDraft.n) q('#cyN').value = cycDraft.n;
+    if (q('#cyLM') && cycDraft.lm) q('#cyLM').value = cycDraft.lm;
+    if (q('#cyLD') && cycDraft.ld) q('#cyLD').value = cycDraft.ld;
+    if (q('#cyY0') && cycDraft.y0) q('#cyY0').value = cycDraft.y0;
+    if (cycDraft.anchor && anc){ const a2 = String(cycDraft.anchor).split('.').map(Number);
+      anc.value = a2[0] + '-' + String(a2[1]).padStart(2, '0') + '-' + String(a2[2]).padStart(2, '0'); }
   }
   $('#cySave').onclick = () => {
     const name = $('#cyName').value.trim();
     if (!name){ toast('先写提醒什么'); return; }
-    const c = {id:(cycEdit || ++uid), name, kind:cycKind, ahead:+($('#cyAhead').value || 0)};
-    if (cycKind === 'year'){
-      c.m = +$('#cyM').value; c.d = +$('#cyD').value;
-      if (!(c.m >= 1 && c.m <= 12 && c.d >= 1 && c.d <= 31)){ toast('月份日期没填对'); return; }
-    } else if (cycKind === 'month'){
-      c.day = +$('#cyDay').value;
+    const c = {id:(cycEdit || ++uid), name, tag:cycTag, ahead:+($('#cyAhead').value || 0)};
+    const takeY0 = () => { const y0 = +($('#cyY0') ? $('#cyY0').value : 0); if (y0 >= 1900 && y0 <= 2100) c.y0 = y0; };
+    const takeMD = () => { c.m = +$('#cyM').value; c.d = +$('#cyD').value;
+      return (c.m >= 1 && c.m <= 12 && c.d >= 1 && c.d <= 31); };
+    const takeND = () => { c.n = +$('#cyN').value; const av = $('#cyAnchor').value;
+      if (!(c.n >= 2)){ toast('周期天数至少 2'); return false; }
+      if (!av){ toast('选一下上次的日子'); return false; }
+      const aa = av.split('-').map(Number); c.anchor = aa[0] + '.' + aa[1] + '.' + aa[2]; return true; };
+    if (cycTag === 'birthday' && cycCal === 'lunar'){
+      c.kind = 'lunar'; c.lm = +$('#cyLM').value; c.ld = +$('#cyLD').value;
+      if (!(c.lm >= 1 && c.lm <= 12 && c.ld >= 1 && c.ld <= 30)){ toast('农历日子没填对（填数字，廿三=23）'); return; }
+      takeY0();
+    } else if (cycTag === 'birthday' || cycTag === 'anniv'){
+      c.kind = 'year';
+      if (!takeMD()){ toast('月份日期没填对'); return; }
+      takeY0();
+    } else if (cycTag === 'period'){
+      c.kind = 'ndays'; if (!takeND()) return;
+    } else if (cycTag === 'bill'){
+      c.kind = 'month'; c.day = +$('#cyDay').value;
       if (!(c.day >= 1 && c.day <= 31)){ toast('几号没填对'); return; }
     } else {
-      c.n = +$('#cyN').value;
-      const av = $('#cyAnchor').value;
-      if (!(c.n >= 2)){ toast('间隔天数至少 2'); return; }
-      if (!av){ toast('选一个起算日'); return; }
-      const aa = av.split('-').map(Number);
-      c.anchor = aa[0] + '.' + aa[1] + '.' + aa[2];
+      c.kind = cycKind;
+      if (cycKind === 'year'){ if (!takeMD()){ toast('月份日期没填对'); return; } }
+      else if (cycKind === 'month'){ c.day = +$('#cyDay').value;
+        if (!(c.day >= 1 && c.day <= 31)){ toast('几号没填对'); return; } }
+      else if (!takeND()) return;
     }
     if (cycEdit){
       const i = SET.cycles.findIndex(x => x.id === cycEdit);
@@ -3303,17 +3439,17 @@ function renderCycles(){
   };
   if (!SET.cycles.length){
     const d = document.createElement('div'); d.className = 'empty-hint'; d.style.textAlign = 'center'; d.style.padding = '26px 2px 8px';
-    d.innerHTML = dotSVG(56) + '<div style="margin-top:8px">还没有循环提醒 · 生日、发工资日、周期都交给我记</div>';
+    d.innerHTML = dotSVG(56) + '<div style="margin-top:8px">还没有循环提醒 · 生日（阴历也认）、纪念日、生理期、还款日都交给我记</div>';
     view.appendChild(d);
   }
   SET.cycles.forEach(c => {
     const card = document.createElement('div'); card.className = 'vt-card';
     const nk = cycNext(c, TODAY);
-    card.innerHTML = '<div class="vt-site">🔁 ' + vEsc(c.name)
+    card.innerHTML = '<div class="vt-site">' + cycIcon(c) + ' ' + vEsc(c.name)
       + '<button class="gm-btn" data-a="edit" style="margin-left:auto">改</button>'
       + '<button class="gm-btn danger" data-a="del" style="margin-left:0">' + (pendingCDel === c.id ? '确认删除' : '删') + '</button></div>'
       + '<div class="vt-note">' + cycDesc(c) + (c.ahead ? ' · 提前 ' + c.ahead + ' 天提示' : '')
-      + (nk ? '<br>下次：' + fmtKey(nk) + '（' + weekCN(nk) + '）' : '') + '</div>'
+      + (nk ? '<br>下次：' + fmtKey(nk) + '（' + weekCN(nk) + '）' + (cycAgeStr(c, nk) ? ' · ' + cycAgeStr(c, nk) : '') : '') + '</div>'
       + '<div class="rp-tabs" style="margin-top:10px">'
       + '<button class="chip" data-a="ics">📅 入系统日历</button>'
       + (c.kind === 'ndays' ? '<button class="chip" data-a="reset">今天来了 · 重新起算</button>' : '')
@@ -3323,8 +3459,11 @@ function renderCycles(){
       SET.cycles = SET.cycles.filter(x => x.id !== c.id); pendingCDel = null; scheduleSave(); render();
     };
     card.querySelector('[data-a="edit"]').onclick = () => {
-      cycEdit = c.id; cycKind = c.kind; cycUiOpen = true; pendingCDel = null;
-      cycDraft = {name:c.name, ahead:(c.ahead || ''), m:c.m, d:c.d, day:c.day, n:c.n, anchor:c.anchor};
+      cycEdit = c.id; cycUiOpen = true; pendingCDel = null;
+      cycTag = c.tag || (c.kind === 'lunar' ? 'birthday' : 'custom');
+      cycCal = (c.kind === 'lunar') ? 'lunar' : 'solar';
+      cycKind = (c.kind === 'lunar') ? 'year' : c.kind;
+      cycDraft = {name:c.name, ahead:String(c.ahead != null ? c.ahead : ''), m:c.m, d:c.d, day:c.day, n:c.n, anchor:c.anchor, lm:c.lm, ld:c.ld, y0:c.y0};
       render(); window.scrollTo(0, 0);
     };
     card.querySelector('[data-a="ics"]').onclick = () => cycIcs(c);
@@ -3516,8 +3655,11 @@ function cycMaterialize(){
   (SET.cycles || []).forEach(c => {
     if (c.lastIns !== TODAY && cycHits(c, TODAY)){
       c.lastIns = TODAY;
+      const ag = cycAgeStr(c, TODAY);
       P().plan.push({sym:'task', state:'open',
-        text:'🔁 ' + c.name + (c.kind === 'ndays' ? '（按周期预计是今天）' : ''), cyc:c.id, _id:++uid}); ins = true;
+        text:cycIcon(c) + ' ' + c.name + (ag ? '（' + ag + '）' : '')
+          + (c.kind === 'lunar' ? '（' + lunarLabel(c.lm, c.ld) + '）' : '')
+          + (c.kind === 'ndays' ? '（按周期预计是今天）' : ''), cyc:c.id, _id:++uid}); ins = true;
     }
     if (c.ahead > 0 && c.lastPre !== TODAY){
       const nk = cycNext(c, addDaysK(TODAY, 1));
@@ -3525,7 +3667,9 @@ function cycMaterialize(){
         const diff = Math.round((parseKey(nk) - parseKey(TODAY)) / 86400000);
         if (diff === +c.ahead){
           c.lastPre = TODAY;
-          P().plan.push({sym:'note', text:'🔁 ' + diff + ' 天后 · ' + c.name + '（' + fmtShort(nk) + ' 日）', cyc:c.id, _id:++uid}); ins = true;
+          const ag2 = cycAgeStr(c, nk);
+          P().plan.push({sym:'note', text:cycIcon(c) + ' ' + diff + ' 天后 · ' + c.name + (ag2 ? ' ' + ag2 : '')
+            + '（' + (c.kind === 'lunar' ? lunarLabel(c.lm, c.ld) + ' · ' : '') + fmtShort(nk) + ' 日）', cyc:c.id, _id:++uid}); ins = true;
         }
       }
     }
