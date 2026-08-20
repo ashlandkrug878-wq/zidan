@@ -325,6 +325,8 @@
   .tp-rk .no.r{color:var(--red)}
   .tp-rk .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
   .tp-rk .nm small{font-size:11px;color:var(--ink-faint);margin-left:4px}
+  .tp-rk.mk .nm{white-space:normal;cursor:default}
+  .tp-rk.mk .nm small{display:block;margin:2px 0 0;line-height:1.5}
   .tp-rk .sc{font-weight:700;flex:none}
   .tp-rk .sc.ok{color:var(--green);font-size:12.5px;font-weight:600}
   .tp-rk .sc.no2{color:var(--red);font-size:12.5px;font-weight:600}
@@ -1258,7 +1260,7 @@ function render(){
         setTimeout(() => pendingRestore = false, 5000); return; }
       pendingRestore = false; $('#jsonInput').click();
     });
-    mkRow('版本记录', sub('v2.13 ›'), showChangelog);
+    mkRow('版本记录', sub('v2.14 ›'), showChangelog);
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
       if (pendingWipe){ localStorage.removeItem(LSKEY); location.reload(); return; }
@@ -1273,6 +1275,13 @@ function render(){
   else if (cur.name === 'people'){
     topTitle.textContent = '熟人册'; reviewBtn.textContent = '回今日';
     renderPeople();
+  }
+  else if (cur.name === 'me'){
+    topTitle.textContent = '我的人生时间点'; reviewBtn.textContent = '回今日';
+    view.appendChild(marksPan(SET.me, true, ''));
+    const tip0 = document.createElement('div'); tip0.className = 'vt-tip';
+    tip0.textContent = '这一页只属于你自己：入离职、搬家、拿证、第一次…都值得有个坐标。写了整日的，整百天纪念会提前看得见。';
+    view.appendChild(tip0);
   }
   else if (cur.name === 'person'){
     const pp0 = personById(cur.pid);
@@ -2302,7 +2311,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.13（当前 · 2026.8.20）\n【👥 熟人册】\n· 侧栏新增「熟人册」：点点从记录里认出的人（和X、转交给X）列成候选，点「收录」进册，不想要的可忽略\n· 收录时可填 本名＋昵称（多个用、隔开）：写哪个都认账，旧记录也一并追认到同一个人\n· 关系标签：亲情 / 友情 / 爱情 / 人脉 / 同事，也能自己写；外加自由备注\n· 人物页：我们的盘点（一起看过 / 一起吃过 / 共同出现 / 最近一次，可下钻）\n· 「我们的时刻」：手写纪念的事，或在记录里点 📌 收进来\n· 记录里的「和赵赵」小签可以点了，直接进TA的页；TA的生日提醒在人物页直达\n\n'
+    + 'v2.14（当前 · 2026.8.20）\n【⭐ 星标熟人 · 重要时间点】\n· 人物页可以点星：星标的人解锁「重要时间点」——认识 / 第一次见面 / 在一起…标签全由你写\n· 日期支持三档模糊：只填年份（第 N 个年头）、年份+月份（至今 N 年 N 个月）、整日（已 N 天 · 第 N 年）\n· 写了整日的：整百天纪念提前看得见（距 2700 天还有 32 天），一键「设提醒」进纪念日模板\n【🌟 我 · 人生时间点】\n· 熟人册第一页是你自己：入离职、搬家、第一次收到鲜花…同一套时间点，随时翻到自己的坐标\n\n'
+    + 'v2.13（2026.8.20）\n【👥 熟人册】\n· 侧栏新增「熟人册」：点点从记录里认出的人（和X、转交给X）列成候选，点「收录」进册，不想要的可忽略\n· 收录时可填 本名＋昵称（多个用、隔开）：写哪个都认账，旧记录也一并追认到同一个人\n· 关系标签：亲情 / 友情 / 爱情 / 人脉 / 同事，也能自己写；外加自由备注\n· 人物页：我们的盘点（一起看过 / 一起吃过 / 共同出现 / 最近一次，可下钻）\n· 「我们的时刻」：手写纪念的事，或在记录里点 📌 收进来\n· 记录里的「和赵赵」小签可以点了，直接进TA的页；TA的生日提醒在人物页直达\n\n'
     + 'v2.12（2026.8.19）\n【循环提醒场景化】\n· 添加时先选场景：🎂生日 · 💍纪念日 · 🩸生理期 · 💳还款日 · 🔁自定义，表单跟着变，提前天数给好默认\n· 生日支持阴历：内置 1900–2100 农历表离线换算，填一次「农历冬月廿三」，每年自动算出阳历日子\n· 填出生年份/起始年份，提醒自动带岁数和周年：「🎂 妈妈生日（58 岁）」\n· 农历日子入系统日历＝一次写入未来 5 年各自算好的日期\n\n'
     + 'v2.11（2026.8.19）\n【美食盘点三档制】\n· 全页统一三个词：宝藏 / 家常 / 避雷——磁贴、榜单、小签一个说法，不再五花八门\n· 没写判决、只打了分也能归档：8分以上宝藏，6–8家常，6以下避雷；明确写「避雷 / 会再来」的以你的话为准\n· 榜单拆成「宝藏榜」和「避雷榜」，右侧统一显示分数或你的原话\n· 磁贴下多一行「还有 N 家没表态」，点开看清单、跳回当天补一句\n【怎么写】\n· 集子页新增「怎么写?」例句卡：每个模板一行范例\n· 写美食时没读出店名和表态，点点会轻声提示写法\n\n'
     + 'v2.10（2026.8.19）\n【提速】\n· 修复一条长句让识别卡死 11 秒的灾难性回溯——从侧栏进分组不再等 2 秒，瞬开\n· 保存后不再全量重算识别，只有熟店簿/熟人簿变了才重算\n【循环提醒】\n· 每条提醒新增「改」按钮：名字、周期、日期、提前天数都能直接修改，不用删了重建\n【叫法】\n· 「待办」统一改叫「任务」\n\n'
@@ -3208,6 +3218,7 @@ $('#shSheet').addEventListener('click', ev => { if (ev.target.id === 'shSheet') 
 /* ===== v2.13 熟人册 ===== */
 SET.people = SET.people || [];
 SET.pplNo = SET.pplNo || {};
+SET.me = SET.me || {marks:[]};
 const REL_PRESETS = ['亲情','友情','爱情','人脉','同事'];
 let pendingPDel = null, personListN = 30;
 function personAliases(p){ return [p.name].concat(p.nick || []).filter(n => n && n.length); }
@@ -3373,6 +3384,100 @@ function cycIcs(c){
   a.download = (c.name || '循环提醒').slice(0, 12) + '.ics'; a.click();
   toast(c.kind === 'lunar' ? '农历日子已按未来 5 年算好写进日历文件' : '已生成日历文件 · 打开即可加入系统日历（会真的响）');
 }
+/* ===== v2.14 重要时间点：三档模糊精度 ===== */
+function markDateLabel(k){
+  return k.d ? (k.y + '.' + k.m + '.' + k.d) : (k.m ? (k.y + '年' + k.m + '月') : (k.y + '年'));
+}
+function markElapsed(k){
+  const ta = TODAY.split('.').map(Number);
+  if (k.d){
+    const days = Math.round((parseKey(TODAY) - parseKey(k.y + '.' + k.m + '.' + k.d)) / 86400000);
+    if (days < 0) return '还有 ' + (-days) + ' 天';
+    let yrs = ta[0] - k.y;
+    if (ta[1] < k.m || (ta[1] === k.m && ta[2] < k.d)) yrs--;
+    return '已 ' + days + ' 天 · 第 ' + (yrs + 1) + ' 年';
+  }
+  if (k.m){
+    const months = (ta[0] - k.y) * 12 + (ta[1] - k.m);
+    if (months < 0) return '';
+    if (months < 1) return '就在这个月';
+    const y2 = Math.floor(months / 12), m2 = months % 12;
+    return '至今 ' + (y2 ? y2 + ' 年' : '') + (m2 ? (y2 ? ' ' : '') + m2 + ' 个月' : '');
+  }
+  const n2 = ta[0] - k.y + 1;
+  return n2 > 1 ? '第 ' + n2 + ' 个年头' : (n2 === 1 ? '就是今年' : '');
+}
+function markNextRound(k){
+  if (!k.d) return null;
+  const base = parseKey(k.y + '.' + k.m + '.' + k.d);
+  const days = Math.round((parseKey(TODAY) - base) / 86400000);
+  if (days < 30) return null;
+  const nxt = (Math.floor(days / 100) + 1) * 100;
+  const d2 = parseKey(k.y + '.' + k.m + '.' + k.d); d2.setDate(d2.getDate() + nxt);
+  return {n:nxt, left:nxt - days, k:dkey(d2)};
+}
+function marksPan(holder, isMe, pname){
+  const pan = document.createElement('div'); pan.className = 'tp-pan';
+  pan.innerHTML = '<div class="tt" style="display:flex;align-items:center">' + (isMe ? '人生时间点' : '重要时间点')
+    + '<button class="gm-btn" id="mkAdd" style="margin-left:auto">＋ 添加</button></div>';
+  const marks = holder.marks || [];
+  if (!marks.length){
+    const d3 = document.createElement('div'); d3.className = 'vt-note';
+    d3.textContent = isMe
+      ? '记下人生的坐标：入职、搬家、第一次收到鲜花… 记不清就只填年份'
+      : '记下你们的坐标：认识、第一次见面、在一起… 记不清就只填年份';
+    pan.appendChild(d3);
+  }
+  marks.slice().sort((a2, b2) => (b2.y * 10000 + (b2.m || 0) * 100 + (b2.d || 0)) - (a2.y * 10000 + (a2.m || 0) * 100 + (a2.d || 0)))
+  .forEach(k => {
+    const row = document.createElement('div'); row.className = 'tp-rk mk';
+    const el = markElapsed(k), nr = markNextRound(k);
+    row.innerHTML = '<span class="no" style="color:var(--accent)">★</span>'
+      + '<span class="nm">' + vEsc(k.label) + '<small>' + markDateLabel(k) + (el ? ' · ' + el : '')
+      + (nr ? ' · 距 ' + nr.n + ' 天还有 ' + nr.left + ' 天（' + fmtShort(nr.k) + '）' : '') + '</small></span>'
+      + (k.d ? '<span class="sc bao" data-a="cy" style="cursor:pointer">设提醒</span>' : '')
+      + '<span class="sc" data-a="x" style="cursor:pointer;color:var(--ink-faint)">✕</span>';
+    const cyB = row.querySelector('[data-a="cy"]');
+    if (cyB) cyB.onclick = () => {
+      cur = {name:'cycles'}; cycUiOpen = true; cycEdit = null; cycTag = 'anniv'; cycCal = 'solar';
+      cycDraft = {name:(isMe ? '' : (pname + '·')) + k.label, m:k.m, d:k.d, y0:k.y};
+      render(); window.scrollTo(0, 0);
+    };
+    row.querySelector('[data-a="x"]').onclick = () => {
+      holder.marks = (holder.marks || []).filter(x => x !== k); scheduleSave(); render();
+    };
+    pan.appendChild(row);
+  });
+  pan.querySelector('#mkAdd').onclick = () => openMarkAdd(holder);
+  return pan;
+}
+function openMarkAdd(holder){
+  const S = $('#gsheet');
+  S.innerHTML = '<div class="gs-title">添加时间点</div>'
+    + '<input class="vt-in" id="mkLabel" placeholder="哪件事（如：认识 / 在一起 / 入职 / 第一次收到鲜花）">'
+    + '<div style="display:flex;gap:8px">'
+    + '<input class="vt-in" id="mkY" type="number" min="1900" max="2100" placeholder="哪年" style="flex:1.2">'
+    + '<input class="vt-in" id="mkM" type="number" min="1" max="12" placeholder="几月（可不填）" style="flex:1">'
+    + '<input class="vt-in" id="mkD" type="number" min="1" max="31" placeholder="几日（可不填）" style="flex:1"></div>'
+    + '<div class="hw-tip" style="padding:6px 2px 0">记不清就只填年份或年月——有多精确记多精确；写了整日才会帮你数天数</div>'
+    + '<button class="rv-confirm" id="mkSave">记下来</button>';
+  $('#mkSave').onclick = () => {
+    const label = $('#mkLabel').value.trim();
+    if (!label){ toast('先写是哪件事'); return; }
+    const y = +$('#mkY').value, m = +$('#mkM').value || 0, d = +$('#mkD').value || 0;
+    if (!(y >= 1900 && y <= 2100)){ toast('年份没填对'); return; }
+    if (m && !(m >= 1 && m <= 12)){ toast('月份没填对'); return; }
+    if (d && !m){ toast('填了几日就要填几月'); return; }
+    if (d && !(d >= 1 && d <= 31)){ toast('日子没填对'); return; }
+    const k = {label, y};
+    if (m) k.m = m;
+    if (d) k.d = d;
+    holder.marks = holder.marks || [];
+    holder.marks.push(k);
+    scheduleSave(); closeSheet(); render(); toast('已记下 · ' + markDateLabel(k));
+  };
+  S.classList.add('on'); $('#mask').classList.add('on');
+}
 function relChipHtml(sel){
   return REL_PRESETS.map(r => '<button class="gs-chip' + (sel === r ? ' on' : '') + '" data-r="' + r + '">' + r + '</button>').join('');
 }
@@ -3412,6 +3517,11 @@ function renderPeople(){
   const addB = document.createElement('button'); addB.className = 'chip on'; addB.textContent = '＋ 手动添加';
   addB.onclick = () => openPersonEdit(null, '');
   bar.appendChild(addB); view.appendChild(bar);
+  const meRow = document.createElement('div'); meRow.className = 'set-row';
+  meRow.innerHTML = '<span>🌟 我 · 人生时间点</span><span class="sub" style="margin-left:auto">'
+    + (((SET.me || {}).marks || []).length ? ((SET.me.marks.length) + ' 条 ') : '') + '›</span>';
+  meRow.onclick = () => { cur = {name:'me'}; render(); };
+  view.appendChild(meRow);
   const book = SET.people || [];
   const cnt = new Map(), last = new Map(), cand = new Map();
   const inBook = new Set(); book.forEach(p => personAliases(p).forEach(n => inBook.add(n)));
@@ -3432,9 +3542,9 @@ function renderPeople(){
   });
   if (book.length){
     view.appendChild(sectionLabel('已收录 · 点开看你们的记录'));
-    book.slice().sort((a2, b2) => (cnt.get(b2.id) || 0) - (cnt.get(a2.id) || 0)).forEach(p => {
+    book.slice().sort((a2, b2) => ((b2.star ? 1 : 0) - (a2.star ? 1 : 0)) || (cnt.get(b2.id) || 0) - (cnt.get(a2.id) || 0)).forEach(p => {
       const it = document.createElement('div'); it.className = 'set-row';
-      it.innerHTML = '<span>👤 ' + vEsc(p.name) + (p.rel ? '<i class="pp-rel">' + vEsc(p.rel) + '</i>' : '') + '</span>'
+      it.innerHTML = '<span>' + (p.star ? '⭐ ' : '👤 ') + vEsc(p.name) + (p.rel ? '<i class="pp-rel">' + vEsc(p.rel) + '</i>' : '') + '</span>'
         + '<span class="sub" style="margin-left:auto">' + (cnt.get(p.id) || 0) + ' 条' + (last.has(p.id) ? ' · ' + fmtShort(last.get(p.id)) : '') + ' ›</span>';
       it.onclick = () => { cur = {name:'person', pid:p.id}; personListN = 30; render(); };
       view.appendChild(it);
@@ -3463,12 +3573,17 @@ function renderPeople(){
 function renderPerson(p){
   const rows = personScan(p);
   const head = document.createElement('div'); head.className = 'vt-card';
-  head.innerHTML = '<div class="vt-site">👤 ' + vEsc(p.name)
+  head.innerHTML = '<div class="vt-site">' + (p.star ? '⭐ ' : '👤 ') + vEsc(p.name)
     + (p.rel ? '<i class="pp-rel">' + vEsc(p.rel) + '</i>' : '')
-    + '<button class="gm-btn" data-a="edit" style="margin-left:auto">编辑</button>'
+    + '<button class="gm-btn" data-a="star" style="margin-left:auto">' + (p.star ? '⭐ 已星标' : '☆ 星标') + '</button>'
+    + '<button class="gm-btn" data-a="edit" style="margin-left:0">编辑</button>'
     + '<button class="gm-btn danger" data-a="out" style="margin-left:0">' + (pendingPDel === p.id ? '确认移出' : '移出') + '</button></div>'
     + ((p.nick && p.nick.length) ? '<div class="vt-note">也叫：' + vEsc(p.nick.join('、')) + '</div>' : '')
     + (p.note ? '<div class="vt-note">' + vEsc(p.note) + '</div>' : '');
+  head.querySelector('[data-a="star"]').onclick = () => {
+    p.star = !p.star; scheduleSave(); render();
+    toast(p.star ? '⭐ 已星标 · 解锁「重要时间点」' : '已取消星标（时间点先收起来，数据都在）');
+  };
   head.querySelector('[data-a="edit"]').onclick = () => openPersonEdit(p);
   head.querySelector('[data-a="out"]').onclick = () => {
     if (pendingPDel !== p.id){ pendingPDel = p.id; toast('再点一次确认移出（记录不会删，只是出册）'); render(); return; }
@@ -3489,6 +3604,7 @@ function renderPerson(p){
     btn.onclick = () => { cur = {name:'cycles'}; cycUiOpen = true; cycEdit = null; cycTag = 'birthday'; cycCal = 'solar'; cycDraft = {name:p.name + '生日'}; render(); };
     bb.appendChild(btn); view.appendChild(bb);
   }
+  if (p.star) view.appendChild(marksPan(p, false, p.name));
   const mv = rows.filter(r => r.xp.title && (r.e.groups || []).some(g => tplOf(g) === 'movie'));
   const fd = rows.filter(r => (r.e.groups || []).some(g => tplOf(g) === 'food'));
   const pan = document.createElement('div'); pan.className = 'tp-pan';
