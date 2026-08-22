@@ -359,6 +359,12 @@
   .hw-tip{font-size:12px;color:var(--ink-faint);padding:10px 2px 0;line-height:1.5}
   .pp-rel{font-style:normal;font-size:11px;background:var(--accent-soft);color:#C4520A;border-radius:999px;padding:2px 8px;margin-left:6px;font-weight:600}
   .ptg.pp{background:var(--accent-soft);color:#C4520A;cursor:pointer}
+  .ml-row{display:flex;align-items:center;gap:9px;padding:5.5px 0;border-bottom:1px dashed var(--line);cursor:pointer;font-size:13px}
+  .ml-row .c{width:74px;color:var(--ink-soft);flex:none}
+  .ml-row i{width:15px;height:15px;border-radius:50%;flex:none}
+  .ml-on{background:var(--accent)}
+  .ml-off{background:var(--line-strong)}
+  .ml-row .v{margin-left:auto;font-size:11px;color:var(--ink-faint)}
   #recall{
     position:absolute;left:0;right:0;display:none;gap:9px;align-items:center;
     padding:9px 14px;background:var(--accent-soft);border-top:1px solid var(--line);
@@ -467,6 +473,7 @@ function scheduleSave(){
   if (typeof KNOWN_STORE !== 'undefined') KNOWN_STORE = null;
   clearTimeout(saveTm);
   saveTm = setTimeout(() => {
+    try{ mealAutoTagAll(); }catch(_){}
     try{ localStorage.setItem(LSKEY, JSON.stringify({pages:PAGES, extraGroups, set:SET, seen:SEEN, gcolor:GCOLOR}, jstrip)); }
     catch(_){ toast('存储已满：请删除一些图片，或先导出备份'); }
     try{ ghSchedule(); }catch(_){}
@@ -1013,6 +1020,11 @@ function addLine(list){
 }
 function renderPageInto(box, date, editable){
   const p = PAGES[date];
+  if (p.stamp){
+    const st0 = document.createElement('div'); st0.className = 'tp-more'; st0.style.textAlign = 'center'; st0.style.padding = '2px 0 0';
+    st0.textContent = '🔖 ' + p.stamp + ' 的一天'; st0.onclick = () => stampSheet(date);
+    box.appendChild(st0);
+  }
   box.appendChild(sectionLabel('今天要做'));
   p.plan.forEach(e => box.appendChild(entryNode(e, editable)));
   if (editable) box.appendChild(tapZone('＋ 补一条要做的', false, () => addLine(p.plan)));
@@ -1260,7 +1272,19 @@ function render(){
         setTimeout(() => pendingRestore = false, 5000); return; }
       pendingRestore = false; $('#jsonInput').click();
     });
-    mkRow('版本记录', sub('v2.14 ›'), showChangelog);
+    view.appendChild(sectionLabel('板块管理 · 关掉的从侧栏消失，数据不动'));
+    [['meals','🍚 三餐','扩展'],['people','👥 熟人册','扩展'],['vault','🔐 账号小本','扩展'],['cycles','🔁 循环提醒','基础']].forEach(([k, nm, tier]) => {
+      const on = modOn(k);
+      const tg = document.createElement('button'); tg.className = 'gm-btn'; tg.style.marginLeft = 'auto';
+      tg.textContent = on ? '开 ✓' : '关'; tg.style.color = on ? 'var(--green)' : 'var(--ink-faint)';
+      mkRow(nm + '（' + tier + '）', tg, null);
+      tg.onclick = () => {
+        SET.mods[k] = !on;
+        if (k === 'meals' && !on){ try{ mealAutoTagAll(); }catch(_){} toast('三餐已打开 · 复盘时会带三餐条'); }
+        scheduleSave(); render();
+      };
+    });
+    mkRow('版本记录', sub('v2.15 ›'), showChangelog);
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
       if (pendingWipe){ localStorage.removeItem(LSKEY); location.reload(); return; }
@@ -1271,6 +1295,10 @@ function render(){
   else if (cur.name === 'cycles'){
     topTitle.textContent = '循环提醒'; reviewBtn.textContent = '回今日';
     renderCycles();
+  }
+  else if (cur.name === 'meals'){
+    topTitle.textContent = '三餐'; reviewBtn.textContent = '回今日';
+    renderMeals();
   }
   else if (cur.name === 'people'){
     topTitle.textContent = '熟人册'; reviewBtn.textContent = '回今日';
@@ -1299,7 +1327,9 @@ function render(){
   else if (cur.name === 'day'){
     topTitle.textContent = fmtKey(cur.key); reviewBtn.textContent = '回今日';
     const g = document.createElement('div'); g.className = 'date-group';
-    g.textContent = dayGroupTitle(cur.key); view.appendChild(g);
+    g.textContent = dayGroupTitle(cur.key) + (PAGES[cur.key] && PAGES[cur.key].stamp ? ' · 🔖' + PAGES[cur.key].stamp : '');
+    g.style.cursor = 'pointer'; g.onclick = () => stampSheet(cur.key);
+    view.appendChild(g);
     if (!PAGES[cur.key]) PAGES[cur.key] = {plan:[], flow:[]};
     const p = PAGES[cur.key];
     view.appendChild(sectionLabel('这天要做'));
@@ -1581,11 +1611,15 @@ function buildDrawer(){
     box.appendChild(it);
   });
   const line = document.createElement('div'); line.className = 'drawer-line'; box.appendChild(line);
-  [['☾','晚间复盘', () => { closeDrawer(); openReview(); }],
-   ['👥','熟人册', () => { cur = {name:'people'}; closeDrawer(); render(); }],
-   ['🔁','循环提醒', () => { cur = {name:'cycles'}; closeDrawer(); render(); }],
-   ['🔐','账号小本', () => { cur = {name:'vault'}; closeDrawer(); render(); }],
-   ['⚙','设置', () => { cur = {name:'settings'}; closeDrawer(); render(); }]]
+  (() => {
+    const rows0 = [['☾','晚间复盘', () => { closeDrawer(); openReview(); }]];
+    if (modOn('meals')) rows0.push(['🍚','三餐', () => { cur = {name:'meals'}; closeDrawer(); render(); }]);
+    if (modOn('people')) rows0.push(['👥','熟人册', () => { cur = {name:'people'}; closeDrawer(); render(); }]);
+    if (modOn('cycles')) rows0.push(['🔁','循环提醒', () => { cur = {name:'cycles'}; closeDrawer(); render(); }]);
+    if (modOn('vault')) rows0.push(['🔐','账号小本', () => { cur = {name:'vault'}; closeDrawer(); render(); }]);
+    rows0.push(['⚙','设置', () => { cur = {name:'settings'}; closeDrawer(); render(); }]);
+    return rows0;
+  })()
   .forEach(([ico, name, fn]) => {
     const it = document.createElement('div'); it.className = 'd-item plain';
     it.innerHTML = '<span class="d-ico">' + ico + '</span><span>' + name + '</span>';
@@ -2011,6 +2045,21 @@ function renderReview(){
     walkPage(TODAY, x => { recN++; if (x.sym === 'mood' && x.text) moods.push(x.text); if (x.sym === 'event') evN++; });
     let oldDone = 0;
     walk((k, x) => { if (k !== TODAY && x.sym === 'task' && x.state === 'done' && x.doneDay === TODAY) oldDone++; });
+    const stAll = STAMP_PRESETS.concat((SET.stamps || []).filter(x => !STAMP_PRESETS.includes(x)));
+    const stCur = P().stamp || null;
+    let mealsHtml = '';
+    if (modOn('meals')){
+      const got = {};
+      walkPage(TODAY, x => { const k2 = mealSlotOf(x);
+        if (k2 && k2 !== 'unk' && !got[k2]) got[k2] = mealStrip(x.text).slice(0, 8) || '已记'; });
+      const cell = (k2, ghost) => got[k2]
+        ? '<button class="gs-chip on" style="pointer-events:none">✓' + MEAL_NM[k2] + ' ' + vEsc(got[k2]) + '</button>'
+        : '<button class="gs-chip" data-ml="' + k2 + '"' + (ghost ? ' style="opacity:.6"' : '') + '>'
+          + (ghost ? '＋' + MEAL_NM[k2] : MEAL_NM[k2] + ' ─') + '</button>';
+      mealsHtml = '<div class="rv-q" style="margin-top:18px">今天的三餐 · 点空格子补一句</div>'
+        + '<div class="gs-chips">' + cell('bre') + cell('lun') + cell('din') + cell('tea', true) + cell('sup', true) + '</div>'
+        + '<div id="rvMealBox"></div>';
+    }
     R.innerHTML = '<div class="rv-head"><div class="rv-title">晚间复盘</div>'
       + '<button class="pill-btn" id="rvClose">收起</button></div>'
       + '<div class="rv-body"><div class="rv-finish" style="margin:14px auto 0">' + dotSVG(86) + '<br><b>今日快照</b><br>'
@@ -2019,12 +2068,38 @@ function renderReview(){
       + (oldDone ? ('<br>还清了 ' + oldDone + ' 件旧账 ✓') : '')
       + (moods.length ? ('<br>今天的心情：' + moods.slice(0, 3).join('、')) : '')
       + '<br>明天的页面点点已经铺好</div>'
-      + '<input id="rvSum" class="qdate" placeholder="给今天留一句话（可不填）" style="margin-top:24px" value="' + String(P().summary || '').replace(/"/g, '&quot;') + '">'
+      + mealsHtml
+      + '<div class="rv-q" style="margin-top:18px">给今天盖个章</div>'
+      + '<div class="gs-chips" id="rvStamps">' + stAll.map(x => '<button class="gs-chip' + (stCur === x ? ' on' : '') + '" data-st="' + escAttr(x) + '">' + vEsc(x) + '</button>').join('') + '</div>'
+      + '<input id="rvNewStamp" class="qdate" placeholder="或自己刻一个章（会存进你的章库）" style="margin-top:10px">'
+      + '<input id="rvSum" class="qdate" placeholder="给今天留一句话（可不填）" style="margin-top:10px" value="' + String(P().summary || '').replace(/"/g, '&quot;') + '">'
       + '<button class="rv-confirm" id="rvSave">保存小结并收起</button>'
       + '<button class="gm-btn" id="rvShare" style="width:100%;margin-top:12px;padding:10px">▣ 把今天做成分享图</button></div>';
     $('#rvClose').onclick = closeReview;
-    $('#rvSave').onclick = () => { P().summary = $('#rvSum').value.trim(); scheduleSave(); closeReview(); };
-    $('#rvShare').onclick = () => { P().summary = $('#rvSum').value.trim(); scheduleSave(); openShare(shDayPayload(TODAY)); };
+    R.querySelectorAll('[data-st]').forEach(b => b.onclick = () => {
+      P().stamp = b.dataset.st; scheduleSave();
+      R.querySelectorAll('[data-st]').forEach(x => x.classList.toggle('on', x === b));
+    });
+    R.querySelectorAll('[data-ml]').forEach(b => b.onclick = () => {
+      const k2 = b.dataset.ml;
+      $('#rvMealBox').innerHTML = '<div style="display:flex;gap:8px;margin-top:10px">'
+        + '<input class="qdate" id="rvMealIn" placeholder="' + MEAL_WORD[k2] + '吃了什么？" style="flex:1;margin:0">'
+        + '<button class="gm-btn" id="rvMealGo" style="padding:10px 14px;flex:none">记下</button></div>';
+      $('#rvMealIn').focus();
+      $('#rvMealGo').onclick = () => {
+        const v3 = $('#rvMealIn').value.trim();
+        if (!v3){ toast('写点什么吧'); return; }
+        P().flow.push({sym:'note', text:MEAL_WORD[k2] + ' ' + v3, _id:++uid});
+        scheduleSave(); renderReview();
+      };
+    });
+    const stTake = () => {
+      const ns = $('#rvNewStamp').value.trim();
+      if (ns){ if (!STAMP_PRESETS.includes(ns) && !SET.stamps.includes(ns)) SET.stamps.push(ns); P().stamp = ns; }
+      P().summary = $('#rvSum').value.trim(); scheduleSave();
+    };
+    $('#rvSave').onclick = () => { stTake(); closeReview(); };
+    $('#rvShare').onclick = () => { stTake(); openShare(shDayPayload(TODAY)); };
     return;
   }
   const t = queue[qi];
@@ -2311,7 +2386,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.14（当前 · 2026.8.20）\n【⭐ 星标熟人 · 重要时间点】\n· 人物页可以点星：星标的人解锁「重要时间点」——认识 / 第一次见面 / 在一起…标签全由你写\n· 日期支持三档模糊：只填年份（第 N 个年头）、年份+月份（至今 N 年 N 个月）、整日（已 N 天 · 第 N 年）\n· 写了整日的：整百天纪念提前看得见（距 2700 天还有 32 天），一键「设提醒」进纪念日模板\n【🌟 我 · 人生时间点】\n· 熟人册第一页是你自己：入离职、搬家、第一次收到鲜花…同一套时间点，随时翻到自己的坐标\n\n'
+    + 'v2.15（当前 · 2026.8.21）\n【🔖 今日印章】\n· 复盘收尾给今天盖个章：充实高效 / 平淡安稳 / 小有波折但收尾顺利 / 彻底放空 / 小有收获，也能自己刻——刻过的进你的章库\n· 今日页顶部和日页标题都能看到章，点一下随时改；过去任何一天也能补章\n【🍚 三餐（设置里打开）】\n· 写「早饭/午饭/晚饭/下午茶/夜宵 + 吃了什么」自动归格，不用打标签，识别保守绝不硬塞\n· 晚间复盘带三餐条：空格子点一下就地补一句\n· 三餐页：三餐齐全连击、本月外卖次数、吃饭花销、最常一起吃饭的人、两周打卡墙\n· 三餐里写了「店名」或外卖，自动同时收进美食集子（同一份数据，两副眼镜）\n【板块管理】\n· 设置新增：三餐 / 熟人册 / 账号小本 / 循环提醒 可开关，关掉的从侧栏消失、数据不动\n【处处可改】\n· 我们的时刻、重要时间点、账号小本条目——所有手动填写的现在都能点开修改（立为铁律）\n\n'
+    + 'v2.14（2026.8.20）\n【⭐ 星标熟人 · 重要时间点】\n· 人物页可以点星：星标的人解锁「重要时间点」——认识 / 第一次见面 / 在一起…标签全由你写\n· 日期支持三档模糊：只填年份（第 N 个年头）、年份+月份（至今 N 年 N 个月）、整日（已 N 天 · 第 N 年）\n· 写了整日的：整百天纪念提前看得见（距 2700 天还有 32 天），一键「设提醒」进纪念日模板\n【🌟 我 · 人生时间点】\n· 熟人册第一页是你自己：入离职、搬家、第一次收到鲜花…同一套时间点，随时翻到自己的坐标\n\n'
     + 'v2.13（2026.8.20）\n【👥 熟人册】\n· 侧栏新增「熟人册」：点点从记录里认出的人（和X、转交给X）列成候选，点「收录」进册，不想要的可忽略\n· 收录时可填 本名＋昵称（多个用、隔开）：写哪个都认账，旧记录也一并追认到同一个人\n· 关系标签：亲情 / 友情 / 爱情 / 人脉 / 同事，也能自己写；外加自由备注\n· 人物页：我们的盘点（一起看过 / 一起吃过 / 共同出现 / 最近一次，可下钻）\n· 「我们的时刻」：手写纪念的事，或在记录里点 📌 收进来\n· 记录里的「和赵赵」小签可以点了，直接进TA的页；TA的生日提醒在人物页直达\n\n'
     + 'v2.12（2026.8.19）\n【循环提醒场景化】\n· 添加时先选场景：🎂生日 · 💍纪念日 · 🩸生理期 · 💳还款日 · 🔁自定义，表单跟着变，提前天数给好默认\n· 生日支持阴历：内置 1900–2100 农历表离线换算，填一次「农历冬月廿三」，每年自动算出阳历日子\n· 填出生年份/起始年份，提醒自动带岁数和周年：「🎂 妈妈生日（58 岁）」\n· 农历日子入系统日历＝一次写入未来 5 年各自算好的日期\n\n'
     + 'v2.11（2026.8.19）\n【美食盘点三档制】\n· 全页统一三个词：宝藏 / 家常 / 避雷——磁贴、榜单、小签一个说法，不再五花八门\n· 没写判决、只打了分也能归档：8分以上宝藏，6–8家常，6以下避雷；明确写「避雷 / 会再来」的以你的话为准\n· 榜单拆成「宝藏榜」和「避雷榜」，右侧统一显示分数或你的原话\n· 磁贴下多一行「还有 N 家没表态」，点开看清单、跳回当天补一句\n【怎么写】\n· 集子页新增「怎么写?」例句卡：每个模板一行范例\n· 写美食时没读出店名和表态，点点会轻声提示写法\n\n'
@@ -3215,6 +3291,85 @@ function shExport(){
 $('#shSheet').addEventListener('click', ev => { if (ev.target.id === 'shSheet') closeShare(); });
 
 /* ============ v2.7 循环提醒 ============ */
+/* ===== v2.15 板块开关 ===== */
+SET.mods = SET.mods || {};
+if (SET.mods.meals === undefined) SET.mods.meals = false;   /* 三餐默认关，设置里打开 */
+function modOn(k){ return SET.mods[k] !== false; }
+/* ===== v2.15 今日印章 ===== */
+SET.stamps = SET.stamps || [];
+const STAMP_PRESETS = ['充实高效','平淡安稳','小有波折但收尾顺利','彻底放空','小有收获'];
+function stampSheet(k){
+  const S = $('#gsheet');
+  const all = STAMP_PRESETS.concat((SET.stamps || []).filter(x => !STAMP_PRESETS.includes(x)));
+  const cur0 = (PAGES[k] && PAGES[k].stamp) || null;
+  S.innerHTML = '<div class="gs-title">给 ' + fmtKey(k) + ' 盖个章</div>'
+    + '<div class="gs-chips">' + all.map(x => '<button class="gs-chip' + (cur0 === x ? ' on' : '') + '" data-s="' + escAttr(x) + '">' + vEsc(x) + '</button>').join('') + '</div>'
+    + '<input class="vt-in" id="stNew" placeholder="或自己刻一个（会存进你的章库）">'
+    + '<div style="display:flex;gap:10px"><button class="rv-confirm" id="stSave" style="flex:1">盖章</button>'
+    + (cur0 ? '<button class="rv-confirm" id="stClear" style="flex:.6;background:var(--bg-deep);color:var(--ink)">取消章</button>' : '') + '</div>';
+  let sel = cur0;
+  S.querySelectorAll('[data-s]').forEach(b => b.onclick = () => { sel = b.dataset.s;
+    S.querySelectorAll('[data-s]').forEach(x => x.classList.toggle('on', x === b)); });
+  $('#stSave').onclick = () => {
+    const nv = $('#stNew').value.trim();
+    const v2 = nv || sel;
+    if (!v2){ toast('挑一个，或自己刻一个'); return; }
+    if (nv && !STAMP_PRESETS.includes(nv) && !SET.stamps.includes(nv)) SET.stamps.push(nv);
+    if (!PAGES[k]) PAGES[k] = {plan:[], flow:[]};
+    PAGES[k].stamp = v2; scheduleSave(); closeSheet(); render(); toast('已盖章 · ' + v2);
+  };
+  const sc0 = S.querySelector('#stClear');
+  if (sc0) sc0.onclick = () => { delete PAGES[k].stamp; scheduleSave(); closeSheet(); render(); };
+  S.classList.add('on'); $('#mask').classList.add('on');
+}
+/* ===== v2.15 三餐（同一份记录的另一副眼镜） ===== */
+const MEAL_ORDER = ['bre','lun','tea','sup','din'];   /* 宵在晚前判：「晚上吃了夜宵」归宵夜 */
+const MEAL_RES = {bre:/早饭|早餐|早上吃/, lun:/午饭|午餐|中午吃|中午点/, tea:/下午茶/, sup:/夜宵|宵夜/, din:/晚饭|晚餐|晚上吃|晚上点/};
+const MEAL_NM = {bre:'早', lun:'午', tea:'下午茶', din:'晚', sup:'宵夜', unk:'?'};
+const MEAL_WORD = {bre:'早饭', lun:'午饭', tea:'下午茶', din:'晚饭', sup:'夜宵'};
+function mealSlotOf(e){
+  const t = e.text || '';
+  if (!t) return null;
+  for (const k of MEAL_ORDER){ if (MEAL_RES[k].test(t)) return k; }
+  if ((e.groups || []).some(g => tplOf(g) === 'food')){
+    if (e.time){ const h = +String(e.time).split(':')[0];
+      if (h >= 5 && h < 10) return 'bre';
+      if (h >= 10 && h < 14) return 'lun';
+      if (h >= 14 && h < 17) return 'tea';
+      if (h >= 17 && h < 21) return 'din';
+      return 'sup';
+    }
+    return 'unk';
+  }
+  return null;
+}
+function mealStrip(t){
+  return String(t || '').replace(/早饭|早餐|午饭|午餐|晚饭|晚餐|下午茶|夜宵|宵夜|早上吃|中午吃|晚上吃/g, '')
+    .replace(/^[了的，。:：、\s]+/, '').trim();
+}
+function foodGroupName(){
+  let fg = null;
+  (extraGroups || []).forEach(g => { if (!fg && tplOf(g) === 'food') fg = g; });
+  if (!fg) walk((d, e) => { (e.groups || []).forEach(g => { if (!fg && tplOf(g) === 'food') fg = g; }); });
+  return fg;
+}
+/* 三餐里写了「店名」或外卖 → 自动挂进美食集子（可手动摘签） */
+function mealAutoTagAll(){
+  if (!modOn('meals')) return;
+  const fg = foodGroupName(); if (!fg) return;
+  let tagged = false;
+  walk((d, e) => {
+    if (!e.text) return;
+    let hit = false;
+    for (const k of MEAL_ORDER){ if (MEAL_RES[k].test(e.text)){ hit = true; break; } }
+    if (!hit) return;
+    if ((e.groups || []).some(g => tplOf(g) === 'food')) return;
+    const p = parseEntry(e);
+    if (!(p.store || p.delivery)) return;
+    (e.groups = e.groups || []).push(fg); tagged = true;
+  });
+  if (tagged){ KNOWN_STORE = null; KNOWN_PPL = null; }   /* 新店随挂签即入熟店簿 */
+}
 /* ===== v2.13 熟人册 ===== */
 SET.people = SET.people || [];
 SET.pplNo = SET.pplNo || {};
@@ -3446,21 +3601,24 @@ function marksPan(holder, isMe, pname){
     row.querySelector('[data-a="x"]').onclick = () => {
       holder.marks = (holder.marks || []).filter(x => x !== k); scheduleSave(); render();
     };
+    const nm1 = row.querySelector('.nm'); nm1.style.cursor = 'pointer';
+    nm1.onclick = () => openMarkAdd(holder, k);
     pan.appendChild(row);
   });
   pan.querySelector('#mkAdd').onclick = () => openMarkAdd(holder);
   return pan;
 }
-function openMarkAdd(holder){
+function openMarkAdd(holder, k0){
   const S = $('#gsheet');
-  S.innerHTML = '<div class="gs-title">添加时间点</div>'
-    + '<input class="vt-in" id="mkLabel" placeholder="哪件事（如：认识 / 在一起 / 入职 / 第一次收到鲜花）">'
+  S.innerHTML = '<div class="gs-title">' + (k0 ? '修改时间点' : '添加时间点') + '</div>'
+    + '<input class="vt-in" id="mkLabel" placeholder="哪件事（如：认识 / 在一起 / 入职 / 第一次收到鲜花）" value="' + escAttr(k0 ? k0.label : '') + '">'
     + '<div style="display:flex;gap:8px">'
     + '<input class="vt-in" id="mkY" type="number" min="1900" max="2100" placeholder="哪年" style="flex:1.2">'
     + '<input class="vt-in" id="mkM" type="number" min="1" max="12" placeholder="几月（可不填）" style="flex:1">'
     + '<input class="vt-in" id="mkD" type="number" min="1" max="31" placeholder="几日（可不填）" style="flex:1"></div>'
     + '<div class="hw-tip" style="padding:6px 2px 0">记不清就只填年份或年月——有多精确记多精确；写了整日才会帮你数天数</div>'
-    + '<button class="rv-confirm" id="mkSave">记下来</button>';
+    + '<button class="rv-confirm" id="mkSave">' + (k0 ? '保存修改' : '记下来') + '</button>';
+  if (k0){ $('#mkY').value = k0.y; if (k0.m) $('#mkM').value = k0.m; if (k0.d) $('#mkD').value = k0.d; }
   $('#mkSave').onclick = () => {
     const label = $('#mkLabel').value.trim();
     if (!label){ toast('先写是哪件事'); return; }
@@ -3469,6 +3627,13 @@ function openMarkAdd(holder){
     if (m && !(m >= 1 && m <= 12)){ toast('月份没填对'); return; }
     if (d && !m){ toast('填了几日就要填几月'); return; }
     if (d && !(d >= 1 && d <= 31)){ toast('日子没填对'); return; }
+    if (k0){
+      k0.label = label; k0.y = y;
+      if (m) k0.m = m; else delete k0.m;
+      if (d) k0.d = d; else delete k0.d;
+      scheduleSave(); closeSheet(); render(); toast('已保存修改');
+      return;
+    }
     const k = {label, y};
     if (m) k.m = m;
     if (d) k.d = d;
@@ -3477,6 +3642,57 @@ function openMarkAdd(holder){
     scheduleSave(); closeSheet(); render(); toast('已记下 · ' + markDateLabel(k));
   };
   S.classList.add('on'); $('#mask').classList.add('on');
+}
+function renderMeals(){
+  if (!modOn('meals')){
+    const d0 = document.createElement('div'); d0.className = 'empty-hint'; d0.textContent = '三餐板块已关闭 · 到 设置 → 板块管理 打开';
+    view.appendChild(d0); return;
+  }
+  const rowsAll = [];
+  walk((d, e) => { const k2 = mealSlotOf(e); if (k2) rowsAll.push({d, k:k2, e}); });
+  const ta = TODAY.split('.').map(Number);
+  const mon = rowsAll.filter(r => { const a2 = r.d.split('.').map(Number); return a2[0] === ta[0] && a2[1] === ta[1]; });
+  let wm = 0, spend = 0; const comp = {};
+  mon.forEach(r => { const p = parseEntry(r.e);
+    if (p.delivery) wm++;
+    (p.prices || []).forEach(v2 => spend += v2);
+    (p.withs || []).forEach(w2 => { if (w2 !== '独自') comp[w2] = (comp[w2] || 0) + 1; });
+  });
+  const topC = Object.entries(comp).sort((a2, b2) => b2[1] - a2[1])[0];
+  const byDay = {};
+  rowsAll.forEach(r => { (byDay[r.d] = byDay[r.d] || new Set()).add(r.k); });
+  let streak = 0;
+  const dd = parseKey(TODAY);
+  for (let i = 0; i < 400; i++){
+    const s3 = byDay[dkey(dd)];
+    const full = s3 && s3.has('bre') && s3.has('lun') && s3.has('din');
+    if (full) streak++;
+    else if (i !== 0) break;   /* 今天没记完不打断昨天起的连击 */
+    dd.setDate(dd.getDate() - 1);
+  }
+  const pan = document.createElement('div'); pan.className = 'tp-pan'; pan.style.marginTop = '16px';
+  const tiles = [[streak, '天', '三餐齐全连击'], [mon.length, '顿', '本月记了'], [wm, '次', '本月外卖'], ['¥' + Math.round(spend), '', '本月吃饭花销']];
+  pan.innerHTML = '<div class="tt">吃饭这件小事 · ' + ta[1] + '月</div><div class="tp-nums">'
+    + tiles.map(t => '<div class="n"><b>' + t[0] + (t[1] ? '<i>' + t[1] + '</i>' : '') + '</b><span>' + t[2] + '</span></div>').join('') + '</div>'
+    + (topC ? '<div class="vt-note" style="margin-top:8px">这个月最常一起吃饭：' + vEsc(topC[0]) + ' × ' + topC[1] + ' 次</div>' : '');
+  view.appendChild(pan);
+  const grid = document.createElement('div'); grid.className = 'tp-pan';
+  let gh = '<div class="tt">最近两周 · 早 / 午 / 晚（点行跳到那天）</div>';
+  const d4 = parseKey(TODAY);
+  for (let i = 0; i < 14; i++){
+    const k4 = dkey(d4); const s4 = byDay[k4] || new Set();
+    const c4 = k5 => '<i class="' + (s4.has(k5) ? 'ml-on' : 'ml-off') + '"></i>';
+    const extra = (s4.has('tea') ? ' 茶' : '') + (s4.has('sup') ? ' 宵' : '') + (s4.has('unk') ? ' ?' : '');
+    gh += '<div class="ml-row" data-d="' + k4 + '"><span class="c">' + fmtShort(k4) + (k4 === TODAY ? ' 今天' : '') + '</span>'
+      + c4('bre') + c4('lun') + c4('din') + '<span class="v">' + extra + '</span></div>';
+    d4.setDate(d4.getDate() - 1);
+  }
+  grid.innerHTML = gh;
+  grid.querySelectorAll('.ml-row').forEach(el => { el.onclick = () => gotoDay(el.dataset.d); });
+  view.appendChild(grid);
+  const tip = document.createElement('div'); tip.className = 'vt-tip';
+  tip.textContent = '写「早饭 / 午饭 / 晚饭 / 下午茶 / 夜宵 + 吃了什么」自动归格，不用打标签；写了「店名」或外卖的会同时收进美食集子。晚间复盘会带三餐条，空格子点一下就能补。';
+  view.appendChild(tip);
 }
 function relChipHtml(sel){
   return REL_PRESETS.map(r => '<button class="gs-chip' + (sel === r ? ' on' : '') + '" data-r="' + r + '">' + r + '</button>').join('');
@@ -3640,7 +3856,9 @@ function renderPerson(p){
     row.innerHTML = '<span class="no">' + (m.kind === 'p' ? '📌' : '·') + '</span>'
       + '<span class="nm">' + vEsc(m.t) + '<small>' + ((+String(m.d).split('.')[0] !== +TODAY.split('.')[0]) ? String(m.d).split('.')[0] + '年 · ' : '') + fmtShort(m.d) + '</small></span>'
       + '<span class="sc" data-a="x" style="cursor:pointer;color:var(--ink-faint)">✕</span>';
-    if (m.kind === 'p'){ const nm = row.querySelector('.nm'); nm.style.cursor = 'pointer'; nm.onclick = () => jumpToEntry(m.d, m.id); }
+    const nm0 = row.querySelector('.nm'); nm0.style.cursor = 'pointer';
+    if (m.kind === 'p') nm0.onclick = () => jumpToEntry(m.d, m.id);
+    else nm0.onclick = () => openMomentAdd(p, m.ref);
     row.querySelector('[data-a="x"]').onclick = () => {
       if (m.kind === 'p') p.pins = (p.pins || []).filter(x => x !== m.id);
       else p.moments = (p.moments || []).filter(x => x !== m.ref);
@@ -3685,20 +3903,21 @@ function renderPerson(p){
     view.appendChild(d4);
   }
 }
-function openMomentAdd(p){
+function openMomentAdd(p, m0){
   const S = $('#gsheet');
   const a2 = TODAY.split('.').map(Number);
+  const dv0 = m0 ? String(m0.d).split('.').map(Number) : a2;
   S.innerHTML = '<div class="gs-title">我们的时刻 · ' + vEsc(p.name) + '</div>'
-    + '<input class="vt-in" id="mtDate" type="date" value="' + a2[0] + '-' + String(a2[1]).padStart(2, '0') + '-' + String(a2[2]).padStart(2, '0') + '">'
-    + '<textarea class="vt-in" id="mtText" rows="2" placeholder="值得记住的事（如：2018 第一次一起旅行）"></textarea>'
-    + '<button class="rv-confirm" id="mtSave">记下来</button>';
+    + '<input class="vt-in" id="mtDate" type="date" value="' + dv0[0] + '-' + String(dv0[1]).padStart(2, '0') + '-' + String(dv0[2]).padStart(2, '0') + '">'
+    + '<textarea class="vt-in" id="mtText" rows="2" placeholder="值得记住的事（如：2018 第一次一起旅行）">' + (m0 ? vEsc(m0.t) : '') + '</textarea>'
+    + '<button class="rv-confirm" id="mtSave">' + (m0 ? '保存修改' : '记下来') + '</button>';
   $('#mtSave').onclick = () => {
     const t = $('#mtText').value.trim();
     if (!t){ toast('写点什么吧'); return; }
     const dv = $('#mtDate').value.split('-').map(Number);
-    p.moments = p.moments || [];
-    p.moments.push({d:dv[0] + '.' + dv[1] + '.' + dv[2], t});
-    scheduleSave(); closeSheet(); render(); toast('已记进「我们的时刻」');
+    if (m0){ m0.t = t; m0.d = dv[0] + '.' + dv[1] + '.' + dv[2]; }
+    else { p.moments = p.moments || []; p.moments.push({d:dv[0] + '.' + dv[1] + '.' + dv[2], t}); }
+    scheduleSave(); closeSheet(); render(); toast(m0 ? '已保存修改' : '已记进「我们的时刻」');
   };
   S.classList.add('on'); $('#mask').classList.add('on');
 }
@@ -3855,7 +4074,7 @@ function renderCycles(){
 }
 
 /* ============ v2.5 账号小本（主口令加密，云端只存密文） ============ */
-let vaultKey = null, vaultItems = null, vtReveal = new Set(), pendingVDel = null;
+let vaultKey = null, vaultItems = null, vtReveal = new Set(), pendingVDel = null, vtEdit = null;
 function vB64(buf){ let s2 = ''; const u = new Uint8Array(buf); for (let i = 0; i < u.length; i++) s2 += String.fromCharCode(u[i]); return btoa(s2); }
 function vBuf(b64){ const s2 = atob(b64); const u = new Uint8Array(s2.length); for (let i = 0; i < s2.length; i++) u[i] = s2.charCodeAt(i); return u.buffer; }
 async function vDerive(pass, saltB64){
@@ -3955,13 +4174,27 @@ function renderVault(){
     + '<input class="vt-in" id="vtPwd" placeholder="密码">'
     + '<input class="vt-in" id="vtNote" placeholder="备注（可不填）">'
     + '<button class="rv-confirm" id="vtSave">保存</button>';
+  const vtFill = it => { $('#vtSite').value = it ? (it.site || '') : ''; $('#vtUser').value = it ? (it.user || '') : '';
+    $('#vtPwd').value = it ? (it.pwd || '') : ''; $('#vtNote').value = it ? (it.note || '') : '';
+    $('#vtSave').textContent = it ? '保存修改' : '保存'; };
   view.appendChild(form);
-  addC.onclick = () => { form.style.display = form.style.display === 'none' ? 'block' : 'none'; if (form.style.display === 'block') $('#vtSite').focus(); };
+  addC.onclick = () => { vtEdit = null;
+    const showing = form.style.display === 'block';
+    form.style.display = showing ? 'none' : 'block';
+    if (!showing){ vtFill(null); $('#vtSite').focus(); } };
   $('#vtSave').onclick = async () => {
     const site = $('#vtSite').value.trim();
     if (!site){ toast('先写这是哪里的账号'); return; }
-    vaultItems.unshift({site, user:$('#vtUser').value.trim(), pwd:$('#vtPwd').value, note:$('#vtNote').value.trim(), _id:++uid});
-    await vaultPersist(); toast('已加密保存'); render();
+    const rec = {site, user:$('#vtUser').value.trim(), pwd:$('#vtPwd').value, note:$('#vtNote').value.trim()};
+    if (vtEdit){
+      const it = vaultItems.find(x => x._id === vtEdit);
+      if (it) Object.assign(it, rec);
+      vtEdit = null;
+      await vaultPersist(); toast('已保存修改'); render();
+    } else {
+      vaultItems.unshift(Object.assign(rec, {_id:++uid}));
+      await vaultPersist(); toast('已加密保存'); render();
+    }
   };
   if (!vaultItems.length){
     const d = document.createElement('div'); d.className = 'empty-hint'; d.style.textAlign = 'center'; d.style.padding = '26px 2px 8px';
@@ -3972,7 +4205,8 @@ function renderVault(){
     const c = document.createElement('div'); c.className = 'vt-card vt-item';
     const rev = vtReveal.has(it._id);
     c.innerHTML = '<div class="vt-site">' + vEsc(it.site)
-      + '<button class="gm-btn danger" data-a="del">' + (pendingVDel === it._id ? '确认删除' : '删') + '</button></div>'
+      + '<button class="gm-btn" data-a="ed" style="margin-left:auto">改</button>'
+      + '<button class="gm-btn danger" data-a="del" style="margin-left:0">' + (pendingVDel === it._id ? '确认删除' : '删') + '</button></div>'
       + (it.user ? '<div class="vt-line"><span class="lab">账号</span><span class="val">' + vEsc(it.user) + '</span><button class="gm-btn" data-a="cu">复制</button></div>' : '')
       + '<div class="vt-line"><span class="lab">密码</span><span class="val' + (rev ? '' : ' masked') + '" data-a="rv" style="cursor:pointer">'
       + (rev ? vEsc(it.pwd) : '••••••••') + '</span><button class="gm-btn" data-a="cp">复制</button></div>'
@@ -3981,6 +4215,10 @@ function renderVault(){
       if (pendingVDel !== it._id){ pendingVDel = it._id; toast('再点一次确认删除'); render(); return; }
       vaultItems = vaultItems.filter(x => x._id !== it._id); pendingVDel = null;
       await vaultPersist(); toast('已删除'); render();
+    };
+    c.querySelector('[data-a="ed"]').onclick = () => {
+      vtEdit = it._id; form.style.display = 'block'; vtFill(it);
+      try{ form.scrollIntoView({block:'center'}); }catch(_){}
     };
     const cu = c.querySelector('[data-a="cu"]'); if (cu) cu.onclick = () => vCopy(it.user, '账号已复制');
     c.querySelector('[data-a="cp"]').onclick = () => vCopy(it.pwd, '密码已复制');
