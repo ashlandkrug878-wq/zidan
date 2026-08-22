@@ -363,6 +363,9 @@
   .ml-row .c{width:74px;color:var(--ink-soft);flex:none}
   .ml-row i{width:15px;height:15px;border-radius:50%;flex:none}
   .ml-on{background:var(--accent)}
+  .ml-onn{background:var(--ink-faint)}
+  .ml-cell{cursor:pointer}
+  .ml-day{cursor:pointer}
   .ml-off{background:var(--line-strong)}
   .ml-row .v{margin-left:auto;font-size:11px;color:var(--ink-faint)}
   #recall{
@@ -1284,7 +1287,7 @@ function render(){
         scheduleSave(); render();
       };
     });
-    mkRow('版本记录', sub('v2.15 ›'), showChangelog);
+    mkRow('版本记录', sub('v2.16 ›'), showChangelog);
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
       if (pendingWipe){ localStorage.removeItem(LSKEY); location.reload(); return; }
@@ -2082,16 +2085,10 @@ function renderReview(){
     });
     R.querySelectorAll('[data-ml]').forEach(b => b.onclick = () => {
       const k2 = b.dataset.ml;
-      $('#rvMealBox').innerHTML = '<div style="display:flex;gap:8px;margin-top:10px">'
-        + '<input class="qdate" id="rvMealIn" placeholder="' + MEAL_WORD[k2] + '吃了什么？" style="flex:1;margin:0">'
-        + '<button class="gm-btn" id="rvMealGo" style="padding:10px 14px;flex:none">记下</button></div>';
-      $('#rvMealIn').focus();
-      $('#rvMealGo').onclick = () => {
-        const v3 = $('#rvMealIn').value.trim();
-        if (!v3){ toast('写点什么吧'); return; }
-        P().flow.push({sym:'note', text:MEAL_WORD[k2] + ' ' + v3, _id:++uid});
-        scheduleSave(); renderReview();
-      };
+      const box = $('#rvMealBox');
+      box.innerHTML = '<div class="rv-q" style="margin:12px 0 6px">' + MEAL_WORD[k2] + ' · 顺手补全这顿</div>' + mealComposerHTML();
+      bindMealComposer(box, TODAY, k2, () => renderReview());
+      const w = box.querySelector('#mcWhat'); if (w) w.focus();
     });
     const stTake = () => {
       const ns = $('#rvNewStamp').value.trim();
@@ -2386,7 +2383,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.15（当前 · 2026.8.21）\n【🔖 今日印章】\n· 复盘收尾给今天盖个章：充实高效 / 平淡安稳 / 小有波折但收尾顺利 / 彻底放空 / 小有收获，也能自己刻——刻过的进你的章库\n· 今日页顶部和日页标题都能看到章，点一下随时改；过去任何一天也能补章\n【🍚 三餐（设置里打开）】\n· 写「早饭/午饭/晚饭/下午茶/夜宵 + 吃了什么」自动归格，不用打标签，识别保守绝不硬塞\n· 晚间复盘带三餐条：空格子点一下就地补一句\n· 三餐页：三餐齐全连击、本月外卖次数、吃饭花销、最常一起吃饭的人、两周打卡墙\n· 三餐里写了「店名」或外卖，自动同时收进美食集子（同一份数据，两副眼镜）\n【板块管理】\n· 设置新增：三餐 / 熟人册 / 账号小本 / 循环提醒 可开关，关掉的从侧栏消失、数据不动\n【处处可改】\n· 我们的时刻、重要时间点、账号小本条目——所有手动填写的现在都能点开修改（立为铁律）\n\n'
+    + 'v2.16（当前 · 2026.8.22）\n【🍚 三餐快捷录入】\n· 打卡墙的格子现在能点：空圈点一下＝就地补记这顿——是否吃了 / 吃了什么 / 店名 / 和谁 / 几点，一张小表引导填完，自动组成一句手帐话\n· 已记的格子点一下跳回原文；点日期看那天全页\n· 晚间复盘补三餐也换成同一张引导小表，不再是干巴巴一个输入框\n· 「这顿没吃」也算一条诚实记录，照样点亮格子\n【颜色区分】\n· 墙上灰点＝日常吃，橙点＝这顿进了美食集子（有店名/外卖）——一眼分清哪顿只是吃了、哪顿成了资产\n\n'
+    + 'v2.15（2026.8.21）\n【🔖 今日印章】\n· 复盘收尾给今天盖个章：充实高效 / 平淡安稳 / 小有波折但收尾顺利 / 彻底放空 / 小有收获，也能自己刻——刻过的进你的章库\n· 今日页顶部和日页标题都能看到章，点一下随时改；过去任何一天也能补章\n【🍚 三餐（设置里打开）】\n· 写「早饭/午饭/晚饭/下午茶/夜宵 + 吃了什么」自动归格，不用打标签，识别保守绝不硬塞\n· 晚间复盘带三餐条：空格子点一下就地补一句\n· 三餐页：三餐齐全连击、本月外卖次数、吃饭花销、最常一起吃饭的人、两周打卡墙\n· 三餐里写了「店名」或外卖，自动同时收进美食集子（同一份数据，两副眼镜）\n【板块管理】\n· 设置新增：三餐 / 熟人册 / 账号小本 / 循环提醒 可开关，关掉的从侧栏消失、数据不动\n【处处可改】\n· 我们的时刻、重要时间点、账号小本条目——所有手动填写的现在都能点开修改（立为铁律）\n\n'
     + 'v2.14（2026.8.20）\n【⭐ 星标熟人 · 重要时间点】\n· 人物页可以点星：星标的人解锁「重要时间点」——认识 / 第一次见面 / 在一起…标签全由你写\n· 日期支持三档模糊：只填年份（第 N 个年头）、年份+月份（至今 N 年 N 个月）、整日（已 N 天 · 第 N 年）\n· 写了整日的：整百天纪念提前看得见（距 2700 天还有 32 天），一键「设提醒」进纪念日模板\n【🌟 我 · 人生时间点】\n· 熟人册第一页是你自己：入离职、搬家、第一次收到鲜花…同一套时间点，随时翻到自己的坐标\n\n'
     + 'v2.13（2026.8.20）\n【👥 熟人册】\n· 侧栏新增「熟人册」：点点从记录里认出的人（和X、转交给X）列成候选，点「收录」进册，不想要的可忽略\n· 收录时可填 本名＋昵称（多个用、隔开）：写哪个都认账，旧记录也一并追认到同一个人\n· 关系标签：亲情 / 友情 / 爱情 / 人脉 / 同事，也能自己写；外加自由备注\n· 人物页：我们的盘点（一起看过 / 一起吃过 / 共同出现 / 最近一次，可下钻）\n· 「我们的时刻」：手写纪念的事，或在记录里点 📌 收进来\n· 记录里的「和赵赵」小签可以点了，直接进TA的页；TA的生日提醒在人物页直达\n\n'
     + 'v2.12（2026.8.19）\n【循环提醒场景化】\n· 添加时先选场景：🎂生日 · 💍纪念日 · 🩸生理期 · 💳还款日 · 🔁自定义，表单跟着变，提前天数给好默认\n· 生日支持阴历：内置 1900–2100 农历表离线换算，填一次「农历冬月廿三」，每年自动算出阳历日子\n· 填出生年份/起始年份，提醒自动带岁数和周年：「🎂 妈妈生日（58 岁）」\n· 农历日子入系统日历＝一次写入未来 5 年各自算好的日期\n\n'
@@ -3643,6 +3641,59 @@ function openMarkAdd(holder, k0){
   };
   S.classList.add('on'); $('#mask').classList.add('on');
 }
+function mealComposeText(slot, o){
+  if (o.form === '没吃') return MEAL_WORD[slot] + ' 没吃';
+  let t2 = MEAL_WORD[slot];
+  if (o.form === '外卖') t2 += ' 点了外卖';
+  if (o.store) t2 += (o.form === '外卖' ? '' : ' 在') + '「' + o.store + '」';
+  if (o.form === '自己做的') t2 += ' 自己做的';
+  if (o.withs && o.withs.length) t2 += ' 和' + o.withs.join('、');
+  t2 += o.what ? ((o.withs && o.withs.length) ? ('吃了' + o.what) : (' 吃了' + o.what))
+    : ((o.withs && o.withs.length) || o.store ? '吃的' : '');
+  return t2;
+}
+function mealComposerHTML(){
+  return '<input class="vt-in" id="mcWhat" placeholder="吃了什么（如：麻辣烤鱼 / 公司食堂）" style="margin-top:0">'
+    + '<div class="gs-chips" style="margin-top:8px">'
+    + '<button class="gs-chip" data-mc="外卖">外卖</button>'
+    + '<button class="gs-chip" data-mc="自己做的">自己做</button>'
+    + '<button class="gs-chip" data-mc="没吃">这顿没吃</button></div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<input class="vt-in" id="mcStore" placeholder="店名（可不填）" style="flex:1.1">'
+    + '<input class="vt-in" id="mcWith" placeholder="和谁（可不填）" style="flex:1">'
+    + '<input class="vt-in" id="mcTime" type="time" style="flex:.9"></div>'
+    + '<button class="rv-confirm" id="mcSave">记下这顿</button>';
+}
+function bindMealComposer(root, key, slot, done){
+  let form = null;
+  root.querySelectorAll('[data-mc]').forEach(b => b.onclick = () => {
+    const on = b.classList.contains('on');
+    root.querySelectorAll('[data-mc]').forEach(x => x.classList.remove('on'));
+    if (!on){ b.classList.add('on'); form = b.dataset.mc; }
+    else form = null;
+  });
+  root.querySelector('#mcSave').onclick = () => {
+    const what = root.querySelector('#mcWhat').value.trim();
+    const store = root.querySelector('#mcStore').value.trim();
+    const withs = root.querySelector('#mcWith').value.trim().split(/[、，,\s和]+/).map(x => x.trim()).filter(Boolean);
+    const tm = root.querySelector('#mcTime').value;
+    if (form !== '没吃' && !what && !store){ toast('写点什么，或选「这顿没吃」'); return; }
+    const e = {sym:'note', state:'open', text:mealComposeText(slot, {form, what, store, withs}), _id:++uid};
+    if (tm && form !== '没吃') e.time = tm;
+    if (!PAGES[key]) PAGES[key] = {plan:[], flow:[]};
+    PAGES[key].flow.push(e);
+    try{ mealAutoTagAll(); }catch(_){}   /* 立刻挂签，墙上颜色即时正确 */
+    scheduleSave(); toast('已记下 · ' + e.text.slice(0, 16));
+    if (done) done();
+  };
+}
+function mealQuickSheet(key, slot){
+  const S = $('#gsheet');
+  S.innerHTML = '<div class="gs-title">' + fmtKey(key) + ' · ' + MEAL_WORD[slot] + '</div>' + mealComposerHTML();
+  bindMealComposer(S, key, slot, () => { closeSheet(); render(); });
+  S.classList.add('on'); $('#mask').classList.add('on');
+  setTimeout(() => { const w = $('#mcWhat'); if (w) w.focus(); }, 60);
+}
 function renderMeals(){
   if (!modOn('meals')){
     const d0 = document.createElement('div'); d0.className = 'empty-hint'; d0.textContent = '三餐板块已关闭 · 到 设置 → 板块管理 打开';
@@ -3659,8 +3710,10 @@ function renderMeals(){
     (p.withs || []).forEach(w2 => { if (w2 !== '独自') comp[w2] = (comp[w2] || 0) + 1; });
   });
   const topC = Object.entries(comp).sort((a2, b2) => b2[1] - a2[1])[0];
-  const byDay = {};
-  rowsAll.forEach(r => { (byDay[r.d] = byDay[r.d] || new Set()).add(r.k); });
+  const byDay = {}, byDayE = {};
+  rowsAll.forEach(r => { (byDay[r.d] = byDay[r.d] || new Set()).add(r.k);
+    byDayE[r.d] = byDayE[r.d] || {};
+    if (!byDayE[r.d][r.k]) byDayE[r.d][r.k] = r; });
   let streak = 0;
   const dd = parseKey(TODAY);
   for (let i = 0; i < 400; i++){
@@ -3677,21 +3730,35 @@ function renderMeals(){
     + (topC ? '<div class="vt-note" style="margin-top:8px">这个月最常一起吃饭：' + vEsc(topC[0]) + ' × ' + topC[1] + ' 次</div>' : '');
   view.appendChild(pan);
   const grid = document.createElement('div'); grid.className = 'tp-pan';
-  let gh = '<div class="tt">最近两周 · 早 / 午 / 晚（点行跳到那天）</div>';
+  let gh = '<div class="tt">最近两周 · 早 / 午 / 晚</div>'
+    + '<div class="vt-note" style="margin:0 0 6px">空圈点一下＝快速补记这顿 · 灰点＝日常吃 · 橙点＝这顿进了美食集子 · 点日期看那天</div>';
   const d4 = parseKey(TODAY);
   for (let i = 0; i < 14; i++){
-    const k4 = dkey(d4); const s4 = byDay[k4] || new Set();
-    const c4 = k5 => '<i class="' + (s4.has(k5) ? 'ml-on' : 'ml-off') + '"></i>';
+    const k4 = dkey(d4); const sE = byDayE[k4] || {};
+    const c4 = k5 => {
+      const r = sE[k5];
+      const cls = r ? (((r.e.groups || []).some(g => tplOf(g) === 'food')) ? 'ml-on' : 'ml-onn') : 'ml-off';
+      return '<i class="ml-cell ' + cls + '" data-k5="' + k5 + '" data-d="' + k4 + '"></i>';
+    };
+    const s4 = byDay[k4] || new Set();
     const extra = (s4.has('tea') ? ' 茶' : '') + (s4.has('sup') ? ' 宵' : '') + (s4.has('unk') ? ' ?' : '');
-    gh += '<div class="ml-row" data-d="' + k4 + '"><span class="c">' + fmtShort(k4) + (k4 === TODAY ? ' 今天' : '') + '</span>'
+    gh += '<div class="ml-row"><span class="c ml-day" data-d="' + k4 + '">' + fmtShort(k4) + (k4 === TODAY ? ' 今天' : '') + '</span>'
       + c4('bre') + c4('lun') + c4('din') + '<span class="v">' + extra + '</span></div>';
     d4.setDate(d4.getDate() - 1);
   }
   grid.innerHTML = gh;
-  grid.querySelectorAll('.ml-row').forEach(el => { el.onclick = () => gotoDay(el.dataset.d); });
+  grid.querySelectorAll('.ml-day').forEach(el => { el.onclick = () => gotoDay(el.dataset.d); });
+  grid.querySelectorAll('.ml-cell').forEach(el => {
+    el.onclick = () => {
+      const k4 = el.dataset.d, k5 = el.dataset.k5;
+      const r = (byDayE[k4] || {})[k5];
+      if (r) jumpToEntry(r.d, r.e._id || (r.e._id = ++uid));
+      else mealQuickSheet(k4, k5);
+    };
+  });
   view.appendChild(grid);
   const tip = document.createElement('div'); tip.className = 'vt-tip';
-  tip.textContent = '写「早饭 / 午饭 / 晚饭 / 下午茶 / 夜宵 + 吃了什么」自动归格，不用打标签；写了「店名」或外卖的会同时收进美食集子。晚间复盘会带三餐条，空格子点一下就能补。';
+  tip.textContent = '平时写「早饭/午饭/晚饭 + 吃了什么」自动归格；漏了的直接点墙上的空圈补一顿——是否吃了、吃了什么、和谁、几点，一张小表填完。带「店名」或外卖的会同时收进美食集子（橙点）。';
   view.appendChild(tip);
 }
 function relChipHtml(sel){
