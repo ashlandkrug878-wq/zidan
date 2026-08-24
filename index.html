@@ -370,6 +370,7 @@
   .nb-title::placeholder{color:var(--ink-faint)}
   .nb-body{width:100%;min-height:55vh;border:none;background:none;font-family:inherit;font-size:15.5px;line-height:1.85;color:var(--ink);outline:none;resize:none;padding:2px;overflow:hidden}
   .nb-body::placeholder{color:var(--ink-faint)}
+  #menuBtn.mb-back{font-size:14.5px;font-weight:700;color:var(--accent);width:auto;padding:0 10px;letter-spacing:0}
   .ml-off{background:var(--line-strong)}
   .ml-row .v{margin-left:auto;font-size:11px;color:var(--ink-faint)}
   #recall{
@@ -495,6 +496,14 @@ const $ = s => document.querySelector(s);
 const escAttr = s => String(s || '').replace(/"/g, '&quot;');
 const view = $('#view'), topTitle = $('#topTitle'), reviewBtn = $('#reviewBtn'), toolbar = $('#toolbar');
 let cur = {name:'today'};
+let navStack = [], navPrevSnap = null, navFromBack = false;
+function navSnap(){ return JSON.stringify({n:cur.name, g:cur.g, k:cur.key, p:cur.pid, i:cur.id, q:cur.q, d:cur.date}); }
+function navBack(){
+  if (!navStack.length) return;
+  navFromBack = true;
+  cur = navStack.pop();
+  render();
+}
 let focusRef = null, pendingDel = null;
 let undoStack = [];
 function snapshot(label){
@@ -541,6 +550,7 @@ function keepAboveKeyboard(el){
 }
 function scrollFocused(){
   const ae = document.activeElement;
+  if (ae && ae.classList && (ae.classList.contains('nb-body') || ae.classList.contains('nb-title'))) return;   /* 笔记本长文不参与“保持在键盘上方”，避免整页蹿动 */
   if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')) keepAboveKeyboard(ae);
 }
 function updateToolbarVis(){
@@ -1133,6 +1143,28 @@ function renderCal(){
 
 /* ============ 视图渲染 ============ */
 function render(){
+  (() => {   /* v2.18 导航栈：自动记来路，二级页左上角变「‹ 返回」 */
+    const ns2 = navSnap();
+    if (cur.name === 'today'){ navStack = []; }
+    else if (!navFromBack && navPrevSnap && ns2 !== navPrevSnap){
+      const pv = JSON.parse(navPrevSnap);
+      navStack.push({name:pv.n, g:pv.g, key:pv.k, pid:pv.p, id:pv.i, q:pv.q, date:pv.d});
+      if (navStack.length > 20) navStack.shift();
+    }
+    navFromBack = false; navPrevSnap = ns2;
+    const mb = $('#menuBtn');
+    if (mb){
+      const back = navStack.length && cur.name !== 'today';
+      if (back && !mb.classList.contains('mb-back')){
+        mb.classList.add('mb-back'); mb.innerHTML = '‹ 返回'; mb.onclick = navBack;
+      } else if (!back && mb.classList.contains('mb-back')){
+        mb.classList.remove('mb-back');
+        mb.innerHTML = '<span class="hamburger"><i></i><i></i><i></i></span>';
+        mb.onclick = openDrawer;
+      } else if (back){ mb.onclick = navBack; }
+      else { mb.onclick = openDrawer; }
+    }
+  })();
   if (cur.name !== 'vault' && vaultKey) vaultLock();
   view.innerHTML = '';
   if (cur.name === 'today'){
@@ -1316,7 +1348,7 @@ function render(){
         scheduleSave(); render();
       };
     });
-    mkRow('版本记录', sub('v2.17 ›'), showChangelog);
+    mkRow('版本记录', sub('v2.18 ›'), showChangelog);
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
       if (pendingWipe){ localStorage.removeItem(LSKEY); location.reload(); return; }
@@ -2422,7 +2454,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.17（当前 · 2026.8.23）\n【📓 笔记本】\n· 侧栏新增「笔记本」：像备忘录一样写长文——装修计划、读书摘抄、写到一半的小说，边写边自动保存\n· 本子不是孤岛：新建本子当天流水自动记「开了新本子《xxx》」，每天第一次动笔自动留「写了《xxx》」（一天一本只记一次）\n· 双向跳转：流水足迹带「📓 翻开」直达本子；本子页头「始于X · 写过N天 · 最近X」，点开看全部足迹、跳回任何一天\n· 搜索打通：全局搜索多一栏「本子里也有」\n· 本子长文不进识别引擎和报告——小说草稿不会污染熟店簿\n\n'
+    + 'v2.18（当前 · 2026.8.24）\n【修复 · 笔记本页面蹿动】\n· 标题跳正文、正文打前几行字时整页乱蹿：长文编辑豁免了「保持在键盘上方」的滚动逻辑，自动长高改为只长不缩并锁定滚动位置\n【笔记本里写任务】\n· 以「- 」或「□ 」开头的行（回车或离开本子时）自动变成今天首页的任务，带「📓 翻开」来源签；生成后各走各的，改行字算新任务\n【全局返回上一页】\n· 进入二级页（人物页、本子、从日历点进的某天、集子…）左上角 ☰ 变成「‹ 返回」，一路原路返回；右上「回今日」照旧并清空来路\n【修复 · 熟人册新人被顶替】\n· 根因是重启后编号水位漏算了熟人册/循环提醒/笔记本，导致新人和旧人撞号——水位已补全，已撞的号启动时自动换新，账号小本解锁时同步计入\n\n'
+    + 'v2.17（2026.8.23）\n【📓 笔记本】\n· 侧栏新增「笔记本」：像备忘录一样写长文——装修计划、读书摘抄、写到一半的小说，边写边自动保存\n· 本子不是孤岛：新建本子当天流水自动记「开了新本子《xxx》」，每天第一次动笔自动留「写了《xxx》」（一天一本只记一次）\n· 双向跳转：流水足迹带「📓 翻开」直达本子；本子页头「始于X · 写过N天 · 最近X」，点开看全部足迹、跳回任何一天\n· 搜索打通：全局搜索多一栏「本子里也有」\n· 本子长文不进识别引擎和报告——小说草稿不会污染熟店簿\n\n'
     + 'v2.16（2026.8.22）\n【🍚 三餐快捷录入】\n· 打卡墙的格子现在能点：空圈点一下＝就地补记这顿——是否吃了 / 吃了什么 / 店名 / 和谁 / 几点，一张小表引导填完，自动组成一句手帐话\n· 已记的格子点一下跳回原文；点日期看那天全页\n· 晚间复盘补三餐也换成同一张引导小表，不再是干巴巴一个输入框\n· 「这顿没吃」也算一条诚实记录，照样点亮格子\n【颜色区分】\n· 墙上灰点＝日常吃，橙点＝这顿进了美食集子（有店名/外卖）——一眼分清哪顿只是吃了、哪顿成了资产\n\n'
     + 'v2.15（2026.8.21）\n【🔖 今日印章】\n· 复盘收尾给今天盖个章：充实高效 / 平淡安稳 / 小有波折但收尾顺利 / 彻底放空 / 小有收获，也能自己刻——刻过的进你的章库\n· 今日页顶部和日页标题都能看到章，点一下随时改；过去任何一天也能补章\n【🍚 三餐（设置里打开）】\n· 写「早饭/午饭/晚饭/下午茶/夜宵 + 吃了什么」自动归格，不用打标签，识别保守绝不硬塞\n· 晚间复盘带三餐条：空格子点一下就地补一句\n· 三餐页：三餐齐全连击、本月外卖次数、吃饭花销、最常一起吃饭的人、两周打卡墙\n· 三餐里写了「店名」或外卖，自动同时收进美食集子（同一份数据，两副眼镜）\n【板块管理】\n· 设置新增：三餐 / 熟人册 / 账号小本 / 循环提醒 可开关，关掉的从侧栏消失、数据不动\n【处处可改】\n· 我们的时刻、重要时间点、账号小本条目——所有手动填写的现在都能点开修改（立为铁律）\n\n'
     + 'v2.14（2026.8.20）\n【⭐ 星标熟人 · 重要时间点】\n· 人物页可以点星：星标的人解锁「重要时间点」——认识 / 第一次见面 / 在一起…标签全由你写\n· 日期支持三档模糊：只填年份（第 N 个年头）、年份+月份（至今 N 年 N 个月）、整日（已 N 天 · 第 N 年）\n· 写了整日的：整百天纪念提前看得见（距 2700 天还有 32 天），一键「设提醒」进纪念日模板\n【🌟 我 · 人生时间点】\n· 熟人册第一页是你自己：入离职、搬家、第一次收到鲜花…同一套时间点，随时翻到自己的坐标\n\n'
@@ -3735,7 +3768,7 @@ function renderNotes(){
     view.appendChild(card);
   });
   const tip = document.createElement('div'); tip.className = 'vt-tip';
-  tip.textContent = '本子是主题页，日常是流水：开本、每天第一次动笔，当天流水都会自动留一笔（点「📓 翻开」直达）。本子长文不进识别和报告。';
+  tip.textContent = '本子是主题页，日常是流水：开本、每天第一次动笔，当天流水都会自动留一笔（点「📓 翻开」直达）。本子里以「- 」或「□ 」开头的行，会自动变成今天的任务。本子长文不进识别和报告。';
   view.appendChild(tip);
 }
 function renderNote(n){
@@ -3771,9 +3804,31 @@ function renderNote(n){
       if (x.text.startsWith('开了新本子《')) x.text = '开了新本子《' + t2 + '》';
     });
   };
+  const growNB = () => {   /* 只长不缩：不做「归零再量」那一下，页面不抖 */
+    if (ta.scrollHeight > ta.clientHeight){
+      const sy = window.scrollY;
+      ta.style.height = ta.scrollHeight + 'px';
+      window.scrollTo(0, sy);
+    }
+  };
+  const taskScan = fin => {   /* 「- 」「□ 」开头的行 → 今天的任务（生成后各走各的） */
+    const lines = ta.value.split('\n');
+    const upto = fin ? lines.length : lines.length - 1;
+    n.taskKeys = n.taskKeys || {};
+    for (let i2 = 0; i2 < upto; i2++){
+      const m2 = lines[i2].match(/^\s*[-－□]\s*(.+)$/);
+      if (!m2) continue;
+      const txt = m2[1].trim();
+      if (!txt || txt.length < 2 || n.taskKeys[txt]) continue;
+      n.taskKeys[txt] = 1;
+      P().plan.push({sym:'task', state:'open', text:txt, nbId:n.id, src:'《' + ((n.title || '').trim() || '未命名') + '》', _id:++uid});
+      toast('已加进今天的任务 · ' + txt.slice(0, 12));
+    }
+  };
   ti.oninput = () => { n.title = ti.value; topTitle.textContent = n.title || '未命名'; touch(); syncLines(); scheduleSave(); };
   ti.onblur = () => { ensureNoteBorn(n); syncLines(); scheduleSave(); };
-  ta.oninput = () => { n.body = ta.value; touch(); scheduleSave(); growTA(ta); cnt.textContent = n.body.length + ' 字 · 自动保存'; };
+  ta.oninput = () => { n.body = ta.value; touch(); taskScan(false); scheduleSave(); growNB(); cnt.textContent = n.body.length + ' 字 · 自动保存'; };
+  ta.onblur = () => { taskScan(true); const sy = window.scrollY; growTA(ta); window.scrollTo(0, sy); scheduleSave(); };
   setTimeout(() => growTA(ta), 30);
 }
 function mealComposeText(slot, o){
@@ -4307,6 +4362,7 @@ async function vaultUnlock(pass){
     const key = await vDerive(pass, v.salt);
     if ((await vDec(key, v.check)) !== 'dot-vault-ok') return false;
     vaultItems = JSON.parse(await vDec(key, v.data));
+    vaultItems.forEach(it => { if (it._id && it._id > uid) uid = it._id; });   /* 小本 id 也计入水位 */
     vaultKey = key; return true;
   }catch(_){ return false; }
 }
@@ -4448,6 +4504,18 @@ function ensureToday(){
     if (!pg2.plan.length && !pg2.flow.length && !pg2.summary) delete PAGES[k];
   });
   walk((k, e) => { if (e._id && e._id > uid) uid = e._id; });
+  (SET.people || []).forEach(p => { if (p.id && p.id > uid) uid = p.id; });
+  (SET.cycles || []).forEach(c => { if (c.id && c.id > uid) uid = c.id; });
+  (typeof NOTES !== 'undefined' ? NOTES : []).forEach(nn => { if (nn.id && nn.id > uid) uid = nn.id; });
+  /* 修复历史撞号：同一板块内重复 id 的，后来者换新号（引用按“先到先得”解析，未来不再可能撞） */
+  const fixDup = arr => {
+    const seen2 = new Set();
+    (arr || []).forEach(o => {
+      if (o.id && seen2.has(o.id)) o.id = ++uid;
+      if (o.id) seen2.add(o.id);
+    });
+  };
+  fixDup(SET.people); fixDup(SET.cycles); fixDup(typeof NOTES !== 'undefined' ? NOTES : []);
   walkWithParent((k, e, parent) => {
     if (k === TODAY) return;
     if (e.sym === 'task' && e.due === TODAY && !e.arrived && (e.state === 'open' || e.state === 'migrated')){
