@@ -366,6 +366,10 @@
   .ml-onn{background:var(--ink-faint)}
   .ml-cell{cursor:pointer}
   .ml-day{cursor:pointer}
+  .nb-title{width:100%;border:none;background:none;font-size:20px;font-weight:800;font-family:inherit;color:var(--ink);padding:12px 2px 6px;outline:none}
+  .nb-title::placeholder{color:var(--ink-faint)}
+  .nb-body{width:100%;min-height:55vh;border:none;background:none;font-family:inherit;font-size:15.5px;line-height:1.85;color:var(--ink);outline:none;resize:none;padding:2px;overflow:hidden}
+  .nb-body::placeholder{color:var(--ink-faint)}
   .ml-off{background:var(--line-strong)}
   .ml-row .v{margin-left:auto;font-size:11px;color:var(--ink-faint)}
   #recall{
@@ -463,10 +467,12 @@ let PAGES = {}, SEEN = {}, GCOLOR = {};
 let extraGroups = ['工作', '健康', '恋爱'];
 const SET = {recog:true, accent:0};
 try{
+  var NOTES = [];
   const raw = localStorage.getItem(LSKEY);
   if (raw){ const s = JSON.parse(raw);
     PAGES = s.pages || {}; extraGroups = s.extraGroups || extraGroups;
-    Object.assign(SET, s.set || {}); SEEN = s.seen || {}; GCOLOR = s.gcolor || {}; }
+    Object.assign(SET, s.set || {}); SEEN = s.seen || {}; GCOLOR = s.gcolor || {};
+    NOTES = s.notes || []; }
 }catch(_){}
 let saveTm = null;
 let PARSE_GEN = 1;
@@ -477,7 +483,7 @@ function scheduleSave(){
   clearTimeout(saveTm);
   saveTm = setTimeout(() => {
     try{ mealAutoTagAll(); }catch(_){}
-    try{ localStorage.setItem(LSKEY, JSON.stringify({pages:PAGES, extraGroups, set:SET, seen:SEEN, gcolor:GCOLOR}, jstrip)); }
+    try{ localStorage.setItem(LSKEY, JSON.stringify({pages:PAGES, extraGroups, set:SET, seen:SEEN, gcolor:GCOLOR, notes:NOTES}, jstrip)); }
     catch(_){ toast('存储已满：请删除一些图片，或先导出备份'); }
     try{ ghSchedule(); }catch(_){}
   }, 300);
@@ -770,7 +776,7 @@ function commit(e){
 /* ============ 条目渲染 ============ */
 function chipRow(e, editable){
   const hasG = e.groups && e.groups.length;
-  if (!e.badge && !e.time && !e.due && !hasG && !e.src && !e.srcDay && !e.note) return null;
+  if (!e.badge && !e.time && !e.due && !hasG && !e.src && !e.srcDay && !e.note && !e.nbId) return null;
   const c = document.createElement('div'); c.className = 'chips';
   if (hasG) e.groups.forEach(g => {
     const b = document.createElement('span'); b.className = 'badge';
@@ -802,6 +808,14 @@ function chipRow(e, editable){
     b.style.cursor = 'pointer';
     if (editable){ b.onclick = ev => { ev.stopPropagation(); openDueSheet(e); }; }
     else { b.onclick = ev => { ev.stopPropagation(); gotoDay(e.due); }; }
+    c.appendChild(b);
+  }
+  if (e.nbId){
+    const b = document.createElement('span'); b.className = 'badge acc'; b.textContent = '📓 翻开';
+    b.style.cursor = 'pointer';
+    b.onclick = ev => { ev.stopPropagation();
+      if (noteById(e.nbId)){ cur = {name:'note', id:e.nbId}; render(); }
+      else toast('这个本子已经删掉了'); };
     c.appendChild(b);
   }
   return c;
@@ -1239,6 +1253,21 @@ function render(){
       ? (e.groups && e.groups.includes(qq))
       : (e.text && e.text.toLowerCase().includes(qq)));
     if (!n){ const d = document.createElement('div'); d.className = 'empty-hint'; d.textContent = '没有找到相关记录'; view.appendChild(d); }
+    if (!isG){
+      const nbHits = (NOTES || []).filter(nb => (nb.title || '').toLowerCase().includes(qq) || (nb.body || '').toLowerCase().includes(qq));
+      if (nbHits.length){
+        view.appendChild(sectionLabel('本子里也有'));
+        nbHits.forEach(nb => {
+          const i2 = (nb.body || '').toLowerCase().indexOf(qq);
+          const snip = i2 >= 0 ? (nb.body || '').substr(Math.max(0, i2 - 6), 24) : (nb.body || '').slice(0, 20);
+          const it = document.createElement('div'); it.className = 'set-row';
+          it.innerHTML = '<span>📓 ' + vEsc(nb.title || '未命名') + '</span>'
+            + '<span class="sub" style="margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:46%">' + vEsc(snip) + ' ›</span>';
+          it.onclick = () => { cur = {name:'note', id:nb.id}; render(); };
+          view.appendChild(it);
+        });
+      }
+    }
   }
   else if (cur.name === 'settings'){
     topTitle.textContent = '设置'; reviewBtn.textContent = '回今日';
@@ -1276,7 +1305,7 @@ function render(){
       pendingRestore = false; $('#jsonInput').click();
     });
     view.appendChild(sectionLabel('板块管理 · 关掉的从侧栏消失，数据不动'));
-    [['meals','🍚 三餐','扩展'],['people','👥 熟人册','扩展'],['vault','🔐 账号小本','扩展'],['cycles','🔁 循环提醒','基础']].forEach(([k, nm, tier]) => {
+    [['notes','📓 笔记本','基础'],['meals','🍚 三餐','扩展'],['people','👥 熟人册','扩展'],['vault','🔐 账号小本','扩展'],['cycles','🔁 循环提醒','基础']].forEach(([k, nm, tier]) => {
       const on = modOn(k);
       const tg = document.createElement('button'); tg.className = 'gm-btn'; tg.style.marginLeft = 'auto';
       tg.textContent = on ? '开 ✓' : '关'; tg.style.color = on ? 'var(--green)' : 'var(--ink-faint)';
@@ -1287,7 +1316,7 @@ function render(){
         scheduleSave(); render();
       };
     });
-    mkRow('版本记录', sub('v2.16 ›'), showChangelog);
+    mkRow('版本记录', sub('v2.17 ›'), showChangelog);
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
       if (pendingWipe){ localStorage.removeItem(LSKEY); location.reload(); return; }
@@ -1298,6 +1327,15 @@ function render(){
   else if (cur.name === 'cycles'){
     topTitle.textContent = '循环提醒'; reviewBtn.textContent = '回今日';
     renderCycles();
+  }
+  else if (cur.name === 'notes'){
+    topTitle.textContent = '笔记本'; reviewBtn.textContent = '回今日';
+    renderNotes();
+  }
+  else if (cur.name === 'note'){
+    const nb0 = noteById(cur.id);
+    topTitle.textContent = nb0 ? (nb0.title || '未命名') : '笔记本'; reviewBtn.textContent = '回今日';
+    if (nb0){ ensureNoteBorn(nb0); renderNote(nb0); } else renderNotes();
   }
   else if (cur.name === 'meals'){
     topTitle.textContent = '三餐'; reviewBtn.textContent = '回今日';
@@ -1616,6 +1654,7 @@ function buildDrawer(){
   const line = document.createElement('div'); line.className = 'drawer-line'; box.appendChild(line);
   (() => {
     const rows0 = [['☾','晚间复盘', () => { closeDrawer(); openReview(); }]];
+    if (modOn('notes')) rows0.push(['📓','笔记本', () => { cur = {name:'notes'}; closeDrawer(); render(); }]);
     if (modOn('meals')) rows0.push(['🍚','三餐', () => { cur = {name:'meals'}; closeDrawer(); render(); }]);
     if (modOn('people')) rows0.push(['👥','熟人册', () => { cur = {name:'people'}; closeDrawer(); render(); }]);
     if (modOn('cycles')) rows0.push(['🔁','循环提醒', () => { cur = {name:'cycles'}; closeDrawer(); render(); }]);
@@ -2252,7 +2291,7 @@ $('#mdInput').addEventListener('change', ev => {
 
 /* ============ 完整备份 / 恢复（JSON） ============ */
 function exportJSON(){
-  const data = JSON.stringify({pages:PAGES, extraGroups, set:SET, seen:SEEN, gcolor:GCOLOR, exportedAt:TODAY}, jstrip);
+  const data = JSON.stringify({pages:PAGES, extraGroups, set:SET, seen:SEEN, gcolor:GCOLOR, notes:NOTES, exportedAt:TODAY}, jstrip);
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([data], {type:'application/json'}));
   a.download = '点点手帐全量备份.json'; a.click();
@@ -2266,7 +2305,7 @@ $('#jsonInput').addEventListener('change', ev => {
       const s = JSON.parse(String(r.result));
       if (!s.pages) throw 0;
       PAGES = s.pages; extraGroups = s.extraGroups || extraGroups;
-      Object.assign(SET, s.set || {}); SEEN = s.seen || SEEN; GCOLOR = s.gcolor || {};
+      Object.assign(SET, s.set || {}); SEEN = s.seen || SEEN; GCOLOR = s.gcolor || {}; NOTES = s.notes || [];
       applyAccent(); undoStack = []; focusRef = null;
       ensureToday(); scheduleSave();
       toast('已恢复备份'); cur = {name:'today'}; render();
@@ -2282,7 +2321,7 @@ function ghCfg(){ SET.gh = SET.gh || {repo:'', token:'', on:false, last:''}; ret
 function ghHeaders(){ return {Authorization:'Bearer ' + ghCfg().token, Accept:'application/vnd.github+json'}; }
 function ghPayload(){
   const setCopy = Object.assign({}, SET); delete setCopy.gh;
-  return JSON.stringify({pages:PAGES, extraGroups, set:setCopy, seen:SEEN, gcolor:GCOLOR, savedAt:new Date().toISOString()}, jstrip);
+  return JSON.stringify({pages:PAGES, extraGroups, set:setCopy, seen:SEEN, gcolor:GCOLOR, notes:NOTES, savedAt:new Date().toISOString()}, jstrip);
 }
 async function ghPush(manual){
   const c = ghCfg();
@@ -2322,7 +2361,7 @@ async function ghRestore(){
     const keep = ghCfg();
     PAGES = s.pages; extraGroups = s.extraGroups || extraGroups;
     Object.assign(SET, s.set || {}); SET.gh = keep;
-    SEEN = s.seen || SEEN; GCOLOR = s.gcolor || {};
+    SEEN = s.seen || SEEN; GCOLOR = s.gcolor || {}; NOTES = s.notes || [];
     applyAccent(); undoStack = []; focusRef = null;
     ensureToday(); scheduleSave();
     toast('已从云端恢复'); cur = {name:'today'}; render();
@@ -2383,7 +2422,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.16（当前 · 2026.8.22）\n【🍚 三餐快捷录入】\n· 打卡墙的格子现在能点：空圈点一下＝就地补记这顿——是否吃了 / 吃了什么 / 店名 / 和谁 / 几点，一张小表引导填完，自动组成一句手帐话\n· 已记的格子点一下跳回原文；点日期看那天全页\n· 晚间复盘补三餐也换成同一张引导小表，不再是干巴巴一个输入框\n· 「这顿没吃」也算一条诚实记录，照样点亮格子\n【颜色区分】\n· 墙上灰点＝日常吃，橙点＝这顿进了美食集子（有店名/外卖）——一眼分清哪顿只是吃了、哪顿成了资产\n\n'
+    + 'v2.17（当前 · 2026.8.23）\n【📓 笔记本】\n· 侧栏新增「笔记本」：像备忘录一样写长文——装修计划、读书摘抄、写到一半的小说，边写边自动保存\n· 本子不是孤岛：新建本子当天流水自动记「开了新本子《xxx》」，每天第一次动笔自动留「写了《xxx》」（一天一本只记一次）\n· 双向跳转：流水足迹带「📓 翻开」直达本子；本子页头「始于X · 写过N天 · 最近X」，点开看全部足迹、跳回任何一天\n· 搜索打通：全局搜索多一栏「本子里也有」\n· 本子长文不进识别引擎和报告——小说草稿不会污染熟店簿\n\n'
+    + 'v2.16（2026.8.22）\n【🍚 三餐快捷录入】\n· 打卡墙的格子现在能点：空圈点一下＝就地补记这顿——是否吃了 / 吃了什么 / 店名 / 和谁 / 几点，一张小表引导填完，自动组成一句手帐话\n· 已记的格子点一下跳回原文；点日期看那天全页\n· 晚间复盘补三餐也换成同一张引导小表，不再是干巴巴一个输入框\n· 「这顿没吃」也算一条诚实记录，照样点亮格子\n【颜色区分】\n· 墙上灰点＝日常吃，橙点＝这顿进了美食集子（有店名/外卖）——一眼分清哪顿只是吃了、哪顿成了资产\n\n'
     + 'v2.15（2026.8.21）\n【🔖 今日印章】\n· 复盘收尾给今天盖个章：充实高效 / 平淡安稳 / 小有波折但收尾顺利 / 彻底放空 / 小有收获，也能自己刻——刻过的进你的章库\n· 今日页顶部和日页标题都能看到章，点一下随时改；过去任何一天也能补章\n【🍚 三餐（设置里打开）】\n· 写「早饭/午饭/晚饭/下午茶/夜宵 + 吃了什么」自动归格，不用打标签，识别保守绝不硬塞\n· 晚间复盘带三餐条：空格子点一下就地补一句\n· 三餐页：三餐齐全连击、本月外卖次数、吃饭花销、最常一起吃饭的人、两周打卡墙\n· 三餐里写了「店名」或外卖，自动同时收进美食集子（同一份数据，两副眼镜）\n【板块管理】\n· 设置新增：三餐 / 熟人册 / 账号小本 / 循环提醒 可开关，关掉的从侧栏消失、数据不动\n【处处可改】\n· 我们的时刻、重要时间点、账号小本条目——所有手动填写的现在都能点开修改（立为铁律）\n\n'
     + 'v2.14（2026.8.20）\n【⭐ 星标熟人 · 重要时间点】\n· 人物页可以点星：星标的人解锁「重要时间点」——认识 / 第一次见面 / 在一起…标签全由你写\n· 日期支持三档模糊：只填年份（第 N 个年头）、年份+月份（至今 N 年 N 个月）、整日（已 N 天 · 第 N 年）\n· 写了整日的：整百天纪念提前看得见（距 2700 天还有 32 天），一键「设提醒」进纪念日模板\n【🌟 我 · 人生时间点】\n· 熟人册第一页是你自己：入离职、搬家、第一次收到鲜花…同一套时间点，随时翻到自己的坐标\n\n'
     + 'v2.13（2026.8.20）\n【👥 熟人册】\n· 侧栏新增「熟人册」：点点从记录里认出的人（和X、转交给X）列成候选，点「收录」进册，不想要的可忽略\n· 收录时可填 本名＋昵称（多个用、隔开）：写哪个都认账，旧记录也一并追认到同一个人\n· 关系标签：亲情 / 友情 / 爱情 / 人脉 / 同事，也能自己写；外加自由备注\n· 人物页：我们的盘点（一起看过 / 一起吃过 / 共同出现 / 最近一次，可下钻）\n· 「我们的时刻」：手写纪念的事，或在记录里点 📌 收进来\n· 记录里的「和赵赵」小签可以点了，直接进TA的页；TA的生日提醒在人物页直达\n\n'
@@ -3640,6 +3680,101 @@ function openMarkAdd(holder, k0){
     scheduleSave(); closeSheet(); render(); toast('已记下 · ' + markDateLabel(k));
   };
   S.classList.add('on'); $('#mask').classList.add('on');
+}
+/* ===== v2.17 笔记本：长文主题页，用足迹缝进日常 ===== */
+let pendingNDel = null;
+function noteById(id){ return (NOTES || []).find(n => n.id === id); }
+function noteMeta(n){
+  const nd = Object.keys(n.days || {}).length;
+  return '始于 ' + fmtShort(n.created) + ' · 写过 ' + nd + ' 天'
+    + (n.updated ? ' · 最近 ' + (n.updated === TODAY ? '今天' : fmtShort(n.updated)) : '');
+}
+function ensureNoteBorn(n){
+  if (n.born || !(n.title || '').trim()) return;
+  n.born = 1;
+  const k = PAGES[n.created] ? n.created : TODAY;
+  PAGES[k].flow.push({sym:'event', text:'开了新本子《' + n.title.trim() + '》', nbId:n.id, _id:++uid});
+  scheduleSave();
+}
+function noteCreate(){
+  const n = {id:++uid, title:'', body:'', created:TODAY, updated:TODAY, days:{}};
+  n.days[TODAY] = 1;   /* 开本当天由「开了新本子」代言，不另记足迹 */
+  NOTES.push(n); scheduleSave();
+  cur = {name:'note', id:n.id}; render();
+  setTimeout(() => { const t = $('#nbTitle'); if (t) t.focus(); }, 80);
+}
+function renderNotes(){
+  if (!modOn('notes')){
+    const d0 = document.createElement('div'); d0.className = 'empty-hint'; d0.textContent = '笔记本板块已关闭 · 到 设置 → 板块管理 打开';
+    view.appendChild(d0); return;
+  }
+  NOTES = NOTES.filter(n => (n.title || '').trim() || (n.body || '').trim() || n.born);   /* 空壳自清 */
+  NOTES.forEach(ensureNoteBorn);
+  const bar = document.createElement('div'); bar.className = 'rp-tabs'; bar.style.marginTop = '16px';
+  const addB = document.createElement('button'); addB.className = 'chip on'; addB.textContent = '＋ 新建本子';
+  addB.onclick = noteCreate;
+  bar.appendChild(addB); view.appendChild(bar);
+  if (!NOTES.length){
+    const d2 = document.createElement('div'); d2.className = 'empty-hint'; d2.style.textAlign = 'center'; d2.style.padding = '24px 2px 8px';
+    d2.innerHTML = dotSVG(56) + '<div style="margin-top:8px">开第一个本子，写点长的：装修计划、读书摘抄、写到一半的小说…<br>开本和每天动笔，都会在当天流水里留下足迹</div>';
+    view.appendChild(d2);
+  }
+  NOTES.slice().sort((a2, b2) => parseKey(b2.updated || b2.created) - parseKey(a2.updated || a2.created)).forEach(n => {
+    const card = document.createElement('div'); card.className = 'vt-card';
+    card.style.cursor = 'pointer';
+    card.innerHTML = '<div class="vt-site">📓 ' + vEsc(n.title || '未命名')
+      + '<button class="gm-btn danger" data-a="del" style="margin-left:auto">' + (pendingNDel === n.id ? '确认删除' : '删') + '</button></div>'
+      + '<div class="vt-note">' + vEsc(((n.body || '').split('\n')[0] || '').slice(0, 42) || '还空着 · 点开写点什么') + '</div>'
+      + '<div class="vt-note" style="color:var(--ink-faint)">' + noteMeta(n) + '</div>';
+    card.onclick = () => { cur = {name:'note', id:n.id}; render(); };
+    card.querySelector('[data-a="del"]').onclick = ev => {
+      ev.stopPropagation();
+      if (pendingNDel !== n.id){ pendingNDel = n.id; toast('再点一次确认删除（流水里的足迹会保留）'); render(); return; }
+      NOTES = NOTES.filter(x => x.id !== n.id); pendingNDel = null; scheduleSave(); render(); toast('本子已删 · 足迹保留');
+    };
+    view.appendChild(card);
+  });
+  const tip = document.createElement('div'); tip.className = 'vt-tip';
+  tip.textContent = '本子是主题页，日常是流水：开本、每天第一次动笔，当天流水都会自动留一笔（点「📓 翻开」直达）。本子长文不进识别和报告。';
+  view.appendChild(tip);
+}
+function renderNote(n){
+  const head = document.createElement('div'); head.className = 'tp-more'; head.style.padding = '12px 2px 0';
+  head.textContent = noteMeta(n) + ' ›';
+  head.onclick = () => {
+    const ds = Object.keys(n.days || {}).sort((a2, b2) => parseKey(b2) - parseKey(a2));
+    openTileSheet('《' + (n.title || '未命名') + '》的足迹', ds.map(d => ({nm:fmtKey(d) + ' · ' + weekCN(d), sub:'', sc:'', d, id:null})));
+  };
+  view.appendChild(head);
+  const ti = document.createElement('input'); ti.className = 'nb-title'; ti.id = 'nbTitle';
+  ti.placeholder = '给本子起个名'; ti.value = n.title || '';
+  view.appendChild(ti);
+  const ta = document.createElement('textarea'); ta.className = 'nb-body'; ta.id = 'nbBody';
+  ta.placeholder = '想写多长写多长 · 点点边写边存';
+  ta.value = n.body || '';
+  view.appendChild(ta);
+  const cnt = document.createElement('div'); cnt.className = 'vt-tip'; cnt.id = 'nbCnt';
+  cnt.textContent = (n.body || '').length + ' 字 · 自动保存';
+  view.appendChild(cnt);
+  const touch = () => {
+    n.updated = TODAY; n.days = n.days || {};
+    if (!n.days[TODAY]){
+      n.days[TODAY] = 1;
+      P().flow.push({sym:'note', text:'写了《' + ((n.title || '').trim() || '未命名') + '》', nbId:n.id, _id:++uid});
+    }
+  };
+  const syncLines = () => {   /* 当天足迹跟着标题走 */
+    const t2 = (n.title || '').trim() || '未命名';
+    (P().flow || []).forEach(x => {
+      if (x.nbId !== n.id || !x.text) return;
+      if (x.text.startsWith('写了《')) x.text = '写了《' + t2 + '》';
+      if (x.text.startsWith('开了新本子《')) x.text = '开了新本子《' + t2 + '》';
+    });
+  };
+  ti.oninput = () => { n.title = ti.value; topTitle.textContent = n.title || '未命名'; touch(); syncLines(); scheduleSave(); };
+  ti.onblur = () => { ensureNoteBorn(n); syncLines(); scheduleSave(); };
+  ta.oninput = () => { n.body = ta.value; touch(); scheduleSave(); growTA(ta); cnt.textContent = n.body.length + ' 字 · 自动保存'; };
+  setTimeout(() => growTA(ta), 30);
 }
 function mealComposeText(slot, o){
   if (o.form === '没吃') return MEAL_WORD[slot] + ' 没吃';
