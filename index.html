@@ -78,6 +78,8 @@
   .glyph.dropped{color:var(--red);opacity:.75;font-weight:600}
   .glyph.delegated{color:var(--badge-ink);font-weight:700}
   .glyph.someday{color:var(--ink-faint);font-weight:600;font-size:15px}
+  .glyph.ask{color:#5B7FA6;font-weight:800;font-size:15px}
+  .glyph.bang{color:#B5493A;font-weight:800;font-size:15px}
   .entry.someday .entry-text,.entry.someday .line-input{color:var(--ink-soft)}
   .entry-body{flex:1;min-width:0}
   .entry-text{font-size:16px;line-height:1.6;word-break:break-all}
@@ -91,6 +93,8 @@
   .entry.dropped .entry-text{color:var(--ink-faint);text-decoration:line-through;text-decoration-color:rgba(192,96,78,.45)}
   .entry.mood .entry-text,.entry.mood .line-input{color:#7A6A8F}
   .entry.note .entry-text,.entry.note .line-input{color:var(--ink-soft)}
+  .entry.ask .entry-text,.entry.ask .line-input{color:#4E6E8F}
+  .entry.bang .entry-text,.entry.bang .line-input{font-weight:600}
   .chips{margin-top:3px}
   .badge{
     display:inline-block;font-size:11.5px;background:var(--badge-bg);color:var(--badge-ink);
@@ -137,14 +141,32 @@
   #tagSug .gs-chip{flex:none}
   .ts-label{font-size:12px;color:var(--ink-faint);flex:none}
   .tb-btn{
-    flex:none;min-width:36px;height:34px;border:1px solid var(--line-strong);border-radius:9px;background:var(--bg);
-    display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--ink);
-    font-family:inherit;padding:0 8px;white-space:nowrap;
+    flex:none;min-width:46px;height:46px;border:1px solid var(--line-strong);border-radius:12px;background:var(--bg);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;cursor:pointer;font-size:15px;color:var(--ink);
+    font-family:inherit;padding:0 9px;white-space:nowrap;line-height:1;
   }
+  .tb-btn small{font-size:9px;color:var(--ink-faint);font-weight:500;letter-spacing:1.5px;line-height:1}
+  .tb-btn.tb-big{flex:1}
+  .tb-btn.dim{opacity:.4}
+  .tb-btn.tb-sym{background:var(--accent-soft);border-color:#F2CDAA}
+  .tb-btn .tb-glyph{font-size:17px;font-weight:800;line-height:1}
   .tb-btn:active{background:var(--accent-soft)}
   .tb-btn.warn{color:var(--red)}
+  #symPop{position:fixed;left:14px;max-width:320px;width:calc(100% - 28px);background:var(--card);border:1px solid var(--line-strong);
+    border-radius:16px;box-shadow:0 10px 30px rgba(31,28,23,.18);padding:8px;display:none;z-index:60}
+  #symPop.on{display:block}
+  .sp-row{display:flex;align-items:center;gap:12px;padding:10px 10px;border-radius:10px;font-size:14.5px;cursor:pointer}
+  .sp-row.on{background:var(--accent-soft)}
+  .sp-row .g{width:24px;text-align:center;font-weight:800;font-size:16px}
+  .sp-row .d{margin-left:auto;font-size:11px;color:var(--ink-faint)}
   .tb-sep{width:1px;height:20px;background:var(--line)}
   .tb-hint{margin-left:auto;font-size:11px;color:var(--ink-faint)}
+  #smartBar{position:absolute;left:0;right:0;display:none;gap:7px;align-items:center;
+    padding:8px 14px;background:rgba(250,246,236,.97);border-top:1px solid var(--line);z-index:6;overflow-x:auto}
+  #smartBar.on{display:flex}
+  .sb-chip{flex:none;display:flex;align-items:center;gap:5px;height:32px;padding:0 12px;border:1px solid var(--line-strong);
+    border-radius:16px;background:var(--bg);font-size:13px;color:var(--ink);font-family:inherit;cursor:pointer;white-space:nowrap}
+  .sb-chip.onx{background:var(--accent-soft);border-color:#F2CDAA}
   /* ---------- 总日历 ---------- */
   .cal-head{display:flex;align-items:center;margin-top:18px}
   .cal-title{flex:1;text-align:center;font-size:16px;font-weight:700}
@@ -517,8 +539,12 @@ function placeToolbar(){
   const S = $('#tagSug');
   const tbH = toolbar.classList.contains('on') ? (toolbar.offsetHeight || 54) : 0;
   if (S) S.style.bottom = (kb + tbH) + 'px';
+  const sugH2 = (S && S.classList.contains('on')) ? (S.offsetHeight || 44) : 0;
+  const SB = $('#smartBar');
+  if (SB) SB.style.bottom = (kb + tbH + sugH2) + 'px';
+  const sbH2 = (SB && SB.classList.contains('on')) ? (SB.offsetHeight || 44) : 0;
   const RC = $('#recall');
-  if (RC) RC.style.bottom = (kb + tbH + (S && S.classList.contains('on') ? (S.offsetHeight || 44) : 0)) + 'px';
+  if (RC) RC.style.bottom = (kb + tbH + sugH2 + sbH2) + 'px';
   view.style.paddingBottom = (150 + kb) + 'px';
   ['gsheet', 'qsheet'].forEach(id => {
     const el = document.getElementById(id);
@@ -541,7 +567,9 @@ function keepAboveKeyboard(el){
   const isLine = el.classList && el.classList.contains('line-input');
   const tbH = (isLine && toolbar.classList.contains('on')) ? (toolbar.offsetHeight || 54) : 0;
   const sugH = (isLine && $('#tagSug').classList.contains('on')) ? ($('#tagSug').offsetHeight || 44) : 0;
-  const limit = vBottom - tbH - sugH - 14;
+  const sb4 = $('#smartBar');
+  const sbH4 = (isLine && sb4 && sb4.classList.contains('on')) ? (sb4.offsetHeight || 44) : 0;
+  const limit = vBottom - tbH - sugH - sbH4 - 14;
   const r = el.getBoundingClientRect();
   const sc = findScroller(el);
   if (!sc) return;
@@ -557,7 +585,9 @@ function updateToolbarVis(){
   const ae = document.activeElement;
   const editing = (cur.name === 'today' || cur.name === 'history' || cur.name === 'day') && ae && ae.classList && ae.classList.contains('line-input');
   toolbar.classList.toggle('on', editing);
-  if (!editing) $('#tagSug').classList.remove('on');
+  if (editing) refreshToolbarKeys();
+  else { $('#tagSug').classList.remove('on'); const sp2 = $('#symPop'); if (sp2) sp2.classList.remove('on');
+    const sb2 = $('#smartBar'); if (sb2){ sb2.classList.remove('on'); sb2.innerHTML = ''; } }
   placeToolbar();
   if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')){
     setTimeout(scrollFocused, 120); setTimeout(scrollFocused, 420);
@@ -699,36 +729,27 @@ function symNode(e){
   else if (e.sym === 'event') s.innerHTML = '<span class="circle"></span>';
   else if (e.sym === 'note')  s.innerHTML = '<span class="dash"></span>';
   else if (e.sym === 'mood')  s.innerHTML = '<span class="ddash"><i></i><i></i></span>';
+  else if (e.sym === 'ask')   s.innerHTML = '<span class="glyph ask">？</span>';
+  else if (e.sym === 'bang')  s.innerHTML = '<span class="glyph bang">！</span>';
   return s;
 }
 
 /* ============ 逐行智能识别 ============ */
-function commit(e){
-  let t = (e.text || '').trim(); let changed = false;
-  const gm = t.match(/#([^\s#，。,]{1,12})/g);
-  if (gm){
-    e.groups = e.groups || [];
-    gm.forEach(x => { const g = x.slice(1);
-      if (!e.groups.includes(g)){ e.groups.push(g); toast('已归入 #' + g); } });
-    t = t.replace(/#[^\s#，。,]{1,12}\s?/g, '').trim();
-    e.text = t; changed = true;
-  }
-  const tm = t.match(/([01]?\d|2[0-3])[:：][0-5]\d/);
-  if (tm){ const v = tm[0].replace('：', ':'); if (e.time !== v){ e.time = v; changed = true; } }
-  else if (!e.time){
-    const cm = t.match(/(上午|早上|中午|下午|晚上)([一二三四五六七八九十两\d]{1,3})点(半|一刻|三刻|(\d{1,2})分)?/);
-    if (cm){
-      const M = {'一':1,'二':2,'两':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10,'十一':11,'十二':12};
-      let h = /^\d+$/.test(cm[2]) ? +cm[2] : M[cm[2]];
-      if (h != null && h <= 23){
-        if ((cm[1] === '下午' || cm[1] === '晚上') && h < 12) h += 12;
-        if (cm[1] === '中午' && h <= 2) h += 12;
-        const mi = cm[3] === '半' ? 30 : cm[3] === '一刻' ? 15 : cm[3] === '三刻' ? 45 : (cm[4] ? +cm[4] : 0);
-        e.time = String(h).padStart(2, '0') + ':' + String(mi).padStart(2, '0');
-        changed = true; toast('已识别时间 ' + e.time);
-      }
-    }
-  }
+/* 时间/日期识别抽成独立函数：commit 与聪明工具条共用同一套规则，不会两边打架 */
+function detectTimeHM(t){ const m = t.match(/([01]?\d|2[0-3])[:：][0-5]\d/); return m ? m[0].replace('：', ':') : null; }
+function detectTimeCN(t){
+  const cm = t.match(/(上午|早上|中午|下午|晚上)([一二三四五六七八九十两\d]{1,3})点(半|一刻|三刻|(\d{1,2})分)?/);
+  if (!cm) return null;
+  const M = {'一':1,'二':2,'两':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10,'十一':11,'十二':12};
+  let h = /^\d+$/.test(cm[2]) ? +cm[2] : M[cm[2]];
+  if (h == null || h > 23) return null;
+  if ((cm[1] === '下午' || cm[1] === '晚上') && h < 12) h += 12;
+  if (cm[1] === '中午' && h <= 2) h += 12;
+  const mi = cm[3] === '半' ? 30 : cm[3] === '一刻' ? 15 : cm[3] === '三刻' ? 45 : (cm[4] ? +cm[4] : 0);
+  return String(h).padStart(2, '0') + ':' + String(mi).padStart(2, '0');
+}
+function detectTime(t){ return detectTimeHM(t) || detectTimeCN(t); }
+function detectDue(t){
   const dm = t.match(/(\d{1,2})\.(\d{1,2})号?/);
   const dmOK = dm && (() => {
     const mo = +dm[1], dy = +dm[2];
@@ -741,39 +762,69 @@ function commit(e){
     const ty = parseKey(TODAY).getFullYear();
     let key = ty + '.' + (+dm[1]) + '.' + (+dm[2]);
     if (parseKey(key) < parseKey(TODAY)) key = (ty + 1) + '.' + (+dm[1]) + '.' + (+dm[2]);
-    if (e.due !== key){ e.due = key; changed = true; toast('已同步到 ' + fmtKey(key)); } }
-  else if (!e.due){
-    let rel = null, mr = null;
-    if (/大后天/.test(t)) rel = addDaysK(TODAY, 3);
-    else if (/后天/.test(t)) rel = addDaysK(TODAY, 2);
-    else if (/明天/.test(t)) rel = TOMORROW;
-    else if ((mr = t.match(/下+周([一二三四五六日天])/))) rel = nextWeekWeekday(WKMAP[mr[1]]);
-    else if (!/上周/.test(t) && (mr = t.match(/(?:这周|本周|周)([一二三四五六日天])/))) rel = upcomingWeekday(WKMAP[mr[1]]);
-    else if ((mr = t.match(/下个?月(\d{1,2})[号日]/))){
-      const d = parseKey(TODAY); d.setDate(1); d.setMonth(d.getMonth() + 1); d.setDate(+mr[1]); rel = dkey(d);
-    }
-    else if (/下个?月/.test(t)){
-      const d = parseKey(TODAY); const day = d.getDate(); d.setDate(1); d.setMonth(d.getMonth() + 1);
-      const mx = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-      d.setDate(Math.min(day, mx)); rel = dkey(d);
-    }
-    else if ((mr = t.match(/(\d{1,2})月(\d{1,2})[号日]/))){
-      const ty = parseKey(TODAY).getFullYear();
-      let k = ty + '.' + (+mr[1]) + '.' + (+mr[2]);
-      if (parseKey(k) < parseKey(TODAY)) k = (ty + 1) + '.' + (+mr[1]) + '.' + (+mr[2]);
-      rel = k;
-    }
-    if (rel){ e.due = rel; changed = true; toast('已同步到 ' + fmtKey(rel) + '（' + weekCN(rel) + '）'); }
+    return {key, hard:true};
+  }
+  let rel = null, mr = null;
+  if (/大后天/.test(t)) rel = addDaysK(TODAY, 3);
+  else if (/后天/.test(t)) rel = addDaysK(TODAY, 2);
+  else if (/明天/.test(t)) rel = TOMORROW;
+  else if ((mr = t.match(/下+周([一二三四五六日天])/))) rel = nextWeekWeekday(WKMAP[mr[1]]);
+  else if (!/上周/.test(t) && (mr = t.match(/(?:这周|本周|周)([一二三四五六日天])/))) rel = upcomingWeekday(WKMAP[mr[1]]);
+  else if ((mr = t.match(/下个?月(\d{1,2})[号日]/))){
+    const d = parseKey(TODAY); d.setDate(1); d.setMonth(d.getMonth() + 1); d.setDate(+mr[1]); rel = dkey(d);
+  }
+  else if (/下个?月/.test(t)){
+    const d = parseKey(TODAY); const day = d.getDate(); d.setDate(1); d.setMonth(d.getMonth() + 1);
+    const mx = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+    d.setDate(Math.min(day, mx)); rel = dkey(d);
+  }
+  else if ((mr = t.match(/(\d{1,2})月(\d{1,2})[号日]/))){
+    const ty = parseKey(TODAY).getFullYear();
+    let k = ty + '.' + (+mr[1]) + '.' + (+mr[2]);
+    if (parseKey(k) < parseKey(TODAY)) k = (ty + 1) + '.' + (+mr[1]) + '.' + (+mr[2]);
+    rel = k;
+  }
+  return rel ? {key:rel, hard:false} : null;
+}
+function inPlanTree(e){
+  let hit = false;
+  const go = list => list.forEach(x => { if (x === e) hit = true; else if (x.children && x.children.length) go(x.children); });
+  go(EP().plan); return hit;
+}
+function commit(e){
+  let t = (e.text || '').trim(); let changed = false;
+  const gm = t.match(/#([^\s#，。,]{1,12})/g);
+  if (gm){
+    e.groups = e.groups || [];
+    gm.forEach(x => { const g = x.slice(1);
+      if (!e.groups.includes(g)){ e.groups.push(g); toast('已归入 #' + g); } });
+    t = t.replace(/#[^\s#，。,]{1,12}\s?/g, '').trim();
+    e.text = t; changed = true;
+  }
+  const hm = detectTimeHM(t);
+  if (hm && !e.noTime){ if (e.time !== hm){ e.time = hm; changed = true; } }
+  else if (!e.time && !e.noTime){
+    const cv = detectTimeCN(t);
+    if (cv){ e.time = cv; changed = true; toast('已识别时间 ' + cv); }
+  }
+  const dd2 = detectDue(t);
+  if (dd2 && dd2.hard && !e.noDue){
+    if (e.due !== dd2.key){ e.due = dd2.key; changed = true; toast('已同步到 ' + fmtKey(dd2.key)); }
+  }
+  else if (dd2 && !dd2.hard && !e.due && !e.noDue){
+    e.due = dd2.key; changed = true;
+    toast('已同步到 ' + fmtKey(dd2.key) + '（' + weekCN(dd2.key) + '）');
   }
   if (SET.recog && !e.userSet && t){
     let g = null;
     if (/^(见了|去了|开完|参加了|聊了|吃了|逛了|看了|开了)/.test(t)) g = 'event';
     else if (t.length <= 10 && /(焦虑|开心|难过|平静|烦|累|期待|紧张|兴奋|低落|郁闷|委屈|爽)/.test(t)) g = 'mood';
+    else if (/[？?]$/.test(t) && !inPlanTree(e)) g = 'ask';   /* 任务区的问句仍是任务 */
     if (g){
       delete e.defSym;
       if (e.sym !== g){
         e.sym = g; e.state = undefined; changed = true;
-        toast('识别为' + (g === 'event' ? '事件 ○' : '心情 =') + ' · 可在工具条改');
+        toast('识别为' + ({event:'事件 ○', mood:'心情 =', ask:'疑问 ？'})[g] + ' · 可在工具条改');
       }
     }
   }
@@ -882,7 +933,7 @@ function entryNode(e, editable, isChild, flat, liveSym){
     inp.className = 'line-input'; inp.rows = 1; inp.value = e.text; inp.dataset.eid = e._id;
     inp.setAttribute('autocomplete', 'off');
     requestAnimationFrame(() => growTA(inp));
-    inp.addEventListener('input', () => { e.text = inp.value; growTA(inp); updateTagSug(e, inp); updateRecall(e, inp); keepAboveKeyboard(inp); });
+    inp.addEventListener('input', () => { e.text = inp.value; growTA(inp); updateTagSug(e, inp); updateRecall(e, inp); smartBarUpd(e); keepAboveKeyboard(inp); });
     inp.addEventListener('focus', () => { focusRef = e; pendingDel = null; });
     inp.addEventListener('keydown', ev => {
       if (ev.isComposing) return;
@@ -1067,6 +1118,8 @@ const AGG = {
   event:     {title:'○ 事件',   tip:'发生过的事',                 f:e => e.sym === 'event'},
   note:      {title:'— 笔记',   tip:'想法与备注',                 f:e => e.sym === 'note'},
   mood:      {title:'= 心情',   tip:'情绪轨迹',                   f:e => e.sym === 'mood'},
+  ask:       {title:'？ 疑问',  tip:'还没弄清的事 · 想明白了点这行改符号', f:e => e.sym === 'ask'},
+  bang:      {title:'！ 重点',  tip:'被你标了重点的句子',          f:e => e.sym === 'bang'},
   done:      {title:'✓ 已完成', tip:'成就流水',                   f:e => e.state === 'done'},
   delegated: {title:'→ 等待中', tip:'已转交，按跟进日提醒',        f:e => e.state === 'delegated'},
   someday:   {title:'☾ Someday', tip:'改天再说的事 · 不催不追，点符号可捞回今天', f:e => e.sym === 'task' && e.state === 'someday'},
@@ -1348,7 +1401,18 @@ function render(){
         scheduleSave(); render();
       };
     });
-    mkRow('版本记录', sub('v2.18 ›'), showChangelog);
+    view.appendChild(sectionLabel('内测实验室 · 聪明工具条：打字时认出日期 / 时间 / 分组，键盘上递一排小抓手，点一下贴上、再点取消'));
+    (() => {
+      const on = modOn('smartbar');
+      const tg = document.createElement('button'); tg.className = 'gm-btn'; tg.style.marginLeft = 'auto';
+      tg.textContent = on ? '开 ✓' : '关'; tg.style.color = on ? 'var(--green)' : 'var(--ink-faint)';
+      mkRow('✨ 聪明工具条（内测）', tg, null);
+      tg.onclick = () => {
+        SET.mods.smartbar = !on; scheduleSave(); render();
+        toast(!on ? '已开启 · 写一行「明天下午三点交方案」试试' : '已关闭 · 随时回来再开');
+      };
+    })();
+    mkRow('版本记录', sub('v2.20 ›'), showChangelog);
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
       if (pendingWipe){ localStorage.removeItem(LSKEY); location.reload(); return; }
@@ -1462,61 +1526,165 @@ function render(){
   updateToolbarVis();
 }
 
-/* ============ 编辑工具条 ============ */
+/* ============ 编辑工具条（v2.19 方案A：符号一格 · 按频率分组 · 聪明挂入 · 删/撤成对） ============ */
+const TB_GLYPH = {task:'●', event:'○', note:'—', mood:'＝', ask:'？', bang:'！'};
 function buildToolbar(){
   toolbar.addEventListener('pointerdown', ev => ev.preventDefault());
+  const sb0 = document.createElement('div'); sb0.id = 'smartBar';
+  sb0.addEventListener('pointerdown', ev => ev.preventDefault());
+  toolbar.parentElement.insertBefore(sb0, toolbar);
   const mk = (html, fn, cls) => {
     const b = document.createElement('button'); b.className = 'tb-btn' + (cls ? ' ' + cls : '');
-    if (typeof html === 'string') b.innerHTML = html; else b.appendChild(html);
+    b.innerHTML = html;
     b.addEventListener('click', fn); toolbar.appendChild(b); return b;
   };
+  const sep = () => { const d = document.createElement('div'); d.className = 'tb-sep'; toolbar.appendChild(d); };
   const need = fn => () => { if (!focusRef){ toast('先点选一行'); return; } fn(focusRef); };
-  [['task','任务'],['event','事件'],['note','笔记'],['mood','心情']].forEach(([sym]) => {
-    const n = symNode({sym, state:'open'}); n.classList.add('static');
-    mk(n, need(e => {
-      snapshot('修改符号');
-      e.sym = sym; e.userSet = true; delete e.defSym;
-      if (sym === 'task'){ if (!e.state) e.state = 'open'; } else e.state = undefined;
-      render();
-    }));
-  });
-  mk('#', need(e => { sheetTarget = e; openSheet(); }));
-  const sep1 = document.createElement('div'); sep1.className = 'tb-sep'; toolbar.appendChild(sep1);
-  mk('⇥', need(e => {
+  /* 符号弹层 */
+  const pop = document.createElement('div'); pop.id = 'symPop';
+  pop.innerHTML = [['task','●','任务 · 要做的事','点符号打勾'],
+    ['event','○','事件 · 发生的事','能挂子弹'],
+    ['note','—','笔记 · 想法与信息',''],
+    ['mood','＝','心情 · 当下的情绪',''],
+    ['ask','？','疑问 · 还没弄清的事','侧栏汇总能翻'],
+    ['bang','！','重点 · 值得记住的一句','侧栏汇总能翻']]
+    .map(([k, g, t, d]) => '<div class="sp-row" data-sym="' + k + '"><span class="g">' + g + '</span><span>' + t + '</span>'
+      + (d ? '<span class="d">' + d + '</span>' : '') + '</div>').join('');
+  pop.addEventListener('pointerdown', ev => ev.preventDefault());
+  document.body.appendChild(pop);
+  pop.querySelectorAll('[data-sym]').forEach(r => r.addEventListener('click', () => {
+    const e = focusRef; if (!e){ pop.classList.remove('on'); return; }
+    snapshot('修改符号');
+    e.sym = r.dataset.sym; e.userSet = true; delete e.defSym;
+    if (e.sym === 'task'){ if (!e.state) e.state = 'open'; } else e.state = undefined;
+    pop.classList.remove('on');
+    render();
+  }));
+  /* ① 当前符号一格 */
+  const symBtn = mk('<span class="tb-glyph">●</span><small>符号</small>', need(() => {
+    if (pop.classList.contains('on')){ pop.classList.remove('on'); return; }
+    pop.querySelectorAll('.sp-row').forEach(r => r.classList.toggle('on', !!focusRef && focusRef.sym === r.dataset.sym));
+    const tr = toolbar.getBoundingClientRect();
+    pop.style.bottom = Math.max(8, window.innerHeight - tr.top + 8) + 'px';
+    pop.classList.add('on');
+  }), 'tb-sym');
+  symBtn.id = 'tbSym';
+  sep();
+  /* ② 常用直达 */
+  mk('#<small>分组</small>', need(e => { sheetTarget = e; openSheet(); }), 'tb-big');
+  mk('📷<small>照片</small>', need(e => { imgTarget = e; e._imgPending = true; const fi = $('#imgInput'); fi.value = ''; fi.click(); }), 'tb-big');
+  sep();
+  /* ③ 聪明挂入键：按上下文在 挂入/升出/置灰 之间变脸 */
+  const nest = mk('⇥<small>挂入</small>', need(e => {
     const loc = findEntry(e); if (!loc) return;
-    if (loc.parent){ toast('已在子级，先 ⇤ 收回'); return; }
-    if (loc.idx === 0){ toast('上面没有可挂载的条目'); return; }
+    if (loc.parent){
+      snapshot('取消缩进');
+      loc.list.splice(loc.idx, 1);
+      const ploc = findEntry(loc.parent);
+      ploc.list.splice(ploc.idx + 1, 0, e);
+      toast('已升回顶层'); render(); return;
+    }
+    if (loc.idx === 0 || loc.list[loc.idx - 1].sym !== 'event'){ toast('上一条不是事件（○），挂不进去'); return; }
     const prev = loc.list[loc.idx - 1];
-    if (prev.sym !== 'event'){ toast('只能挂在事件（○）下面'); return; }
     snapshot('缩进');
     loc.list.splice(loc.idx, 1);
     (prev.children = prev.children || []).push(e);
     if ((!e.groups || !e.groups.length) && prev.groups && prev.groups.length) e.groups = [...prev.groups];
     toast('已挂到「' + (prev.text || '…') + '」下'); render();
-  }), '');
-  mk('⇤', need(e => {
-    const loc = findEntry(e); if (!loc || !loc.parent){ toast('本来就在顶层'); return; }
-    snapshot('取消缩进');
-    loc.list.splice(loc.idx, 1);
-    const ploc = findEntry(loc.parent);
-    ploc.list.splice(ploc.idx + 1, 0, e);
-    toast('已收回顶层'); render();
-  }), '');
-  mk('📷', need(e => { imgTarget = e; e._imgPending = true; const fi = $('#imgInput'); fi.value = ''; fi.click(); }));
-  const sep2 = document.createElement('div'); sep2.className = 'tb-sep'; toolbar.appendChild(sep2);
-  mk('撤回', () => {
-    if (!undoStack.length){ toast('没有可撤回的操作'); return; }
-    const s = undoStack.pop();
-    PAGES[TODAY] = s.data; focusRef = null; pendingDel = null;
-    render(); toast('已撤回 · ' + s.label);
-  });
-  mk('删', need(e => {
+  }), 'tb-big');
+  nest.id = 'tbNest';
+  sep();
+  /* ④ 删除 / 撤回 成对：都是整行级 */
+  mk('🗑<small>删除</small>', need(e => {
     const hasHist = e.badge && e.badge.indexOf('>×') === 0;
-    if (hasHist && pendingDel !== e){ pendingDel = e; toast('该任务带迁移历史 · 再点一次「删」确认'); return; }
-    snapshot('删除');
+    if (hasHist && pendingDel !== e){ pendingDel = e; toast('该任务带迁移历史 · 再点一次确认'); return; }
+    snapshot('删除整行');
     removeEntry(e); if (focusRef === e) focusRef = null; pendingDel = null;
-    toast('已删除 · 可撤回'); render();
-  }), 'warn');
+    toast('整行已删 · 点「撤回」整行找回'); render();
+  }), 'warn tb-big');
+  mk('↩<small>撤回</small>', () => {
+    if (!undoStack.length){ toast('没有可撤回的操作'); return; }
+    const s2 = undoStack.pop();
+    PAGES[TODAY] = s2.data; focusRef = null; pendingDel = null;
+    render(); toast('已撤回 · ' + s2.label);
+  }, 'tb-big');
+}
+function refreshToolbarKeys(){
+  const sb = $('#tbSym'), nb2 = $('#tbNest');
+  if (!sb || !nb2) return;
+  const e = focusRef;
+  const g2 = sb.querySelector('.tb-glyph');
+  if (g2) g2.textContent = (e && TB_GLYPH[e.sym]) || '●';
+  let mode = 'off';
+  if (e){
+    const loc = findEntry(e);
+    if (loc && loc.parent) mode = 'out';
+    else if (loc && loc.idx > 0 && loc.list[loc.idx - 1] && loc.list[loc.idx - 1].sym === 'event') mode = 'in';
+  }
+  nb2.innerHTML = (mode === 'out') ? '⇤<small>升出</small>' : '⇥<small>挂入</small>';
+  nb2.classList.toggle('dim', mode === 'off');
+  smartBarUpd(e);
+}
+
+/* ============ 聪明工具条（方案B · 内测）：打字时递小抓手 ============ */
+let sbTimer = null, SB_FREQ = null;
+function sbFreqGroup(){
+  if (SB_FREQ && SB_FREQ.day === TODAY && SB_FREQ.gen === PARSE_GEN) return SB_FREQ.g;
+  const since = parseKey(addDaysK(TODAY, -30)), cnt = {};
+  walk((d, e2) => { if (parseKey(d) >= since) (e2.groups || []).forEach(g => cnt[g] = (cnt[g] || 0) + 1); });
+  let best = null; Object.keys(cnt).forEach(g => { if (!best || cnt[g] > cnt[best]) best = g; });
+  SB_FREQ = {day:TODAY, gen:PARSE_GEN, g:best}; return best;
+}
+function sbGroups(e, t){
+  const names = allGroupNames(), out = [];
+  const push = g => { if (g && !out.includes(g) && names.includes(g)) out.push(g); };
+  if (/《[^》]{1,30}》/.test(t) || /(二刷|三刷|补看)/.test(t)) push(names.find(g => tplOf(g) === 'movie'));
+  if (/「[^」]{1,20}」/.test(t) || /外卖/.test(t) || (modOn('meals') && mealSlotOf(e))) push(names.find(g => tplOf(g) === 'food'));
+  names.forEach(g => { if (g.length >= 2 && t.includes(g)) push(g); });
+  if (out.length < 2 && t.length >= 4) push(sbFreqGroup());
+  return out.slice(0, 2).map(g => ({g, on:(e.groups || []).includes(g)}));
+}
+function smartBarUpd(e){
+  const S = $('#smartBar'); if (!S) return;
+  if (!modOn('smartbar') || !e){ S.classList.remove('on'); S.innerHTML = ''; return; }
+  clearTimeout(sbTimer); sbTimer = setTimeout(() => sbBuild(e), 150);
+}
+function sbBuild(e){
+  const S = $('#smartBar'); if (!S) return;
+  const hide = () => { S.classList.remove('on'); S.innerHTML = ''; placeToolbar(); };
+  if (!modOn('smartbar') || !e || focusRef !== e || !toolbar.classList.contains('on')) return hide();
+  const t = (e.text || '').trim();
+  if (!t) return hide();
+  S.innerHTML = '';
+  const chip = (html, on, fn) => {
+    const c = document.createElement('button'); c.className = 'sb-chip' + (on ? ' onx' : '');
+    c.innerHTML = html;
+    c.addEventListener('click', () => { fn(); scheduleSave(); sbBuild(e); }); S.appendChild(c);
+  };
+  const dd2 = detectDue(t);
+  if (dd2){
+    const on = e.due === dd2.key;
+    chip(on ? '✓ 已挂 ' + fmtShort(dd2.key) : '📅 挂到 ' + fmtShort(dd2.key), on, () => {
+      if (on){ delete e.due; e.noDue = 1; toast('取消 · 这行不自动挂日期了'); }
+      else { e.due = dd2.key; delete e.noDue; toast('已挂到 ' + fmtKey(dd2.key) + '（' + weekCN(dd2.key) + '）'); }
+    });
+  }
+  const tv = detectTime(t);
+  if (tv){
+    const on = e.time === tv;
+    chip(on ? '✓ ' + tv : '🕐 记时间 ' + tv, on, () => {
+      if (on){ delete e.time; e.noTime = 1; toast('取消 · 这行不自动记时间了'); }
+      else { e.time = tv; delete e.noTime; toast('已记时间 ' + tv); }
+    });
+  }
+  sbGroups(e, t).forEach(o => {
+    chip((o.on ? '✓ ' : '') + '#' + o.g, o.on, () => {
+      if (o.on){ e.groups = (e.groups || []).filter(x => x !== o.g); toast('已移出 #' + o.g); }
+      else { (e.groups = e.groups || []).push(o.g); toast('已归入 #' + o.g); }
+    });
+  });
+  if (!S.children.length) return hide();
+  S.classList.add('on'); placeToolbar();
 }
 
 /* ============ 抽屉 ============ */
@@ -1675,7 +1843,7 @@ function buildDrawer(){
   Object.keys(AGG).forEach(key => {
     const n = ACNT[key] || 0;
     const it = document.createElement('div'); it.className = 'd-item';
-    const fake = {sym:{task:'task',event:'event',note:'note',mood:'mood'}[key] || 'task',
+    const fake = {sym:{task:'task',event:'event',note:'note',mood:'mood',ask:'ask',bang:'bang'}[key] || 'task',
                   state:{done:'done',delegated:'delegated',dropped:'dropped',someday:'someday'}[key] || 'open'};
     const sn = symNode(fake); sn.classList.add('static'); it.appendChild(sn);
     const name = document.createElement('span'); name.textContent = AGG[key].title.slice(2); it.appendChild(name);
@@ -2038,7 +2206,7 @@ function genReport(g, kind, incMood){
   const inR = dk => kind === 'day' ? dk === TODAY
     : kind === 'week' ? weekKeys.includes(dk)
     : dk.startsWith(ta[0] + '.' + ta[1] + '.');
-  const cat = {done:[], doing:[], plan:[], drop:[], ev:[], note:[], mood:[]};
+  const cat = {done:[], doing:[], plan:[], drop:[], ev:[], note:[], mood:[], bang:[], ask:[]};
   walk((date, e) => {
     if (!(e.groups && e.groups.includes(g))) return;
     const ed = (e.sym === 'task' && e.state === 'done' && e.doneDay) ? e.doneDay : date;
@@ -2055,13 +2223,16 @@ function genReport(g, kind, incMood){
       else cat.doing.push('· ' + e.text + (e.badge ? '——' + e.badge : (e.progress ? '——已完成' + e.progress + '%' : '')));
     }
     else if (e.sym === 'event') cat.ev.push('· ' + e.text + '（' + dd + (e.children && e.children.length ? ' · 引发 ' + e.children.length + ' 条' : '') + '）');
+    else if (e.sym === 'bang') cat.bang.push('· ' + e.text + '（' + dd + '）');
+    else if (e.sym === 'ask') cat.ask.push('· ' + e.text);
     else if (e.sym === 'note') cat.note.push('· ' + e.text);
     else if (e.sym === 'mood') cat.mood.push('· ' + e.text + '（' + dd + '）');
   });
   let out = '【#' + g + ' ' + label + '】' + rangeStr + '\n';
   const sec = (t, a) => { if (a.length) out += '\n' + t + '（' + a.length + '）\n' + a.join('\n') + '\n'; };
   sec('✓ 已完成', cat.done); sec('▶ 进行中', cat.doing); sec('⏭ 已排未来', cat.plan);
-  sec('✕ 搁置', cat.drop); sec('○ 相关事件', cat.ev); sec('— 备忘', cat.note);
+  sec('✕ 搁置', cat.drop); sec('○ 相关事件', cat.ev);
+  sec('！ 重点', cat.bang); sec('？ 疑问', cat.ask); sec('— 备忘', cat.note);
   if (incMood) sec('= 心情记录', cat.mood);
   if (out.trim().split('\n').length <= 1) out += '\n（该分组在此周期内暂无记录）';
   return out;
@@ -2242,7 +2413,7 @@ function renderReview(){
 /* ============ 导出备份 ============ */
 function exportMD(){
   let out = '# 点点手帐备份（' + fmtKey(TODAY) + ' 导出）\n';
-  const SY = {task:'•', event:'○', note:'—', mood:'='};
+  const SY = {task:'•', event:'○', note:'—', mood:'=', ask:'？', bang:'！'};
   Object.keys(PAGES).sort((a, b) => parseKey(a) - parseKey(b)).forEach(k => {
     out += '\n## ' + k.split('.')[0] + '年' + fmtKey(k) + ' ' + weekCN(k) + '\n';
     const line = (e, ind) => {
@@ -2279,7 +2450,7 @@ function importMD(text){
     }
     if (/^###/.test(raw)){ section = raw.indexOf('要做') >= 0 ? 'plan' : 'flow'; lastTop = null; continue; }
     if (!curKey) continue;
-    const m = raw.match(/^(\s*)([•○—=✓›✕→])\s+(.*)$/);
+    const m = raw.match(/^(\s*)([•○—=✓›✕→？！?!])\s+(.*)$/);
     if (!m) continue;
     const indent = m[1].length >= 2;
     let txt = m[3].trim();
@@ -2289,7 +2460,8 @@ function importMD(text){
     txt = txt.replace(/#([^\s#，。,]+)/g, (_, gg) => { groups.push(gg); return ''; }).trim();
     if (!txt){ if (!indent) lastTop = null; continue; }
     const glyph = m[2];
-    const sym = glyph === '○' ? 'event' : glyph === '—' ? 'note' : glyph === '=' ? 'mood' : 'task';
+    const sym = glyph === '○' ? 'event' : glyph === '—' ? 'note' : glyph === '=' ? 'mood'
+      : (glyph === '？' || glyph === '?') ? 'ask' : (glyph === '！' || glyph === '!') ? 'bang' : 'task';
     const state = glyph === '✓' ? 'done' : glyph === '›' ? 'migrated' : glyph === '✕' ? 'dropped'
       : glyph === '→' ? 'delegated' : (sym === 'task' ? 'open' : undefined);
     let dup = false;
@@ -2436,7 +2608,7 @@ function showManual(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">功能手册</div>'
     + '<button class="pill-btn" id="mnClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + '【四种符号】\n•  任务——要做的事，点符号打勾完成\n○  事件——发生的事，是一天的锚点\n—  笔记——想法与信息\n＝  心情——当下的情绪\n\n'
+    + '【六种符号】\n•  任务——要做的事，点符号打勾完成\n○  事件——发生的事，是一天的锚点\n—  笔记——想法与信息\n＝  心情——当下的情绪\n？  疑问——还没弄清的事，句尾写？我会自己认（任务区不抢）\n！  重点——值得记住的一句，侧栏「重点」汇总能翻\n\n'
     + '【书写】\n「今天要做」默认 •，「今天发生」默认 ○\n写「明天 / 下周四 / 8.15号」自动挂日期；写「下午三点 / 16:00」自动挂时间\n敲 # 弹出分组联想；带日期的默认事件会自动转成任务\n\n'
     + '【因果记录】\n事件行回车：下一行自动挂在这件事下面\n空的子行再回车：回到顶层\n事件行尾「＋」：随时在这件事下补一笔；「▾3」点击折叠\n\n'
     + '【处理任务】\n点符号 = 完成；长按符号 = 推迟 / 不做了 / 转交 / 恢复\n推迟可选任意日期并填进度；转交要填给谁和跟进日，到期自动提醒\n处理面板里的备注会进日报周报\n\n'
@@ -2454,7 +2626,9 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.18（当前 · 2026.8.24）\n【修复 · 笔记本页面蹿动】\n· 标题跳正文、正文打前几行字时整页乱蹿：长文编辑豁免了「保持在键盘上方」的滚动逻辑，自动长高改为只长不缩并锁定滚动位置\n【笔记本里写任务】\n· 以「- 」或「□ 」开头的行（回车或离开本子时）自动变成今天首页的任务，带「📓 翻开」来源签；生成后各走各的，改行字算新任务\n【全局返回上一页】\n· 进入二级页（人物页、本子、从日历点进的某天、集子…）左上角 ☰ 变成「‹ 返回」，一路原路返回；右上「回今日」照旧并清空来路\n【修复 · 熟人册新人被顶替】\n· 根因是重启后编号水位漏算了熟人册/循环提醒/笔记本，导致新人和旧人撞号——水位已补全，已撞的号启动时自动换新，账号小本解锁时同步计入\n\n'
+    + 'v2.20（当前 · 2026.8.24）\n【新符号 ？疑问 · ！重点】\n· 符号面板 4 行变 6 行：？还没弄清的事，！值得记住的一句\n· 侧栏「按标记汇总」多两栏：疑问一处翻、重点一处翻；分组报告单列「！重点」「？疑问」段\n· 流水里句尾带「？」的行自动识别为疑问（心情句不抢、任务区不抢）；导入导出、分享图、手册同步认识\n【✨ 聪明工具条（内测）】\n· 设置「内测实验室」里打开：打字时键盘上方递一排小抓手——写「明天下午三点交方案」递出「📅挂到8.25」「🕐记时间15:00」，写「晚饭在『烤匠』」递「#美食」，提到分组名/常用组也递 #签\n· 点一下贴上、变 ✓；再点取消，取消过的这行就不再自动挂——比回车后默默挂上看得见、可反悔\n· 识别与自动识别同一套规则；默认关，关着时一切照旧\n\n'
+    + 'v2.19（2026.8.24）\n【输入工具条重做】\n· 九键平铺 → 五组大键：四个符号键收成一格（显示当前行符号，点开弹面板换，面板自带解释）\n· # 分组、📷 照片升级为带字大键；两个缩进键合成一个聪明键——上一条是事件时「⇥挂入」，已挂着时「⇤升出」，挂无可挂自动置灰\n· 🗑删除 与 ↩撤回 成对放条尾：删是删整行（连子弹一起），撤回是整行找回，不再是一次一个字\n\n'
+    + 'v2.18（2026.8.24）\n【修复 · 笔记本页面蹿动】\n· 标题跳正文、正文打前几行字时整页乱蹿：长文编辑豁免了「保持在键盘上方」的滚动逻辑，自动长高改为只长不缩并锁定滚动位置\n【笔记本里写任务】\n· 以「- 」或「□ 」开头的行（回车或离开本子时）自动变成今天首页的任务，带「📓 翻开」来源签；生成后各走各的，改行字算新任务\n【全局返回上一页】\n· 进入二级页（人物页、本子、从日历点进的某天、集子…）左上角 ☰ 变成「‹ 返回」，一路原路返回；右上「回今日」照旧并清空来路\n【修复 · 熟人册新人被顶替】\n· 根因是重启后编号水位漏算了熟人册/循环提醒/笔记本，导致新人和旧人撞号——水位已补全，已撞的号启动时自动换新，账号小本解锁时同步计入\n\n'
     + 'v2.17（2026.8.23）\n【📓 笔记本】\n· 侧栏新增「笔记本」：像备忘录一样写长文——装修计划、读书摘抄、写到一半的小说，边写边自动保存\n· 本子不是孤岛：新建本子当天流水自动记「开了新本子《xxx》」，每天第一次动笔自动留「写了《xxx》」（一天一本只记一次）\n· 双向跳转：流水足迹带「📓 翻开」直达本子；本子页头「始于X · 写过N天 · 最近X」，点开看全部足迹、跳回任何一天\n· 搜索打通：全局搜索多一栏「本子里也有」\n· 本子长文不进识别引擎和报告——小说草稿不会污染熟店簿\n\n'
     + 'v2.16（2026.8.22）\n【🍚 三餐快捷录入】\n· 打卡墙的格子现在能点：空圈点一下＝就地补记这顿——是否吃了 / 吃了什么 / 店名 / 和谁 / 几点，一张小表引导填完，自动组成一句手帐话\n· 已记的格子点一下跳回原文；点日期看那天全页\n· 晚间复盘补三餐也换成同一张引导小表，不再是干巴巴一个输入框\n· 「这顿没吃」也算一条诚实记录，照样点亮格子\n【颜色区分】\n· 墙上灰点＝日常吃，橙点＝这顿进了美食集子（有店名/外卖）——一眼分清哪顿只是吃了、哪顿成了资产\n\n'
     + 'v2.15（2026.8.21）\n【🔖 今日印章】\n· 复盘收尾给今天盖个章：充实高效 / 平淡安稳 / 小有波折但收尾顺利 / 彻底放空 / 小有收获，也能自己刻——刻过的进你的章库\n· 今日页顶部和日页标题都能看到章，点一下随时改；过去任何一天也能补章\n【🍚 三餐（设置里打开）】\n· 写「早饭/午饭/晚饭/下午茶/夜宵 + 吃了什么」自动归格，不用打标签，识别保守绝不硬塞\n· 晚间复盘带三餐条：空格子点一下就地补一句\n· 三餐页：三餐齐全连击、本月外卖次数、吃饭花销、最常一起吃饭的人、两周打卡墙\n· 三餐里写了「店名」或外卖，自动同时收进美食集子（同一份数据，两副眼镜）\n【板块管理】\n· 设置新增：三餐 / 熟人册 / 账号小本 / 循环提醒 可开关，关掉的从侧栏消失、数据不动\n【处处可改】\n· 我们的时刻、重要时间点、账号小本条目——所有手动填写的现在都能点开修改（立为铁律）\n\n'
@@ -3115,7 +3289,8 @@ function shMascot(ctx, cx, cy, h, T){
 function shGlyph(e){
   if (e.sym === 'task') return {t:{open:'•', done:'✓', migrated:'›', dropped:'✕', delegated:'→', someday:'☾'}[e.state] || '•',
     c:{done:'#5F8F66', dropped:'#C0604E'}[e.state] || null};
-  return {t:{event:'○', note:'—', mood:'＝'}[e.sym] || '•', c:null};
+  return {t:{event:'○', note:'—', mood:'＝', ask:'？', bang:'！'}[e.sym] || '•',
+    c:{ask:'#5B7FA6', bang:'#B5493A'}[e.sym] || null};
 }
 function shGrain(ctx, W, H, T){
   ctx.save(); ctx.globalAlpha = shTheme === 'ink' ? 0.06 : 0.05; ctx.fillStyle = T.grain;
@@ -3365,6 +3540,7 @@ $('#shSheet').addEventListener('click', ev => { if (ev.target.id === 'shSheet') 
 /* ===== v2.15 板块开关 ===== */
 SET.mods = SET.mods || {};
 if (SET.mods.meals === undefined) SET.mods.meals = false;   /* 三餐默认关，设置里打开 */
+if (SET.mods.smartbar === undefined) SET.mods.smartbar = false;   /* 聪明工具条（内测）默认关 */
 function modOn(k){ return SET.mods[k] !== false; }
 /* ===== v2.15 今日印章 ===== */
 SET.stamps = SET.stamps || [];
@@ -4645,7 +4821,7 @@ function showOnboard(){
     + '•  任务——点符号打勾，长按推迟 / 放弃 / 转交\n'
     + '○  事件——发生的事；回车能在下面挂子条目，因果自动串成线\n'
     + '—  笔记——想法与信息\n'
-    + '＝  心情——此刻的情绪\n\n'
+    + '＝  心情——此刻的情绪\n？ 疑问 · ！ 重点——这两枚也备着，侧栏汇总一处翻\n\n'
     + '写字敲 # 归分组；「明天」「8.15号」「16:00」这些我都认识。\n'
     + '晚上点右上「复盘」，没做完的事逐件表态——第二天早上我自动接上。\n'
     + '左上 ☰ 是总日历、分组、搜索和设置；设置里可以开云备份，交给我盯着。'
