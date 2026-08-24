@@ -1412,7 +1412,7 @@ function render(){
         toast(!on ? '已开启 · 写一行「明天下午三点交方案」试试' : '已关闭 · 随时回来再开');
       };
     })();
-    mkRow('版本记录', sub('v2.20 ›'), showChangelog);
+    mkRow('版本记录', sub('v2.21 ›'), showChangelog);
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
       if (pendingWipe){ localStorage.removeItem(LSKEY); location.reload(); return; }
@@ -2626,7 +2626,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.20（当前 · 2026.8.24）\n【新符号 ？疑问 · ！重点】\n· 符号面板 4 行变 6 行：？还没弄清的事，！值得记住的一句\n· 侧栏「按标记汇总」多两栏：疑问一处翻、重点一处翻；分组报告单列「！重点」「？疑问」段\n· 流水里句尾带「？」的行自动识别为疑问（心情句不抢、任务区不抢）；导入导出、分享图、手册同步认识\n【✨ 聪明工具条（内测）】\n· 设置「内测实验室」里打开：打字时键盘上方递一排小抓手——写「明天下午三点交方案」递出「📅挂到8.25」「🕐记时间15:00」，写「晚饭在『烤匠』」递「#美食」，提到分组名/常用组也递 #签\n· 点一下贴上、变 ✓；再点取消，取消过的这行就不再自动挂——比回车后默默挂上看得见、可反悔\n· 识别与自动识别同一套规则；默认关，关着时一切照旧\n\n'
+    + 'v2.21（当前 · 2026.8.24）\n【生日双历互算】\n· 填了出生年月日的生日（阳历阴历都行），卡片自动换算出另一个历法的生日：「换算：TA的农历生日是五月初二 · 下次落 明年6月6日」\n· 一键「🌗 农历生日也提醒 / 🌞 阳历生日也提醒」补建另一条；已有的不重复建（orion 和 Orion 这种大小写也认得出是同一人）\n· 反向换算引擎与农历表同源，1901–2099 与 zhdate 参照库逐日比对零偏差；生在闰月的按平月过\n【下次日期看得懂了】\n· 今年已经过完的，下次写明「明年 6月15日」；更远的直接带年份——不再让 6 月的生日在 8 月看起来像还没过\n【小修】\n· v2.12 之前建的老条目没有场景图标：现在按名字兜底（生日🎂 / 纪念💍 / 还款💳），不用重建\n· 老条目想要岁数和双历换算：点「改」→ 选 🎂生日 场景 → 补个出生年份即可\n\n'
+    + 'v2.20（2026.8.24）\n【新符号 ？疑问 · ！重点】\n· 符号面板 4 行变 6 行：？还没弄清的事，！值得记住的一句\n· 侧栏「按标记汇总」多两栏：疑问一处翻、重点一处翻；分组报告单列「！重点」「？疑问」段\n· 流水里句尾带「？」的行自动识别为疑问（心情句不抢、任务区不抢）；导入导出、分享图、手册同步认识\n【✨ 聪明工具条（内测）】\n· 设置「内测实验室」里打开：打字时键盘上方递一排小抓手——写「明天下午三点交方案」递出「📅挂到8.25」「🕐记时间15:00」，写「晚饭在『烤匠』」递「#美食」，提到分组名/常用组也递 #签\n· 点一下贴上、变 ✓；再点取消，取消过的这行就不再自动挂——比回车后默默挂上看得见、可反悔\n· 识别与自动识别同一套规则；默认关，关着时一切照旧\n\n'
     + 'v2.19（2026.8.24）\n【输入工具条重做】\n· 九键平铺 → 五组大键：四个符号键收成一格（显示当前行符号，点开弹面板换，面板自带解释）\n· # 分组、📷 照片升级为带字大键；两个缩进键合成一个聪明键——上一条是事件时「⇥挂入」，已挂着时「⇤升出」，挂无可挂自动置灰\n· 🗑删除 与 ↩撤回 成对放条尾：删是删整行（连子弹一起），撤回是整行找回，不再是一次一个字\n\n'
     + 'v2.18（2026.8.24）\n【修复 · 笔记本页面蹿动】\n· 标题跳正文、正文打前几行字时整页乱蹿：长文编辑豁免了「保持在键盘上方」的滚动逻辑，自动长高改为只长不缩并锁定滚动位置\n【笔记本里写任务】\n· 以「- 」或「□ 」开头的行（回车或离开本子时）自动变成今天首页的任务，带「📓 翻开」来源签；生成后各走各的，改行字算新任务\n【全局返回上一页】\n· 进入二级页（人物页、本子、从日历点进的某天、集子…）左上角 ☰ 变成「‹ 返回」，一路原路返回；右上「回今日」照旧并清空来路\n【修复 · 熟人册新人被顶替】\n· 根因是重启后编号水位漏算了熟人册/循环提醒/笔记本，导致新人和旧人撞号——水位已补全，已撞的号启动时自动换新，账号小本解锁时同步计入\n\n'
     + 'v2.17（2026.8.23）\n【📓 笔记本】\n· 侧栏新增「笔记本」：像备忘录一样写长文——装修计划、读书摘抄、写到一半的小说，边写边自动保存\n· 本子不是孤岛：新建本子当天流水自动记「开了新本子《xxx》」，每天第一次动笔自动留「写了《xxx》」（一天一本只记一次）\n· 双向跳转：流水足迹带「📓 翻开」直达本子；本子页头「始于X · 写过N天 · 最近X」，点开看全部足迹、跳回任何一天\n· 搜索打通：全局搜索多一栏「本子里也有」\n· 本子长文不进识别引擎和报告——小说草稿不会污染熟店簿\n\n'
@@ -3695,6 +3696,25 @@ function lunarToSolar(ly, lm, ld){
   const t = new Date(1900, 0, 31); t.setDate(t.getDate() + off);
   return t;
 }
+/* 反向：阳历某天 → 农历 年/月/日（含是否闰月）。与 lunarToSolar 同一张表，v2.21 用 zhdate 全程比对过 */
+function solarToLunar(d){
+  const base = new Date(1900, 0, 31);
+  let off = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - base) / 86400000);
+  if (off < 0) return null;
+  let ly = 1900;
+  for (; ly <= 2100; ly++){ const yd = lYearDays(ly); if (off < yd) break; off -= yd; }
+  if (ly > 2100) return null;
+  const leap = lLeapMonth(ly);
+  let lm = 1, isLeap = false;
+  for (;;){
+    const dm = isLeap ? lLeapDays(ly) : lMonthDays(ly, lm);
+    if (off < dm) break;
+    off -= dm;
+    if (!isLeap && lm === leap) isLeap = true;
+    else { isLeap = false; if (++lm > 12) break; }
+  }
+  return {ly, lm, ld:off + 1, leap:isLeap};
+}
 const LM_NM = ['正','二','三','四','五','六','七','八','九','十','冬','腊'];
 function lDayNm(d){
   if (d === 10) return '初十'; if (d === 20) return '二十'; if (d === 30) return '三十';
@@ -3712,7 +3732,44 @@ function lunarNextK(lm, ld, fromK){
   return best ? dkey(best) : null;
 }
 const CYC_ICON = {birthday:'🎂', anniv:'💍', period:'🩸', bill:'💳'};
-function cycIcon(c){ return CYC_ICON[c.tag] || '🔁'; }
+function cycIcon(c){
+  if (CYC_ICON[c.tag]) return CYC_ICON[c.tag];
+  const nm = c.name || '';   /* v2.12 之前的老条目没有场景标签：按名字给个像样的图标 */
+  if (/生日/.test(nm)) return '🎂';
+  if (/纪念/.test(nm)) return '💍';
+  if (/还款|信用卡|房贷|账单/.test(nm)) return '💳';
+  return '🔁';
+}
+function fmtNextK(k){
+  const y = +k.split('.')[0], ty = +TODAY.split('.')[0];
+  if (y === ty) return fmtKey(k);
+  if (y === ty + 1) return '明年 ' + fmtKey(k);
+  return y + ' 年 ' + fmtKey(k);
+}
+/* 生日孪生：填了出生年，就能换算另一个历法的生日 */
+function cycTwinInfo(c){
+  const isBd = c.tag === 'birthday' || /生日/.test(c.name || '');
+  if (!isBd || !c.y0) return null;
+  let tw = null;
+  if (c.kind === 'lunar' && c.lm && c.ld){
+    const t = lunarToSolar(c.y0, c.lm, c.ld);
+    if (!t) return null;
+    tw = {kind:'year', m:t.getMonth() + 1, d:t.getDate(), y0:t.getFullYear(),
+      label:'阳历生日是 ' + (t.getMonth() + 1) + ' 月 ' + t.getDate() + ' 日'};
+    tw.nextK = cycNext({kind:'year', m:tw.m, d:tw.d}, TODAY);
+  } else if (c.kind === 'year' && c.m && c.d){
+    const L = solarToLunar(new Date(c.y0, c.m - 1, c.d));
+    if (!L) return null;
+    tw = {kind:'lunar', lm:L.lm, ld:L.ld, y0:L.ly,
+      label:'农历生日是' + lunarLabel(L.lm, L.ld).slice(2) + (L.leap ? '（生在闰月 · 按平月过）' : '')};
+    tw.nextK = lunarNextK(tw.lm, tw.ld, TODAY);
+  } else return null;
+  const pn = (c.name || '').toLowerCase().replace(/的?生日[（(]?.*$/, '');
+  tw.dup = (SET.cycles || []).some(x => x !== c && x.kind === tw.kind
+    && (tw.kind === 'lunar' ? (x.lm === tw.lm && x.ld === tw.ld) : (x.m === tw.m && x.d === tw.d))
+    && (!pn || (x.name || '').toLowerCase().indexOf(pn) === 0));
+  return tw;
+}
 function cycAgeStr(c, k){
   if (!c.y0) return '';
   const n2 = +k.split('.')[0] - c.y0;
@@ -4245,7 +4302,7 @@ function renderPerson(p){
     const bc = document.createElement('div'); bc.className = 'vt-card';
     bc.innerHTML = pcs.map(c => { const nk = cycNext(c, TODAY);
       return '<div class="vt-note">' + cycIcon(c) + ' ' + vEsc(c.name) + ' · ' + cycDesc(c)
-        + (nk ? '<br>下次：' + fmtKey(nk) + '（' + weekCN(nk) + '）' + (cycAgeStr(c, nk) ? ' · ' + cycAgeStr(c, nk) : '') : '') + '</div>'; }).join('');
+        + (nk ? '<br>下次：' + fmtNextK(nk) + '（' + weekCN(nk) + '）' + (cycAgeStr(c, nk) ? ' · ' + cycAgeStr(c, nk) : '') : '') + '</div>'; }).join('');
     view.appendChild(bc);
   } else {
     const bb = document.createElement('div'); bb.className = 'rp-tabs';
@@ -4381,7 +4438,8 @@ function renderCycles(){
             + LM_NM.map((n, i) => '<option value="' + (i + 1) + '">' + n + '月</option>').join('')
             + '</select><input class="vt-in" id="cyLD" type="number" min="1" max="30" placeholder="哪天，填数字（廿三=23）" style="flex:1.5"></div>'
           : solarMD)
-      + y0In;
+      + y0In
+      + '<div class="hw-tip" style="padding:4px 2px 0">填了出生年份：帮你算岁数，还能换算出另一个历法的生日，一键双历都提醒</div>';
   } else if (cycTag === 'anniv'){ mid = solarMD + y0In; }
   else if (cycTag === 'period'){
     mid = ndIn + '<div class="hw-tip" style="padding:4px 2px 0">左边填周期天数 · 右边选上次来的日子 · 到时打勾会自动重新起算</div>';
@@ -4475,13 +4533,16 @@ function renderCycles(){
   SET.cycles.forEach(c => {
     const card = document.createElement('div'); card.className = 'vt-card';
     const nk = cycNext(c, TODAY);
+    const tw = cycTwinInfo(c);
     card.innerHTML = '<div class="vt-site">' + cycIcon(c) + ' ' + vEsc(c.name)
       + '<button class="gm-btn" data-a="edit" style="margin-left:auto">改</button>'
       + '<button class="gm-btn danger" data-a="del" style="margin-left:0">' + (pendingCDel === c.id ? '确认删除' : '删') + '</button></div>'
       + '<div class="vt-note">' + cycDesc(c) + (c.ahead ? ' · 提前 ' + c.ahead + ' 天提示' : '')
-      + (nk ? '<br>下次：' + fmtKey(nk) + '（' + weekCN(nk) + '）' + (cycAgeStr(c, nk) ? ' · ' + cycAgeStr(c, nk) : '') : '') + '</div>'
+      + (nk ? '<br>下次：' + fmtNextK(nk) + '（' + weekCN(nk) + '）' + (cycAgeStr(c, nk) ? ' · ' + cycAgeStr(c, nk) : '') : '')
+      + (tw ? '<br>换算：TA的' + tw.label + (tw.nextK ? ' · 下次落 ' + fmtNextK(tw.nextK) : '') : '') + '</div>'
       + '<div class="rp-tabs" style="margin-top:10px">'
       + '<button class="chip" data-a="ics">📅 入系统日历</button>'
+      + (tw && !tw.dup ? '<button class="chip" data-a="twin">' + (tw.kind === 'lunar' ? '🌗 农历生日也提醒' : '🌞 阳历生日也提醒') + '</button>' : '')
       + (c.kind === 'ndays' ? '<button class="chip" data-a="reset">今天来了 · 重新起算</button>' : '')
       + '</div>';
     card.querySelector('[data-a="del"]').onclick = () => {
@@ -4497,6 +4558,16 @@ function renderCycles(){
       render(); window.scrollTo(0, 0);
     };
     card.querySelector('[data-a="ics"]').onclick = () => cycIcs(c);
+    const twB = card.querySelector('[data-a="twin"]');
+    if (twB) twB.onclick = () => {
+      const t2 = cycTwinInfo(c); if (!t2 || t2.dup){ render(); return; }
+      const nc = {id:++uid, name:c.name + (t2.kind === 'lunar' ? '（农历）' : '（阳历）'), tag:'birthday', ahead:(c.ahead != null ? c.ahead : 3)};
+      if (t2.kind === 'lunar'){ nc.kind = 'lunar'; nc.lm = t2.lm; nc.ld = t2.ld; }
+      else { nc.kind = 'year'; nc.m = t2.m; nc.d = t2.d; }
+      nc.y0 = t2.y0;
+      SET.cycles.push(nc); scheduleSave();
+      toast('已添加 · ' + (t2.kind === 'lunar' ? '农历' : '阳历') + '那天也会提醒'); render();
+    };
     const rs = card.querySelector('[data-a="reset"]');
     if (rs) rs.onclick = () => { c.anchor = TODAY; scheduleSave(); toast('已从今天重新起算'); render(); };
     view.appendChild(card);
