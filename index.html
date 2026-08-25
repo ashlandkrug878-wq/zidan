@@ -228,12 +228,12 @@
   #report{position:absolute;inset:0;background:var(--bg);z-index:13;display:none;flex-direction:column}
   #report.on{display:flex}
   .rp-body{flex:1;overflow-y:auto;padding:16px 20px}
-  .rp-tabs{display:flex;gap:8px;margin:2px 0 14px}
+  .rp-tabs{display:flex;gap:8px;margin:2px 0 14px;flex-wrap:wrap}
   .rp-text{white-space:pre-wrap;font-size:14px;line-height:1.85;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
   .rp-note{font-size:12px;color:var(--ink-faint);margin-top:12px}
   .chip{
     font-size:13.5px;padding:6px 14px;border-radius:999px;border:1px solid var(--line-strong);
-    background:var(--card);cursor:pointer;color:var(--ink-soft);font-family:inherit;
+    background:var(--card);cursor:pointer;color:var(--ink-soft);font-family:inherit;white-space:nowrap;
   }
   .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
   .thumbs{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
@@ -398,6 +398,11 @@
   .ml-skip{background:transparent;border:1.4px solid var(--line);color:var(--ink-faint);
     font-size:9.5px;font-style:normal;display:flex;align-items:center;justify-content:center;line-height:1}
   .ml-row .v{margin-left:auto;font-size:11px;color:var(--ink-faint)}
+  .ftabs{display:flex;gap:7px;margin-top:15px}
+  .ftab{flex:1;text-align:center;font-size:13.5px;padding:9px 0 8px;border:1px solid var(--line-strong);
+    border-radius:13px;background:transparent;color:var(--ink-faint);cursor:pointer}
+  .ftab.on{background:var(--accent-soft);border-color:#E8C9A6;color:var(--ink);font-weight:700}
+  .hw-link{font-size:11px;color:var(--accent);letter-spacing:0;cursor:pointer;flex:none}
   #recall{
     position:absolute;left:0;right:0;display:none;gap:9px;align-items:center;
     padding:9px 14px;background:var(--accent-soft);border-top:1px solid var(--line);
@@ -522,7 +527,7 @@ const escAttr = s => String(s || '').replace(/"/g, '&quot;');
 const view = $('#view'), topTitle = $('#topTitle'), reviewBtn = $('#reviewBtn'), toolbar = $('#toolbar');
 let cur = {name:'today'};
 let navStack = [], navPrevSnap = null, navFromBack = false;
-function navSnap(){ return JSON.stringify({n:cur.name, g:cur.g, k:cur.key, p:cur.pid, i:cur.id, q:cur.q, d:cur.date}); }
+function navSnap(){ return JSON.stringify({n:cur.name, g:cur.g, k:cur.key, p:cur.pid, i:cur.id, q:cur.q, d:cur.date, t:cur.tab}); }
 function navBack(){
   if (!navStack.length) return;
   navFromBack = true;
@@ -849,7 +854,7 @@ function chipRow(e, editable){
   if (hasG) e.groups.forEach(g => {
     const b = document.createElement('span'); b.className = 'badge';
     const [bg, fg] = gStyle(g); b.style.background = bg; b.style.color = fg;
-    b.textContent = '#' + g; c.appendChild(b);
+    b.textContent = (tplOf(g) === 'food' ? '🍚 ' : '#') + g; c.appendChild(b);
   });
   if (e.badge){ const b = document.createElement('span'); b.className = 'badge'; b.textContent = e.badge; c.appendChild(b); }
   if (e.srcDay){
@@ -1202,13 +1207,93 @@ function renderCal(){
 }
 
 /* ============ 视图渲染 ============ */
+function renderGroupBody(){
+    const tpl = tplOf(cur.g);
+    if (!cur.rngSel) cur.rngSel = 'year';
+    const tabs = document.createElement('div'); tabs.className = 'rp-tabs'; tabs.style.marginTop = '16px';
+    if (tpl && tpl !== 'work'){
+      const rc = document.createElement('button'); rc.className = 'chip on'; rc.textContent = '盘点 · ' + rngLabel(cur.rngSel) + ' ▾';
+      rc.onclick = () => { cur.rngSel = RNG_CYCLE[(RNG_CYCLE.indexOf(cur.rngSel) + 1) % RNG_CYCLE.length]; render(); };
+      tabs.appendChild(rc);
+    }
+    if (tpl === 'work'){
+      const rp = document.createElement('button'); rp.className = 'chip'; rp.textContent = '报告';
+      rp.onclick = () => openReport(cur.g, 'week'); tabs.appendChild(rp);
+    } else if (tpl === 'food'){
+      const mp = document.createElement('button'); mp.className = 'chip'; mp.textContent = '美食地图';
+      mp.onclick = () => openFoodMap(cur.g); tabs.appendChild(mp);
+    } else if (tpl){
+      const rp = document.createElement('button'); rp.className = 'chip'; rp.textContent = '生成月报';
+      rp.onclick = () => {
+        const rows = tplRows(cur.g, rngOf('month'));
+        openShare(statsPayload(cur.g, tpl, tplStats(tpl, rows), 'month'));
+      };
+      tabs.appendChild(rp);
+    }
+    const shc = document.createElement('button'); shc.className = 'chip'; shc.textContent = '▣ 分享';
+    shc.onclick = () => {
+      if (tpl && tpl !== 'work'){
+        const rows = tplRows(cur.g, rngOf(cur.rngSel));
+        openShare(statsPayload(cur.g, tpl, tplStats(tpl, rows), cur.rngSel));
+      } else openShare({type:'group', head:'点点手帐 · 集子', cardTitle:'#' + cur.g + ' · 最近精选', g:cur.g});
+    };
+    tabs.appendChild(shc);
+    if (!tpl || tpl === 'work'){   /* 有盘点面板的模板页，「怎么写?」在面板标题行 */
+      const hw = document.createElement('button'); hw.className = 'chip'; hw.textContent = '怎么写?';
+      hw.onclick = () => openHowSheet(tpl);
+      tabs.appendChild(hw);
+    }
+    view.appendChild(tabs);
+    if (tpl && tpl !== 'work') renderTplPanel(cur.g, tpl);
+    const rows2 = tplRows(cur.g, null);
+    if (!rows2.length){ const d = document.createElement('div'); d.className = 'empty-hint';
+      d.textContent = cur.name === 'food'
+        ? '集子还空着 · 写「晚饭在『店名』吃了什么」这样的句子，我会自动收进来'
+        : ('这个分组还空着 · 在任意一行打 #' + cur.g + ' 就能归进来'); view.appendChild(d); }
+    else {
+      const lab = document.createElement('div'); lab.className = 'section-label'; lab.textContent = '全部记录'; view.appendChild(lab);
+      /* 迁移链归并：被后继引用、状态为「已迁移」的中间节点收起 */
+      const byId = {};
+      rows2.forEach(r => { if (r.e._id) byId[r.e._id] = r; });
+      const superseded = new Set();
+      rows2.forEach(r => { if (r.e.srcId && byId[r.e.srcId]) superseded.add(r.e.srcId); });
+      const shown = rows2.filter(r => !(superseded.has(r.e._id) && r.e.state === 'migrated'));
+      if (!cur.listN) cur.listN = 30;
+      const pageRows = shown.slice(0, cur.listN);
+      let lastDate = null;
+      const scoredSet = new Set();
+      rows2.forEach(r => { if (r.p.title && r.p.score != null) scoredSet.add(canonTitle(r.p.title)); });
+      pageRows.forEach(r => {
+        if (r.d !== lastDate){ lastDate = r.d;
+          const g2 = document.createElement('div'); g2.className = 'date-group';
+          g2.textContent = dayGroupTitle(r.d); view.appendChild(g2); }
+        const w = jumpRow(r.d, r.e);
+        if (tpl){
+          const tg = ptagRow(r, tpl, scoredSet);
+          if (tg){ const body = w.querySelector('.entry-body'); if (body) body.appendChild(tg); }
+        }
+        appendChainFold(w, r, byId);
+        view.appendChild(w);
+      });
+      if (shown.length > cur.listN){
+        const more = document.createElement('div'); more.className = 'tapzone'; more.style.textAlign = 'center';
+        more.textContent = '▾ 加载更早（还有 ' + (shown.length - cur.listN) + ' 条）';
+        more.onclick = () => { cur.listN += 50; render(); };
+        view.appendChild(more);
+      }
+      const tip = document.createElement('div'); tip.className = 'readonly-tip';
+      tip.textContent = tpl ? '小签是从你的原话里读出来的 · 点条目跳到当天' : '这就是自动长出来的「集子」 · 点条目跳到当天';
+      view.appendChild(tip);
+    }
+  }
 function render(){
+  if (cur.name === 'meals'){ cur.name = 'food'; if (!cur.tab) cur.tab = 'meal'; }   /* v2.23 三餐并入美食板块 */
   (() => {   /* v2.18 导航栈：自动记来路，二级页左上角变「‹ 返回」 */
     const ns2 = navSnap();
     if (cur.name === 'today'){ navStack = []; }
     else if (!navFromBack && navPrevSnap && ns2 !== navPrevSnap){
       const pv = JSON.parse(navPrevSnap);
-      navStack.push({name:pv.n, g:pv.g, key:pv.k, pid:pv.p, id:pv.i, q:pv.q, date:pv.d});
+      navStack.push({name:pv.n, g:pv.g, key:pv.k, pid:pv.p, id:pv.i, q:pv.q, date:pv.d, tab:pv.t});
       if (navStack.length > 20) navStack.shift();
     }
     navFromBack = false; navPrevSnap = ns2;
@@ -1262,79 +1347,22 @@ function render(){
   }
   else if (cur.name === 'group'){
     topTitle.textContent = '#' + cur.g; reviewBtn.textContent = '回今日';
-    const tpl = tplOf(cur.g);
-    if (!cur.rngSel) cur.rngSel = 'year';
-    const tabs = document.createElement('div'); tabs.className = 'rp-tabs'; tabs.style.marginTop = '16px';
-    if (tpl && tpl !== 'work'){
-      const rc = document.createElement('button'); rc.className = 'chip on'; rc.textContent = '盘点 · ' + rngLabel(cur.rngSel) + ' ▾';
-      rc.onclick = () => { cur.rngSel = RNG_CYCLE[(RNG_CYCLE.indexOf(cur.rngSel) + 1) % RNG_CYCLE.length]; render(); };
-      tabs.appendChild(rc);
-    }
-    if (tpl === 'work'){
-      const rp = document.createElement('button'); rp.className = 'chip'; rp.textContent = '报告';
-      rp.onclick = () => openReport(cur.g, 'week'); tabs.appendChild(rp);
-    } else if (tpl === 'food'){
-      const mp = document.createElement('button'); mp.className = 'chip'; mp.textContent = '美食地图';
-      mp.onclick = () => openFoodMap(cur.g); tabs.appendChild(mp);
-    } else if (tpl){
-      const rp = document.createElement('button'); rp.className = 'chip'; rp.textContent = '生成月报';
-      rp.onclick = () => {
-        const rows = tplRows(cur.g, rngOf('month'));
-        openShare(statsPayload(cur.g, tpl, tplStats(tpl, rows), 'month'));
-      };
-      tabs.appendChild(rp);
-    }
-    const shc = document.createElement('button'); shc.className = 'chip'; shc.textContent = '▣ 分享';
-    shc.onclick = () => {
-      if (tpl && tpl !== 'work'){
-        const rows = tplRows(cur.g, rngOf(cur.rngSel));
-        openShare(statsPayload(cur.g, tpl, tplStats(tpl, rows), cur.rngSel));
-      } else openShare({type:'group', head:'点点手帐 · 集子', cardTitle:'#' + cur.g + ' · 最近精选', g:cur.g});
-    };
-    tabs.appendChild(shc);
-    const hw = document.createElement('button'); hw.className = 'chip'; hw.textContent = '怎么写?';
-    hw.onclick = () => openHowSheet(tpl);
-    tabs.appendChild(hw);
-    view.appendChild(tabs);
-    if (tpl && tpl !== 'work') renderTplPanel(cur.g, tpl);
-    const rows2 = tplRows(cur.g, null);
-    if (!rows2.length){ const d = document.createElement('div'); d.className = 'empty-hint';
-      d.textContent = '这个分组还空着 · 在任意一行打 #' + cur.g + ' 就能归进来'; view.appendChild(d); }
-    else {
-      const lab = document.createElement('div'); lab.className = 'section-label'; lab.textContent = '全部记录'; view.appendChild(lab);
-      /* 迁移链归并：被后继引用、状态为「已迁移」的中间节点收起 */
-      const byId = {};
-      rows2.forEach(r => { if (r.e._id) byId[r.e._id] = r; });
-      const superseded = new Set();
-      rows2.forEach(r => { if (r.e.srcId && byId[r.e.srcId]) superseded.add(r.e.srcId); });
-      const shown = rows2.filter(r => !(superseded.has(r.e._id) && r.e.state === 'migrated'));
-      if (!cur.listN) cur.listN = 30;
-      const pageRows = shown.slice(0, cur.listN);
-      let lastDate = null;
-      const scoredSet = new Set();
-      rows2.forEach(r => { if (r.p.title && r.p.score != null) scoredSet.add(canonTitle(r.p.title)); });
-      pageRows.forEach(r => {
-        if (r.d !== lastDate){ lastDate = r.d;
-          const g2 = document.createElement('div'); g2.className = 'date-group';
-          g2.textContent = dayGroupTitle(r.d); view.appendChild(g2); }
-        const w = jumpRow(r.d, r.e);
-        if (tpl){
-          const tg = ptagRow(r, tpl, scoredSet);
-          if (tg){ const body = w.querySelector('.entry-body'); if (body) body.appendChild(tg); }
-        }
-        appendChainFold(w, r, byId);
-        view.appendChild(w);
-      });
-      if (shown.length > cur.listN){
-        const more = document.createElement('div'); more.className = 'tapzone'; more.style.textAlign = 'center';
-        more.textContent = '▾ 加载更早（还有 ' + (shown.length - cur.listN) + ' 条）';
-        more.onclick = () => { cur.listN += 50; render(); };
-        view.appendChild(more);
-      }
-      const tip = document.createElement('div'); tip.className = 'readonly-tip';
-      tip.textContent = tpl ? '小签是从你的原话里读出来的 · 点条目跳到当天' : '这就是自动长出来的「集子」 · 点条目跳到当天';
-      view.appendChild(tip);
-    }
+    renderGroupBody();
+  }
+  else if (cur.name === 'food'){
+    /* v2.23 美食板块（方案B双页签）：集子=资产 · 三餐=习惯，一个门两间房 */
+    if (!cur.tab) cur.tab = 'ji';
+    topTitle.textContent = '美食'; reviewBtn.textContent = '回今日';
+    if (!foodGroupName() && !extraGroups.includes('美食')) extraGroups.push('美食');
+    cur.g = foodGroupName() || '美食';
+    const ftb = document.createElement('div'); ftb.className = 'ftabs';
+    ftb.innerHTML = '<div class="ftab' + (cur.tab === 'ji' ? ' on' : '') + '" data-ft="ji">🗂 集子</div>'
+      + '<div class="ftab' + (cur.tab === 'meal' ? ' on' : '') + '" data-ft="meal">🍚 三餐</div>';
+    ftb.querySelectorAll('.ftab').forEach(t2 => t2.onclick = () => {
+      if (cur.tab !== t2.dataset.ft){ cur.tab = t2.dataset.ft; navFromBack = true; render(); } });
+    view.appendChild(ftb);
+    if (cur.tab === 'meal') renderMeals();
+    else renderGroupBody();
   }
   else if (cur.name === 'search'){
     topTitle.textContent = '搜索'; reviewBtn.textContent = '回今日';
@@ -1397,14 +1425,19 @@ function render(){
       pendingRestore = false; $('#jsonInput').click();
     });
     view.appendChild(sectionLabel('板块管理 · 关掉的从侧栏消失，数据不动'));
-    [['notes','📓 笔记本','基础'],['meals','🍚 三餐','扩展'],['people','👥 熟人册','扩展'],['vault','🔐 账号小本','扩展'],['cycles','🔁 循环提醒','基础']].forEach(([k, nm, tier]) => {
+    [['notes','📓 笔记本','基础'],['meals','🍚 美食','扩展'],['people','👥 熟人册','扩展'],['vault','🔐 账号小本','扩展'],['cycles','🔁 循环提醒','基础']].forEach(([k, nm, tier]) => {
       const on = modOn(k);
       const tg = document.createElement('button'); tg.className = 'gm-btn'; tg.style.marginLeft = 'auto';
       tg.textContent = on ? '开 ✓' : '关'; tg.style.color = on ? 'var(--green)' : 'var(--ink-faint)';
       mkRow(nm + '（' + tier + '）', tg, null);
       tg.onclick = () => {
         SET.mods[k] = !on;
-        if (k === 'meals' && !on){ try{ mealAutoTagAll(); }catch(_){} toast('三餐已打开 · 复盘时会带三餐条'); }
+        if (k === 'meals'){ if (on) SET.mealsUserOff = 1; else delete SET.mealsUserOff; }
+        if (k === 'meals' && !on){
+          if (!foodGroupName() && !extraGroups.includes('美食')) extraGroups.push('美食');
+          try{ mealAutoTagAll(); }catch(_){}
+          toast('美食已打开 · 集子和三餐都在侧栏「美食」里');
+        }
         scheduleSave(); render();
       };
     });
@@ -1419,7 +1452,7 @@ function render(){
         toast(!on ? '已开启 · 写一行「明天下午三点交方案」试试' : '已关闭 · 随时回来再开');
       };
     })();
-    mkRow('版本记录', sub('v2.22 ›'), showChangelog);
+    mkRow('版本记录', sub('v2.23 ›'), showChangelog);
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
       if (pendingWipe){ localStorage.removeItem(LSKEY); location.reload(); return; }
@@ -1685,7 +1718,7 @@ function sbBuild(e){
     });
   }
   sbGroups(e, t).forEach(o => {
-    chip((o.on ? '✓ ' : '') + '#' + o.g, o.on, () => {
+    chip((o.on ? '✓ ' : '') + (tplOf(o.g) === 'food' ? '🍚 ' : '#') + o.g, o.on, () => {
       if (o.on){ e.groups = (e.groups || []).filter(x => x !== o.g); toast('已移出 #' + o.g); }
       else { (e.groups = e.groups || []).push(o.g); toast('已归入 #' + o.g); }
     });
@@ -1696,6 +1729,7 @@ function sbBuild(e){
 
 /* ============ 抽屉 ============ */
 function buildDrawer(){
+  if (SET.mods.meals !== true && !SET.mealsUserOff && foodGroupName()) SET.mods.meals = true;   /* v2.23 集子在哪门就在哪；但用户手动关过就不自作主张 */
   const box = $('#drawerList'); box.innerHTML = '';
   const cal = document.createElement('div'); cal.className = 'd-item plain';
   cal.innerHTML = '<span class="d-ico">▦</span><span>总日历</span>';
@@ -1714,6 +1748,7 @@ function buildDrawer(){
     Object.keys(AGG).forEach(k2 => { if (AGG[k2].f(e)) ACNT[k2] = (ACNT[k2] || 0) + 1; });
   });
   allGroupNames().forEach(g => {
+    if (tplOf(g) === 'food') return;   /* v2.23 美食升格为板块，不再出现在分组区 */
     const n = GCNT[g] || 0;
     const it = document.createElement('div'); it.className = 'd-item';
     const ic = document.createElement('span'); ic.className = 'd-ico';
@@ -1862,7 +1897,7 @@ function buildDrawer(){
   (() => {
     const rows0 = [['☾','晚间复盘', () => { closeDrawer(); openReview(); }]];
     if (modOn('notes')) rows0.push(['📓','笔记本', () => { cur = {name:'notes'}; closeDrawer(); render(); }]);
-    if (modOn('meals')) rows0.push(['🍚','三餐', () => { cur = {name:'meals'}; closeDrawer(); render(); }]);
+    if (modOn('meals')) rows0.push(['🍚','美食', () => { cur = {name:'food'}; closeDrawer(); render(); }]);
     if (modOn('people')) rows0.push(['👥','熟人册', () => { cur = {name:'people'}; closeDrawer(); render(); }]);
     if (modOn('cycles')) rows0.push(['🔁','循环提醒', () => { cur = {name:'cycles'}; closeDrawer(); render(); }]);
     if (modOn('vault')) rows0.push(['🔐','账号小本', () => { cur = {name:'vault'}; closeDrawer(); render(); }]);
@@ -2184,7 +2219,7 @@ function buildSheet(){
   allGroupNames().forEach(g => {
     const c = document.createElement('button');
     c.className = 'gs-chip' + ((sheetTarget.groups || []).includes(g) ? ' on' : '');
-    c.textContent = '#' + g;
+    c.textContent = (tplOf(g) === 'food' ? '🍚 ' : '#') + g;
     c.onclick = () => {
       snapshot('分组'); const a = sheetTarget.groups = sheetTarget.groups || [];
       const i = a.indexOf(g); i >= 0 ? a.splice(i, 1) : a.push(g); scheduleSave(); buildSheet();
@@ -2633,7 +2668,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.22（当前 · 2026.8.25）\n【三餐三改（按你的截图反馈）】\n· 快捷填写表：时间框换成「¥ 花销」——填了就拼进句尾（45元），当月吃饭花销直接算上；时间本来就有餐次，不用再填\n· 打卡墙四态分明：虚圈＝还没记（点一下补）、✕＝这顿没吃、灰点＝日常吃、彩点＝进了美食集子——没吃和没记不再撞脸\n· 餐食行不再用笔记的「—」：统一小饭碗 🍚 符号；快捷表记的这顿，餐次改成行下小签「🍚 午饭」，不再占正文字符——正文只剩你吃了什么\n· 手写的「晚饭点了外卖…」照旧全认；导出备份、报告、分享图里会自动把餐次词补回去，语境不丢\n\n'
+    + 'v2.23（当前 · 2026.8.25）\n【美食升格为板块 · 侧栏一个门】\n· 侧栏不再有 #美食 分组 + 三餐 两个入口——板块区一个「🍚 美食」，进门是双页签：🗂 集子（宝藏/家常/避雷、榜单、美食地图、分享）｜🍚 三餐（连击、外卖、花销、打卡墙），横着一步互切，不用跳页\n· 美食不再叫标签：行下小签从「#美食」改为「🍚 美食」，分组面板、聪明工具条同步改口；数据结构不变，老备份原样兼容\n· 板块管理里「三餐」改名「美食」，一个开关管整个板块；已经在用集子的，更新后自动点亮\n· 从打卡墙跳去某天再返回，会回到三餐那一签，不会跑回集子\n\n'
+    + 'v2.22（2026.8.25）\n【三餐三改（按你的截图反馈）】\n· 快捷填写表：时间框换成「¥ 花销」——填了就拼进句尾（45元），当月吃饭花销直接算上；时间本来就有餐次，不用再填\n· 打卡墙四态分明：虚圈＝还没记（点一下补）、✕＝这顿没吃、灰点＝日常吃、彩点＝进了美食集子——没吃和没记不再撞脸\n· 餐食行不再用笔记的「—」：统一小饭碗 🍚 符号；快捷表记的这顿，餐次改成行下小签「🍚 午饭」，不再占正文字符——正文只剩你吃了什么\n· 手写的「晚饭点了外卖…」照旧全认；导出备份、报告、分享图里会自动把餐次词补回去，语境不丢\n\n'
     + 'v2.21（2026.8.24）\n【生日双历互算】\n· 填了出生年月日的生日（阳历阴历都行），卡片自动换算出另一个历法的生日：「换算：TA的农历生日是五月初二 · 下次落 明年6月6日」\n· 一键「🌗 农历生日也提醒 / 🌞 阳历生日也提醒」补建另一条；已有的不重复建（orion 和 Orion 这种大小写也认得出是同一人）\n· 反向换算引擎与农历表同源，1901–2099 与 zhdate 参照库逐日比对零偏差；生在闰月的按平月过\n【下次日期看得懂了】\n· 今年已经过完的，下次写明「明年 6月15日」；更远的直接带年份——不再让 6 月的生日在 8 月看起来像还没过\n【小修】\n· v2.12 之前建的老条目没有场景图标：现在按名字兜底（生日🎂 / 纪念💍 / 还款💳），不用重建\n· 老条目想要岁数和双历换算：点「改」→ 选 🎂生日 场景 → 补个出生年份即可\n\n'
     + 'v2.20（2026.8.24）\n【新符号 ？疑问 · ！重点】\n· 符号面板 4 行变 6 行：？还没弄清的事，！值得记住的一句\n· 侧栏「按标记汇总」多两栏：疑问一处翻、重点一处翻；分组报告单列「！重点」「？疑问」段\n· 流水里句尾带「？」的行自动识别为疑问（心情句不抢、任务区不抢）；导入导出、分享图、手册同步认识\n【✨ 聪明工具条（内测）】\n· 设置「内测实验室」里打开：打字时键盘上方递一排小抓手——写「明天下午三点交方案」递出「📅挂到8.25」「🕐记时间15:00」，写「晚饭在『烤匠』」递「#美食」，提到分组名/常用组也递 #签\n· 点一下贴上、变 ✓；再点取消，取消过的这行就不再自动挂——比回车后默默挂上看得见、可反悔\n· 识别与自动识别同一套规则；默认关，关着时一切照旧\n\n'
     + 'v2.19（2026.8.24）\n【输入工具条重做】\n· 九键平铺 → 五组大键：四个符号键收成一格（显示当前行符号，点开弹面板换，面板自带解释）\n· # 分组、📷 照片升级为带字大键；两个缩进键合成一个聪明键——上一条是事件时「⇥挂入」，已挂着时「⇤升出」，挂无可挂自动置灰\n· 🗑删除 与 ↩撤回 成对放条尾：删是删整行（连子弹一起），撤回是整行找回，不再是一次一个字\n\n'
@@ -3038,10 +3074,13 @@ function renderTplPanel(g, tpl){
   const pan = document.createElement('div'); pan.className = 'tp-pan';
   pan.innerHTML = '<div class="tt" style="display:flex;align-items:center;gap:8px">'
     + '<span>自动盘点 · ' + rlab + '</span>'
-    + '<span style="margin-left:auto;color:var(--ink-faint);letter-spacing:0">' + rows.length + ' 条记录</span></div>'
+    + '<span style="margin-left:auto;color:var(--ink-faint);letter-spacing:0">' + rows.length + ' 条记录</span>'
+    + '<span class="hw-link">怎么写?</span></div>'
     + '<div class="tp-nums">' + st.tiles.map((t, i) =>
       '<div class="n" data-ti="' + i + '"' + (t[3] && t[3].length ? ' style="cursor:pointer"' : '') + '><b>' + t[0] + (t[1] ? '<i>' + t[1] + '</i>' : '') + '</b><span>' + t[2] + (t[3] && t[3].length ? ' ›' : '') + '</span></div>').join('') + '</div>';
   view.appendChild(pan);
+  const hwl = pan.querySelector('.hw-link');
+  if (hwl) hwl.onclick = () => openHowSheet(tpl);
   pan.querySelectorAll('.n[data-ti]').forEach(el => {
     el.onclick = () => { const t = st.tiles[+el.dataset.ti];
       if (t[3] && t[3].length) openTileSheet(t[2] + ' · ' + rlab, t[3]); };
@@ -3551,6 +3590,7 @@ $('#shSheet').addEventListener('click', ev => { if (ev.target.id === 'shSheet') 
 SET.mods = SET.mods || {};
 if (SET.mods.meals === undefined) SET.mods.meals = false;   /* 三餐默认关，设置里打开 */
 if (SET.mods.smartbar === undefined) SET.mods.smartbar = false;   /* 聪明工具条（内测）默认关 */
+if (SET.mods.meals !== true && !SET.mealsUserOff && foodGroupName()) SET.mods.meals = true;   /* v2.23 美食升格为板块：已有集子的直接点亮（手动关过除外） */
 function modOn(k){ return SET.mods[k] !== false; }
 /* ===== v2.15 今日印章 ===== */
 SET.stamps = SET.stamps || [];
