@@ -80,6 +80,7 @@
   .glyph.someday{color:var(--ink-faint);font-weight:600;font-size:15px}
   .glyph.ask{color:#5B7FA6;font-weight:800;font-size:15px}
   .glyph.bang{color:#B5493A;font-weight:800;font-size:15px}
+  .glyph.meal{font-size:12.5px;line-height:1}
   .entry.someday .entry-text,.entry.someday .line-input{color:var(--ink-soft)}
   .entry-body{flex:1;min-width:0}
   .entry-text{font-size:16px;line-height:1.6;word-break:break-all}
@@ -393,7 +394,9 @@
   .nb-body{width:100%;min-height:55vh;border:none;background:none;font-family:inherit;font-size:15.5px;line-height:1.85;color:var(--ink);outline:none;resize:none;padding:2px;overflow:hidden}
   .nb-body::placeholder{color:var(--ink-faint)}
   #menuBtn.mb-back{font-size:14.5px;font-weight:700;color:var(--accent);width:auto;padding:0 10px;letter-spacing:0}
-  .ml-off{background:var(--line-strong)}
+  .ml-off{background:transparent;border:1.6px dashed var(--line-strong)}
+  .ml-skip{background:transparent;border:1.4px solid var(--line);color:var(--ink-faint);
+    font-size:9.5px;font-style:normal;display:flex;align-items:center;justify-content:center;line-height:1}
   .ml-row .v{margin-left:auto;font-size:11px;color:var(--ink-faint)}
   #recall{
     position:absolute;left:0;right:0;display:none;gap:9px;align-items:center;
@@ -727,7 +730,7 @@ function symNode(e){
     else s.innerHTML = '<span class="dot"></span>';
   }
   else if (e.sym === 'event') s.innerHTML = '<span class="circle"></span>';
-  else if (e.sym === 'note')  s.innerHTML = '<span class="dash"></span>';
+  else if (e.sym === 'note')  s.innerHTML = mealGlyphSlot(e) ? '<span class="glyph meal">🍚</span>' : '<span class="dash"></span>';
   else if (e.sym === 'mood')  s.innerHTML = '<span class="ddash"><i></i><i></i></span>';
   else if (e.sym === 'ask')   s.innerHTML = '<span class="glyph ask">？</span>';
   else if (e.sym === 'bang')  s.innerHTML = '<span class="glyph bang">！</span>';
@@ -837,8 +840,12 @@ function commit(e){
 /* ============ 条目渲染 ============ */
 function chipRow(e, editable){
   const hasG = e.groups && e.groups.length;
-  if (!e.badge && !e.time && !e.due && !hasG && !e.src && !e.srcDay && !e.note && !e.nbId) return null;
+  if (!e.badge && !e.time && !e.due && !hasG && !e.src && !e.srcDay && !e.note && !e.nbId && !e.meal) return null;
   const c = document.createElement('div'); c.className = 'chips';
+  if (e.meal && MEAL_WORD[e.meal]){
+    const mb = document.createElement('span'); mb.className = 'badge';
+    mb.textContent = '🍚 ' + MEAL_WORD[e.meal]; c.appendChild(mb);
+  }
   if (hasG) e.groups.forEach(g => {
     const b = document.createElement('span'); b.className = 'badge';
     const [bg, fg] = gStyle(g); b.style.background = bg; b.style.color = fg;
@@ -1412,7 +1419,7 @@ function render(){
         toast(!on ? '已开启 · 写一行「明天下午三点交方案」试试' : '已关闭 · 随时回来再开');
       };
     })();
-    mkRow('版本记录', sub('v2.21 ›'), showChangelog);
+    mkRow('版本记录', sub('v2.22 ›'), showChangelog);
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
       if (pendingWipe){ localStorage.removeItem(LSKEY); location.reload(); return; }
@@ -2225,7 +2232,7 @@ function genReport(g, kind, incMood){
     else if (e.sym === 'event') cat.ev.push('· ' + e.text + '（' + dd + (e.children && e.children.length ? ' · 引发 ' + e.children.length + ' 条' : '') + '）');
     else if (e.sym === 'bang') cat.bang.push('· ' + e.text + '（' + dd + '）');
     else if (e.sym === 'ask') cat.ask.push('· ' + e.text);
-    else if (e.sym === 'note') cat.note.push('· ' + e.text);
+    else if (e.sym === 'note') cat.note.push('· ' + mealFullText(e));
     else if (e.sym === 'mood') cat.mood.push('· ' + e.text + '（' + dd + '）');
   });
   let out = '【#' + g + ' ' + label + '】' + rangeStr + '\n';
@@ -2419,7 +2426,7 @@ function exportMD(){
     const line = (e, ind) => {
       const st = e.state === 'done' ? '✓' : e.state === 'migrated' ? '›'
         : e.state === 'dropped' ? '✕' : e.state === 'delegated' ? '→' : (SY[e.sym] || '•');
-      out += ind + st + ' ' + (e.text || '')
+      out += ind + st + ' ' + mealFullText(e)
         + (e.groups && e.groups.length ? '  #' + e.groups.join(' #') : '')
         + (e.badge ? '（' + e.badge + '）' : '')
         + (e.images && e.images.length ? '（图片×' + e.images.length + '）' : '') + '\n';
@@ -2626,7 +2633,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.21（当前 · 2026.8.24）\n【生日双历互算】\n· 填了出生年月日的生日（阳历阴历都行），卡片自动换算出另一个历法的生日：「换算：TA的农历生日是五月初二 · 下次落 明年6月6日」\n· 一键「🌗 农历生日也提醒 / 🌞 阳历生日也提醒」补建另一条；已有的不重复建（orion 和 Orion 这种大小写也认得出是同一人）\n· 反向换算引擎与农历表同源，1901–2099 与 zhdate 参照库逐日比对零偏差；生在闰月的按平月过\n【下次日期看得懂了】\n· 今年已经过完的，下次写明「明年 6月15日」；更远的直接带年份——不再让 6 月的生日在 8 月看起来像还没过\n【小修】\n· v2.12 之前建的老条目没有场景图标：现在按名字兜底（生日🎂 / 纪念💍 / 还款💳），不用重建\n· 老条目想要岁数和双历换算：点「改」→ 选 🎂生日 场景 → 补个出生年份即可\n\n'
+    + 'v2.22（当前 · 2026.8.25）\n【三餐三改（按你的截图反馈）】\n· 快捷填写表：时间框换成「¥ 花销」——填了就拼进句尾（45元），当月吃饭花销直接算上；时间本来就有餐次，不用再填\n· 打卡墙四态分明：虚圈＝还没记（点一下补）、✕＝这顿没吃、灰点＝日常吃、彩点＝进了美食集子——没吃和没记不再撞脸\n· 餐食行不再用笔记的「—」：统一小饭碗 🍚 符号；快捷表记的这顿，餐次改成行下小签「🍚 午饭」，不再占正文字符——正文只剩你吃了什么\n· 手写的「晚饭点了外卖…」照旧全认；导出备份、报告、分享图里会自动把餐次词补回去，语境不丢\n\n'
+    + 'v2.21（2026.8.24）\n【生日双历互算】\n· 填了出生年月日的生日（阳历阴历都行），卡片自动换算出另一个历法的生日：「换算：TA的农历生日是五月初二 · 下次落 明年6月6日」\n· 一键「🌗 农历生日也提醒 / 🌞 阳历生日也提醒」补建另一条；已有的不重复建（orion 和 Orion 这种大小写也认得出是同一人）\n· 反向换算引擎与农历表同源，1901–2099 与 zhdate 参照库逐日比对零偏差；生在闰月的按平月过\n【下次日期看得懂了】\n· 今年已经过完的，下次写明「明年 6月15日」；更远的直接带年份——不再让 6 月的生日在 8 月看起来像还没过\n【小修】\n· v2.12 之前建的老条目没有场景图标：现在按名字兜底（生日🎂 / 纪念💍 / 还款💳），不用重建\n· 老条目想要岁数和双历换算：点「改」→ 选 🎂生日 场景 → 补个出生年份即可\n\n'
     + 'v2.20（2026.8.24）\n【新符号 ？疑问 · ！重点】\n· 符号面板 4 行变 6 行：？还没弄清的事，！值得记住的一句\n· 侧栏「按标记汇总」多两栏：疑问一处翻、重点一处翻；分组报告单列「！重点」「？疑问」段\n· 流水里句尾带「？」的行自动识别为疑问（心情句不抢、任务区不抢）；导入导出、分享图、手册同步认识\n【✨ 聪明工具条（内测）】\n· 设置「内测实验室」里打开：打字时键盘上方递一排小抓手——写「明天下午三点交方案」递出「📅挂到8.25」「🕐记时间15:00」，写「晚饭在『烤匠』」递「#美食」，提到分组名/常用组也递 #签\n· 点一下贴上、变 ✓；再点取消，取消过的这行就不再自动挂——比回车后默默挂上看得见、可反悔\n· 识别与自动识别同一套规则；默认关，关着时一切照旧\n\n'
     + 'v2.19（2026.8.24）\n【输入工具条重做】\n· 九键平铺 → 五组大键：四个符号键收成一格（显示当前行符号，点开弹面板换，面板自带解释）\n· # 分组、📷 照片升级为带字大键；两个缩进键合成一个聪明键——上一条是事件时「⇥挂入」，已挂着时「⇤升出」，挂无可挂自动置灰\n· 🗑删除 与 ↩撤回 成对放条尾：删是删整行（连子弹一起），撤回是整行找回，不再是一次一个字\n\n'
     + 'v2.18（2026.8.24）\n【修复 · 笔记本页面蹿动】\n· 标题跳正文、正文打前几行字时整页乱蹿：长文编辑豁免了「保持在键盘上方」的滚动逻辑，自动长高改为只长不缩并锁定滚动位置\n【笔记本里写任务】\n· 以「- 」或「□ 」开头的行（回车或离开本子时）自动变成今天首页的任务，带「📓 翻开」来源签；生成后各走各的，改行字算新任务\n【全局返回上一页】\n· 进入二级页（人物页、本子、从日历点进的某天、集子…）左上角 ☰ 变成「‹ 返回」，一路原路返回；右上「回今日」照旧并清空来路\n【修复 · 熟人册新人被顶替】\n· 根因是重启后编号水位漏算了熟人册/循环提醒/笔记本，导致新人和旧人撞号——水位已补全，已撞的号启动时自动换新，账号小本解锁时同步计入\n\n'
@@ -3288,6 +3296,7 @@ function shMascot(ctx, cx, cy, h, T){
   ctx.restore();
 }
 function shGlyph(e){
+  if (e.sym === 'note' && mealGlyphSlot(e)) return {t:'🍚', c:null};
   if (e.sym === 'task') return {t:{open:'•', done:'✓', migrated:'›', dropped:'✕', delegated:'→', someday:'☾'}[e.state] || '•',
     c:{done:'#5F8F66', dropped:'#C0604E'}[e.state] || null};
   return {t:{event:'○', note:'—', mood:'＝', ask:'？', bang:'！'}[e.sym] || '•',
@@ -3319,7 +3328,7 @@ function shList(ctx, items, x, y0, maxW, F, T, fit){
     const g = shGlyph(it.e), indent = it.child ? F * 1.5 : 0;
     const tx = x + indent + F * 1.35, tw = maxW - indent - F * 1.35;
     ctx.font = shFont(it.child ? 400 : 500, it.child ? childF : F);
-    const lines = shWrap(ctx, it.e.text || '', tw);
+    const lines = shWrap(ctx, mealFullText(it.e), tw);
     if (!fit){
       ctx.fillStyle = g.c || (it.e.sym === 'mood' ? '#8A79A8' : (it.child ? T.soft : T.ink));
       ctx.font = shFont(600, it.child ? childF : F);
@@ -3575,7 +3584,16 @@ const MEAL_ORDER = ['bre','lun','tea','sup','din'];   /* 宵在晚前判：「�
 const MEAL_RES = {bre:/早饭|早餐|早上吃/, lun:/午饭|午餐|中午吃|中午点/, tea:/下午茶/, sup:/夜宵|宵夜/, din:/晚饭|晚餐|晚上吃|晚上点/};
 const MEAL_NM = {bre:'早', lun:'午', tea:'下午茶', din:'晚', sup:'宵夜', unk:'?'};
 const MEAL_WORD = {bre:'早饭', lun:'午饭', tea:'下午茶', din:'晚饭', sup:'夜宵'};
+function mealGlyphSlot(e){   /* 明确的一顿：快捷表标了 e.meal，或文字里写了餐词（不含分组+时间兜底） */
+  if (e.meal) return e.meal;
+  const t = e.text || '';
+  if (!t) return null;
+  for (const k of MEAL_ORDER){ if (MEAL_RES[k].test(t)) return k; }
+  return null;
+}
+function mealFullText(e){ return (e.meal && MEAL_WORD[e.meal] ? MEAL_WORD[e.meal] + ' ' : '') + (e.text || ''); }
 function mealSlotOf(e){
+  if (e.meal) return e.meal;
   const t = e.text || '';
   if (!t) return null;
   for (const k of MEAL_ORDER){ if (MEAL_RES[k].test(t)) return k; }
@@ -3608,9 +3626,7 @@ function mealAutoTagAll(){
   let tagged = false;
   walk((d, e) => {
     if (!e.text) return;
-    let hit = false;
-    for (const k of MEAL_ORDER){ if (MEAL_RES[k].test(e.text)){ hit = true; break; } }
-    if (!hit) return;
+    if (!mealGlyphSlot(e)) return;
     if ((e.groups || []).some(g => tplOf(g) === 'food')) return;
     const p = parseEntry(e);
     if (!(p.store || p.delivery)) return;
@@ -4065,14 +4081,16 @@ function renderNote(n){
   setTimeout(() => growTA(ta), 30);
 }
 function mealComposeText(slot, o){
-  if (o.form === '没吃') return MEAL_WORD[slot] + ' 没吃';
-  let t2 = MEAL_WORD[slot];
-  if (o.form === '外卖') t2 += ' 点了外卖';
-  if (o.store) t2 += (o.form === '外卖' ? '' : ' 在') + '「' + o.store + '」';
-  if (o.form === '自己做的') t2 += ' 自己做的';
-  if (o.withs && o.withs.length) t2 += ' 和' + o.withs.join('、');
-  t2 += o.what ? ((o.withs && o.withs.length) ? ('吃了' + o.what) : (' 吃了' + o.what))
+  /* v2.22：餐次不再写进正文（由 e.meal 小签承担），金额拼在句尾走既有价格识别 */
+  if (o.form === '没吃') return '没吃';
+  let t2 = '';
+  if (o.form === '外卖') t2 += '点了外卖';
+  if (o.store) t2 += (o.form === '外卖' ? '' : '在') + '「' + o.store + '」';
+  if (o.form === '自己做的') t2 += (t2 ? ' ' : '') + '自己做的';
+  if (o.withs && o.withs.length) t2 += (t2 ? ' ' : '') + '和' + o.withs.join('、');
+  t2 += o.what ? ((o.withs && o.withs.length) ? ('吃了' + o.what) : ((t2 ? ' ' : '') + '吃了' + o.what))
     : ((o.withs && o.withs.length) || o.store ? '吃的' : '');
+  if (o.amt) t2 += ' ' + o.amt + '元';
   return t2;
 }
 function mealComposerHTML(){
@@ -4084,7 +4102,7 @@ function mealComposerHTML(){
     + '<div style="display:flex;gap:8px">'
     + '<input class="vt-in" id="mcStore" placeholder="店名（可不填）" style="flex:1.1">'
     + '<input class="vt-in" id="mcWith" placeholder="和谁（可不填）" style="flex:1">'
-    + '<input class="vt-in" id="mcTime" type="time" style="flex:.9"></div>'
+    + '<input class="vt-in" id="mcAmt" type="number" min="0" step="0.01" inputmode="decimal" placeholder="¥ 花销（选填）" style="flex:.9"></div>'
     + '<button class="rv-confirm" id="mcSave">记下这顿</button>';
 }
 function bindMealComposer(root, key, slot, done){
@@ -4099,14 +4117,14 @@ function bindMealComposer(root, key, slot, done){
     const what = root.querySelector('#mcWhat').value.trim();
     const store = root.querySelector('#mcStore').value.trim();
     const withs = root.querySelector('#mcWith').value.trim().split(/[、，,\s和]+/).map(x => x.trim()).filter(Boolean);
-    const tm = root.querySelector('#mcTime').value;
+    const amtV = root.querySelector('#mcAmt').value.trim();
+    const amt = (form !== '没吃' && amtV && +amtV > 0) ? +amtV : null;
     if (form !== '没吃' && !what && !store){ toast('写点什么，或选「这顿没吃」'); return; }
-    const e = {sym:'note', state:'open', text:mealComposeText(slot, {form, what, store, withs}), _id:++uid};
-    if (tm && form !== '没吃') e.time = tm;
+    const e = {sym:'note', state:'open', meal:slot, text:mealComposeText(slot, {form, what, store, withs, amt}), _id:++uid};
     if (!PAGES[key]) PAGES[key] = {plan:[], flow:[]};
     PAGES[key].flow.push(e);
     try{ mealAutoTagAll(); }catch(_){}   /* 立刻挂签，墙上颜色即时正确 */
-    scheduleSave(); toast('已记下 · ' + e.text.slice(0, 16));
+    scheduleSave(); toast('已记下 · ' + MEAL_WORD[slot] + ' ' + e.text.slice(0, 12));
     if (done) done();
   };
 }
@@ -4154,14 +4172,15 @@ function renderMeals(){
   view.appendChild(pan);
   const grid = document.createElement('div'); grid.className = 'tp-pan';
   let gh = '<div class="tt">最近两周 · 早 / 午 / 晚</div>'
-    + '<div class="vt-note" style="margin:0 0 6px">空圈点一下＝快速补记这顿 · 灰点＝日常吃 · 橙点＝这顿进了美食集子 · 点日期看那天</div>';
+    + '<div class="vt-note" style="margin:0 0 6px">虚圈＝还没记，点一下补 · ✕＝这顿没吃 · 灰点＝日常吃 · 彩点＝进了美食集子 · 点日期看那天</div>';
   const d4 = parseKey(TODAY);
   for (let i = 0; i < 14; i++){
     const k4 = dkey(d4); const sE = byDayE[k4] || {};
     const c4 = k5 => {
       const r = sE[k5];
-      const cls = r ? (((r.e.groups || []).some(g => tplOf(g) === 'food')) ? 'ml-on' : 'ml-onn') : 'ml-off';
-      return '<i class="ml-cell ' + cls + '" data-k5="' + k5 + '" data-d="' + k4 + '"></i>';
+      const skip = r && /没吃|没有吃/.test(r.e.text || '');
+      const cls = !r ? 'ml-off' : skip ? 'ml-skip' : (((r.e.groups || []).some(g => tplOf(g) === 'food')) ? 'ml-on' : 'ml-onn');
+      return '<i class="ml-cell ' + cls + '" data-k5="' + k5 + '" data-d="' + k4 + '">' + (skip ? '✕' : '') + '</i>';
     };
     const s4 = byDay[k4] || new Set();
     const extra = (s4.has('tea') ? ' 茶' : '') + (s4.has('sup') ? ' 宵' : '') + (s4.has('unk') ? ' ?' : '');
@@ -4181,7 +4200,7 @@ function renderMeals(){
   });
   view.appendChild(grid);
   const tip = document.createElement('div'); tip.className = 'vt-tip';
-  tip.textContent = '平时写「早饭/午饭/晚饭 + 吃了什么」自动归格；漏了的直接点墙上的空圈补一顿——是否吃了、吃了什么、和谁、几点，一张小表填完。带「店名」或外卖的会同时收进美食集子（橙点）。';
+  tip.textContent = '平时写「早饭/午饭/晚饭 + 吃了什么」自动归格；漏了的直接点墙上的虚圈补一顿——吃了什么、店名、和谁、花了多少，一张小表填完。带「店名」或外卖的会同时收进美食集子（彩点）。';
   view.appendChild(tip);
 }
 function relChipHtml(sel){
