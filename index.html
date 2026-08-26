@@ -403,6 +403,18 @@
     border-radius:13px;background:transparent;color:var(--ink-faint);cursor:pointer}
   .ftab.on{background:var(--accent-soft);border-color:#E8C9A6;color:var(--ink);font-weight:700}
   .hw-link{font-size:11px;color:var(--accent);letter-spacing:0;cursor:pointer;flex:none}
+  .exbar{display:flex;height:12px;border-radius:7px;overflow:hidden;margin:12px 2px 8px}
+  .exbar i{display:block;height:100%}
+  .exlegend{display:flex;flex-wrap:wrap;gap:6px 12px;padding:0 2px 2px;font-size:11.5px;color:var(--ink-soft)}
+  .exlegend span{display:flex;align-items:center;gap:5px}
+  .exlegend i{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+  .exlegend b{color:var(--ink);font-weight:600}
+  .exrank{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:12.5px}
+  .exrank:last-child{border-bottom:0}
+  .exrank .nm{width:46px;flex:none;color:var(--ink-soft)}
+  .exrank .bar{flex:1;height:8px;border-radius:5px;background:#EFECE4;overflow:hidden}
+  .exrank .bar i{display:block;height:100%;border-radius:5px}
+  .exrank .v{flex:none;font-weight:600}
   #recall{
     position:absolute;left:0;right:0;display:none;gap:9px;align-items:center;
     padding:9px 14px;background:var(--accent-soft);border-top:1px solid var(--line);
@@ -845,11 +857,22 @@ function commit(e){
 /* ============ 条目渲染 ============ */
 function chipRow(e, editable){
   const hasG = e.groups && e.groups.length;
-  if (!e.badge && !e.time && !e.due && !hasG && !e.src && !e.srcDay && !e.note && !e.nbId && !e.meal) return null;
+  let expK = null;
+  if (modOn('ledger') && e.text){
+    const px = parseEntry(e);
+    if (px.prices && px.prices.length) expK = expKindOf(e, px);
+  }
+  if (!e.badge && !e.time && !e.due && !hasG && !e.src && !e.srcDay && !e.note && !e.nbId && !e.meal && !expK) return null;
   const c = document.createElement('div'); c.className = 'chips';
   if (e.meal && MEAL_WORD[e.meal]){
     const mb = document.createElement('span'); mb.className = 'badge';
     mb.textContent = '🍚 ' + MEAL_WORD[e.meal]; c.appendChild(mb);
+  }
+  if (expK){
+    const xb = document.createElement('span'); xb.className = 'badge';
+    xb.textContent = '💰 ' + expLabel(expK); xb.style.cursor = 'pointer';
+    xb.onclick = ev => { ev.stopPropagation(); expSheet(e); };
+    c.appendChild(xb);
   }
   if (hasG) e.groups.forEach(g => {
     const b = document.createElement('span'); b.className = 'badge';
@@ -1364,6 +1387,19 @@ function render(){
     if (cur.tab === 'meal') renderMeals();
     else renderGroupBody();
   }
+  else if (cur.name === 'ledger'){
+    /* v2.24 记账板块（方案B双页签）：流水=账单页 · 盘点=月对比与去向 */
+    if (!cur.tab) cur.tab = 'liu';
+    topTitle.textContent = '记账'; reviewBtn.textContent = '回今日';
+    const ltb = document.createElement('div'); ltb.className = 'ftabs';
+    ltb.innerHTML = '<div class="ftab' + (cur.tab === 'liu' ? ' on' : '') + '" data-ft="liu">📒 流水</div>'
+      + '<div class="ftab' + (cur.tab === 'pan' ? ' on' : '') + '" data-ft="pan">📊 盘点</div>';
+    ltb.querySelectorAll('.ftab').forEach(t2 => t2.onclick = () => {
+      if (cur.tab !== t2.dataset.ft){ cur.tab = t2.dataset.ft; navFromBack = true; render(); } });
+    view.appendChild(ltb);
+    if (cur.tab === 'pan') renderLedgerPan();
+    else renderLedgerFlow();
+  }
   else if (cur.name === 'search'){
     topTitle.textContent = '搜索'; reviewBtn.textContent = '回今日';
     view.appendChild(sectionLabel('「' + cur.q + '」的结果 · 点结果跳到当天'));
@@ -1425,7 +1461,7 @@ function render(){
       pendingRestore = false; $('#jsonInput').click();
     });
     view.appendChild(sectionLabel('板块管理 · 关掉的从侧栏消失，数据不动'));
-    [['notes','📓 笔记本','基础'],['meals','🍚 美食','扩展'],['people','👥 熟人册','扩展'],['vault','🔐 账号小本','扩展'],['cycles','🔁 循环提醒','基础']].forEach(([k, nm, tier]) => {
+    [['notes','📓 笔记本','基础'],['meals','🍚 美食','扩展'],['ledger','💰 记账','扩展'],['people','👥 熟人册','扩展'],['vault','🔐 账号小本','扩展'],['cycles','🔁 循环提醒','基础']].forEach(([k, nm, tier]) => {
       const on = modOn(k);
       const tg = document.createElement('button'); tg.className = 'gm-btn'; tg.style.marginLeft = 'auto';
       tg.textContent = on ? '开 ✓' : '关'; tg.style.color = on ? 'var(--green)' : 'var(--ink-faint)';
@@ -1438,6 +1474,7 @@ function render(){
           try{ mealAutoTagAll(); }catch(_){}
           toast('美食已打开 · 集子和三餐都在侧栏「美食」里');
         }
+        if (k === 'ledger' && !on) toast('记账已打开 · 写「打车 45元」这样带金额的句子就自动成账');
         scheduleSave(); render();
       };
     });
@@ -1452,7 +1489,7 @@ function render(){
         toast(!on ? '已开启 · 写一行「明天下午三点交方案」试试' : '已关闭 · 随时回来再开');
       };
     })();
-    mkRow('版本记录', sub('v2.23 ›'), showChangelog);
+    mkRow('版本记录', sub('v2.24 ›'), showChangelog);
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
       if (pendingWipe){ localStorage.removeItem(LSKEY); location.reload(); return; }
@@ -1723,6 +1760,13 @@ function sbBuild(e){
       else { (e.groups = e.groups || []).push(o.g); toast('已归入 #' + o.g); }
     });
   });
+  if (modOn('ledger')){
+    const pl = parseLine(t);
+    if (pl.prices && pl.prices.length){
+      const k = expKindOf(e, pl);
+      if (k) chip('💰 ' + expLabel(k) + ' · 换类', false, () => { expSheet(e); });
+    }
+  }
   if (!S.children.length) return hide();
   S.classList.add('on'); placeToolbar();
 }
@@ -1898,6 +1942,7 @@ function buildDrawer(){
     const rows0 = [['☾','晚间复盘', () => { closeDrawer(); openReview(); }]];
     if (modOn('notes')) rows0.push(['📓','笔记本', () => { cur = {name:'notes'}; closeDrawer(); render(); }]);
     if (modOn('meals')) rows0.push(['🍚','美食', () => { cur = {name:'food'}; closeDrawer(); render(); }]);
+    if (modOn('ledger')) rows0.push(['💰','记账', () => { cur = {name:'ledger'}; closeDrawer(); render(); }]);
     if (modOn('people')) rows0.push(['👥','熟人册', () => { cur = {name:'people'}; closeDrawer(); render(); }]);
     if (modOn('cycles')) rows0.push(['🔁','循环提醒', () => { cur = {name:'cycles'}; closeDrawer(); render(); }]);
     if (modOn('vault')) rows0.push(['🔐','账号小本', () => { cur = {name:'vault'}; closeDrawer(); render(); }]);
@@ -2668,7 +2713,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.23（当前 · 2026.8.25）\n【美食升格为板块 · 侧栏一个门】\n· 侧栏不再有 #美食 分组 + 三餐 两个入口——板块区一个「🍚 美食」，进门是双页签：🗂 集子（宝藏/家常/避雷、榜单、美食地图、分享）｜🍚 三餐（连击、外卖、花销、打卡墙），横着一步互切，不用跳页\n· 美食不再叫标签：行下小签从「#美食」改为「🍚 美食」，分组面板、聪明工具条同步改口；数据结构不变，老备份原样兼容\n· 板块管理里「三餐」改名「美食」，一个开关管整个板块；已经在用集子的，更新后自动点亮\n· 从打卡墙跳去某天再返回，会回到三餐那一签，不会跑回集子\n\n'
+    + 'v2.24（当前 · 2026.8.26）\n【💰 记账板块（方案B）】\n· 不用换记录方式：任何一行写了金额（45元 / ¥18 / 30块）就自动成账；「工资到账」这类收入句自动排除\n· 类别从「打车/水电/买了…」这些词里保守认出（吃喝/出行/购物/居住/娱乐/医疗/人情/其他），三餐美食自动算吃喝、电影票算娱乐；认不出老实归其他\n· 行下多一枚 💰 小签，点开可换类别、可自定义类别、可选「不算花销」——处处可改铁律\n· 板块页双页签：📒 流水（本月大数字、分类彩条、逐日账单，每行点了跳回当天原句）｜📊 盘点（本月/上月、最大一笔、去向条形、几句值得一提，可切上月/今年、可出分享卡）\n· 聪明工具条同步递 💰 抓手；板块管理「💰 记账（扩展）」默认关\n【¥ 处处能补金额】\n· 三餐快捷表本就有金额框；现在电影/读书/美食集子里没写金额的行，会有一枚「¥ 补一笔」轻推——点开填个数，拼进句尾就归账\n\n'
+    + 'v2.23（2026.8.25）\n【美食升格为板块 · 侧栏一个门】\n· 侧栏不再有 #美食 分组 + 三餐 两个入口——板块区一个「🍚 美食」，进门是双页签：🗂 集子（宝藏/家常/避雷、榜单、美食地图、分享）｜🍚 三餐（连击、外卖、花销、打卡墙），横着一步互切，不用跳页\n· 美食不再叫标签：行下小签从「#美食」改为「🍚 美食」，分组面板、聪明工具条同步改口；数据结构不变，老备份原样兼容\n· 板块管理里「三餐」改名「美食」，一个开关管整个板块；已经在用集子的，更新后自动点亮\n· 从打卡墙跳去某天再返回，会回到三餐那一签，不会跑回集子\n\n'
     + 'v2.22（2026.8.25）\n【三餐三改（按你的截图反馈）】\n· 快捷填写表：时间框换成「¥ 花销」——填了就拼进句尾（45元），当月吃饭花销直接算上；时间本来就有餐次，不用再填\n· 打卡墙四态分明：虚圈＝还没记（点一下补）、✕＝这顿没吃、灰点＝日常吃、彩点＝进了美食集子——没吃和没记不再撞脸\n· 餐食行不再用笔记的「—」：统一小饭碗 🍚 符号；快捷表记的这顿，餐次改成行下小签「🍚 午饭」，不再占正文字符——正文只剩你吃了什么\n· 手写的「晚饭点了外卖…」照旧全认；导出备份、报告、分享图里会自动把餐次词补回去，语境不丢\n\n'
     + 'v2.21（2026.8.24）\n【生日双历互算】\n· 填了出生年月日的生日（阳历阴历都行），卡片自动换算出另一个历法的生日：「换算：TA的农历生日是五月初二 · 下次落 明年6月6日」\n· 一键「🌗 农历生日也提醒 / 🌞 阳历生日也提醒」补建另一条；已有的不重复建（orion 和 Orion 这种大小写也认得出是同一人）\n· 反向换算引擎与农历表同源，1901–2099 与 zhdate 参照库逐日比对零偏差；生在闰月的按平月过\n【下次日期看得懂了】\n· 今年已经过完的，下次写明「明年 6月15日」；更远的直接带年份——不再让 6 月的生日在 8 月看起来像还没过\n【小修】\n· v2.12 之前建的老条目没有场景图标：现在按名字兜底（生日🎂 / 纪念💍 / 还款💳），不用重建\n· 老条目想要岁数和双历换算：点「改」→ 选 🎂生日 场景 → 补个出生年份即可\n\n'
     + 'v2.20（2026.8.24）\n【新符号 ？疑问 · ！重点】\n· 符号面板 4 行变 6 行：？还没弄清的事，！值得记住的一句\n· 侧栏「按标记汇总」多两栏：疑问一处翻、重点一处翻；分组报告单列「！重点」「？疑问」段\n· 流水里句尾带「？」的行自动识别为疑问（心情句不抢、任务区不抢）；导入导出、分享图、手册同步认识\n【✨ 聪明工具条（内测）】\n· 设置「内测实验室」里打开：打字时键盘上方递一排小抓手——写「明天下午三点交方案」递出「📅挂到8.25」「🕐记时间15:00」，写「晚饭在『烤匠』」递「#美食」，提到分组名/常用组也递 #签\n· 点一下贴上、变 ✓；再点取消，取消过的这行就不再自动挂——比回车后默默挂上看得见、可反悔\n· 识别与自动识别同一套规则；默认关，关着时一切照旧\n\n'
@@ -3037,6 +3083,8 @@ function ptagRow(r, tpl, scoredSet){
     (p.prices || []).slice(0, 2).forEach(v => add('sc', '¥' + v));
   }
   if (tpl === 'money') (p.prices || []).forEach(v => add('sc', '¥' + v));
+  if (tpl && tpl !== 'work' && !(p.prices || []).length)
+    add('ask', '¥ 补一笔', ev => { ev.stopPropagation(); openAmtSheet(r.e); });
   if (p.verdict){
     if (tpl === 'food'){ const tr = foodTier(p) || 'jia';
       add(tr === 'lei' ? 'neg' : tr, p.verdict); }
@@ -3591,6 +3639,7 @@ SET.mods = SET.mods || {};
 if (SET.mods.meals === undefined) SET.mods.meals = false;   /* 三餐默认关，设置里打开 */
 if (SET.mods.smartbar === undefined) SET.mods.smartbar = false;   /* 聪明工具条（内测）默认关 */
 if (SET.mods.meals !== true && !SET.mealsUserOff && foodGroupName()) SET.mods.meals = true;   /* v2.23 美食升格为板块：已有集子的直接点亮（手动关过除外） */
+if (SET.mods.ledger === undefined) SET.mods.ledger = false;   /* v2.24 记账默认关，设置里打开 */
 function modOn(k){ return SET.mods[k] !== false; }
 /* ===== v2.15 今日印章 ===== */
 SET.stamps = SET.stamps || [];
@@ -3673,6 +3722,191 @@ function mealAutoTagAll(){
     (e.groups = e.groups || []).push(fg); tagged = true;
   });
   if (tagged){ KNOWN_STORE = null; KNOWN_PPL = null; }   /* 新店随挂签即入熟店簿 */
+}
+/* ===== v2.24 记账（方案B）：金额眼镜 · 轻分类可改 ===== */
+const EXP_NM = {eat:'吃喝', go:'出行', buy:'购物', home:'居住', fun:'娱乐', med:'医疗', ren:'人情', etc:'其他'};
+const EXP_COL = {eat:'var(--accent)', go:'#5B7FA6', buy:'#B07D2E', home:'#5F8F66', fun:'#8A79A8', med:'#C0604E', ren:'#B25A76', etc:'#CFC7B4'};
+const EXP_ORDER = ['eat','go','buy','home','fun','med','ren','etc'];
+function expLabel(k){ return EXP_NM[k] || k; }
+function expColor(k){ return EXP_COL[k] || '#CFC7B4'; }
+function expKindOf(e, p){
+  if (e.exp === 'skip') return null;
+  if (e.exp) return e.exp;
+  const t = e.text || '';
+  if (/(到账|工资|收入|报销|退款|回款|收了|收到)/.test(t)) return null;   /* 收入句不算支出 */
+  if (e.meal || mealGlyphSlot(e) || (e.groups || []).some(g => tplOf(g) === 'food') || (p && (p.store || p.delivery))) return 'eat';
+  if ((e.groups || []).some(g => tplOf(g) === 'movie') || /《[^》]+》|电影票|门票|演出|演唱会|游戏|皮肤|会员/.test(t)) return 'fun';
+  if (/打车|滴滴|地铁|公交|高铁|火车票|机票|加油|停车|骑行|租车/.test(t)) return 'go';
+  if (/房租|水电|物业|燃气|宽带|电费|水费|取暖/.test(t)) return 'home';
+  if (/挂号|买药|药店|医院|体检|看病|疫苗/.test(t)) return 'med';
+  if (/红包|份子|随礼|礼金|请客/.test(t)) return 'ren';
+  if (/买|下单|快递|淘宝|京东|拼多多|超市|采购|囤/.test(t)) return 'buy';
+  return 'etc';
+}
+function expRows(){
+  const out = [];
+  walk((d, e) => {
+    if (!e.text) return;
+    const p = parseEntry(e);
+    if (!(p.prices && p.prices.length)) return;
+    const k = expKindOf(e, p);
+    if (!k) return;
+    out.push({d, e, p, k, sum:p.prices.reduce((a, b) => a + b, 0)});
+  });
+  out.sort((a, b) => parseKey(b.d) - parseKey(a.d));
+  return out;
+}
+function expSheet(e){
+  const S = $('#gsheet');
+  const p = parseEntry(e); const curK = expKindOf(e, p);
+  const customs = (SET.expCats || []).filter(x => !EXP_NM[x]);
+  S.innerHTML = '<div class="gs-title">这笔算什么 · ' + vEsc((e.text || '').slice(0, 14)) + '</div>'
+    + '<div class="gs-chips" id="exChips"></div>'
+    + '<div class="gs-new"><input id="exNew" placeholder="自定义类别…" autocomplete="off"><button id="exAdd">添加</button></div>';
+  const box = $('#exChips');
+  const mk = (k, nm) => {
+    const b = document.createElement('button');
+    b.className = 'gs-chip' + (curK === k ? ' on' : '');
+    b.textContent = nm;
+    b.onclick = () => { snapshot('改花销类别'); e.exp = k; scheduleSave(); closeSheet(); toast('这笔记为「' + expLabel(k) + '」'); render(); };
+    box.appendChild(b);
+  };
+  EXP_ORDER.forEach(k => mk(k, EXP_NM[k]));
+  customs.forEach(k => mk(k, k));
+  const sk = document.createElement('button');
+  sk.className = 'gs-chip' + (e.exp === 'skip' ? ' on' : '');
+  sk.textContent = '不算花销';
+  sk.onclick = () => { snapshot('不算花销'); e.exp = 'skip'; scheduleSave(); closeSheet(); toast('这笔不计入记账'); render(); };
+  box.appendChild(sk);
+  $('#exAdd').onclick = () => {
+    const v = $('#exNew').value.trim().slice(0, 6);
+    if (!v) return;
+    SET.expCats = SET.expCats || [];
+    if (!SET.expCats.includes(v)) SET.expCats.push(v);
+    snapshot('改花销类别'); e.exp = v; scheduleSave(); closeSheet(); toast('这笔记为「' + v + '」'); render();
+  };
+  S.classList.add('on'); $('#mask').classList.add('on');
+}
+function openAmtSheet(e){
+  const S = $('#gsheet');
+  S.innerHTML = '<div class="gs-title">给「' + vEsc((e.text || '').slice(0, 14)) + '」补一笔花销</div>'
+    + '<input class="vt-in" id="amIn" type="number" min="0" step="0.01" inputmode="decimal" placeholder="花了多少（元）" style="margin-top:4px">'
+    + '<button class="rv-confirm" id="amGo" style="margin-top:12px">补上</button>';
+  $('#amGo').onclick = () => {
+    const v = +$('#amIn').value;
+    if (!(v > 0)){ toast('填个数字'); return; }
+    snapshot('补金额'); e.text = (e.text || '').trim() + ' ' + v + '元';
+    scheduleSave(); closeSheet(); render(); toast('已补上 ¥' + v);
+  };
+  S.classList.add('on'); $('#mask').classList.add('on');
+  setTimeout(() => { const i = $('#amIn'); if (i) i.focus(); }, 60);
+}
+function expMonthOf(rows, y, m){ return rows.filter(r => { const a = r.d.split('.').map(Number); return a[0] === y && a[1] === m; }); }
+function expSum(a){ return Math.round(a.reduce((s2, r) => s2 + r.sum, 0)); }
+function renderLedgerFlow(){
+  const rows = expRows();
+  const ta = TODAY.split('.').map(Number);
+  const mon = expMonthOf(rows, ta[0], ta[1]);
+  const pm = ta[1] === 1 ? [ta[0] - 1, 12] : [ta[0], ta[1] - 1];
+  const pSum = expSum(expMonthOf(rows, pm[0], pm[1]));
+  const mSum = expSum(mon);
+  const diff = pSum ? (mSum <= pSum ? '比上月少 ¥' + (pSum - mSum) : '比上月多 ¥' + (mSum - pSum)) : '';
+  const hero = document.createElement('div'); hero.className = 'tp-pan'; hero.style.textAlign = 'center';
+  hero.innerHTML = '<div class="tt" style="display:flex;justify-content:center">' + ta[1] + ' 月 支 出</div>'
+    + '<div style="font-size:33px;font-weight:800;letter-spacing:.5px;margin:2px 0">¥' + mSum.toLocaleString() + '</div>'
+    + '<div class="vt-note" style="margin:0">' + mon.length + ' 笔 · 日均 ¥' + Math.round(mSum / Math.max(1, ta[2])) + (diff ? ' · ' + diff : '') + '</div>'
+    + '<div class="vt-note" style="margin:4px 0 0">「工资到账」这类收入句不算 · 点 💰 小签可改类别或不计入</div>';
+  view.appendChild(hero);
+  const byK = {};
+  mon.forEach(r => byK[r.k] = (byK[r.k] || 0) + r.sum);
+  const ks = Object.keys(byK).sort((a, b) => byK[b] - byK[a]);
+  if (mSum > 0){
+    const wrap = document.createElement('div');
+    wrap.innerHTML = '<div class="exbar">' + ks.map(k =>
+        '<i style="width:' + Math.max(2, byK[k] / mSum * 100) + '%;background:' + expColor(k) + '"></i>').join('') + '</div>'
+      + '<div class="exlegend">' + ks.map(k =>
+        '<span><i style="background:' + expColor(k) + '"></i>' + vEsc(expLabel(k)) + ' <b>¥' + Math.round(byK[k]) + '</b></span>').join('') + '</div>';
+    view.appendChild(wrap);
+  }
+  if (!cur.listN) cur.listN = 30;
+  const shown = rows.slice(0, cur.listN);
+  let lastD = null;
+  shown.forEach(r => {
+    if (r.d !== lastD){
+      lastD = r.d;
+      const daySum = Math.round(rows.filter(x => x.d === r.d).reduce((s2, x) => s2 + x.sum, 0));
+      const h = document.createElement('div'); h.className = 'date-group'; h.style.display = 'flex';
+      h.innerHTML = '<span>' + dayGroupTitle(r.d) + '</span><span style="margin-left:auto">¥' + daySum + '</span>';
+      view.appendChild(h);
+    }
+    view.appendChild(jumpRow(r.d, r.e));   /* 行下自带 💰 小签（可点改类），不再重复画 */
+  });
+  if (!rows.length){
+    const d = document.createElement('div'); d.className = 'empty-hint';
+    d.textContent = '还没有带金额的记录 · 在任何一行写「打车 45元」「咖啡 ¥18」就自动成账';
+    view.appendChild(d);
+  }
+  if (rows.length > cur.listN){
+    const more = document.createElement('div'); more.className = 'tapzone'; more.style.textAlign = 'center';
+    more.textContent = '▾ 加载更早（还有 ' + (rows.length - cur.listN) + ' 笔）';
+    more.onclick = () => { cur.listN += 50; render(); };
+    view.appendChild(more);
+  }
+}
+function renderLedgerPan(){
+  if (!cur.exRng) cur.exRng = 'month';
+  const rows = expRows();
+  const ta = TODAY.split('.').map(Number);
+  const pm = ta[1] === 1 ? [ta[0] - 1, 12] : [ta[0], ta[1] - 1];
+  const inMon = r => { const a = r.d.split('.').map(Number); return a[0] === ta[0] && a[1] === ta[1]; };
+  const inPrev = r => { const a = r.d.split('.').map(Number); return a[0] === pm[0] && a[1] === pm[1]; };
+  const rr = rows.filter(cur.exRng === 'month' ? inMon : cur.exRng === 'lastmonth' ? inPrev : (r => +r.d.split('.')[0] === ta[0]));
+  const XL = {month:'本月', lastmonth:'上月', year:'今年'};
+  const XC = ['month', 'lastmonth', 'year'];
+  const tabs = document.createElement('div'); tabs.className = 'rp-tabs'; tabs.style.marginTop = '14px';
+  const rc = document.createElement('button'); rc.className = 'chip on'; rc.textContent = '盘点 · ' + XL[cur.exRng] + ' ▾';
+  rc.onclick = () => { cur.exRng = XC[(XC.indexOf(cur.exRng) + 1) % XC.length]; render(); };
+  tabs.appendChild(rc);
+  const shc = document.createElement('button'); shc.className = 'chip'; shc.textContent = '▣ 分享';
+  shc.onclick = () => openShare(statsPayload('记账', 'money', tplStats('money', rr), cur.exRng === 'year' ? 'year' : 'month'));
+  tabs.appendChild(shc);
+  view.appendChild(tabs);
+  const mSum = expSum(rows.filter(inMon)), pSum = expSum(rows.filter(inPrev));
+  let mx = null;
+  rr.forEach(r => { if (!mx || r.sum > mx.sum) mx = r; });
+  const dNum = cur.exRng === 'month' ? ta[2]
+    : cur.exRng === 'lastmonth' ? new Date(pm[0], pm[1], 0).getDate()
+    : Math.max(1, Math.round((parseKey(TODAY) - new Date(ta[0], 0, 1)) / 86400000) + 1);
+  const pan = document.createElement('div'); pan.className = 'tp-pan';
+  pan.innerHTML = '<div class="tt">花 在 哪 了 · ' + XL[cur.exRng] + '</div>'
+    + '<div class="tp-nums">'
+    + [['¥' + mSum.toLocaleString(), '本月'], ['¥' + pSum.toLocaleString(), '上月'],
+       ['¥' + (mx ? Math.round(mx.sum) : 0), '最大一笔'], ['¥' + Math.round(expSum(rr) / dNum), '日均']]
+      .map(t => '<div class="n"><b>' + t[0] + '</b><span>' + t[1] + '</span></div>').join('') + '</div>';
+  const byK = {}; rr.forEach(r => byK[r.k] = (byK[r.k] || 0) + r.sum);
+  const ks = Object.keys(byK).sort((a, b) => byK[b] - byK[a]);
+  const top = ks.length ? byK[ks[0]] : 0;
+  pan.innerHTML += ks.map(k => '<div class="exrank"><span class="nm">' + vEsc(expLabel(k)) + '</span>'
+    + '<span class="bar"><i style="width:' + Math.max(4, byK[k] / (top || 1) * 100) + '%;background:' + expColor(k) + '"></i></span>'
+    + '<span class="v">¥' + Math.round(byK[k]) + '</span></div>').join('');
+  view.appendChild(pan);
+  const notes = [];
+  if (mx) notes.push('最大一笔：' + (mx.e.text || '').replace(/\s*[¥￥]?\d+(?:\.\d+)?[元块]?\s*$/, '').slice(0, 14) + '（¥' + Math.round(mx.sum) + ' · ' + fmtShort(mx.d) + '）');
+  const wm = rr.filter(r => r.p.delivery);
+  if (wm.length) notes.push('外卖 ' + wm.length + ' 次，共 ¥' + expSum(wm));
+  const comp = {};
+  rr.forEach(r => { if (r.k === 'eat') (r.p.withs || []).forEach(w => { if (w !== '独自') comp[w] = (comp[w] || 0) + r.sum; }); });
+  const tc = Object.entries(comp).sort((a, b) => b[1] - a[1])[0];
+  if (tc) notes.push('和 ' + tc[0] + ' 吃饭花了 ¥' + Math.round(tc[1]));
+  if (notes.length){
+    const nk = document.createElement('div'); nk.className = 'tp-pan';
+    nk.innerHTML = '<div class="tt">值 得 一 提</div>'
+      + notes.map(x => '<div class="exrank" style="font-size:12.5px">' + vEsc(x) + '</div>').join('');
+    view.appendChild(nk);
+  }
+  if (!rr.length){
+    const d = document.createElement('div'); d.className = 'empty-hint'; d.textContent = '这个范围还没有带金额的记录'; view.appendChild(d);
+  }
 }
 /* ===== v2.13 熟人册 ===== */
 SET.people = SET.people || [];
