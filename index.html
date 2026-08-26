@@ -1491,7 +1491,7 @@ function render(){
         toast(!on ? '已开启 · 写一行「明天下午三点交方案」试试' : '已关闭 · 随时回来再开');
       };
     })();
-    mkRow('版本记录', sub('v2.25 ›'), showChangelog);
+    mkRow('版本记录', sub('v2.26 ›'), showChangelog);
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
       if (pendingWipe){ localStorage.removeItem(LSKEY); location.reload(); return; }
@@ -2715,7 +2715,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.25（当前 · 2026.8.26）\n【💰 记一笔 · 哪天花的记哪天】\n· 记账页新增「＋ 记一笔」：金额、类别、一句备注，还有个日期框——前天打的车今天想起来，选回前天就行\n· 记下的这笔不进什么独立账本，直接并到那天的手帐流水里，行首以 💰 符号出现，和手写的一样可改可删可撤\n· 备注留空就用类别名组句（「出行 45元」）；选了类别的直接定类，没选的按词典自动认\n\n'
+    + 'v2.26（当前 · 2026.8.26）\n【记账类别 · 你说了算】\n· 类别管理（盘点页「✎ 类别」或换类面板底部进）：预置八类可改叫法（自动识别规则照旧），自定义的可改名可删——改名会带着用过它的记录一起换，删了的回到自动分类（双确认）\n【点类别看它的全部】\n· 盘点里点任何一个类别条，跳到流水只看那一类：大数字、日均、逐日账单全部只算它；流水页的图例也能点；「只看 · 出行 ✕」一点回到全部\n\n'
+    + 'v2.25（2026.8.26）\n【💰 记一笔 · 哪天花的记哪天】\n· 记账页新增「＋ 记一笔」：金额、类别、一句备注，还有个日期框——前天打的车今天想起来，选回前天就行\n· 记下的这笔不进什么独立账本，直接并到那天的手帐流水里，行首以 💰 符号出现，和手写的一样可改可删可撤\n· 备注留空就用类别名组句（「出行 45元」）；选了类别的直接定类，没选的按词典自动认\n\n'
     + 'v2.24（2026.8.26）\n【💰 记账板块（方案B）】\n· 不用换记录方式：任何一行写了金额（45元 / ¥18 / 30块）就自动成账；「工资到账」这类收入句自动排除\n· 类别从「打车/水电/买了…」这些词里保守认出（吃喝/出行/购物/居住/娱乐/医疗/人情/其他），三餐美食自动算吃喝、电影票算娱乐；认不出老实归其他\n· 行下多一枚 💰 小签，点开可换类别、可自定义类别、可选「不算花销」——处处可改铁律\n· 板块页双页签：📒 流水（本月大数字、分类彩条、逐日账单，每行点了跳回当天原句）｜📊 盘点（本月/上月、最大一笔、去向条形、几句值得一提，可切上月/今年、可出分享卡）\n· 聪明工具条同步递 💰 抓手；板块管理「💰 记账（扩展）」默认关\n【¥ 处处能补金额】\n· 三餐快捷表本就有金额框；现在电影/读书/美食集子里没写金额的行，会有一枚「¥ 补一笔」轻推——点开填个数，拼进句尾就归账\n\n'
     + 'v2.23（2026.8.25）\n【美食升格为板块 · 侧栏一个门】\n· 侧栏不再有 #美食 分组 + 三餐 两个入口——板块区一个「🍚 美食」，进门是双页签：🗂 集子（宝藏/家常/避雷、榜单、美食地图、分享）｜🍚 三餐（连击、外卖、花销、打卡墙），横着一步互切，不用跳页\n· 美食不再叫标签：行下小签从「#美食」改为「🍚 美食」，分组面板、聪明工具条同步改口；数据结构不变，老备份原样兼容\n· 板块管理里「三餐」改名「美食」，一个开关管整个板块；已经在用集子的，更新后自动点亮\n· 从打卡墙跳去某天再返回，会回到三餐那一签，不会跑回集子\n\n'
     + 'v2.22（2026.8.25）\n【三餐三改（按你的截图反馈）】\n· 快捷填写表：时间框换成「¥ 花销」——填了就拼进句尾（45元），当月吃饭花销直接算上；时间本来就有餐次，不用再填\n· 打卡墙四态分明：虚圈＝还没记（点一下补）、✕＝这顿没吃、灰点＝日常吃、彩点＝进了美食集子——没吃和没记不再撞脸\n· 餐食行不再用笔记的「—」：统一小饭碗 🍚 符号；快捷表记的这顿，餐次改成行下小签「🍚 午饭」，不再占正文字符——正文只剩你吃了什么\n· 手写的「晚饭点了外卖…」照旧全认；导出备份、报告、分享图里会自动把餐次词补回去，语境不丢\n\n'
@@ -3731,7 +3732,7 @@ function mealAutoTagAll(){
 const EXP_NM = {eat:'吃喝', go:'出行', buy:'购物', home:'居住', fun:'娱乐', med:'医疗', ren:'人情', etc:'其他'};
 const EXP_COL = {eat:'var(--accent)', go:'#5B7FA6', buy:'#B07D2E', home:'#5F8F66', fun:'#8A79A8', med:'#C0604E', ren:'#B25A76', etc:'#CFC7B4'};
 const EXP_ORDER = ['eat','go','buy','home','fun','med','ren','etc'];
-function expLabel(k){ return EXP_NM[k] || k; }
+function expLabel(k){ return (SET.expNames && SET.expNames[k]) || EXP_NM[k] || k; }
 function expColor(k){ return EXP_COL[k] || '#CFC7B4'; }
 function expKindOf(e, p){
   if (e.exp === 'skip') return null;
@@ -3767,7 +3768,8 @@ function expSheet(e){
   const customs = (SET.expCats || []).filter(x => !EXP_NM[x]);
   S.innerHTML = '<div class="gs-title">这笔算什么 · ' + vEsc((e.text || '').slice(0, 14)) + '</div>'
     + '<div class="gs-chips" id="exChips"></div>'
-    + '<div class="gs-new"><input id="exNew" placeholder="自定义类别…" autocomplete="off"><button id="exAdd">添加</button></div>';
+    + '<div class="gs-new"><input id="exNew" placeholder="自定义类别…" autocomplete="off"><button id="exAdd">添加</button></div>'
+    + '<div class="hw-tip" style="padding:8px 2px 0"><span class="hw-link" id="exMng">✎ 类别管理 · 改名 / 删除</span></div>';
   const box = $('#exChips');
   const mk = (k, nm) => {
     const b = document.createElement('button');
@@ -3776,7 +3778,7 @@ function expSheet(e){
     b.onclick = () => { snapshot('改花销类别'); e.exp = k; scheduleSave(); closeSheet(); toast('这笔记为「' + expLabel(k) + '」'); render(); };
     box.appendChild(b);
   };
-  EXP_ORDER.forEach(k => mk(k, EXP_NM[k]));
+  EXP_ORDER.forEach(k => mk(k, expLabel(k)));
   customs.forEach(k => mk(k, k));
   const sk = document.createElement('button');
   sk.className = 'gs-chip' + (e.exp === 'skip' ? ' on' : '');
@@ -3790,6 +3792,58 @@ function expSheet(e){
     if (!SET.expCats.includes(v)) SET.expCats.push(v);
     snapshot('改花销类别'); e.exp = v; scheduleSave(); closeSheet(); toast('这笔记为「' + v + '」'); render();
   };
+  const mng = $('#exMng'); if (mng) mng.onclick = expCatManage;
+  S.classList.add('on'); $('#mask').classList.add('on');
+}
+let pendingCatDel = null;
+function expCatManage(){
+  const S = $('#gsheet');
+  const customs = (SET.expCats || []).filter(x => !EXP_NM[x]);
+  let h = '<div class="gs-title">类别管理 · 预置的可改叫法，自定义的可改可删</div>';
+  h += EXP_ORDER.map(k => '<div class="set-row"><span>' + vEsc(expLabel(k))
+    + (SET.expNames && SET.expNames[k] ? '<i style="font-style:normal;color:var(--ink-faint);font-size:11px">　原「' + EXP_NM[k] + '」</i>' : '')
+    + '</span><button class="gm-btn" data-rn="' + k + '" style="margin-left:auto">改名</button></div>').join('');
+  h += customs.map(c => '<div class="set-row"><span>' + vEsc(c) + '</span>'
+    + '<button class="gm-btn" data-rn="@' + escAttr(c) + '" style="margin-left:auto">改名</button>'
+    + '<button class="gm-btn danger" data-del="' + escAttr(c) + '">' + (pendingCatDel === c ? '确认删除' : '删') + '</button></div>').join('');
+  if (!customs.length) h += '<div class="hw-tip" style="padding:8px 2px 0">在换类面板里「自定义类别…」能加新的</div>';
+  S.innerHTML = h;
+  S.querySelectorAll('[data-rn]').forEach(b => b.onclick = () => expCatRename(b.dataset.rn));
+  S.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
+    const c = b.dataset.del;
+    if (pendingCatDel !== c){ pendingCatDel = c; toast('再点一次确认 · 用过它的记录会回到自动分类'); expCatManage(); return; }
+    pendingCatDel = null;
+    SET.expCats = (SET.expCats || []).filter(x => x !== c);
+    walk((d, e2) => { if (e2.exp === c) delete e2.exp; });
+    scheduleSave(); toast('已删除「' + c + '」'); expCatManage(); render();
+  });
+  S.classList.add('on'); $('#mask').classList.add('on');
+}
+function expCatRename(tag){
+  const isCustom = tag.indexOf('@') === 0;
+  const key = isCustom ? tag.slice(1) : tag;
+  const old = isCustom ? key : expLabel(key);
+  const S = $('#gsheet');
+  S.innerHTML = '<div class="gs-title">给「' + vEsc(old) + '」改个叫法</div>'
+    + '<input class="vt-in" id="ecName" value="' + escAttr(old) + '" maxlength="6" style="margin-top:4px">'
+    + '<button class="rv-confirm" id="ecGo" style="margin-top:12px">保存</button>'
+    + (isCustom ? '<div class="hw-tip" style="padding:6px 2px 0">改名后，用过它的记录会一起换新叫法</div>'
+                : '<div class="hw-tip" style="padding:6px 2px 0">预置类别改的只是叫法，自动识别规则照旧</div>');
+  $('#ecGo').onclick = () => {
+    const v = $('#ecName').value.trim().slice(0, 6);
+    if (!v){ toast('写个名字'); return; }
+    if (isCustom){
+      if (v !== key){
+        SET.expCats = (SET.expCats || []).map(x => x === key ? v : x);
+        walk((d, e2) => { if (e2.exp === key) e2.exp = v; });
+      }
+    } else {
+      SET.expNames = SET.expNames || {};
+      if (v === EXP_NM[key]) delete SET.expNames[key]; else SET.expNames[key] = v;
+    }
+    scheduleSave(); toast('已改叫「' + v + '」'); expCatManage(); render();
+  };
+  setTimeout(() => { const i = $('#ecName'); if (i) i.focus(); }, 60);
   S.classList.add('on'); $('#mask').classList.add('on');
 }
 function openAmtSheet(e){
@@ -3852,11 +3906,19 @@ function ledgerSheet(){
   setTimeout(() => { const i = $('#lgAmt'); if (i) i.focus(); }, 60);
 }
 function renderLedgerFlow(){
+  const xf = cur.exFilter || null;
   const bar0 = document.createElement('div'); bar0.className = 'rp-tabs'; bar0.style.marginTop = '14px'; bar0.style.marginBottom = '0';
   const addC = document.createElement('button'); addC.className = 'chip on'; addC.textContent = '＋ 记一笔';
   addC.onclick = ledgerSheet;
-  bar0.appendChild(addC); view.appendChild(bar0);
-  const rows = expRows();
+  bar0.appendChild(addC);
+  if (xf){
+    const fc = document.createElement('button'); fc.className = 'chip';
+    fc.textContent = '只看 · ' + expLabel(xf) + ' ✕';
+    fc.onclick = () => { delete cur.exFilter; navFromBack = true; render(); };
+    bar0.appendChild(fc);
+  }
+  view.appendChild(bar0);
+  const rows = xf ? expRows().filter(r => r.k === xf) : expRows();
   const ta = TODAY.split('.').map(Number);
   const mon = expMonthOf(rows, ta[0], ta[1]);
   const pm = ta[1] === 1 ? [ta[0] - 1, 12] : [ta[0], ta[1] - 1];
@@ -3864,21 +3926,25 @@ function renderLedgerFlow(){
   const mSum = expSum(mon);
   const diff = pSum ? (mSum <= pSum ? '比上月少 ¥' + (pSum - mSum) : '比上月多 ¥' + (mSum - pSum)) : '';
   const hero = document.createElement('div'); hero.className = 'tp-pan'; hero.style.textAlign = 'center';
-  hero.innerHTML = '<div class="tt" style="display:flex;justify-content:center">' + ta[1] + ' 月 支 出</div>'
+  hero.innerHTML = '<div class="tt" style="display:flex;justify-content:center">' + (xf ? ta[1] + ' 月 · ' + vEsc(expLabel(xf)) : ta[1] + ' 月 支 出') + '</div>'
     + '<div style="font-size:33px;font-weight:800;letter-spacing:.5px;margin:2px 0">¥' + mSum.toLocaleString() + '</div>'
     + '<div class="vt-note" style="margin:0">' + mon.length + ' 笔 · 日均 ¥' + Math.round(mSum / Math.max(1, ta[2])) + (diff ? ' · ' + diff : '') + '</div>'
-    + '<div class="vt-note" style="margin:4px 0 0">「工资到账」这类收入句不算 · 点 💰 小签可改类别或不计入</div>';
+    + (xf ? '<div class="vt-note" style="margin:4px 0 0">正在只看「' + vEsc(expLabel(xf)) + '」· 点上面的 ✕ 回到全部</div>'
+          : '<div class="vt-note" style="margin:4px 0 0">「工资到账」这类收入句不算 · 点 💰 小签可改类别或不计入 · 点类别只看那一类</div>');
   view.appendChild(hero);
-  const byK = {};
-  mon.forEach(r => byK[r.k] = (byK[r.k] || 0) + r.sum);
-  const ks = Object.keys(byK).sort((a, b) => byK[b] - byK[a]);
-  if (mSum > 0){
-    const wrap = document.createElement('div');
-    wrap.innerHTML = '<div class="exbar">' + ks.map(k =>
-        '<i style="width:' + Math.max(2, byK[k] / mSum * 100) + '%;background:' + expColor(k) + '"></i>').join('') + '</div>'
-      + '<div class="exlegend">' + ks.map(k =>
-        '<span><i style="background:' + expColor(k) + '"></i>' + vEsc(expLabel(k)) + ' <b>¥' + Math.round(byK[k]) + '</b></span>').join('') + '</div>';
-    view.appendChild(wrap);
+  if (!xf){
+    const byK = {};
+    mon.forEach(r => byK[r.k] = (byK[r.k] || 0) + r.sum);
+    const ks = Object.keys(byK).sort((a, b) => byK[b] - byK[a]);
+    if (mSum > 0){
+      const wrap = document.createElement('div');
+      wrap.innerHTML = '<div class="exbar">' + ks.map(k =>
+          '<i style="width:' + Math.max(2, byK[k] / mSum * 100) + '%;background:' + expColor(k) + '"></i>').join('') + '</div>'
+        + '<div class="exlegend">' + ks.map(k =>
+          '<span data-xk="' + escAttr(k) + '" style="cursor:pointer"><i style="background:' + expColor(k) + '"></i>' + vEsc(expLabel(k)) + ' <b>¥' + Math.round(byK[k]) + '</b></span>').join('') + '</div>';
+      wrap.querySelectorAll('[data-xk]').forEach(el => el.onclick = () => { cur.exFilter = el.dataset.xk; navFromBack = true; render(); });
+      view.appendChild(wrap);
+    }
   }
   if (!cur.listN) cur.listN = 30;
   const shown = rows.slice(0, cur.listN);
@@ -3895,7 +3961,7 @@ function renderLedgerFlow(){
   });
   if (!rows.length){
     const d = document.createElement('div'); d.className = 'empty-hint';
-    d.textContent = '还没有带金额的记录 · 在任何一行写「打车 45元」「咖啡 ¥18」就自动成账';
+    d.textContent = xf ? '「' + expLabel(xf) + '」还没有记录' : '还没有带金额的记录 · 在任何一行写「打车 45元」「咖啡 ¥18」就自动成账';
     view.appendChild(d);
   }
   if (rows.length > cur.listN){
@@ -3922,6 +3988,9 @@ function renderLedgerPan(){
   const shc = document.createElement('button'); shc.className = 'chip'; shc.textContent = '▣ 分享';
   shc.onclick = () => openShare(statsPayload('记账', 'money', tplStats('money', rr), cur.exRng === 'year' ? 'year' : 'month'));
   tabs.appendChild(shc);
+  const mgc = document.createElement('button'); mgc.className = 'chip'; mgc.textContent = '✎ 类别';
+  mgc.onclick = expCatManage;
+  tabs.appendChild(mgc);
   view.appendChild(tabs);
   const mSum = expSum(rows.filter(inMon)), pSum = expSum(rows.filter(inPrev));
   let mx = null;
@@ -3938,10 +4007,13 @@ function renderLedgerPan(){
   const byK = {}; rr.forEach(r => byK[r.k] = (byK[r.k] || 0) + r.sum);
   const ks = Object.keys(byK).sort((a, b) => byK[b] - byK[a]);
   const top = ks.length ? byK[ks[0]] : 0;
-  pan.innerHTML += ks.map(k => '<div class="exrank"><span class="nm">' + vEsc(expLabel(k)) + '</span>'
+  pan.innerHTML += ks.map(k => '<div class="exrank" data-xk="' + escAttr(k) + '" style="cursor:pointer"><span class="nm">' + vEsc(expLabel(k)) + '</span>'
     + '<span class="bar"><i style="width:' + Math.max(4, byK[k] / (top || 1) * 100) + '%;background:' + expColor(k) + '"></i></span>'
-    + '<span class="v">¥' + Math.round(byK[k]) + '</span></div>').join('');
+    + '<span class="v">¥' + Math.round(byK[k]) + '</span><span style="color:var(--ink-faint);font-size:11px">›</span></div>').join('');
   view.appendChild(pan);
+  pan.querySelectorAll('[data-xk]').forEach(el => el.onclick = () => {
+    cur.tab = 'liu'; cur.exFilter = el.dataset.xk; navFromBack = true; render();
+  });
   const notes = [];
   if (mx) notes.push('最大一笔：' + (mx.e.text || '').replace(/\s*[¥￥]?\d+(?:\.\d+)?[元块]?\s*$/, '').slice(0, 14) + '（¥' + Math.round(mx.sum) + ' · ' + fmtShort(mx.d) + '）');
   const wm = rr.filter(r => r.p.delivery);
