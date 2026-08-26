@@ -81,6 +81,7 @@
   .glyph.ask{color:#5B7FA6;font-weight:800;font-size:15px}
   .glyph.bang{color:#B5493A;font-weight:800;font-size:15px}
   .glyph.meal{font-size:12.5px;line-height:1}
+  .glyph.moneyg{font-size:12.5px;line-height:1}
   .entry.someday .entry-text,.entry.someday .line-input{color:var(--ink-soft)}
   .entry-body{flex:1;min-width:0}
   .entry-text{font-size:16px;line-height:1.6;word-break:break-all}
@@ -747,7 +748,8 @@ function symNode(e){
     else s.innerHTML = '<span class="dot"></span>';
   }
   else if (e.sym === 'event') s.innerHTML = '<span class="circle"></span>';
-  else if (e.sym === 'note')  s.innerHTML = mealGlyphSlot(e) ? '<span class="glyph meal">🍚</span>' : '<span class="dash"></span>';
+  else if (e.sym === 'note')  s.innerHTML = e.ledger ? '<span class="glyph moneyg">💰</span>'
+    : (mealGlyphSlot(e) ? '<span class="glyph meal">🍚</span>' : '<span class="dash"></span>');
   else if (e.sym === 'mood')  s.innerHTML = '<span class="ddash"><i></i><i></i></span>';
   else if (e.sym === 'ask')   s.innerHTML = '<span class="glyph ask">？</span>';
   else if (e.sym === 'bang')  s.innerHTML = '<span class="glyph bang">！</span>';
@@ -1489,7 +1491,7 @@ function render(){
         toast(!on ? '已开启 · 写一行「明天下午三点交方案」试试' : '已关闭 · 随时回来再开');
       };
     })();
-    mkRow('版本记录', sub('v2.24 ›'), showChangelog);
+    mkRow('版本记录', sub('v2.25 ›'), showChangelog);
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
       if (pendingWipe){ localStorage.removeItem(LSKEY); location.reload(); return; }
@@ -2713,7 +2715,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.24（当前 · 2026.8.26）\n【💰 记账板块（方案B）】\n· 不用换记录方式：任何一行写了金额（45元 / ¥18 / 30块）就自动成账；「工资到账」这类收入句自动排除\n· 类别从「打车/水电/买了…」这些词里保守认出（吃喝/出行/购物/居住/娱乐/医疗/人情/其他），三餐美食自动算吃喝、电影票算娱乐；认不出老实归其他\n· 行下多一枚 💰 小签，点开可换类别、可自定义类别、可选「不算花销」——处处可改铁律\n· 板块页双页签：📒 流水（本月大数字、分类彩条、逐日账单，每行点了跳回当天原句）｜📊 盘点（本月/上月、最大一笔、去向条形、几句值得一提，可切上月/今年、可出分享卡）\n· 聪明工具条同步递 💰 抓手；板块管理「💰 记账（扩展）」默认关\n【¥ 处处能补金额】\n· 三餐快捷表本就有金额框；现在电影/读书/美食集子里没写金额的行，会有一枚「¥ 补一笔」轻推——点开填个数，拼进句尾就归账\n\n'
+    + 'v2.25（当前 · 2026.8.26）\n【💰 记一笔 · 哪天花的记哪天】\n· 记账页新增「＋ 记一笔」：金额、类别、一句备注，还有个日期框——前天打的车今天想起来，选回前天就行\n· 记下的这笔不进什么独立账本，直接并到那天的手帐流水里，行首以 💰 符号出现，和手写的一样可改可删可撤\n· 备注留空就用类别名组句（「出行 45元」）；选了类别的直接定类，没选的按词典自动认\n\n'
+    + 'v2.24（2026.8.26）\n【💰 记账板块（方案B）】\n· 不用换记录方式：任何一行写了金额（45元 / ¥18 / 30块）就自动成账；「工资到账」这类收入句自动排除\n· 类别从「打车/水电/买了…」这些词里保守认出（吃喝/出行/购物/居住/娱乐/医疗/人情/其他），三餐美食自动算吃喝、电影票算娱乐；认不出老实归其他\n· 行下多一枚 💰 小签，点开可换类别、可自定义类别、可选「不算花销」——处处可改铁律\n· 板块页双页签：📒 流水（本月大数字、分类彩条、逐日账单，每行点了跳回当天原句）｜📊 盘点（本月/上月、最大一笔、去向条形、几句值得一提，可切上月/今年、可出分享卡）\n· 聪明工具条同步递 💰 抓手；板块管理「💰 记账（扩展）」默认关\n【¥ 处处能补金额】\n· 三餐快捷表本就有金额框；现在电影/读书/美食集子里没写金额的行，会有一枚「¥ 补一笔」轻推——点开填个数，拼进句尾就归账\n\n'
     + 'v2.23（2026.8.25）\n【美食升格为板块 · 侧栏一个门】\n· 侧栏不再有 #美食 分组 + 三餐 两个入口——板块区一个「🍚 美食」，进门是双页签：🗂 集子（宝藏/家常/避雷、榜单、美食地图、分享）｜🍚 三餐（连击、外卖、花销、打卡墙），横着一步互切，不用跳页\n· 美食不再叫标签：行下小签从「#美食」改为「🍚 美食」，分组面板、聪明工具条同步改口；数据结构不变，老备份原样兼容\n· 板块管理里「三餐」改名「美食」，一个开关管整个板块；已经在用集子的，更新后自动点亮\n· 从打卡墙跳去某天再返回，会回到三餐那一签，不会跑回集子\n\n'
     + 'v2.22（2026.8.25）\n【三餐三改（按你的截图反馈）】\n· 快捷填写表：时间框换成「¥ 花销」——填了就拼进句尾（45元），当月吃饭花销直接算上；时间本来就有餐次，不用再填\n· 打卡墙四态分明：虚圈＝还没记（点一下补）、✕＝这顿没吃、灰点＝日常吃、彩点＝进了美食集子——没吃和没记不再撞脸\n· 餐食行不再用笔记的「—」：统一小饭碗 🍚 符号；快捷表记的这顿，餐次改成行下小签「🍚 午饭」，不再占正文字符——正文只剩你吃了什么\n· 手写的「晚饭点了外卖…」照旧全认；导出备份、报告、分享图里会自动把餐次词补回去，语境不丢\n\n'
     + 'v2.21（2026.8.24）\n【生日双历互算】\n· 填了出生年月日的生日（阳历阴历都行），卡片自动换算出另一个历法的生日：「换算：TA的农历生日是五月初二 · 下次落 明年6月6日」\n· 一键「🌗 农历生日也提醒 / 🌞 阳历生日也提醒」补建另一条；已有的不重复建（orion 和 Orion 这种大小写也认得出是同一人）\n· 反向换算引擎与农历表同源，1901–2099 与 zhdate 参照库逐日比对零偏差；生在闰月的按平月过\n【下次日期看得懂了】\n· 今年已经过完的，下次写明「明年 6月15日」；更远的直接带年份——不再让 6 月的生日在 8 月看起来像还没过\n【小修】\n· v2.12 之前建的老条目没有场景图标：现在按名字兜底（生日🎂 / 纪念💍 / 还款💳），不用重建\n· 老条目想要岁数和双历换算：点「改」→ 选 🎂生日 场景 → 补个出生年份即可\n\n'
@@ -3383,6 +3386,7 @@ function shMascot(ctx, cx, cy, h, T){
   ctx.restore();
 }
 function shGlyph(e){
+  if (e.sym === 'note' && e.ledger) return {t:'💰', c:null};
   if (e.sym === 'note' && mealGlyphSlot(e)) return {t:'🍚', c:null};
   if (e.sym === 'task') return {t:{open:'•', done:'✓', migrated:'›', dropped:'✕', delegated:'→', someday:'☾'}[e.state] || '•',
     c:{done:'#5F8F66', dropped:'#C0604E'}[e.state] || null};
@@ -3735,6 +3739,7 @@ function expKindOf(e, p){
   const t = e.text || '';
   if (/(到账|工资|收入|报销|退款|回款|收了|收到)/.test(t)) return null;   /* 收入句不算支出 */
   if (e.meal || mealGlyphSlot(e) || (e.groups || []).some(g => tplOf(g) === 'food') || (p && (p.store || p.delivery))) return 'eat';
+  if (/咖啡|奶茶|喝了|甜品|零食|水果|买菜/.test(t)) return 'eat';
   if ((e.groups || []).some(g => tplOf(g) === 'movie') || /《[^》]+》|电影票|门票|演出|演唱会|游戏|皮肤|会员/.test(t)) return 'fun';
   if (/打车|滴滴|地铁|公交|高铁|火车票|机票|加油|停车|骑行|租车/.test(t)) return 'go';
   if (/房租|水电|物业|燃气|宽带|电费|水费|取暖/.test(t)) return 'home';
@@ -3803,7 +3808,54 @@ function openAmtSheet(e){
 }
 function expMonthOf(rows, y, m){ return rows.filter(r => { const a = r.d.split('.').map(Number); return a[0] === y && a[1] === m; }); }
 function expSum(a){ return Math.round(a.reduce((s2, r) => s2 + r.sum, 0)); }
+function ledgerSheet(){
+  const S = $('#gsheet');
+  const ta = TODAY.split('.').map(Number);
+  const customs = (SET.expCats || []).filter(x => !EXP_NM[x]);
+  S.innerHTML = '<div class="gs-title">记一笔 · 并进那天的手帐</div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<input class="vt-in" id="lgAmt" type="number" min="0" step="0.01" inputmode="decimal" placeholder="¥ 花了多少" style="flex:1.1;margin-top:0">'
+    + '<input class="vt-in" id="lgDate" type="date" style="flex:1;margin-top:0"></div>'
+    + '<div class="gs-chips" id="lgCats" style="margin-top:10px"></div>'
+    + '<input class="vt-in" id="lgNote" placeholder="一句备注（如：打车去机场 · 不填就用类别名）">'
+    + '<button class="rv-confirm" id="lgSave">记下这笔</button>'
+    + '<div class="hw-tip" style="padding:6px 2px 0">哪天花的选哪天——这笔会以 💰 出现在那天的手帐里，随时可改可删</div>';
+  $('#lgDate').value = ta[0] + '-' + String(ta[1]).padStart(2, '0') + '-' + String(ta[2]).padStart(2, '0');
+  let sel = null;
+  const box = $('#lgCats');
+  EXP_ORDER.concat(customs).forEach(k => {
+    const b = document.createElement('button'); b.className = 'gs-chip'; b.textContent = expLabel(k); b.dataset.lc = k;
+    b.onclick = () => {
+      const on = b.classList.contains('on');
+      box.querySelectorAll('.gs-chip').forEach(x => x.classList.remove('on'));
+      sel = on ? null : k; if (!on) b.classList.add('on');
+    };
+    box.appendChild(b);
+  });
+  $('#lgSave').onclick = () => {
+    const v = +$('#lgAmt').value;
+    if (!(v > 0)){ toast('先填花了多少'); return; }
+    const dv = $('#lgDate').value;
+    if (!dv){ toast('选一下哪天花的'); return; }
+    const a2 = dv.split('-').map(Number);
+    const key = a2[0] + '.' + a2[1] + '.' + a2[2];
+    const note = $('#lgNote').value.trim();
+    const e = {sym:'note', ledger:1, text:(note || (sel ? expLabel(sel) : '花销')) + ' ' + v + '元', _id:++uid};
+    if (sel) e.exp = sel;
+    if (!PAGES[key]) PAGES[key] = {plan:[], flow:[]};
+    PAGES[key].flow.push(e);
+    scheduleSave(); closeSheet();
+    toast('已记到 ' + fmtKey(key) + ' · ' + e.text.slice(0, 12));
+    render();
+  };
+  S.classList.add('on'); $('#mask').classList.add('on');
+  setTimeout(() => { const i = $('#lgAmt'); if (i) i.focus(); }, 60);
+}
 function renderLedgerFlow(){
+  const bar0 = document.createElement('div'); bar0.className = 'rp-tabs'; bar0.style.marginTop = '14px'; bar0.style.marginBottom = '0';
+  const addC = document.createElement('button'); addC.className = 'chip on'; addC.textContent = '＋ 记一笔';
+  addC.onclick = ledgerSheet;
+  bar0.appendChild(addC); view.appendChild(bar0);
   const rows = expRows();
   const ta = TODAY.split('.').map(Number);
   const mon = expMonthOf(rows, ta[0], ta[1]);
