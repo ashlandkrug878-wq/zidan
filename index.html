@@ -416,6 +416,18 @@
   .exrank .bar{flex:1;height:8px;border-radius:5px;background:#EFECE4;overflow:hidden}
   .exrank .bar i{display:block;height:100%;border-radius:5px}
   .exrank .v{flex:none;font-weight:600}
+  .minor-strip{border:1px dashed var(--line-strong);border-radius:13px;background:var(--card);
+    padding:9px 12px;margin-top:14px;font-size:12.5px;color:var(--ink-soft);cursor:pointer;
+    display:flex;align-items:center;gap:7px}
+  .minor-strip b{color:var(--ink);white-space:nowrap;flex:none}
+  .minor-strip .ms-segs{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .minor-strip .ms-ar{margin-left:auto;color:var(--ink-faint);flex:none}
+  .minor-box{border:1px dashed var(--line-strong);border-radius:13px;background:var(--card);
+    padding:2px 10px 4px;margin-top:8px}
+  .minor-box .line-input,.minor-box .entry-text{font-size:13px;color:var(--ink-soft)}
+  .minor-box .sym{transform:scale(.88);transform-origin:left center}
+  .minor-box .badge{font-size:9.5px}
+  .minor-cap{font-size:10.5px;color:var(--ink-faint);padding:6px 2px 6px}
   #recall{
     position:absolute;left:0;right:0;display:none;gap:9px;align-items:center;
     padding:9px 14px;background:var(--accent-soft);border-top:1px solid var(--line);
@@ -735,6 +747,9 @@ function findEntry(e){
 }
 function removeEntry(e){ const loc = findEntry(e); if (loc) loc.list.splice(loc.idx, 1); }
 
+/* ===== v2.27 小事折叠：模块生出来的行（打卡/足迹/记一笔）不打扰正文 ===== */
+let minorOpen = new Set();
+function isMinor(e){ return !!(e.ledger || e.nbId || e.meal); }
 /* ============ 符号 ============ */
 function symNode(e){
   const s = document.createElement('span'); s.className = 'sym';
@@ -1076,6 +1091,11 @@ function gotoDay(k){
   render();
 }
 function jumpToEntry(date, id){
+  if (PAGES[date]){
+    let hit = null;
+    walkPage(date, e => { if (e._id === id) hit = e; });
+    if (hit && isMinor(hit)) minorOpen.add(date);   /* 目标在小事折叠里 → 自动展开 */
+  }
   gotoDay(date);
   setTimeout(() => {
     const el = view.querySelector('[data-eid="' + id + '"]');
@@ -1144,7 +1164,34 @@ function renderPageInto(box, date, editable){
   p.plan.forEach(e => box.appendChild(entryNode(e, editable)));
   if (editable) box.appendChild(tapZone('＋ 补一条要做的', false, () => addLine(p.plan)));
   box.appendChild(sectionLabel('今天发生'));
-  p.flow.forEach(e => box.appendChild(entryNode(e, editable)));
+  const majors = [], minors = [];
+  p.flow.forEach(e => (isMinor(e) ? minors : majors).push(e));
+  majors.forEach(e => box.appendChild(entryNode(e, editable)));
+  if (minors.length){
+    const meals2 = minors.filter(e => e.meal);
+    const skips2 = meals2.filter(e => /^没(有)?吃$/.test((e.text || '').trim()));
+    const nbs2 = minors.filter(e => e.nbId && !e.meal);
+    const lgs2 = minors.filter(e => e.ledger);
+    const segs = [];
+    if (meals2.length) segs.push('🍚 ' + (skips2.length === meals2.length ? '没吃×' + meals2.length : '三餐×' + meals2.length));
+    if (nbs2.length) segs.push('📓 本子×' + nbs2.length);
+    if (lgs2.length) segs.push('💰 记账×' + lgs2.length);
+    const open = minorOpen.has(date);
+    const strip = document.createElement('div'); strip.className = 'minor-strip';
+    strip.innerHTML = '⚙ <b>' + (date === TODAY ? '今日' : '这天') + '小事 · ' + minors.length + ' 条</b>'
+      + '<span class="ms-segs">' + segs.join(' · ') + '</span>'
+      + '<span class="ms-ar">' + (open ? '▴ 收起' : '▾ 展开') + '</span>';
+    strip.onclick = () => { if (open) minorOpen.delete(date); else minorOpen.add(date); render(); };
+    box.appendChild(strip);
+    if (open){
+      const mb2 = document.createElement('div'); mb2.className = 'minor-box';
+      minors.forEach(e => mb2.appendChild(entryNode(e, editable)));
+      const cap = document.createElement('div'); cap.className = 'minor-cap';
+      cap.textContent = '模块打卡、本子足迹、记的账都收在这 · 每条照旧能改能删';
+      mb2.appendChild(cap);
+      box.appendChild(mb2);
+    }
+  }
   if (editable) box.appendChild(tapZone('点这里，记下今天发生的事…（○ 会接住它引发的一切）', true, () => addLine(p.flow), true));
   else if (!p.flow.length){ const d = document.createElement('div'); d.className = 'empty-hint'; d.textContent = '这天没有流水记录'; box.appendChild(d); }
 }
@@ -1491,7 +1538,7 @@ function render(){
         toast(!on ? '已开启 · 写一行「明天下午三点交方案」试试' : '已关闭 · 随时回来再开');
       };
     })();
-    mkRow('版本记录', sub('v2.26 ›'), showChangelog);
+    mkRow('版本记录', sub('v2.27 ›'), showChangelog);
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
       if (pendingWipe){ localStorage.removeItem(LSKEY); location.reload(); return; }
@@ -2376,7 +2423,8 @@ function renderReview(){
   let doneN = 0; walkPage(TODAY, e => { if (e.state === 'done') doneN++; });
   if (qi >= queue.length){
     let recN = 0, evN = 0; const moods = [];
-    walkPage(TODAY, x => { recN++; if (x.sym === 'mood' && x.text) moods.push(x.text); if (x.sym === 'event') evN++; });
+    walkPage(TODAY, x => { if (isMinor(x) && x.sym !== 'task') return;   /* 小事不进快照 */
+      recN++; if (x.sym === 'mood' && x.text) moods.push(x.text); if (x.sym === 'event') evN++; });
     let oldDone = 0;
     walk((k, x) => { if (k !== TODAY && x.sym === 'task' && x.state === 'done' && x.doneDay === TODAY) oldDone++; });
     const stAll = STAMP_PRESETS.concat((SET.stamps || []).filter(x => !STAMP_PRESETS.includes(x)));
@@ -2715,7 +2763,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.26（当前 · 2026.8.26）\n【记账类别 · 你说了算】\n· 类别管理（盘点页「✎ 类别」或换类面板底部进）：预置八类可改叫法（自动识别规则照旧），自定义的可改名可删——改名会带着用过它的记录一起换，删了的回到自动分类（双确认）\n【点类别看它的全部】\n· 盘点里点任何一个类别条，跳到流水只看那一类：大数字、日均、逐日账单全部只算它；流水页的图例也能点；「只看 · 出行 ✕」一点回到全部\n\n'
+    + 'v2.27（当前 · 2026.8.28）\n【⚙ 今日小事折叠条 · 正文归正文】\n· 模块生出来的行——三餐打卡（含没吃）、本子足迹（开了/写了）、「记一笔」的账——不再混在流水里，收进页尾一条：「⚙ 今日小事 · 5 条　🍚没吃×2 · 📓本子×2 · 💰记账×1」\n· 你亲手写的句子永远在正文，哪怕带着 🍚💰 小签；点条展开是完整的行，照旧能改能删能挂；手动挂到事件下面的小事跟着事件走，不折叠\n· 复盘快照和一日分享卡默认只算正文（任务不受影响）；从汇总/搜索/打卡墙跳到某条小事时会自动帮你展开\n\n'
+    + 'v2.26（2026.8.26）\n【记账类别 · 你说了算】\n· 类别管理（盘点页「✎ 类别」或换类面板底部进）：预置八类可改叫法（自动识别规则照旧），自定义的可改名可删——改名会带着用过它的记录一起换，删了的回到自动分类（双确认）\n【点类别看它的全部】\n· 盘点里点任何一个类别条，跳到流水只看那一类：大数字、日均、逐日账单全部只算它；流水页的图例也能点；「只看 · 出行 ✕」一点回到全部\n\n'
     + 'v2.25（2026.8.26）\n【💰 记一笔 · 哪天花的记哪天】\n· 记账页新增「＋ 记一笔」：金额、类别、一句备注，还有个日期框——前天打的车今天想起来，选回前天就行\n· 记下的这笔不进什么独立账本，直接并到那天的手帐流水里，行首以 💰 符号出现，和手写的一样可改可删可撤\n· 备注留空就用类别名组句（「出行 45元」）；选了类别的直接定类，没选的按词典自动认\n\n'
     + 'v2.24（2026.8.26）\n【💰 记账板块（方案B）】\n· 不用换记录方式：任何一行写了金额（45元 / ¥18 / 30块）就自动成账；「工资到账」这类收入句自动排除\n· 类别从「打车/水电/买了…」这些词里保守认出（吃喝/出行/购物/居住/娱乐/医疗/人情/其他），三餐美食自动算吃喝、电影票算娱乐；认不出老实归其他\n· 行下多一枚 💰 小签，点开可换类别、可自定义类别、可选「不算花销」——处处可改铁律\n· 板块页双页签：📒 流水（本月大数字、分类彩条、逐日账单，每行点了跳回当天原句）｜📊 盘点（本月/上月、最大一笔、去向条形、几句值得一提，可切上月/今年、可出分享卡）\n· 聪明工具条同步递 💰 抓手；板块管理「💰 记账（扩展）」默认关\n【¥ 处处能补金额】\n· 三餐快捷表本就有金额框；现在电影/读书/美食集子里没写金额的行，会有一枚「¥ 补一笔」轻推——点开填个数，拼进句尾就归账\n\n'
     + 'v2.23（2026.8.25）\n【美食升格为板块 · 侧栏一个门】\n· 侧栏不再有 #美食 分组 + 三餐 两个入口——板块区一个「🍚 美食」，进门是双页签：🗂 集子（宝藏/家常/避雷、榜单、美食地图、分享）｜🍚 三餐（连击、外卖、花销、打卡墙），横着一步互切，不用跳页\n· 美食不再叫标签：行下小签从「#美食」改为「🍚 美食」，分组面板、聪明工具条同步改口；数据结构不变，老备份原样兼容\n· 板块管理里「三餐」改名「美食」，一个开关管整个板块；已经在用集子的，更新后自动点亮\n· 从打卡墙跳去某天再返回，会回到三餐那一签，不会跑回集子\n\n'
@@ -3456,7 +3505,7 @@ function shItemsOf(payload){
   if (payload.type === 'day'){
     const p = PAGES[payload.date] || {plan: [], flow: []};
     const arr = [];
-    [...p.plan, ...p.flow].forEach(e => {
+    [...p.plan, ...p.flow].filter(e => !(isMinor(e) && e.sym !== 'task')).forEach(e => {
       arr.push({e, child: false});
       (e.children || []).forEach(ch => arr.push({e: ch, child: true}));
     });
@@ -3590,7 +3639,7 @@ function shEntryPayload(e){
 function shDayPayload(k){
   const p = PAGES[k] || {plan:[], flow:[]};
   let rec = 0, done = 0, ev = 0;
-  walkPage(k, e => { rec++; if (e.state === 'done') done++; if (e.sym === 'event') ev++; });
+  walkPage(k, e => { if (isMinor(e) && e.sym !== 'task') return; rec++; if (e.state === 'done') done++; if (e.sym === 'event') ev++; });
   return {type:'day', head:'点点手帐 · 一日', cardTitle:fmtKey(k) + ' ' + weekCN(k), date:k,
     sub:'记录 ' + rec + ' 条 · 完成 ' + done + ' 件 · 事件 ' + ev + ' 件' + (p.summary ? ('　「' + p.summary + '」') : '')};
 }
