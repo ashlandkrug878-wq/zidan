@@ -506,6 +506,63 @@
   .hello-strip .hs-tx{overflow:hidden;text-overflow:ellipsis;min-width:0}
   .hello-strip .op{margin-left:auto;color:var(--ink-faint);flex:none}
   .pool-line{font-size:12.5px;color:var(--ink-faint);padding:0 2px 6px 34px;cursor:pointer}
+  /* ---------- v2.29 今天吃什么 ---------- */
+  .pk-pool{font-size:12px;color:var(--ink-faint);margin:8px 2px 0}
+  .chip.pk-warm{background:var(--accent-soft);border-color:#F3C9A6;color:var(--accent);font-weight:600}
+  .pk-deck{position:relative;height:412px;margin-top:12px;perspective:900px;cursor:pointer}
+  .pk-back{position:absolute;left:50%;top:14px;width:290px;height:380px;border-radius:18px;background:repeating-linear-gradient(45deg,#E9DFC9 0 10px,#E2D6BE 10px 20px);border:1px solid var(--line-strong)}
+  .pk-back.b1{transform:translateX(-50%) rotate(6deg) translateX(16px)}
+  .pk-back.b2{transform:translateX(-50%) rotate(-5deg) translateX(-14px)}
+  .pk-cover{position:absolute;left:50%;top:0;transform:translateX(-50%);width:300px;height:392px;border-radius:18px;background:var(--card);border:1.5px solid var(--line-strong);box-shadow:0 10px 26px rgba(31,28,23,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+  .pk-q{font-size:22px;font-weight:800}
+  .pk-hint{font-size:12.5px;color:var(--ink-faint)}
+  .pk-card{position:absolute;left:50%;top:0;transform:translateX(-50%);width:312px;max-width:calc(100vw - 40px);max-height:404px;overflow:hidden;border-radius:18px;background:var(--card);border:1.5px solid var(--line-strong);box-shadow:0 10px 26px rgba(31,28,23,.16);padding:16px 18px 14px;cursor:default}
+  .pk-card.gold{border:2px solid #E2C46F;background:linear-gradient(135deg,#FBF2D9 0%,var(--card) 48%)}
+  .pk-card.flip{animation:pkflip .5s cubic-bezier(.2,.8,.3,1)}
+  @keyframes pkflip{from{transform:translateX(-50%) rotateY(90deg)}to{transform:translateX(-50%) rotateY(0deg)}}
+  .pk-top{display:flex;align-items:center;gap:8px}
+  .pk-rare{font-size:12px;font-weight:800;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:3px 10px;letter-spacing:1px;white-space:nowrap}
+  .pk-card.gold .pk-rare{color:#A87A0A;background:#F7EBC8;border:1px solid #E8D28E}
+  .pk-meta{margin-left:auto;font-size:12px;color:var(--ink-soft);white-space:nowrap}
+  .pk-name{font-size:28px;font-weight:800;margin:12px 0 2px;letter-spacing:1px;word-break:break-all;line-height:1.2}
+  .pk-sub{font-size:12.5px;color:var(--ink-faint)}
+  .pk-lab{font-size:11.5px;color:var(--ink-faint);letter-spacing:3px;margin:12px 0 4px;font-weight:600;border-top:1px dashed var(--line-strong);padding-top:11px}
+  .pk-r{display:flex;gap:9px;font-size:14px;line-height:1.55;padding:5px 0}
+  .pk-r .i{width:18px;flex:none;text-align:center}
+  .pk-r q{quotes:none;font-weight:600}
+  .pk-r small{display:block;font-size:11.5px;color:var(--ink-faint);margin-top:1px}
+  .pk-neg{color:var(--red)}
+  .pk-acts{display:flex;gap:10px;margin-top:12px}
+  .pk-go{flex:1.3;border:none;border-radius:13px;background:var(--ink);color:#F6EFE3;font-size:15px;font-weight:700;padding:13px 0;font-family:inherit;cursor:pointer}
+  .pk-go[disabled]{background:var(--green);cursor:default}
+  .pk-re{flex:1;border:1px solid var(--line-strong);border-radius:13px;background:var(--card);color:var(--ink);font-size:15px;padding:13px 0;font-family:inherit;cursor:pointer}
+  .pk-note{font-size:11.5px;color:var(--ink-faint);text-align:center;margin-top:9px;line-height:1.6}
+  .badge.warn{background:#F6E1DC;color:var(--red);font-weight:600}
+  /* ---------- v2.29 说一段，我来安排 ---------- */
+  .vo-entry{margin:2px 0 10px;padding:10px 14px;border-radius:12px;border:1px dashed #F3C9A6;background:var(--accent-soft);color:var(--accent);font-size:14px;cursor:pointer}
+  .vo-entry b{font-weight:700}
+  #voFab{position:absolute;right:18px;bottom:calc(26px + env(safe-area-inset-bottom));width:54px;height:54px;border-radius:50%;border:none;
+    background:var(--ink);color:#FFFDF6;display:none;align-items:center;justify-content:center;z-index:5;cursor:pointer;
+    box-shadow:0 6px 18px rgba(31,28,23,.22),0 1px 3px rgba(31,28,23,.18)}
+  #voFab.on{display:flex}
+  #voFab:active{transform:scale(.94)}
+  #phone.typing #voFab{display:none}
+  .ss-f{display:flex;align-items:center;gap:8px;border:1px solid var(--line-strong);border-radius:10px;padding:0 12px;margin-top:10px;background:var(--card);min-width:0}
+  .ss-f span{flex:none;font-size:12.5px;color:var(--ink-faint)}
+  .ss-f input{flex:1;min-width:0;border:none;background:none;outline:none;font-family:inherit;font-size:16px;color:var(--ink);padding:9px 0}
+  .vo-in{width:100%;border:1px solid var(--line-strong);border-radius:12px;padding:12px;font-size:16px;line-height:1.6;font-family:inherit;background:#FFFEF9;color:var(--ink);resize:none;outline:none;min-height:118px;display:block}
+  .vo-tip{font-size:12px;color:var(--ink-faint);margin:8px 2px 4px;line-height:1.6}
+  .vo-list{max-height:50vh;overflow-y:auto}
+  .vo-row{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px;padding:9px 0;border-bottom:1px dashed var(--line)}
+  .vo-row.off{opacity:.35}
+  .vo-dest{flex:none;border:none;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;background:var(--badge-bg);color:var(--badge-ink);white-space:nowrap}
+  .vo-dest.d-plan{background:#E3EDF4;color:#4E7A9B}
+  .vo-dest.d-day{background:var(--accent-soft);color:var(--accent)}
+  .vo-dest.d-past{background:#ECE7F4;color:#8A6FB1}
+  .vo-t{flex:1;min-width:0;border:none;background:none;font-size:15px;line-height:1.5;font-family:inherit;color:var(--ink);outline:none;padding:3px 0;resize:none;overflow:hidden;display:block}
+  .vo-x{flex:none;border:none;background:none;color:var(--ink-faint);font-size:15px;cursor:pointer;padding:2px 4px}
+  .vo-hint{flex-basis:100%;font-size:11.5px;color:var(--ink-soft);padding-left:2px}
+  .vo-hint:empty{display:none}
 </style>
 </head>
 <body>
@@ -521,6 +578,7 @@
   <div id="tagSug"></div>
   <div id="recall"></div>
   <div id="toolbar"></div>
+  <button id="voFab" aria-label="说一段"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.5" width="6" height="12" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5v3.5"/></svg></button>
   <div id="mask"></div>
   <aside id="drawer">
     <div class="drawer-head">
@@ -588,6 +646,7 @@ function jstrip(k, v){ return k === '_pc' ? undefined : v; }
 function scheduleSave(){
   if (typeof KNOWN_PPL !== 'undefined') KNOWN_PPL = null;
   if (typeof KNOWN_STORE !== 'undefined') KNOWN_STORE = null;
+  STORE_IDX = null;
   clearTimeout(saveTm);
   saveTm = setTimeout(() => { saveTm = null; saveNow(); }, 300);
 }
@@ -932,7 +991,10 @@ function chipRow(e, editable){
     const px = parseEntry(e);
     if (px.prices && px.prices.length) expK = expKindOf(e, px);
   }
-  if (!e.badge && !e.time && !e.due && !hasG && !e.src && !e.srcDay && !e.note && !e.nbId && !e.meal && !expK) return null;
+  const warn = (modOn('meals') && e.text) ? foodWarn(e) : null;   /* v2.29 又写到避雷过的店 */
+  const canSplit = editable && !e.noSplit && e.text && ['event','note','ask','bang'].includes(e.sym)
+    && /[。\n]/.test(e.text.trim().replace(/[。\s]+$/, '')) && splitSentences(e.text).length >= 2;   /* v2.29 一段话拆条 */
+  if (!e.badge && !e.time && !e.due && !hasG && !e.src && !e.srcDay && !e.note && !e.nbId && !e.meal && !expK && !warn && !canSplit) return null;
   const c = document.createElement('div'); c.className = 'chips';
   if (e.meal && MEAL_WORD[e.meal]){
     const mb = document.createElement('span'); mb.className = 'badge';
@@ -984,6 +1046,19 @@ function chipRow(e, editable){
       else toast('这个本子已经删掉了'); };
     c.appendChild(b);
   }
+  if (warn){
+    const b = document.createElement('span'); b.className = 'badge warn'; b.textContent = warn.txt; b.style.cursor = 'pointer';
+    b.onclick = ev => { ev.stopPropagation(); const op = warn.o.op; jumpToEntry(op.k, op.e._id || (op.e._id = ++uid)); };
+    c.appendChild(b);
+  }
+  if (canSplit){
+    const n = splitSentences(e.text).length;
+    const b = document.createElement('span'); b.className = 'badge acc'; b.textContent = '✂ 拆成 ' + n + ' 条'; b.style.cursor = 'pointer';
+    b.onclick = ev => { ev.stopPropagation(); splitEntry(e); };
+    const x = document.createElement('span'); x.className = 'badge'; x.textContent = '不拆'; x.style.cursor = 'pointer';
+    x.onclick = ev => { ev.stopPropagation(); e.noSplit = 1; scheduleSave(); render(); };
+    c.appendChild(b); c.appendChild(x);
+  }
   return c;
 }
 function growTA(t){ if (!t || !t.isConnected) return; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px'; }
@@ -1007,7 +1082,7 @@ function entryNode(e, editable, isChild, flat, liveSym){
       if (e.state === 'open'){
         snapshot('处理任务');
         e.state = 'done'; e.doneDay = TODAY; cycOnDone(e); render();
-        askMemo(e);
+        if (e.pick) pickDone(e); else askMemo(e);
       } else if (e.state === 'done'){
         e.state = 'open'; delete e.doneDay; toast('恢复任务'); render();
       } else { qsTarget = e; openQSheet(); }
@@ -1256,6 +1331,11 @@ function renderPageInto(box, date, editable){
   }
   if (editable) box.appendChild(tapZone('点这里，记下今天发生的事…（○ 会接住它引发的一切）', true, () => addLine(p.flow), true));
   else if (!p.flow.length){ const d = document.createElement('div'); d.className = 'empty-hint'; d.textContent = '这天没有流水记录'; box.appendChild(d); }
+  if (editable && date === TODAY && !SET.voUsed){   /* v2.29 说一段，我来安排（用过一次后只留右下角 🎙） */
+    const vb = document.createElement('div'); vb.className = 'vo-entry';
+    vb.innerHTML = '🎙 <b>说一段</b>，我来安排放哪 · 哪天要做、吃了啥、花了多少都行';
+    vb.onclick = () => voSheet(); box.appendChild(vb);
+  }
 }
 
 /* ============ 汇总 ============ */
@@ -1356,6 +1436,8 @@ function renderGroupBody(){
     } else if (tpl === 'food'){
       const mp = document.createElement('button'); mp.className = 'chip'; mp.textContent = '美食地图';
       mp.onclick = () => openFoodMap(cur.g); tabs.appendChild(mp);
+      const ad = document.createElement('button'); ad.className = 'chip'; ad.textContent = '＋ 记一家店';
+      ad.onclick = () => storeSheet(); tabs.appendChild(ad);
     } else if (tpl){
       const rp = document.createElement('button'); rp.className = 'chip'; rp.textContent = '生成月报';
       rp.onclick = () => {
@@ -1446,6 +1528,7 @@ function render(){
   })();
   if (cur.name !== 'vault' && vaultKey) vaultLock();
   view.innerHTML = '';
+  { const vf = $('#voFab'); if (vf) vf.classList.toggle('on', cur.name === 'today'); }
   if (cur.name === 'today'){
     topTitle.textContent = dayGroupTitle(TODAY); reviewBtn.textContent = '复盘';
     if (modOn('hello')) view.appendChild(helloStripNode());   /* v2.28 早安卡收起后的一行 */
@@ -1503,16 +1586,19 @@ function render(){
   else if (cur.name === 'food'){
     /* v2.23 美食板块（方案B双页签）：集子=资产 · 三餐=习惯，一个门两间房 */
     if (!cur.tab) cur.tab = 'ji';
+    if (cur.tab === 'meal' && SET.mods.mealLog !== true) cur.tab = 'ji';   /* v2.29 三餐打卡退役 */
     topTitle.textContent = '美食'; reviewBtn.textContent = '回今日';
     if (!foodGroupName() && !extraGroups.includes('美食')) extraGroups.push('美食');
     cur.g = foodGroupName() || '美食';
     const ftb = document.createElement('div'); ftb.className = 'ftabs';
     ftb.innerHTML = '<div class="ftab' + (cur.tab === 'ji' ? ' on' : '') + '" data-ft="ji">🗂 集子</div>'
-      + '<div class="ftab' + (cur.tab === 'meal' ? ' on' : '') + '" data-ft="meal">🍚 三餐</div>';
+      + '<div class="ftab' + (cur.tab === 'pick' ? ' on' : '') + '" data-ft="pick">🎲 吃什么</div>'
+      + (SET.mods.mealLog === true ? '<div class="ftab' + (cur.tab === 'meal' ? ' on' : '') + '" data-ft="meal">🍚 三餐</div>' : '');
     ftb.querySelectorAll('.ftab').forEach(t2 => t2.onclick = () => {
       if (cur.tab !== t2.dataset.ft){ cur.tab = t2.dataset.ft; navFromBack = true; render(); } });
     view.appendChild(ftb);
     if (cur.tab === 'meal') renderMeals();
+    else if (cur.tab === 'pick') renderPick();
     else renderGroupBody();
   }
   else if (cur.name === 'ledger'){
@@ -1620,6 +1706,14 @@ function render(){
         scheduleSave(); render();
       };
     });
+    (() => {   /* v2.29 三餐打卡退役：想算卡路里时再开 */
+      const on = SET.mods.mealLog === true;
+      const tg = document.createElement('button'); tg.className = 'gm-btn'; tg.style.marginLeft = 'auto';
+      tg.textContent = on ? '开 ✓' : '关'; tg.style.color = on ? 'var(--green)' : 'var(--ink-faint)';
+      mkRow('🍚 三餐打卡（已退役 · 想算卡路里时再开）', tg, null);
+      tg.onclick = () => { SET.mods.mealLog = !on; scheduleSave(); render();
+        toast(!on ? '三餐打卡已打开 · 在美食的「三餐」页签' : '已收起 · 以前的三餐记录都还在'); };
+    })();
     view.appendChild(sectionLabel('内测实验室 · 聪明工具条：打字时认出日期 / 时间 / 分组，键盘上递一排小抓手，点一下贴上、再点取消'));
     (() => {
       const on = modOn('smartbar');
@@ -1631,7 +1725,7 @@ function render(){
         toast(!on ? '已开启 · 写一行「明天下午三点交方案」试试' : '已关闭 · 随时回来再开');
       };
     })();
-    mkRow('版本记录', sub('v2.28 ›'), showChangelog);
+    mkRow('版本记录', sub('v2.29 ›'), showChangelog);
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
       if (pendingWipe){ localStorage.removeItem(LSKEY); location.reload(); return; }
@@ -2341,7 +2435,7 @@ function buildQSheet(){
       if (t.due && parseKey(t.due) > parseKey(TODAY)) t.due = undefined;
       delete t.delegate; delete t.followArrived; delete t.doneDay;
       fin('已恢复任务');
-    } else { t.state = 'done'; t.doneDay = TODAY; cycOnDone(t); askMemo(t); }
+    } else { t.state = 'done'; t.doneDay = TODAY; cycOnDone(t); if (t.pick) pickDone(t); else askMemo(t); }
   };
   $('#qDrop').onclick = () => { snapshot('处理任务'); t.state = 'dropped'; t.badge = '不做了'; fin('✕ 已放弃 · 保留划痕'); };
   $('#qDel').onclick  = () => { $('#qMigPanel').classList.remove('on'); $('#qDelPanel').classList.toggle('on'); };
@@ -2525,7 +2619,7 @@ function renderReview(){
     const stAll = STAMP_PRESETS.concat((SET.stamps || []).filter(x => !STAMP_PRESETS.includes(x)));
     const stCur = P().stamp || null;
     let mealsHtml = '';
-    if (modOn('meals')){
+    if (modOn('meals') && SET.mods.mealLog === true){
       const got = {};
       walkPage(TODAY, x => { const k2 = mealSlotOf(x);
         if (k2 && k2 !== 'unk' && !got[k2]) got[k2] = mealStrip(x.text).slice(0, 8) || '已记'; });
@@ -2548,6 +2642,7 @@ function renderReview(){
       + (rvLeft ? '<div class="rv-q" style="margin-top:14px;text-align:center">还有 ' + rvLeft + ' 件没做完 · 明天我替你收进「想做的事」'
           + '<br><button class="gm-btn" id="rvWalk" style="margin-top:8px;padding:8px 16px">现在过一遍 ›</button></div>' : '')
       + mealsHtml
+      + '<div class="rv-q" style="margin-top:18px">🎙 说说今天</div><div id="rvVoice"><button class="gm-btn" id="rvVoGo" style="width:100%;padding:10px">说一段，我来安排放哪 ›</button></div>'
       + '<div class="rv-q" style="margin-top:18px">给今天盖个章</div>'
       + '<div class="gs-chips" id="rvStamps">' + stAll.map(x => '<button class="gs-chip' + (stCur === x ? ' on' : '') + '" data-st="' + escAttr(x) + '">' + vEsc(x) + '</button>').join('') + '</div>'
       + '<input id="rvNewStamp" class="qdate" placeholder="或自己刻一个章（会存进你的章库）" style="margin-top:10px">'
@@ -2556,6 +2651,7 @@ function renderReview(){
       + '<button class="gm-btn" id="rvShare" style="width:100%;margin-top:12px;padding:10px">▣ 把今天做成分享图</button></div>';
     $('#rvClose').onclick = closeReview;
     if ($('#rvWalk')) $('#rvWalk').onclick = () => { queue = queue.filter(t => t.state === 'open'); qi = 0; renderReview(); };
+    if ($('#rvVoGo')) $('#rvVoGo').onclick = () => { voMount($('#rvVoice'), {onDone:() => renderReview()}); const vt = $('#voTxt'); if (vt){ try{ vt.focus(); }catch(_){} } };
     R.querySelectorAll('[data-st]').forEach(b => b.onclick = () => {
       P().stamp = b.dataset.st; scheduleSave();
       R.querySelectorAll('[data-st]').forEach(x => x.classList.toggle('on', x === b));
@@ -2849,6 +2945,8 @@ function showManual(){
     + '【因果记录】\n事件行回车：下一行自动挂在这件事下面\n空的子行再回车：回到顶层\n事件行尾「＋」：随时在这件事下补一笔；「▾3」点击折叠\n\n'
     + '【处理任务】\n点符号 = 完成；长按符号 = 推迟 / 不做了 / 转交 / 恢复\n推迟可选任意日期并填进度；转交要填给谁和跟进日，到期自动提醒\n处理面板里的备注会进日报周报\n\n'
     + '【翻阅】\n今日页左右滑（或顶栏 ‹ ›）翻到前一天 / 后一天\n☰ 抽屉：总日历（点日子翻本）、分组集子、各类汇总、搜索\n汇总里点符号可直接勾掉，点文字跳回当天并高亮\n「◂ 8.6 转来」芯片点击跳回源头；历史页的「→8.12」跳去目标日\n\n'
+    + '【🎙 说一段】\n点今日页右下角的 🎙（复盘里是「说说今天」），用键盘右下角的 🎤 一口气说完，点「整理一下」：哪天要做、今天发生、吃了哪家、花了多少，自动放好，放之前能改\n\n'
+    + '【🎲 今天吃什么】\n美食 → 吃什么：只从你说过好吃的店里抽，理由全是你自己写过的话；吃完点 ✓ 一键评价。只记喜欢的和避雷的，三餐打卡在设置里可以再打开\n\n'
     + '【早安卡】\n每天第一次打开递上一张：日期农历节气、天气和昨天比冷暖、今天约好的事、翻到一页旧记录、一句话\n收起后今日页顶上留一行天气条，点开再看；城市在 设置 → 天气城市 里加，最多 3 个\n\n'
     + '【复盘与报告】\n右上「复盘」直达今日快照和盖章；想逐件过没做完的，点「现在过一遍」\n没日子的事当天没做完，第二天自动收进「☾ 想做的事」，不催不计数（设置 → 任务风格 可切回「对账」）\n分组视图里一键生成日报 / 周报 / 月报，可选含心情\n\n'
     + '【数据安全】\n数据只存在本机；设置里定期「完整备份(.json)」\n⏰ 芯片不会响，点它「加入系统日历」才有真提醒'
@@ -2863,7 +2961,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.28（当前 · 2026.11.5）\n【☀ 早安卡 · 每天第一次打开】\n· 今天几号、农历、节气节日，离下个假期还有几天\n· 天气：今天和昨天的温度画成两根条，冷了暖了一眼看出；跟着给穿衣建议（加外套 / 少穿一件 / 照昨天穿），几点开始下雨也说\n· 今天的事：谁过生日、约好今天的、转交该跟进的——只放有日子的\n· 翻到一页：从旧记录里抽一条（一个月前的今天优先），点一下跳回那天\n· 最后点点说一句话；点「开始全新的一天」进今日页\n· 收起后今日页顶上留一行天气条，点开再看整张卡\n· 天气城市在 设置 → 天气城市：最多存 3 个，卡片上点城市名来回切，也能一键定位；没网就不显示天气，别的照常\n【随缘：没做完的不再天天搬】\n· 没日子的任务当天没做完，第二天自动收进「☾ 想做的事」：不弹窗、不计次、不催；今日页一行小字能看到，想做哪件点「⤴ 今天做」\n· 推迟到某天、那天正好没打开的不会再丢：两天内补到今天（带「原定」小签），更久的收进想做的事\n· 晚间复盘直达快照和盖章；想逐件过，点「现在过一遍」\n· 今日页不再挂「>×5」这类拖延计数\n· 喜欢每天逐件表态的，设置 → 任务风格 切回「对账」，一切照旧\n· Someday 改叫「想做的事」\n【三餐不追“没吃”】\n· 打卡墙上没记的那顿只是一个小点，不再是等你填的虚圈\n· 「三餐齐全连击」退役，换成只增不减的「本月吃到新店」\n【其他】\n· App 在后台过了夜，回来自动翻到新的一天；切走前没存的内容先存好\n\n'
+    + 'v2.29（当前 · 2026.11.5）\n【🎲 今天吃什么 · 抽卡】\n· 美食板块第二个页签换成「吃什么」：只从你说过好吃的店里抽，避雷的永远不会出现；宝藏是金边卡\n· 理由全是你自己写过的话：原话、你给自己的提醒（几点去、几个人去）、必点和别点、上次和谁花了多少，再加上今天的天气\n· 城市跟早安卡走，可选堂食 / 外卖；降温的日子「想吃热乎的」自动亮；好久没去的店更容易出现\n· 点「就它了」进今天要做；吃完点 ✓，一键说「宝藏 / 还想去 / 一般 / 避雷」，就算去过一次\n· 早安卡在饭点多一行「中午 / 晚上吃什么？抽一张」\n【🍚 只记喜欢的和避雷的】\n· 三餐打卡退役：三餐页签和复盘里的三餐格子默认收起，以前的记录都在，设置里可以再打开\n· 新增「记一家店」：店名、宝藏 / 还想去 / 避雷、一句话，必点别点城市花费都可不填\n· 去过几次：任何一句话里提到这家店都算（同一天算一次）\n· 又写到避雷过的店，那行下面冒一枚红签，提醒你当时说过什么\n· 识别补强：「可复购」「不会再吃了」认得了；「天使面没那么好吃了」「避雷蓝龙虾」只算单品，不冤枉整家店\n【🎙 说一段，我来安排】\n· 今日页右下角常驻一颗 🎙，复盘里也有「说说今天」：用 iPhone 键盘的听写一口气说，点「整理一下」，每句自动放到该去的地方——后天要做的进后天，今天吃的进今天还认出店名和好不好吃，花的钱进记账（「打车花了45」没说元也认），昨天的事放回昨天\n· 放之前给你看一眼，哪句放哪点一下就能换，不要的划掉\n· 直接在某一行里说了一大段，行下会出现「✂ 拆成 N 条」\n\n'
+    + 'v2.28（2026.11.5）\n【☀ 早安卡 · 每天第一次打开】\n· 今天几号、农历、节气节日，离下个假期还有几天\n· 天气：今天和昨天的温度画成两根条，冷了暖了一眼看出；跟着给穿衣建议（加外套 / 少穿一件 / 照昨天穿），几点开始下雨也说\n· 今天的事：谁过生日、约好今天的、转交该跟进的——只放有日子的\n· 翻到一页：从旧记录里抽一条（一个月前的今天优先），点一下跳回那天\n· 最后点点说一句话；点「开始全新的一天」进今日页\n· 收起后今日页顶上留一行天气条，点开再看整张卡\n· 天气城市在 设置 → 天气城市：最多存 3 个，卡片上点城市名来回切，也能一键定位；没网就不显示天气，别的照常\n【随缘：没做完的不再天天搬】\n· 没日子的任务当天没做完，第二天自动收进「☾ 想做的事」：不弹窗、不计次、不催；今日页一行小字能看到，想做哪件点「⤴ 今天做」\n· 推迟到某天、那天正好没打开的不会再丢：两天内补到今天（带「原定」小签），更久的收进想做的事\n· 晚间复盘直达快照和盖章；想逐件过，点「现在过一遍」\n· 今日页不再挂「>×5」这类拖延计数\n· 喜欢每天逐件表态的，设置 → 任务风格 切回「对账」，一切照旧\n· Someday 改叫「想做的事」\n【三餐不追“没吃”】\n· 打卡墙上没记的那顿只是一个小点，不再是等你填的虚圈\n· 「三餐齐全连击」退役，换成只增不减的「本月吃到新店」\n【其他】\n· App 在后台过了夜，回来自动翻到新的一天；切走前没存的内容先存好\n\n'
     + 'v2.27（2026.8.28）\n【⚙ 今日小事折叠条 · 正文归正文】\n· 模块生出来的行——三餐打卡（含没吃）、本子足迹（开了/写了）、「记一笔」的账——不再混在流水里，收进页尾一条：「⚙ 今日小事 · 5 条　🍚没吃×2 · 📓本子×2 · 💰记账×1」\n· 你亲手写的句子永远在正文，哪怕带着 🍚💰 小签；点条展开是完整的行，照旧能改能删能挂；手动挂到事件下面的小事跟着事件走，不折叠\n· 复盘快照和一日分享卡默认只算正文（任务不受影响）；从汇总/搜索/打卡墙跳到某条小事时会自动帮你展开\n\n'
     + 'v2.26（2026.8.26）\n【记账类别 · 你说了算】\n· 类别管理（盘点页「✎ 类别」或换类面板底部进）：预置八类可改叫法（自动识别规则照旧），自定义的可改名可删——改名会带着用过它的记录一起换，删了的回到自动分类（双确认）\n【点类别看它的全部】\n· 盘点里点任何一个类别条，跳到流水只看那一类：大数字、日均、逐日账单全部只算它；流水页的图例也能点；「只看 · 出行 ✕」一点回到全部\n\n'
     + 'v2.25（2026.8.26）\n【💰 记一笔 · 哪天花的记哪天】\n· 记账页新增「＋ 记一笔」：金额、类别、一句备注，还有个日期框——前天打的车今天想起来，选回前天就行\n· 记下的这笔不进什么独立账本，直接并到那天的手帐流水里，行首以 💰 符号出现，和手写的一样可改可删可撤\n· 备注留空就用类别名组句（「出行 45元」）；选了类别的直接定类，没选的按词典自动认\n\n'
@@ -2938,8 +3037,8 @@ function dotSVG(h){
 SET.gtpl = SET.gtpl || {}; SET.alias = SET.alias || {}; SET.aliasNo = SET.aliasNo || {};
 const CITY_LIST = ['上海','北京','杭州','广州','深圳','成都','重庆','武汉','西安','南京','苏州','天津','长沙','青岛','厦门','宁波','合肥','郑州','济南','福州','昆明','大连','沈阳','哈尔滨','长春','石家庄','太原','南昌','贵阳','南宁','兰州','海口','三亚','无锡','佛山','东莞','珠海','扬州','绍兴','嘉兴','温州','潮汕','顺德'];
 /* 一级＝明确的去留判决（优先），二级＝口味形容（兜底） */
-const V_NEG1 = ['非必要不去','不会再来','避雷','踩雷','别去了','别买'];
-const V_POS1 = ['会再来','可再来','还会来','会回购','可回购','要回购','回购','要二刷','二刷','必吃','宝藏','绝了','必回'];
+const V_NEG1 = ['非必要不去','不会再来','不会再吃','不会再去','再也不来','避雷','踩雷','别去了','别买'];
+const V_POS1 = ['会再来','可再来','还会来','还想去','想再去','会回购','可回购','要回购','回购','可复购','复购','要二刷','二刷','必吃','宝藏','绝了','必回'];
 const V_NEG2 = ['拉胯','难吃','翻车','不推荐'];
 const V_POS2 = ['大满足','惊艳','好吃','很香','神作','yyds','推荐','值得','还行','凑合','很一般','一般般','味道一般','中规中矩'];
 const V_NEG = V_NEG1.concat(V_NEG2);
@@ -2970,6 +3069,8 @@ function parseLine(text){
   const p1 = /[¥￥]\s*(\d+(?:\.\d{1,2})?)/g, p2 = /(\d+(?:\.\d{1,2})?)\s*[元块](?![以之])/g;
   while ((m = p1.exec(t))) prices.push(parseFloat(m[1]));
   while ((m = p2.exec(t))) prices.push(parseFloat(m[1]));
+  const p3 = /(?:花了|花费|付了|一共花了?|总共花了?)\s*(\d+(?:\.\d{1,2})?)(?![\d.]|\s*[%个次天号点分秒岁年月周人小遍趟页张本件条斤公千万百kKwWhH])/g;   /* v2.29 说话时常省掉「元」：打车花了45 */
+  while ((m = p3.exec(t))) prices.push(parseFloat(m[1]));
   if (prices.length) r.prices = [...new Set(prices)].slice(0, 3);
   for (const c of CITY_LIST){ if (t.includes(c)){ r.city = c; break; } }
   const qm = t.match(/[“"『「]([^”"』」]{1,14})[”"』」]/); if (qm) r.store = qm[1];
@@ -3047,18 +3148,21 @@ function parseCompanions(t){
 }
 /* 店的判决＝括号外、位置最早的判决词；括号内视为单品评价 */
 function parseVerdict(t){
+  t = String(t).replace(/避雷([\u4e00-\u9fa5]{2,5})(?=[，,。！!；;\s]|$)/g, (m, x) => (/[店家的这那]/.test(x) || CITY_LIST.some(c => x.includes(c))) ? m : '＃＃' + x);   /* v2.29「避雷蓝龙虾，」是单品避雷，不冤枉整家店 */
   const masked = t.replace(/（[^）]*）|\([^)]*\)/g, m => '＃'.repeat(m.length));
   const scan = (src, negs, poss) => {
     let best = null;
     for (const w of negs){ const i = src.indexOf(w);
       if (i >= 0 && (!best || i < best.i)) best = {i, w, neg:true}; }
-    for (const w of poss){ if (src.includes('不' + w)) continue;
+    for (const w of poss){ if (src.includes('不' + w) || src.includes('没那么' + w) || src.includes('没有那么' + w)) continue;
       const i = src.indexOf(w);
       if (i >= 0 && (!best || i < best.i)) best = {i, w, neg:false}; }
     return best;
   };
+  const mid = masked.match(/(^|[，,。！!；;\s、])一般(?=[，,。！!；;\s~～]|$)/);   /* v2.29 说话常说「，一般」 */
   return scan(masked, V_NEG1, V_POS1) || scan(t, V_NEG1, V_POS1)
-      || scan(masked, V_NEG2, V_POS2) || scan(t, V_NEG2, V_POS2);
+      || scan(masked, V_NEG2, V_POS2) || scan(t, V_NEG2, V_POS2)
+      || (mid ? {i:mid.index + mid[1].length, w:'一般', neg:false} : null);
 }
 const TPLS = {work:{n:'工作', unit:'件'}, movie:{n:'电影', unit:'部'}, food:{n:'美食', unit:'家'}, book:{n:'读书', unit:'本'}, money:{n:'花钱', unit:'笔'}};
 const TPL_ORDER = [null, 'work', 'movie', 'food', 'book', 'money'];
@@ -5891,6 +5995,7 @@ function openHello(reopen){
         + (items.length > 5 ? '<div class="hl-none">还有 ' + (items.length - 5) + ' 件 · 在今日页</div>' : '')
       : '<div class="hl-none">今天没有约好的事，随心过。</div>')
     + (pooled ? '<div class="hl-pool" id="hlPool">之前没做完的 ' + pooled + ' 件，我收进了「想做的事」 ›</div>' : '')
+    + helloPickLine()
     + (mem ? '<div class="hl-lab">' + mem.label + '</div><div class="hl-mem" id="hlMem"><b>' + fmtKey(mem.k) + '</b> · ' + vEsc(clipT(mem.e.text, 46)) + ' ›</div>' : '')
     + '<div class="hl-cheer" id="hlCheer">' + helloCheer(cx).map(vEsc).join('<br>') + '<span>—— 点点</span></div>'
     + '<button class="hl-go" id="hlGo">' + (reopen ? '收起' : '开始全新的一天') + '</button>'
@@ -5901,6 +6006,7 @@ function openHello(reopen){
     const id = +el.dataset.hid; closeHello(); if (id) jumpToEntry(TODAY, id);
   });
   if ($('#hlPool')) $('#hlPool').onclick = () => { closeHello(); cur = {name:'agg', key:'someday'}; render(); };
+  if ($('#hlPick')) $('#hlPick').onclick = () => { closeHello(); navStack = []; cur = {name:'food', tab:'pick'}; render(); };
   if (mem) $('#hlMem').onclick = () => { closeHello(); jumpToEntry(mem.k, mem.e._id || (mem.e._id = ++uid)); };
   helloWxRender();
 }
@@ -5954,6 +6060,499 @@ document.addEventListener('visibilitychange', () => {
   if (dkey(effNow()) !== TODAY){ if (saveTm){ clearTimeout(saveTm); saveTm = null; } saveNow(); location.reload(); }
 });
 window.addEventListener('pagehide', () => { if (saveTm){ clearTimeout(saveTm); saveTm = null; saveNow(); } });
+
+/* ============ v2.29 熟店簿 + 今天吃什么（抽卡）+ 记一家店 + 避雷红签 + 一段话拆条 ============ */
+const FOOD_CAT = [['火锅',/火锅|涮/],['寿喜烧',/寿喜烧/],['烤肉',/烤肉|韩式烤|烤五花/],['烧烤',/烧烤|撸串|串串|烤串|烤鱼/],['日料',/寿司|刺身|日料|拉面|乌冬|三文鱼/],
+  ['西餐',/西餐|牛排|意面|天使面|披萨|汉堡|西兰花/],['麻辣烫',/麻辣烫|冒菜/],['面馆',/牛肉面|面馆|拌面|炒面|油泼面|青菜面|鸡蛋面/],['川菜',/川菜|四川|辣椒炒肉|水煮|川味/],
+  ['云南菜',/云南/],['海鲜',/海鲜|蟹|生蚝/],['羊汤',/羊汤|羊肉汤/],['小吃',/肉夹馍|沙县|小吃|煎饼|灌饼|包子/],['甜品饮品',/甜品|奶茶|咖啡|冰茶|双皮奶|蛋糕/],['家常菜',/家常菜|饭店|小馆|菜馆|食堂/]];
+const HOT_CATS = ['火锅','寿喜烧','烤肉','烧烤','麻辣烫','面馆','川菜','羊汤'];
+const LIKE_WORDS = V_POS1.concat(['大满足','惊艳','好吃','很香','神作','yyds','推荐','值得']);
+const MEH_WORDS = ['还行','凑合','很一般','一般般','味道一般','中规中矩','一般'];
+const GOLD_WORDS = ['宝藏','必吃','绝了','神作','yyds'];
+const TIP_RE = /(\d+|[一二三四五六七八九十两])点(去|到|前|以前|之前)|排队|预约|订位|适合.{0,6}人|(\d|[一二三四五六两俩])人.{0,6}适合|分着吃|吃不完|打卡送|人均|早点去|早去|要等位|等位/;
+var STORE_IDX = null;   /* var：scheduleSave 可能在声明前被调用，避开 TDZ */
+function storeClauses(t){
+  return String(t || '').replace(/（[^）]*）|\([^)]*\)/g, '').split(/[，,。！!；;？?\n]/).map(s => s.trim()).filter(Boolean);
+}
+function cleanClause(c){
+  return String(c || '')
+    .replace(/^(早饭|午饭|晚饭|晚餐|午餐|夜宵|下午茶)\s*/, '')
+    .replace(/[“"『「][^”"』」]*[”"』」]/g, '')
+    .replace(/^(?:和|跟|与)[^，。！!？?吃喝]{1,14}?(?:一起)?(?:吃了|吃|喝了)/, '')
+    .replace(/^(?:(?:吃了|点了|去了|在)\s*)+/, '')
+    .replace(/(花了|花费)?\s*[¥￥]?\d+(\.\d+)?\s*[元块]/g, '')
+    .replace(/\s+/g, '').replace(/^[，、·:：\-]+|[，、·:：\-]+$/g, '');
+}
+function dayCity(k){
+  const p = PAGES[k]; if (!p) return null;
+  if (p.wx && p.wx.c && p.wx.c !== '我这儿') return p.wx.c;
+  let c = null; walkPage(k, e => { if (!c && e.text){ const pc = parseEntry(e).city; if (pc) c = pc; } });
+  return c;
+}
+function foodCatOf(o){
+  const src = o.name + ' ' + o.recs.map(r => r.e.text || '').join(' ');
+  for (const [nm, re] of FOOD_CAT){ if (re.test(src)) return nm; }
+  return '';
+}
+function storeIndex(){
+  if (STORE_IDX) return STORE_IDX;
+  const map = {};
+  walk((k, e) => {
+    if (!e.text) return;
+    if (e.sym === 'task' && e.state !== 'done') return;   /* 还没去的「就它了」不算一次 */
+    const p = parseEntry(e); if (!p.store) return;
+    const o = map[p.store] || (map[p.store] = {name:p.store, days:new Set(), recs:[]});
+    o.days.add(k); o.recs.push({k, e, p});
+  });
+  Object.values(map).forEach(o => {
+    o.recs.sort((a, b) => parseKey(b.k) - parseKey(a.k));
+    o.cnt = o.days.size; o.last = o.recs[0].k;
+    const op = o.recs.find(r => r.p.verdict || r.p.score != null);   /* 以最近一次表态为准 */
+    o.op = op || null;
+    o.avoid = !!(op && foodTier(op.p) === 'lei');
+    let like = false;
+    if (op && !o.avoid){
+      if (op.p.score != null) like = op.p.score >= 7;
+      else like = !MEH_WORDS.includes(op.p.verdict) && LIKE_WORDS.includes(op.p.verdict);
+    }
+    o.like = like;
+    o.gold = like && o.recs.some(r => GOLD_WORDS.includes(r.p.verdict) || /宝藏|必吃/.test(r.e.text) || (r.p.score != null && r.p.score >= 9));
+    const cr = o.recs.find(r => r.p.city);
+    o.city = cr ? cr.p.city : null;
+    if (!o.city){ for (const r of o.recs){ const c = dayCity(r.k); if (c){ o.city = c; break; } } }
+    o.delivery = o.recs.some(r => r.p.delivery);
+    o.cat = foodCatOf(o);
+  });
+  STORE_IDX = map; return map;
+}
+function storeQuote(o){
+  for (const r of o.recs){
+    const t = r.e.text || '';
+    /* 先看单品括号评价：「肥瘦肉夹馍22元（惊艳，第一口大满足！）」 */
+    const pm = t.match(/([一-龥A-Za-z]{2,10}?)\s*\d*(?:\.\d+)?\s*[元块]?\s*（([^）]{2,30})）/);
+    if (pm && o.like && LIKE_WORDS.some(w => pm[2].includes(w))) return {text:pm[1] + pm[2].replace(/[，,]\s*$/, ''), k:r.k};
+    const words = o.avoid ? V_NEG : LIKE_WORDS;
+    const cs = storeClauses(t).filter(c => words.some(w => c.includes(w)) && !/没那么|没有那么/.test(c)).map(cleanClause).filter(c => c.length >= 2);
+    if (cs.length) return {text:clipT([...new Set(cs)].join('，'), 30), k:r.k};
+  }
+  return null;
+}
+function storeTip(o){
+  for (const r of o.recs){
+    const srcs = [r.e.text || ''].concat((r.e.children || []).map(c => c.text || ''));
+    for (const t of srcs){
+      const cs = storeClauses(t).filter(c => TIP_RE.test(c)).map(cleanClause).filter(c => c.length >= 2);
+      if (cs.length) return clipT(cs.join('，'), 24);
+    }
+  }
+  return null;
+}
+function storeDishes(o){
+  const must = [], avoid = [];
+  const BAD = /^(烤肉|火锅|烧烤|西餐|日料|自助|东西|味道|环境|服务|这家|他家|整体)$/;
+  const push = (arr, x) => { x = String(x || '').replace(/^(突然觉得|觉得|感觉|就是|招牌|有个|要有|他家|这家|点的|的)/, '').trim();
+    if ((x.length >= 2 || /^[粥面汤饭鱼虾蟹鸡鸭]$/.test(x)) && x.length <= 8 && !BAD.test(x) && x !== o.name && !must.includes(x) && !avoid.includes(x)) arr.push(x); };
+  o.recs.forEach(r => {
+    const t = r.e.text || '';
+    let m; const re = /([一-龥A-Za-z]{2,10}?)\s*\d*(?:\.\d+)?\s*[元块]?\s*（([^）]{1,30})）/g;
+    while ((m = re.exec(t))){
+      if (V_NEG.some(w => m[2].includes(w))) push(avoid, m[1]);
+      else if (LIKE_WORDS.some(w => m[2].includes(w))) push(must, m[1]);
+    }
+    const lm = t.match(/避雷([一-龥]{2,5})(?=[，,。！!；;\s]|$)/); if (lm && !/[店家的这那]/.test(lm[1])) push(avoid, lm[1]);
+    (t.match(/必点([^·，,。！!\s]{1,10})/g) || []).forEach(x => push(must, x.slice(2)));
+    (t.match(/别点([^·，,。！!\s]{1,10})/g) || []).forEach(x => push(avoid, x.slice(2)));
+    storeClauses(t).map(cleanClause).forEach(c => {
+      const a = c.match(/^([一-龥]{1,10}?)(?:不好吃|难吃|拉胯|太油了?|太咸了?|不入味|很一般|没那么好吃了?|没有那么好吃了?)$/);
+      if (a){ push(avoid, a[1]); return; }
+      const g = c.match(/^([一-龥]{1,10}?)(?:很?好吃|很香|好香|绝了|惊艳|必点|一绝)$/);
+      if (g) push(must, g[1]);
+    });
+  });
+  return {must:must.slice(0, 2), avoid:avoid.slice(0, 2)};
+}
+function storeLast(o){
+  const r = o.recs.find(x => (x.p.withs || []).length || (x.p.prices || []).length) || o.recs[0];
+  const w = (r.p.withs || []).filter(x => x !== '独自');
+  const t = r.e.text || '';
+  const pc = t.match(/俩人|两个人|两人|三个人|三人|四个人|四人|五个人|六个人|六人/);
+  const pr = (r.p.prices || [])[0];
+  return {with:w.slice(0, 2).join('、'), spend:pr != null ? ((pc ? pc[0].replace('俩人', '两个人') + ' ' : '') + '¥' + pr) : '', alone:(r.p.withs || [])[0] === '独自'};
+}
+function daysAgo(k){ return Math.round((parseKey(TODAY) - parseKey(k)) / 86400000); }
+function agoCN(n){ return n <= 0 ? '今天' : n === 1 ? '昨天' : n < 14 ? n + ' 天前' : n < 60 ? Math.round(n / 7) + ' 周没去了' : Math.round(n / 30) + ' 个月没去了'; }
+function pickContext(o, f){
+  const d = wxCached();
+  if (d){
+    const a = wxAdvice(d);
+    if ((a.dd <= -3 || d.hi <= 15) && HOT_CATS.includes(o.cat)) return {i:'🔥', t:(a.dd <= -3 ? '今天降温 ' + (-a.dd) + '°，' : '天冷，') + o.cat + '正合适'};
+    if (d.hi >= 30 && ['日料','甜品饮品'].includes(o.cat)) return {i:'🧊', t:'天热，吃点清爽的'};
+    if (a.rainy && o.delivery) return {i:'☂', t:'下雨天，点外卖不用出门'};
+  }
+  const n = daysAgo(o.last);
+  if (n >= 30) return {i:'🕰', t:agoCN(n).replace('没去了', '没去，想它了吧')};
+  return null;
+}
+function pickReasons(o){
+  const R = [];
+  const q = storeQuote(o);
+  if (q) R.push({i:'💬', h:'<q>' + vEsc(q.text) + '</q><small>—— 你 ' + fmtKey(q.k) + ' 说的</small>'});
+  const tip = storeTip(o);
+  if (tip) R.push({i:'📝', h:'你提醒过自己：<b>' + vEsc(tip) + '</b>'});
+  const ds = storeDishes(o);
+  if (ds.must.length || ds.avoid.length)
+    R.push({i:'🍽', h:(ds.must.length ? '必点' + vEsc(ds.must.join('、')) : '') + (ds.must.length && ds.avoid.length ? ' · ' : '')
+      + (ds.avoid.length ? '<span class="pk-neg">' + vEsc(ds.avoid.join('、')) + ' 别点</span>' : '')});
+  const L = storeLast(o);
+  if (L.with || L.spend) R.push({i:'👥', h:(L.with ? '上次和 ' + vEsc(L.with) : (L.alone ? '上次自己去的' : '上次')) + (L.spend ? '，' + vEsc(L.spend) : '')});
+  const cx = pickContext(o);
+  if (cx) R.push({i:cx.i, h:vEsc(cx.t)});
+  return R.slice(0, 4);
+}
+
+/* ---- 抽卡 ---- */
+let pickSt = null;
+function pickDefaults(){
+  if (!pickSt) pickSt = {city:null, mode:'all', hot:null, seen:[], cur:null, n:0, first:null, went:null};
+  if (pickSt.city === null){ const c = wxCity(); pickSt.city = (c && c.n !== '我这儿') ? c.n : ''; }
+  if (pickSt.hot === null){ const d = wxCached(); pickSt.hot = !!(d && (wxAdvice(d).dd <= -3 || d.hi <= 15)); }
+  return pickSt;
+}
+function pickPool(f){
+  return Object.values(storeIndex()).filter(o => o.like && !o.avoid
+    && (f.mode === 'all' || (f.mode === 'take' ? o.delivery : !o.delivery))
+    && (!f.city || !o.city || o.city === f.city));
+}
+function pickWeight(o, f){
+  let w = o.gold ? 3 : 2;
+  const n = daysAgo(o.last);
+  w *= n < 3 ? 0.3 : n < 7 ? 0.7 : n > 30 ? 1.5 : 1;
+  if (f.hot && HOT_CATS.includes(o.cat)) w *= 2.2;
+  return w;
+}
+function pickDraw(){
+  const f = pickDefaults();
+  let pool = pickPool(f).filter(o => !f.seen.includes(o.name));
+  if (!pool.length){ f.seen = []; pool = pickPool(f); }
+  if (!pool.length) return null;
+  let v = Math.random() * pool.reduce((s, o) => s + pickWeight(o, f), 0), hit = pool[pool.length - 1];
+  for (const o of pool){ v -= pickWeight(o, f); if (v <= 0){ hit = o; break; } }
+  f.seen.push(hit.name); f.cur = hit.name; f.n++; if (!f.first) f.first = hit.name; f.went = null; f.anim = true;
+  return hit;
+}
+function pickCardHTML(o){
+  const lab = o.gold ? '★ 宝藏' : '♥ ' + ((o.op && o.op.p.verdict && LIKE_WORDS.includes(o.op.p.verdict)) ? o.op.p.verdict : '还想去');
+  const meta = [o.delivery ? '外卖' : (o.cat || ''), o.city || ''].filter(Boolean).join(' · ');
+  const anim = pickSt && pickSt.anim; if (pickSt) pickSt.anim = false;
+  const n = daysAgo(o.last);
+  return '<div class="pk-card' + (o.gold ? ' gold' : '') + (anim ? ' flip' : '') + '">'
+    + '<div class="pk-top"><span class="pk-rare">' + vEsc(lab) + '</span><span class="pk-meta">' + vEsc(meta || '城市没记') + '</span></div>'
+    + '<div class="pk-name">' + vEsc(o.name) + '</div>'
+    + '<div class="pk-sub">去过 ' + o.cnt + ' 次 · 上次 ' + fmtKey(o.last) + (n >= 14 ? '，' + agoCN(n) : '') + '</div>'
+    + '<div class="pk-lab">吃的理由</div>'
+    + pickReasons(o).map(x => '<div class="pk-r"><span class="i">' + x.i + '</span><div>' + x.h + '</div></div>').join('')
+    + '</div>';
+}
+function renderPick(){
+  const f = pickDefaults();
+  const idx = storeIndex();
+  const all = Object.values(idx), avoidN = all.filter(o => o.avoid).length;
+  const pool = pickPool(f);
+  const cities = wxCfg().cities.map(c => c.n).filter(n => n !== '我这儿');
+  const bar = document.createElement('div'); bar.className = 'rp-tabs'; bar.style.marginTop = '12px';
+  const chip = (txt, on, fn, cls) => { const b = document.createElement('button'); b.className = 'chip' + (on ? ' on' : '') + (cls ? ' ' + cls : ''); b.textContent = txt; b.onclick = fn; bar.appendChild(b); return b; };
+  chip('📍 ' + (f.city || '不限城市') + (cities.length ? ' ⇄' : ''), !!f.city, () => {
+    const ring = cities.concat(['']); const i = ring.indexOf(f.city);
+    f.city = ring[(i + 1) % ring.length]; f.cur = null; f.seen = []; render();
+  });
+  [['dine', '堂食'], ['take', '外卖'], ['all', '都行']].forEach(([k, nm]) => chip(nm, f.mode === k, () => { f.mode = k; f.cur = null; f.seen = []; render(); }));
+  chip('🔥 想吃热乎的', f.hot, () => { f.hot = !f.hot; render(); }, f.hot ? 'pk-warm' : '');
+  chip('＋ 记一家店', false, () => storeSheet());
+  view.appendChild(bar);
+  const pl = document.createElement('div'); pl.className = 'pk-pool';
+  pl.textContent = pool.length ? ('只从你说过好吃的 ' + pool.length + ' 家里抽' + (avoidN ? ' · 避雷的 ' + avoidN + ' 家永远不会出现' : ''))
+    : '这里还没有说过好吃的店';
+  view.appendChild(pl);
+  if (!pool.length){
+    const em = document.createElement('div'); em.className = 'empty-hint'; em.style.textAlign = 'center'; em.style.padding = '26px 6px';
+    em.innerHTML = dotSVG(56) + '<div style="margin-top:10px;line-height:1.8">吃到好吃的，写一句「在「店名」吃了…宝藏 / 会回购」<br>或者点上面「＋ 记一家店」<br>说过好吃的店都会进卡池，避雷的永远不会出现'
+      + (f.city ? '<br><span style="color:var(--ink-faint)">（现在只看' + vEsc(f.city) + '，点 📍 可以换成不限城市）</span>' : '') + '</div>';
+    view.appendChild(em); return;
+  }
+  const o = f.cur && idx[f.cur] && pool.includes(idx[f.cur]) ? idx[f.cur] : null;
+  const deck = document.createElement('div'); deck.className = 'pk-deck';
+  deck.innerHTML = '<div class="pk-back b1"></div><div class="pk-back b2"></div>'
+    + (o ? pickCardHTML(o) : '<div class="pk-cover">' + dotSVG(72) + '<div class="pk-q">今天吃什么？</div><div class="pk-hint">' + pool.length + ' 张店卡 · 点一下翻一张</div></div>');
+  view.appendChild(deck);
+  if (!o){ deck.onclick = () => { pickDraw(); render(); }; }
+  const acts = document.createElement('div'); acts.className = 'pk-acts';
+  if (o){
+    acts.innerHTML = '<button class="pk-go" id="pkGo"' + (f.went === o.name ? ' disabled' : '') + '>' + (f.went === o.name ? '✓ 已放进今天要做' : '就它了') + '</button>'
+      + '<button class="pk-re" id="pkRe">↻ 换一张</button>';
+  } else acts.innerHTML = '<button class="pk-go" id="pkDraw" style="flex:1">🎲 抽一张</button>';
+  view.appendChild(acts);
+  if ($('#pkDraw')) $('#pkDraw').onclick = () => { pickDraw(); render(); };
+  if ($('#pkRe')) $('#pkRe').onclick = () => { pickDraw(); render(); };
+  if ($('#pkGo') && f.went !== o.name) $('#pkGo').onclick = () => pickGo(o);
+  const nt = document.createElement('div'); nt.className = 'pk-note';
+  nt.textContent = !o ? '只出你说过好吃的店 · 理由全是你自己写过的话'
+    : f.went === o.name ? '吃完点 ✓，点点问一句怎么样，点一下就记好了'
+    : (f.n >= 3 && f.first && f.first !== o.name) ? ('抽了 ' + f.n + ' 张了 · 第一张「' + f.first + '」其实也不错？')
+    : '点「就它了」，今天要做里多一条，吃完点 ✓ 顺手说句好不好吃';
+  view.appendChild(nt);
+}
+function pickGo(o){
+  const h = new Date().getHours();
+  const slot = h < 10 ? '早饭' : h < 15 ? '午饭' : h < 21 ? '晚饭' : '夜宵';
+  P().plan.push({sym:'task', state:'open', text:slot + '：「' + o.name + '」', pick:o.name, _id:++uid});
+  pickDefaults().went = o.name;
+  scheduleSave(); toast('就它了！在今天要做里 · 吃完点 ✓'); render();
+}
+/* 吃完点 ✓ → 一键评价，记成一条美食记录（也就算去过一次） */
+function pickDone(t){
+  dismissKB();
+  const S = $('#qsheet');
+  const nm = t.pick;
+  S.innerHTML = '<div class="gs-title">✓ 吃完了 ·「' + vEsc(nm) + '」怎么样？</div>'
+    + '<div class="gs-chips" id="pdChips">'
+    + [['宝藏', '★ 宝藏'], ['还想去', '👍 还想去'], ['一般般', '😐 一般'], ['避雷', '👎 避雷']].map(([w, lab]) => '<button class="gs-chip" data-w="' + w + '">' + lab + '</button>').join('')
+    + '</div>'
+    + '<input id="pdLine" class="qdate" placeholder="一句话（可不填）：点了什么、下次注意啥" style="margin-top:10px">'
+    + '<div class="gs-new" style="margin-top:4px"><button class="gm-btn" id="pdSkip" style="flex:1;padding:10px">跳过</button>'
+    + '<button class="gm-btn" id="pdSave" style="flex:1;padding:10px;background:var(--ink);color:#fff;border-color:var(--ink)">记下</button></div>';
+  let sel = null;
+  S.querySelectorAll('[data-w]').forEach(b => b.onclick = () => { sel = b.dataset.w; S.querySelectorAll('[data-w]').forEach(x => x.classList.toggle('on', x === b)); });
+  $('#pdSkip').onclick = () => closeQSheet();
+  $('#pdSave').onclick = () => {
+    const line = $('#pdLine').value.trim();
+    if (!sel && !line){ toast('点一个评价，或写一句再记'); return; }
+    const fg = foodGroupName() || '美食';
+    if (!extraGroups.includes(fg) && !foodGroupName()) extraGroups.push(fg);
+    P().flow.push({sym:'event', text:'「' + nm + '」' + (sel ? ' ' + sel : '') + (line ? '：' + line : ''), groups:[fg], _id:++uid});
+    scheduleSave(); closeQSheet(); toast(sel === '避雷' ? '记下了 · 以后不会再抽到它' : '记下了 · 去过次数 +1');
+  };
+  S.classList.add('on'); $('#mask').classList.add('on'); placeToolbar();
+}
+
+/* ---- 记一家店 ---- */
+function storeSheet(prefill){
+  const S = $('#gsheet');
+  const cities = wxCfg().cities.map(c => c.n).filter(n => n !== '我这儿');
+  const pc = (pickSt && pickSt.city) || (cities[0] || '');
+  S.innerHTML = '<div class="gs-title">记一家店</div>'
+    + '<input class="vt-in" id="ssName" placeholder="店名" value="' + escAttr(prefill || '') + '">'
+    + '<div class="gs-chips" id="ssV" style="margin:10px 0 2px">'
+    + [['宝藏', '★ 宝藏'], ['还想去', '👍 还想去'], ['避雷', '👎 避雷']].map(([w, lab]) => '<button class="gs-chip" data-w="' + w + '">' + lab + '</button>').join('') + '</div>'
+    + '<label class="ss-f"><span>一句话</span><input id="ssLine" placeholder="好在哪 / 坑在哪（可不填）"></label>'
+    + '<div style="display:flex;gap:8px"><label class="ss-f" style="flex:1"><span>必点</span><input id="ssMust" placeholder="可不填"></label><label class="ss-f" style="flex:1"><span>别点</span><input id="ssAvoid" placeholder="可不填"></label></div>'
+    + '<div class="gs-chips" id="ssCity" style="margin:10px 0 0">'
+    + cities.map(n => '<button class="gs-chip' + (n === pc ? ' on' : '') + '" data-c="' + escAttr(n) + '">' + vEsc(n) + '</button>').join('')
+    + '<button class="gs-chip" data-c="">城市不填</button><button class="gs-chip" id="ssDel">外卖</button></div>'
+    + '<label class="ss-f"><span>花了 ¥</span><input id="ssAmt" inputmode="decimal" placeholder="可不填"></label>'
+    + '<button class="gs-done" id="ssSave">记下</button>';
+  let vsel = null, csel = pc, deliv = false;
+  S.querySelectorAll('#ssV [data-w]').forEach(b => b.onclick = () => { vsel = b.dataset.w; S.querySelectorAll('#ssV [data-w]').forEach(x => x.classList.toggle('on', x === b)); });
+  S.querySelectorAll('#ssCity [data-c]').forEach(b => b.onclick = () => { csel = b.dataset.c; S.querySelectorAll('#ssCity [data-c]').forEach(x => x.classList.toggle('on', x === b)); });
+  $('#ssDel').onclick = () => { deliv = !deliv; $('#ssDel').classList.toggle('on', deliv); };
+  $('#ssSave').onclick = () => {
+    const nm = $('#ssName').value.trim().replace(/[「」“”"『』]/g, '');
+    if (!nm){ toast('先写店名'); return; }
+    if (!vsel){ toast('选一下：宝藏 / 还想去 / 避雷'); return; }
+    const line = $('#ssLine').value.trim(), mu = $('#ssMust').value.trim(), av = $('#ssAvoid').value.trim();
+    const amt = parseFloat($('#ssAmt').value);
+    const text = '「' + nm + '」 ' + vsel + (line ? '：' + line : '') + (mu ? ' · 必点' + mu : '') + (av ? ' · 别点' + av : '')
+      + (csel ? ' · ' + csel : '') + (deliv ? ' · 外卖' : '') + (isFinite(amt) && amt > 0 ? ' ' + amt + '元' : '');
+    const fg = foodGroupName() || '美食';
+    if (!foodGroupName() && !extraGroups.includes(fg)) extraGroups.push(fg);
+    P().flow.push({sym:'event', text, groups:[fg], _id:++uid});
+    scheduleSave(); closeSheet(); render();
+    toast(vsel === '避雷' ? '记下了 · 这家不会再被抽到，写到它时我会提醒你' : '记下了 · 已进卡池');
+  };
+  S.classList.add('on'); $('#mask').classList.add('on');
+  setTimeout(() => { const i = $('#ssName'); if (i && !prefill) i.focus(); }, 60);
+}
+
+/* ---- 避雷红签：又写到避雷过的店时提醒一句 ---- */
+function foodWarn(e){
+  if (!e.text) return null;
+  const p = parseEntry(e); if (!p.store) return null;
+  const o = storeIndex()[p.store]; if (!o || !o.avoid || !o.op) return null;
+  if (o.op.e === e || (p.verdict && V_NEG.includes(p.verdict))) return null;   /* 避雷原话那一条自己不提醒 */
+  const q = storeQuote(o);
+  return {o, txt:'⚠ 避雷 · ' + fmtKey(o.op.k) + ' 你说：' + clipT(q ? q.text : (o.op.p.verdict || '避雷'), 16)};
+}
+
+/* ---- 一段话拆条（配合语音输入） ---- */
+function splitSentences(t){
+  const out = []; let buf = '';
+  for (const ch of String(t || '')){
+    buf += ch;
+    if ('。！？!?\n'.includes(ch)){ const s = buf.replace(/[。\n]+$/, '').trim(); if (s) out.push(s); buf = ''; }
+  }
+  if (buf.trim()) out.push(buf.replace(/[。\n]+$/, '').trim());
+  return out.filter(s => s.replace(/[！？!?\s]/g, '').length >= 3);
+}
+function splitEntry(e){
+  const parts = splitSentences(e.text);
+  if (parts.length < 2) return;
+  const loc = findEntry(e); if (!loc) return;
+  snapshot('拆条');
+  e.text = parts[0]; delete e.noSplit; commit(e);
+  const news = parts.slice(1).map(s => {
+    const ne = {sym:e.sym, text:s, _id:++uid};
+    if (e.sym === 'task') ne.state = 'open';
+    if (e.defSym) ne.defSym = true;
+    if (e.groups && e.groups.length) ne.groups = [...e.groups];
+    commit(ne); return ne;
+  });
+  loc.list.splice(loc.idx + 1, 0, ...news);
+  scheduleSave(); render(); toast('已拆成 ' + parts.length + ' 条 · 可撤回');
+}
+
+/* ---- 早安卡饭点入口 ---- */
+function helloPickLine(){
+  if (!modOn('meals')) return '';
+  const nw = new Date(), h = nw.getHours() + nw.getMinutes() / 60;
+  if (!((h >= 10 && h <= 13.5) || (h >= 16 && h <= 19.5))) return '';
+  if (!pickPool(pickDefaults()).length) return '';
+  return '<div class="hl-pool" id="hlPick">🎲 ' + (h < 15 ? '中午' : '晚上') + '吃什么？抽一张 ›</div>';
+}
+
+/* ============ v2.29 说一段，点点来安排（配合 iPhone 键盘听写） ============ */
+const VO_TASK_RE = /(要|得去|记得|别忘了|准备|打算|计划|约了|需要|该去|待会|回头)/;
+const VO_LEAD_RE = /^(然后|另外|还有|对了|那个|嗯|呃)[，,\s]*/;
+const VO_BREAK_RE = /^(然后|另外|还有|对了|今天|明天|后天|大后天|下周|下个月|晚上|中午|下午|早上|上午|昨天|昨晚|前天)/;
+function voSplit(t){
+  const out = [];
+  splitSentences(t).forEach(sn => {
+    /* 听写有时只在长停顿打句号：逗号后面跟着「晚上/后天/然后…」的，也拆开 */
+    const cs = sn.split(/[，,]/); let buf = '';
+    cs.forEach(c => {
+      const cc = c.trim(); if (!cc) return;
+      if (buf && VO_BREAK_RE.test(cc)){ out.push(buf); buf = cc; }
+      else buf = buf ? buf + '，' + cc : cc;
+    });
+    if (buf) out.push(buf);
+  });
+  return out.map(s => s.replace(VO_LEAD_RE, '').replace(/[。，,\s]+$/, '').trim()).filter(s => s.replace(/[！？!?\s]/g, '').length >= 2);
+}
+function voRoute(t){
+  if (/^(昨天|昨晚|昨儿)/.test(t)) return {dest:'past', day:addDaysK(TODAY, -1)};
+  if (/^前天/.test(t)) return {dest:'past', day:addDaysK(TODAY, -2)};
+  const dd = detectDue(t);
+  if (dd && parseKey(dd.key) > parseKey(TODAY)) return {dest:'day', day:dd.key};
+  if (VO_TASK_RE.test(t) && !/了(?:[，,。！!？?]|$)/.test(t)) return {dest:'plan'};
+  return {dest:'flow'};
+}
+function voDestLabel(it){
+  if (it.dest === 'flow') return '今天发生';
+  if (it.dest === 'plan') return '今天要做';
+  const rel = it.day === TOMORROW ? '明天' : it.day === addDaysK(TODAY, 2) ? '后天'
+    : it.day === addDaysK(TODAY, -1) ? '昨天' : it.day === addDaysK(TODAY, -2) ? '前天' : '';
+  return (rel ? rel + ' ' : '') + fmtKey(it.day) + (it.dest === 'past' ? ' 发生' : ' 要做');
+}
+function voHints(t){
+  const p = parseLine(t), hs = [];
+  if (p.store) hs.push('🍚 ' + p.store + (p.verdict ? ' · ' + (p.vNeg ? '👎 ' : '') + p.verdict : ''));
+  if (p.title) hs.push('《' + p.title + '》' + (p.score != null ? ' ' + p.score + '分' : ''));
+  if ((p.prices || []).length) hs.push('💰 ¥' + p.prices[0]);
+  const tm = detectTime(t); if (tm) hs.push('⏰ ' + tm);
+  if ((p.withs || []).length && p.withs[0] !== '独自') hs.push('和' + p.withs.slice(0, 2).join('、'));
+  return hs.join(' · ');
+}
+function movieGroupName(){
+  let mg = (extraGroups || []).find(g => tplOf(g) === 'movie') || null;
+  if (!mg) walk((d, e) => { (e.groups || []).forEach(g => { if (!mg && tplOf(g) === 'movie') mg = g; }); });
+  return mg;
+}
+function voPlace(items){
+  const cnt = {};
+  items.filter(it => !it.off && it.text.trim()).forEach(it => {
+    const t = it.text.trim();
+    let list, ne;
+    if (it.dest === 'flow' || it.dest === 'past'){
+      const k = it.dest === 'past' ? it.day : TODAY;
+      if (!PAGES[k]) PAGES[k] = {plan:[], flow:[]};
+      ne = {sym:'event', defSym:true, text:t, _id:++uid}; list = PAGES[k].flow;
+    } else {
+      const k = it.dest === 'day' ? it.day : TODAY;
+      if (!PAGES[k]) PAGES[k] = {plan:[], flow:[]};
+      ne = {sym:'task', state:'open', text:t, _id:++uid}; list = PAGES[k].plan;
+    }
+    const p = parseLine(t);
+    if (p.store && modOn('meals')){ const fg = foodGroupName() || '美食'; if (!foodGroupName() && !extraGroups.includes(fg)) extraGroups.push(fg); ne.groups = [fg]; }
+    else if (p.title && /看了|电影|二刷|补看|影院|观影/.test(t)){ const mg = movieGroupName(); if (mg) ne.groups = [mg]; }
+    list.push(ne); commit(ne);
+    const lab = voDestLabel(it); cnt[lab] = (cnt[lab] || 0) + 1;
+  });
+  SET.voUsed = 1; scheduleSave();
+  return Object.entries(cnt).map(([k, v]) => k + ' ' + v).join(' · ');
+}
+function voMount(box, opts){
+  opts = opts || {};
+  let items = null, draft = '';
+  const paint = () => {
+    if (!items){
+      box.innerHTML = (opts.title ? '<div class="gs-title">' + opts.title + '</div>' : '')
+        + '<textarea class="vo-in" id="voTxt" rows="4" placeholder="点这里，按键盘右下角的 🎤 直接说&#10;比如：后天去宜家看沙发。中午和老韩吃了七豚拉面，一般。打车花了45。"></textarea>'
+        + '<div class="vo-tip">说完点「整理一下」，我把每句放到该去的地方：哪天要做、今天发生、吃了哪家店、花了多少。放之前你都能改。</div>'
+        + '<button class="gs-done" id="voGo">整理一下 ›</button>';
+      const ta = box.querySelector('#voTxt'); ta.value = draft;
+      ta.oninput = () => { draft = ta.value; };
+      box.querySelector('#voGo').onclick = () => {
+        draft = ta.value;
+        const parts = voSplit(draft);
+        if (!parts.length){ toast('还没说话呢 · 点框里，按键盘右下角的 🎤'); return; }
+        items = parts.map(s => Object.assign({text:s}, voRoute(s)));
+        paint();
+      };
+      return;
+    }
+    box.innerHTML = (opts.title ? '<div class="gs-title">' + opts.title + '</div>' : '')
+      + '<div class="vo-tip" style="margin-top:-4px">我这样安排 · 点左边的签可以换地方，✕ 不要这句</div>'
+      + '<div class="vo-list">' + items.map((it, i) => '<div class="vo-row' + (it.off ? ' off' : '') + '">'
+        + '<button class="vo-dest d-' + it.dest + '" data-i="' + i + '">' + vEsc(voDestLabel(it)) + '</button>'
+        + '<textarea class="vo-t" rows="1" data-i="' + i + '">' + vEsc(it.text) + '</textarea>'
+        + '<button class="vo-x" data-i="' + i + '">' + (it.off ? '↺' : '✕') + '</button>'
+        + '<div class="vo-hint">' + vEsc(voHints(it.text)) + '</div></div>').join('') + '</div>'
+      + '<div class="gs-new" style="margin-top:8px"><button class="gm-btn" id="voBack" style="flex:1;padding:10px">‹ 重说</button>'
+      + '<button class="gm-btn" id="voSave" style="flex:2;padding:10px;background:var(--ink);color:#fff;border-color:var(--ink)">放进去（' + items.filter(x => !x.off).length + ' 条）</button></div>';
+    box.querySelectorAll('.vo-dest').forEach(b => b.onclick = () => {
+      const it = items[+b.dataset.i];
+      const ring = it.day ? (it.dest === 'past' ? ['past', 'flow', 'plan'] : ['day', 'plan', 'flow']) : ['flow', 'plan'];
+      it.dest = ring[(ring.indexOf(it.dest) + 1) % ring.length]; paint();
+    });
+    const fit = el => { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; };
+    box.querySelectorAll('.vo-t').forEach(inp => {
+      fit(inp);
+      inp.oninput = () => { items[+inp.dataset.i].text = inp.value; fit(inp); };
+      inp.onblur = () => { const h = inp.parentNode.querySelector('.vo-hint'); if (h) h.textContent = voHints(inp.value); };
+    });
+    box.querySelectorAll('.vo-x').forEach(b => b.onclick = () => { const it = items[+b.dataset.i]; it.off = !it.off; paint(); });
+    box.querySelector('#voBack').onclick = () => { items = null; paint(); };
+    box.querySelector('#voSave').onclick = () => {
+      const live = items.filter(x => !x.off && x.text.trim());
+      if (!live.length){ toast('一条都没留 · 点 ↺ 恢复或者重说'); return; }
+      const sum = voPlace(items);
+      toast('放好了 · ' + sum);
+      if (opts.onDone) opts.onDone(sum);
+    };
+  };
+  paint();
+}
+(() => {   /* 🎙 常驻按钮：点开说一段；正在打字时让开 */
+  const vf = document.getElementById('voFab'); if (vf) vf.onclick = () => voSheet();
+  const ph = document.getElementById('phone');
+  const isTx = el => el && (el.tagName === 'TEXTAREA' || (el.tagName === 'INPUT' && !/^(button|checkbox|radio|file)$/i.test(el.type)));
+  document.addEventListener('focusin', ev => { if (ph && isTx(ev.target)) ph.classList.add('typing'); });
+  document.addEventListener('focusout', () => { setTimeout(() => { if (ph && !isTx(document.activeElement)) ph.classList.remove('typing'); }, 60); });
+})();
+function voSheet(){
+  const S = $('#gsheet');
+  voMount(S, {title:'🎙 说一段，我来安排', onDone:() => { closeSheet(); render(); }});
+  S.classList.add('on'); $('#mask').classList.add('on');
+  const t = $('#voTxt'); if (t){ try{ t.focus(); }catch(_){} }
+}
 
 /* ============ 启动 ============ */
 if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0){
