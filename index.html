@@ -395,7 +395,7 @@
   .nb-body{width:100%;min-height:55vh;border:none;background:none;font-family:inherit;font-size:15.5px;line-height:1.85;color:var(--ink);outline:none;resize:none;padding:2px;overflow:hidden}
   .nb-body::placeholder{color:var(--ink-faint)}
   #menuBtn.mb-back{font-size:14.5px;font-weight:700;color:var(--accent);width:auto;padding:0 10px;letter-spacing:0}
-  .ml-off{background:transparent;border:1.6px dashed var(--line-strong)}
+  .ml-off{background:radial-gradient(circle, var(--line-strong) 0 2.6px, transparent 3.2px);border:none}   /* v2.28 没记就是没记：小点，不再是等你填的虚圈 */
   .ml-skip{background:transparent;border:1.4px solid var(--line);color:var(--ink-faint);
     font-size:9.5px;font-style:normal;display:flex;align-items:center;justify-content:center;line-height:1}
   .ml-row .v{margin-left:auto;font-size:11px;color:var(--ink-faint)}
@@ -455,6 +455,57 @@
     opacity:0;transition:.25s;pointer-events:none;z-index:20;white-space:nowrap;
   }
   #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+  /* ---------- v2.28 早安卡 ---------- */
+  #hello{position:absolute;inset:0;background:var(--bg);z-index:12;display:none;flex-direction:column}
+  #hello.on{display:flex}
+  .hl-body{flex:1;overflow-y:auto;padding:calc(30px + env(safe-area-inset-top)) 24px calc(22px + env(safe-area-inset-bottom));display:flex;flex-direction:column;-webkit-overflow-scrolling:touch}
+  .hl-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .hl-hi{font-size:14px;color:var(--ink-soft);letter-spacing:1px}
+  .hl-date{font-size:40px;font-weight:800;letter-spacing:.5px;line-height:1.15;margin-top:2px}
+  .hl-sub{font-size:14px;color:var(--ink-soft);margin:4px 0 10px}
+  .hl-tag{display:inline-block;font-size:12px;padding:3px 10px;border-radius:999px;background:var(--badge-bg);color:var(--badge-ink);margin:0 6px 4px 0;white-space:nowrap}
+  .hl-tag.acc{background:var(--accent-soft);color:var(--accent);font-weight:600}
+  .hl-dot{flex:none;margin-top:6px}
+  .hl-wx{background:var(--card);border:1px solid var(--line-strong);border-radius:16px;padding:14px 16px 13px;margin-top:16px}
+  .hl-wx0{font-size:13.5px;color:var(--ink-soft);line-height:1.6}
+  .hl-fine{font-size:11px;color:var(--ink-faint);margin-top:6px}
+  .hl-r1{display:flex;align-items:baseline;gap:8px}
+  .hl-t{font-size:34px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .hl-t small{font-size:17px;color:var(--ink-soft);font-weight:600}
+  .hl-d{font-size:13.5px;color:var(--ink-soft);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hl-city{margin-left:auto;flex:none;font-size:13px;color:var(--ink-soft);border:1px solid var(--line-strong);border-radius:999px;padding:3px 10px;background:none;font-family:inherit;cursor:pointer}
+  .hl-rr{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--ink-soft);margin-top:7px}
+  .hl-rr .k{width:28px;flex:none}
+  .hl-rr .v{width:64px;flex:none;text-align:right;font-variant-numeric:tabular-nums}
+  .hl-rng{position:relative;height:8px;border-radius:4px;background:var(--line);flex:1}
+  .hl-rng i{position:absolute;top:0;bottom:0;border-radius:4px}
+  .hl-cmp{font-size:13px;margin-top:8px;font-weight:700}
+  .hl-cmp.cold{color:#4E7A9B}
+  .hl-cmp.warm{color:var(--accent)}
+  .hl-cmp.same{color:var(--ink-soft)}
+  .hl-tip{font-size:13.5px;margin-top:9px;padding-top:9px;border-top:1px dashed var(--line-strong);line-height:1.65;color:var(--ink)}
+  .hl-lab{font-size:12px;color:var(--ink-faint);letter-spacing:3px;margin:18px 0 6px 2px;font-weight:600}
+  .hl-it{display:flex;align-items:center;gap:10px;font-size:15px;padding:5px 0;cursor:pointer}
+  .hl-it .ic{width:20px;text-align:center;flex:none;font-size:14px}
+  .hl-it .ic.dt::before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ink);vertical-align:middle}
+  .hl-it .ic.arr{color:var(--badge-ink);font-weight:700}
+  .hl-it .tx{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hl-it .when{flex:none;font-size:12px;color:var(--ink-faint)}
+  .hl-none{font-size:13.5px;color:var(--ink-faint);padding:4px 2px}
+  .hl-pool{font-size:12.5px;color:var(--ink-soft);padding:6px 2px 0;cursor:pointer}
+  .hl-mem{font-size:13.5px;color:var(--ink-soft);line-height:1.65;background:var(--card);border-radius:12px;padding:10px 13px;border:1px solid var(--line);cursor:pointer}
+  .hl-mem b{color:var(--ink);font-weight:600}
+  .hl-cheer{font-size:16px;line-height:1.7;margin:auto 0 16px;padding-top:18px;font-weight:600}
+  .hl-cheer span{display:block;font-size:12px;color:var(--ink-faint);font-weight:400;margin-top:2px}
+  .hl-go{display:block;width:100%;flex:none;border:none;border-radius:14px;background:var(--ink);color:#F6EFE3;font-size:16px;font-weight:700;padding:15px 0;font-family:inherit;letter-spacing:1px;cursor:pointer}
+  .hl-go:active{opacity:.85}
+  .hello-strip{display:flex;align-items:center;gap:7px;margin:12px 0 0;padding:9px 13px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-size:13px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;cursor:pointer}
+  .hello-strip b{color:var(--ink);font-weight:700}
+  .hello-strip .cold{color:#4E7A9B;font-weight:700}
+  .hello-strip .warm{color:var(--accent);font-weight:700}
+  .hello-strip .hs-tx{overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .hello-strip .op{margin-left:auto;color:var(--ink-faint);flex:none}
+  .pool-line{font-size:12.5px;color:var(--ink-faint);padding:0 2px 6px 34px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -480,6 +531,7 @@
     <div class="drawer-scroll" id="drawerList"></div>
   </aside>
   <div id="review"></div>
+  <div id="hello"></div>
   <div id="gsheet"></div>
   <div id="qsheet"></div>
   <div id="report"></div>
@@ -537,12 +589,13 @@ function scheduleSave(){
   if (typeof KNOWN_PPL !== 'undefined') KNOWN_PPL = null;
   if (typeof KNOWN_STORE !== 'undefined') KNOWN_STORE = null;
   clearTimeout(saveTm);
-  saveTm = setTimeout(() => {
-    try{ mealAutoTagAll(); }catch(_){}
-    try{ localStorage.setItem(LSKEY, JSON.stringify({pages:PAGES, extraGroups, set:SET, seen:SEEN, gcolor:GCOLOR, notes:NOTES}, jstrip)); }
-    catch(_){ toast('存储已满：请删除一些图片，或先导出备份'); }
-    try{ ghSchedule(); }catch(_){}
-  }, 300);
+  saveTm = setTimeout(() => { saveTm = null; saveNow(); }, 300);
+}
+function saveNow(){
+  try{ mealAutoTagAll(); }catch(_){}
+  try{ localStorage.setItem(LSKEY, JSON.stringify({pages:PAGES, extraGroups, set:SET, seen:SEEN, gcolor:GCOLOR, notes:NOTES}, jstrip)); }
+  catch(_){ toast('存储已满：请删除一些图片，或先导出备份'); }
+  try{ ghSchedule(); }catch(_){}
 }
 const P = () => PAGES[TODAY];
 
@@ -1163,6 +1216,15 @@ function renderPageInto(box, date, editable){
   box.appendChild(sectionLabel('今天要做'));
   p.plan.forEach(e => box.appendChild(entryNode(e, editable)));
   if (editable) box.appendChild(tapZone('＋ 补一条要做的', false, () => addLine(p.plan)));
+  if (editable && date === TODAY){   /* v2.28 想做的事：只是一行小字，想做时再捞 */
+    let sdN = 0; walk((k2, x) => { if (x.sym === 'task' && x.state === 'someday') sdN++; });
+    if (sdN){
+      const pl = document.createElement('div'); pl.className = 'pool-line';
+      pl.textContent = '☾ 想做的事 · ' + sdN + ' 件 · 想做哪件捞回来 ›';
+      pl.onclick = () => { cur = {name:'agg', key:'someday'}; render(); };
+      box.appendChild(pl);
+    }
+  }
   box.appendChild(sectionLabel('今天发生'));
   const majors = [], minors = [];
   p.flow.forEach(e => (isMinor(e) ? minors : majors).push(e));
@@ -1206,7 +1268,7 @@ const AGG = {
   bang:      {title:'！ 重点',  tip:'被你标了重点的句子',          f:e => e.sym === 'bang'},
   done:      {title:'✓ 已完成', tip:'成就流水',                   f:e => e.state === 'done'},
   delegated: {title:'→ 等待中', tip:'已转交，按跟进日提醒',        f:e => e.state === 'delegated'},
-  someday:   {title:'☾ Someday', tip:'改天再说的事 · 不催不追，点符号可捞回今天', f:e => e.sym === 'task' && e.state === 'someday'},
+  someday:   {title:'☾ 想做的事', tip:'没做完的、先放着的都在这 · 不催不计数 · 想做哪件点「⤴ 今天做」', f:e => e.sym === 'task' && e.state === 'someday'},
   dropped:   {title:'✕ 不做了', tip:'放弃归档',                   f:e => e.state === 'dropped'},
 };
 
@@ -1386,6 +1448,7 @@ function render(){
   view.innerHTML = '';
   if (cur.name === 'today'){
     topTitle.textContent = dayGroupTitle(TODAY); reviewBtn.textContent = '复盘';
+    if (modOn('hello')) view.appendChild(helloStripNode());   /* v2.28 早安卡收起后的一行 */
     renderPageInto(view, TODAY, true);
   }
   else if (cur.name === 'agg'){
@@ -1413,7 +1476,23 @@ function render(){
       if (date !== lastDate){ lastDate = date;
         const g = document.createElement('div'); g.className = 'date-group';
         g.textContent = dayGroupTitle(date); view.appendChild(g); }
-      view.appendChild(jumpRow(date, e));
+      const jr = jumpRow(date, e);
+      if (cur.key === 'someday'){   /* v2.28 想做的事：一键捞回今天 */
+        const body = jr.querySelector('.entry-body');
+        if (body){
+          let c2 = body.querySelector('.chips');
+          if (!c2){ c2 = document.createElement('div'); c2.className = 'chips'; body.appendChild(c2); }
+          c2.querySelectorAll('.badge').forEach(bg => {
+            if (bg.textContent.indexOf('☾ 想做') !== 0) return;
+            const rest = bg.textContent.replace(/^☾ 想做\s*·?\s*/, '');
+            if (rest) bg.textContent = rest; else bg.remove();
+          });
+          const b2 = document.createElement('span'); b2.className = 'badge acc'; b2.style.cursor = 'pointer'; b2.textContent = '⤴ 今天做';
+          b2.onclick = ev => { ev.stopPropagation(); somedayPull(e, date); toast('⤴ 已捞回今天'); render(); };
+          c2.appendChild(b2);
+        }
+      }
+      view.appendChild(jr);
     });
     if (!n){ const d = document.createElement('div'); d.className = 'empty-hint'; d.textContent = '这里还是空的'; view.appendChild(d); }
   }
@@ -1509,6 +1588,20 @@ function render(){
         setTimeout(() => pendingRestore = false, 5000); return; }
       pendingRestore = false; $('#jsonInput').click();
     });
+    view.appendChild(sectionLabel('每天 · 早安卡与任务'));
+    (() => {
+      const on = modOn('hello');
+      const tg = document.createElement('button'); tg.className = 'gm-btn'; tg.style.marginLeft = 'auto';
+      tg.textContent = on ? '开 ✓' : '关'; tg.style.color = on ? 'var(--green)' : 'var(--ink-faint)';
+      mkRow('☀ 早安卡（每天第一次打开）', tg, null);
+      tg.onclick = () => { SET.mods.hello = !on; scheduleSave(); render();
+        toast(!on ? '已打开 · 明天第一次打开就能看到' : '已关闭 · 今日页顶上的天气条一起收起'); };
+    })();
+    mkRow('天气城市', sub((wxCfg().cities.map(c => c.n).join('、') || '还没设') + ' ›'), wxCitySheet);
+    mkRow('任务风格', sub(SET.duty ? '对账 · 每天逐件表态 ›' : '随缘 · 没做完的自动收起 ›'), () => {
+      SET.duty = !SET.duty; scheduleSave(); render();
+      toast(SET.duty ? '已切到对账：早上逐件表态、复盘逐件过' : '已切到随缘：没做完的第二天自动收进「想做的事」');
+    });
     view.appendChild(sectionLabel('板块管理 · 关掉的从侧栏消失，数据不动'));
     [['notes','📓 笔记本','基础'],['meals','🍚 美食','扩展'],['ledger','💰 记账','扩展'],['people','👥 熟人册','扩展'],['vault','🔐 账号小本','扩展'],['cycles','🔁 循环提醒','基础']].forEach(([k, nm, tier]) => {
       const on = modOn(k);
@@ -1538,7 +1631,7 @@ function render(){
         toast(!on ? '已开启 · 写一行「明天下午三点交方案」试试' : '已关闭 · 随时回来再开');
       };
     })();
-    mkRow('版本记录', sub('v2.27 ›'), showChangelog);
+    mkRow('版本记录', sub('v2.28 ›'), showChangelog);
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
       if (pendingWipe){ localStorage.removeItem(LSKEY); location.reload(); return; }
@@ -2210,7 +2303,7 @@ function buildQSheet(){
     + '<button class="rv-btn b-mig"  id="qMig"><span class="g">›</span>推迟</button>'
     + '<button class="rv-btn b-drop" id="qDrop"><span class="g">✕</span>不做了</button>'
     + '<button class="rv-btn b-del"  id="qDel"><span class="g">→</span>转交</button>'
-    + (isSd ? '' : '<button class="rv-btn" id="qSd" style="grid-column:1/-1"><span class="g" style="color:var(--ink-faint)">☾</span>Someday · 改天再说，先别催我</button>')
+    + (isSd ? '' : '<button class="rv-btn" id="qSd" style="grid-column:1/-1"><span class="g" style="color:var(--ink-faint)">☾</span>想做的事 · 先放着，别催我</button>')
     + '</div>'
     + '<div class="rv-mig-panel" id="qMigPanel">'
     + '<div class="mig-quick" id="qQuick"></div>'
@@ -2228,8 +2321,8 @@ function buildQSheet(){
   const fin = msg => { toast(msg); closeQSheet(); };
   if ($('#qSd')) $('#qSd').onclick = () => {
     snapshot('处理任务');
-    t.state = 'someday'; delete t.due; t.badge = '☾ someday';
-    fin('☾ 放进 Someday 了 · 不催你，想做时去侧栏捞');
+    t.state = 'someday'; delete t.due; t.badge = '☾ 想做';
+    fin('☾ 收进「想做的事」· 不催你，想做时去侧栏捞');
   };
   if ($('#qBack')) $('#qBack').onclick = () => {
     snapshot('处理任务');
@@ -2244,7 +2337,7 @@ function buildQSheet(){
     snapshot('处理任务');
     if (t.state && t.state !== 'open'){
       t.state = 'open';
-      t.badge = t.mig ? ('>×' + t.mig + (t.progress ? ' · 已完成' + t.progress + '%' : '')) : undefined;
+      t.badge = (SET.duty && t.mig) ? ('>×' + t.mig + (t.progress ? ' · 已完成' + t.progress + '%' : '')) : (t.progress ? '已完成' + t.progress + '%' : undefined);
       if (t.due && parseKey(t.due) > parseKey(TODAY)) t.due = undefined;
       delete t.delegate; delete t.followArrived; delete t.doneDay;
       fin('已恢复任务');
@@ -2415,6 +2508,7 @@ function openReview(){
   dismissKB();
   queue = []; qi = 0; stat = {mig:0, drop:0, del:0, sd:0};
   walkPage(TODAY, e => { if (e.sym === 'task' && e.state === 'open' && !e.due) queue.push(e); });
+  if (!SET.duty) qi = queue.length;   /* v2.28 随缘：直达快照，想逐件过再点 */
   $('#review').classList.add('on'); renderReview();
 }
 function closeReview(){ $('#review').classList.remove('on'); render(); }
@@ -2425,6 +2519,7 @@ function renderReview(){
     let recN = 0, evN = 0; const moods = [];
     walkPage(TODAY, x => { if (isMinor(x) && x.sym !== 'task') return;   /* 小事不进快照 */
       recN++; if (x.sym === 'mood' && x.text) moods.push(x.text); if (x.sym === 'event') evN++; });
+    const rvLeft = SET.duty ? 0 : queue.filter(t => t.sym === 'task' && t.state === 'open').length;
     let oldDone = 0;
     walk((k, x) => { if (k !== TODAY && x.sym === 'task' && x.state === 'done' && x.doneDay === TODAY) oldDone++; });
     const stAll = STAMP_PRESETS.concat((SET.stamps || []).filter(x => !STAMP_PRESETS.includes(x)));
@@ -2446,10 +2541,12 @@ function renderReview(){
       + '<button class="pill-btn" id="rvClose">收起</button></div>'
       + '<div class="rv-body"><div class="rv-finish" style="margin:14px auto 0">' + dotSVG(86) + '<br><b>今日快照</b><br>'
       + '记录 ' + recN + ' 条 · 完成 ' + doneN + ' 件 · 事件 ' + evN + ' 件<br>'
-      + '迁移 ' + stat.mig + ' · 放弃 ' + stat.drop + ' · 转交 ' + stat.del + (stat.sd ? ' · Someday ' + stat.sd : '')
+      + '迁移 ' + stat.mig + ' · 放弃 ' + stat.drop + ' · 转交 ' + stat.del + (stat.sd ? ' · 想做的事 ' + stat.sd : '')
       + (oldDone ? ('<br>还清了 ' + oldDone + ' 件旧账 ✓') : '')
       + (moods.length ? ('<br>今天的心情：' + moods.slice(0, 3).join('、')) : '')
       + '<br>明天的页面点点已经铺好</div>'
+      + (rvLeft ? '<div class="rv-q" style="margin-top:14px;text-align:center">还有 ' + rvLeft + ' 件没做完 · 明天我替你收进「想做的事」'
+          + '<br><button class="gm-btn" id="rvWalk" style="margin-top:8px;padding:8px 16px">现在过一遍 ›</button></div>' : '')
       + mealsHtml
       + '<div class="rv-q" style="margin-top:18px">给今天盖个章</div>'
       + '<div class="gs-chips" id="rvStamps">' + stAll.map(x => '<button class="gs-chip' + (stCur === x ? ' on' : '') + '" data-st="' + escAttr(x) + '">' + vEsc(x) + '</button>').join('') + '</div>'
@@ -2458,6 +2555,7 @@ function renderReview(){
       + '<button class="rv-confirm" id="rvSave">保存小结并收起</button>'
       + '<button class="gm-btn" id="rvShare" style="width:100%;margin-top:12px;padding:10px">▣ 把今天做成分享图</button></div>';
     $('#rvClose').onclick = closeReview;
+    if ($('#rvWalk')) $('#rvWalk').onclick = () => { queue = queue.filter(t => t.state === 'open'); qi = 0; renderReview(); };
     R.querySelectorAll('[data-st]').forEach(b => b.onclick = () => {
       P().stamp = b.dataset.st; scheduleSave();
       R.querySelectorAll('[data-st]').forEach(x => x.classList.toggle('on', x === b));
@@ -2492,9 +2590,9 @@ function renderReview(){
     + '<button class="rv-btn b-mig"  id="bMig"><span class="g">›</span>继续做</button>'
     + '<button class="rv-btn b-drop" id="bDrop"><span class="g">✕</span>不做了</button>'
     + '<button class="rv-btn b-del"  id="bDel"><span class="g">→</span>转交</button>'
-    + '<button class="rv-btn" id="bSd" style="grid-column:1/-1"><span class="g" style="color:var(--ink-faint)">☾</span>Someday · 改天再说</button>'
+    + '<button class="rv-btn" id="bSd" style="grid-column:1/-1"><span class="g" style="color:var(--ink-faint)">☾</span>想做的事 · 先放着，不催</button>'
     + '</div>'
-    + ((t.mig || 0) >= 3 ? '<div class="rv-q" style="margin:12px 0 0;color:var(--accent)">它已经跟了你 ' + t.mig + ' 天 · 不急的话，☾ Someday 是诚实的选择</div>' : '')
+    + (SET.duty && (t.mig || 0) >= 3 ? '<div class="rv-q" style="margin:12px 0 0;color:var(--accent)">它已经跟了你 ' + t.mig + ' 天 · 不急的话，☾ 想做的事 是诚实的选择</div>' : '')
     + '<div class="rv-mig-panel" id="migPanel">'
     + '<div class="mig-quick" id="migQuick"></div>'
     + '<input type="date" class="qdate" id="migDate">'
@@ -2525,7 +2623,7 @@ function renderReview(){
   };
   $('#bDone').onclick = () => { t.state = 'done'; t.doneDay = TODAY; cycOnDone(t); rvMemoStep(); };
   $('#bDrop').onclick = () => { t.state = 'dropped'; t.badge = '不做了'; stat.drop++; toast('✕ 已放弃 · 页面保留划痕'); next(); };
-  $('#bSd').onclick = () => { t.state = 'someday'; delete t.due; t.badge = '☾ someday'; stat.sd = (stat.sd || 0) + 1; toast('☾ 放进 Someday · 不催不追'); next(); };
+  $('#bSd').onclick = () => { t.state = 'someday'; delete t.due; t.badge = '☾ 想做'; stat.sd = (stat.sd || 0) + 1; toast('☾ 收进「想做的事」· 不催不追'); next(); };
   $('#bDel').onclick  = () => { $('#migPanel').classList.remove('on'); $('#rvDelPanel').classList.toggle('on'); };
   $('#bMig').onclick  = () => { $('#rvDelPanel').classList.remove('on'); $('#migPanel').classList.toggle('on'); };
   setupDatePick('migQuick', 'migDate');
@@ -2599,8 +2697,9 @@ function importMD(text){
     const glyph = m[2];
     const sym = glyph === '○' ? 'event' : glyph === '—' ? 'note' : glyph === '=' ? 'mood'
       : (glyph === '？' || glyph === '?') ? 'ask' : (glyph === '！' || glyph === '!') ? 'bang' : 'task';
-    const state = glyph === '✓' ? 'done' : glyph === '›' ? 'migrated' : glyph === '✕' ? 'dropped'
+    let state = glyph === '✓' ? 'done' : glyph === '›' ? 'migrated' : glyph === '✕' ? 'dropped'
       : glyph === '→' ? 'delegated' : (sym === 'task' ? 'open' : undefined);
+    if (state === 'open' && badge && /someday|想做/.test(badge)) state = 'someday';
     let dup = false;
     walkPage(curKey, e => { if ((e.text || '').trim() === txt) dup = true; });
     if (dup){ if (!indent) lastTop = null; continue; }
@@ -2750,7 +2849,8 @@ function showManual(){
     + '【因果记录】\n事件行回车：下一行自动挂在这件事下面\n空的子行再回车：回到顶层\n事件行尾「＋」：随时在这件事下补一笔；「▾3」点击折叠\n\n'
     + '【处理任务】\n点符号 = 完成；长按符号 = 推迟 / 不做了 / 转交 / 恢复\n推迟可选任意日期并填进度；转交要填给谁和跟进日，到期自动提醒\n处理面板里的备注会进日报周报\n\n'
     + '【翻阅】\n今日页左右滑（或顶栏 ‹ ›）翻到前一天 / 后一天\n☰ 抽屉：总日历（点日子翻本）、分组集子、各类汇总、搜索\n汇总里点符号可直接勾掉，点文字跳回当天并高亮\n「◂ 8.6 转来」芯片点击跳回源头；历史页的「→8.12」跳去目标日\n\n'
-    + '【复盘与报告】\n右上「复盘」逐条过未完成任务，结束有今日快照和一句话小结\n分组视图里一键生成日报 / 周报 / 月报，可选含心情\n\n'
+    + '【早安卡】\n每天第一次打开递上一张：日期农历节气、天气和昨天比冷暖、今天约好的事、翻到一页旧记录、一句话\n收起后今日页顶上留一行天气条，点开再看；城市在 设置 → 天气城市 里加，最多 3 个\n\n'
+    + '【复盘与报告】\n右上「复盘」直达今日快照和盖章；想逐件过没做完的，点「现在过一遍」\n没日子的事当天没做完，第二天自动收进「☾ 想做的事」，不催不计数（设置 → 任务风格 可切回「对账」）\n分组视图里一键生成日报 / 周报 / 月报，可选含心情\n\n'
     + '【数据安全】\n数据只存在本机；设置里定期「完整备份(.json)」\n⏰ 芯片不会响，点它「加入系统日历」才有真提醒'
     + '</div></div>';
   $('#mnClose').onclick = () => R.classList.remove('on');
@@ -2763,7 +2863,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.27（当前 · 2026.8.28）\n【⚙ 今日小事折叠条 · 正文归正文】\n· 模块生出来的行——三餐打卡（含没吃）、本子足迹（开了/写了）、「记一笔」的账——不再混在流水里，收进页尾一条：「⚙ 今日小事 · 5 条　🍚没吃×2 · 📓本子×2 · 💰记账×1」\n· 你亲手写的句子永远在正文，哪怕带着 🍚💰 小签；点条展开是完整的行，照旧能改能删能挂；手动挂到事件下面的小事跟着事件走，不折叠\n· 复盘快照和一日分享卡默认只算正文（任务不受影响）；从汇总/搜索/打卡墙跳到某条小事时会自动帮你展开\n\n'
+    + 'v2.28（当前 · 2026.11.5）\n【☀ 早安卡 · 每天第一次打开】\n· 今天几号、农历、节气节日，离下个假期还有几天\n· 天气：今天和昨天的温度画成两根条，冷了暖了一眼看出；跟着给穿衣建议（加外套 / 少穿一件 / 照昨天穿），几点开始下雨也说\n· 今天的事：谁过生日、约好今天的、转交该跟进的——只放有日子的\n· 翻到一页：从旧记录里抽一条（一个月前的今天优先），点一下跳回那天\n· 最后点点说一句话；点「开始全新的一天」进今日页\n· 收起后今日页顶上留一行天气条，点开再看整张卡\n· 天气城市在 设置 → 天气城市：最多存 3 个，卡片上点城市名来回切，也能一键定位；没网就不显示天气，别的照常\n【随缘：没做完的不再天天搬】\n· 没日子的任务当天没做完，第二天自动收进「☾ 想做的事」：不弹窗、不计次、不催；今日页一行小字能看到，想做哪件点「⤴ 今天做」\n· 推迟到某天、那天正好没打开的不会再丢：两天内补到今天（带「原定」小签），更久的收进想做的事\n· 晚间复盘直达快照和盖章；想逐件过，点「现在过一遍」\n· 今日页不再挂「>×5」这类拖延计数\n· 喜欢每天逐件表态的，设置 → 任务风格 切回「对账」，一切照旧\n· Someday 改叫「想做的事」\n【三餐不追“没吃”】\n· 打卡墙上没记的那顿只是一个小点，不再是等你填的虚圈\n· 「三餐齐全连击」退役，换成只增不减的「本月吃到新店」\n【其他】\n· App 在后台过了夜，回来自动翻到新的一天；切走前没存的内容先存好\n\n'
+    + 'v2.27（2026.8.28）\n【⚙ 今日小事折叠条 · 正文归正文】\n· 模块生出来的行——三餐打卡（含没吃）、本子足迹（开了/写了）、「记一笔」的账——不再混在流水里，收进页尾一条：「⚙ 今日小事 · 5 条　🍚没吃×2 · 📓本子×2 · 💰记账×1」\n· 你亲手写的句子永远在正文，哪怕带着 🍚💰 小签；点条展开是完整的行，照旧能改能删能挂；手动挂到事件下面的小事跟着事件走，不折叠\n· 复盘快照和一日分享卡默认只算正文（任务不受影响）；从汇总/搜索/打卡墙跳到某条小事时会自动帮你展开\n\n'
     + 'v2.26（2026.8.26）\n【记账类别 · 你说了算】\n· 类别管理（盘点页「✎ 类别」或换类面板底部进）：预置八类可改叫法（自动识别规则照旧），自定义的可改名可删——改名会带着用过它的记录一起换，删了的回到自动分类（双确认）\n【点类别看它的全部】\n· 盘点里点任何一个类别条，跳到流水只看那一类：大数字、日均、逐日账单全部只算它；流水页的图例也能点；「只看 · 出行 ✕」一点回到全部\n\n'
     + 'v2.25（2026.8.26）\n【💰 记一笔 · 哪天花的记哪天】\n· 记账页新增「＋ 记一笔」：金额、类别、一句备注，还有个日期框——前天打的车今天想起来，选回前天就行\n· 记下的这笔不进什么独立账本，直接并到那天的手帐流水里，行首以 💰 符号出现，和手写的一样可改可删可撤\n· 备注留空就用类别名组句（「出行 45元」）；选了类别的直接定类，没选的按词典自动认\n\n'
     + 'v2.24（2026.8.26）\n【💰 记账板块（方案B）】\n· 不用换记录方式：任何一行写了金额（45元 / ¥18 / 30块）就自动成账；「工资到账」这类收入句自动排除\n· 类别从「打车/水电/买了…」这些词里保守认出（吃喝/出行/购物/居住/娱乐/医疗/人情/其他），三餐美食自动算吃喝、电影票算娱乐；认不出老实归其他\n· 行下多一枚 💰 小签，点开可换类别、可自定义类别、可选「不算花销」——处处可改铁律\n· 板块页双页签：📒 流水（本月大数字、分类彩条、逐日账单，每行点了跳回当天原句）｜📊 盘点（本月/上月、最大一笔、去向条形、几句值得一提，可切上月/今年、可出分享卡）\n· 聪明工具条同步递 💰 抓手；板块管理「💰 记账（扩展）」默认关\n【¥ 处处能补金额】\n· 三餐快捷表本就有金额框；现在电影/读书/美食集子里没写金额的行，会有一枚「¥ 补一笔」轻推——点开填个数，拼进句尾就归账\n\n'
@@ -4602,24 +4703,20 @@ function renderMeals(){
   rowsAll.forEach(r => { (byDay[r.d] = byDay[r.d] || new Set()).add(r.k);
     byDayE[r.d] = byDayE[r.d] || {};
     if (!byDayE[r.d][r.k]) byDayE[r.d][r.k] = r; });
-  let streak = 0;
-  const dd = parseKey(TODAY);
-  for (let i = 0; i < 400; i++){
-    const s3 = byDay[dkey(dd)];
-    const full = s3 && s3.has('bre') && s3.has('lun') && s3.has('din');
-    if (full) streak++;
-    else if (i !== 0) break;   /* 今天没记完不打断昨天起的连击 */
-    dd.setDate(dd.getDate() - 1);
-  }
+  /* v2.28 连击退役（一断就泄气）→ 本月吃到新店：只增不减 */
+  const firstSeen = {};
+  walk((d5, e5) => { const st5 = parseEntry(e5).store;
+    if (st5){ const t5 = parseKey(d5); if (!firstSeen[st5] || t5 < firstSeen[st5]) firstSeen[st5] = t5; } });
+  const newStores = Object.values(firstSeen).filter(t5 => t5.getFullYear() === ta[0] && t5.getMonth() + 1 === ta[1]).length;
   const pan = document.createElement('div'); pan.className = 'tp-pan'; pan.style.marginTop = '16px';
-  const tiles = [[streak, '天', '三餐齐全连击'], [mon.length, '顿', '本月记了'], [wm, '次', '本月外卖'], ['¥' + Math.round(spend), '', '本月吃饭花销']];
+  const tiles = [[newStores, '家', '本月吃到新店'], [mon.length, '顿', '本月记了'], [wm, '次', '本月外卖'], ['¥' + Math.round(spend), '', '本月吃饭花销']];
   pan.innerHTML = '<div class="tt">吃饭这件小事 · ' + ta[1] + '月</div><div class="tp-nums">'
     + tiles.map(t => '<div class="n"><b>' + t[0] + (t[1] ? '<i>' + t[1] + '</i>' : '') + '</b><span>' + t[2] + '</span></div>').join('') + '</div>'
     + (topC ? '<div class="vt-note" style="margin-top:8px">这个月最常一起吃饭：' + vEsc(topC[0]) + ' × ' + topC[1] + ' 次</div>' : '');
   view.appendChild(pan);
   const grid = document.createElement('div'); grid.className = 'tp-pan';
   let gh = '<div class="tt">最近两周 · 早 / 午 / 晚</div>'
-    + '<div class="vt-note" style="margin:0 0 6px">虚圈＝还没记，点一下补 · ✕＝这顿没吃 · 灰点＝日常吃 · 彩点＝进了美食集子 · 点日期看那天</div>';
+    + '<div class="vt-note" style="margin:0 0 6px">小点＝没记，想补再点 · ✕＝这顿没吃 · 灰点＝日常吃 · 彩点＝进了美食集子 · 点日期看那天</div>';
   const d4 = parseKey(TODAY);
   for (let i = 0; i < 14; i++){
     const k4 = dkey(d4); const sE = byDayE[k4] || {};
@@ -4647,7 +4744,7 @@ function renderMeals(){
   });
   view.appendChild(grid);
   const tip = document.createElement('div'); tip.className = 'vt-tip';
-  tip.textContent = '平时写「早饭/午饭/晚饭 + 吃了什么」自动归格；漏了的直接点墙上的虚圈补一顿——吃了什么、店名、和谁、花了多少，一张小表填完。带「店名」或外卖的会同时收进美食集子（彩点）。';
+  tip.textContent = '平时写「早饭/午饭/晚饭 + 吃了什么」自动归格；没记的就空着，不用补；想补哪顿点墙上的小点——吃了什么、店名、和谁、花了多少，一张小表填完。带「店名」或外卖的会同时收进美食集子（彩点）。';
   view.appendChild(tip);
 }
 function relChipHtml(sel){
@@ -5205,6 +5302,7 @@ function renderVault(){
 function ensureToday(){
   if (!PAGES[TODAY]) PAGES[TODAY] = {plan:[], flow:[]};
   walk((k, e) => {
+    if (e.badge === '☾ someday') e.badge = '☾ 想做';   /* v2.28 Someday 改名 */
     if (e.due){ const pp = String(e.due).split('.').map(Number);
       if (!(pp.length === 3 && pp[1] >= 1 && pp[1] <= 12 && pp[2] >= 1 && pp[2] <= 31)) delete e.due; }
     if (e.badge && e.badge.includes('已完成0%')) e.badge = e.badge.replace(/ · 已完成0%/g, '').replace(/已完成0% · ?/g, '').trim();
@@ -5229,25 +5327,57 @@ function ensureToday(){
     });
   };
   fixDup(SET.people); fixDup(SET.cycles); fixDup(typeof NOTES !== 'undefined' ? NOTES : []);
+  /* v2.28 到期接上；错过日期不再丢——两天内补到今天，更久的：随缘收进想做的事 / 对账回到待表态 */
+  const tk0 = parseKey(TODAY), lateOf = k2 => Math.round((tk0 - parseKey(k2)) / 86400000);
+  const arrBadge = (e, from) => {
+    const bits = [];
+    if (SET.duty) bits.push('>×' + e.mig);
+    if (from) bits.push('原定 ' + fmtShort(from));
+    if (e.progress) bits.push('已完成' + e.progress + '%');
+    return bits.length ? bits.join(' · ') : undefined;
+  };
+  let pooledN = 0;
   walkWithParent((k, e, parent) => {
     if (k === TODAY) return;
-    if (e.sym === 'task' && e.due === TODAY && !e.arrived && (e.state === 'open' || e.state === 'migrated')){
-      e.arrived = true;
-      e.mig = (e.mig || 0) + 1;
-      if (e.state === 'open') e.state = 'migrated';
-      P().plan.push({sym:'task', state:'open', text:e.text,
-        groups:e.groups ? [...e.groups] : undefined, progress:e.progress, mig:e.mig,
-        src:e.src || (parent && parent.text) || undefined,
-        srcDay:k, srcId:e._id || (e._id = ++uid),
-        badge:'>×' + e.mig + (e.progress ? ' · 已完成' + e.progress + '%' : ''), _id:++uid});
+    if (e.sym === 'task' && e.due && !e.arrived && (e.state === 'open' || e.state === 'migrated')){
+      const late = lateOf(e.due);
+      if (late >= 0 && late <= 2){
+        const from = late ? e.due : null;
+        e.arrived = true;
+        e.mig = (e.mig || 0) + 1;
+        if (e.state === 'open') e.state = 'migrated';
+        P().plan.push({sym:'task', state:'open', text:e.text,
+          groups:e.groups ? [...e.groups] : undefined, progress:e.progress, mig:e.mig,
+          src:e.src || (parent && parent.text) || undefined,
+          srcDay:k, srcId:e._id || (e._id = ++uid), lateFrom:from || undefined,
+          badge:arrBadge(e, from), _id:++uid});
+      } else if (late > 2){
+        const was = e.due; delete e.due;
+        if (SET.duty) e.state = 'open';
+        else { e.state = 'someday'; e.badge = '☾ 想做 · 原定 ' + fmtShort(was); e.pooled = TODAY; pooledN++; }
+      }
     }
-    if (e.state === 'delegated' && e.delegate && e.delegate.follow === TODAY && !e.followArrived){
-      e.followArrived = true;
-      P().plan.push({sym:'task', state:'open',
-        text:'问问 ' + e.delegate.to + '：' + (e.text || '').slice(0, 16),
-        src:e.text, srcDay:k, srcId:e._id || (e._id = ++uid), _id:++uid});
+    if (e.state === 'delegated' && e.delegate && e.delegate.follow && !e.followArrived){
+      const late2 = lateOf(e.delegate.follow);
+      if (late2 >= 0 && late2 <= 2){
+        e.followArrived = true;
+        P().plan.push({sym:'task', state:'open',
+          text:'问问 ' + e.delegate.to + '：' + (e.text || '').slice(0, 16),
+          src:e.text, srcDay:k, srcId:e._id || (e._id = ++uid), lateFrom:late2 ? e.delegate.follow : undefined, _id:++uid});
+      } else if (late2 > 2) e.followArrived = true;
     }
   });
+  /* v2.28 随缘：没日子的事当天没做完 → 第二天自动收进「想做的事」；过了日子的循环提醒悄悄翻篇 */
+  if (!SET.duty){
+    walk((k, e) => {
+      if (k === TODAY || parseKey(k) > tk0) return;
+      if (e.sym !== 'task' || e.state !== 'open' || e.due) return;
+      if (e.cyc){ e.state = 'migrated'; e.lapsed = 1; return; }
+      if (!(e.text || '').trim()) return;
+      e.state = 'someday'; e.badge = '☾ 想做'; e.pooled = TODAY; pooledN++;
+    });
+  }
+  if (pooledN) P().pooled = (P().pooled || 0) + pooledN;
 }
 function cycMaterialize(){
   let ins = false;
@@ -5295,7 +5425,7 @@ function morningCheck(){
     + '</div>'
     + '<button class="gs-done" id="mAll">带来选中的</button>'
     + '<div style="display:flex;gap:8px;margin-top:10px">'
-    + '<button class="gm-btn" id="mSd" style="flex:1;padding:10px">☾ 没勾的放 Someday</button>'
+    + '<button class="gm-btn" id="mSd" style="flex:1;padding:10px">☾ 没勾的收进想做的事</button>'
     + '<button class="gm-btn" id="mSkip" style="flex:1;padding:10px">都不带 · 任务里有底</button></div>';
   const sel = new Set();
   const refresh = () => {
@@ -5328,7 +5458,7 @@ function morningCheck(){
   $('#mSd').onclick = () => {
     const rest = left.filter((_, i) => !sel.has(i));
     if (!rest.length){ toast('都勾上了，没有要放的'); return; }
-    rest.forEach(x => { x.e.state = 'someday'; delete x.e.due; x.e.badge = '☾ someday'; });
+    rest.forEach(x => { x.e.state = 'someday'; delete x.e.due; x.e.badge = '☾ 想做'; });
     if (sel.size){
       [...sel].map(i => left[i]).forEach(x => {
         const e = x.e;
@@ -5341,7 +5471,7 @@ function morningCheck(){
           badge:'>×' + e.mig, _id:++uid});
       });
     }
-    toast('☾ ' + rest.length + ' 件放进 Someday' + (sel.size ? ' · 带来 ' + sel.size + ' 件' : '') + ' · 想做时去侧栏捞');
+    toast('☾ ' + rest.length + ' 件收进想做的事' + (sel.size ? ' · 带来 ' + sel.size + ' 件' : '') + ' · 想做时去侧栏捞');
     closeSheet(); scheduleSave(); render();
   };
   $('#mSkip').onclick = () => { toast('都留在原页 · 任务汇总随时能翻'); closeSheet(); };
@@ -5360,12 +5490,470 @@ function showOnboard(){
     + '—  笔记——想法与信息\n'
     + '＝  心情——此刻的情绪\n？ 疑问 · ！ 重点——这两枚也备着，侧栏汇总一处翻\n\n'
     + '写字敲 # 归分组；「明天」「8.15号」「16:00」这些我都认识。\n'
-    + '晚上点右上「复盘」，没做完的事逐件表态——第二天早上我自动接上。\n'
+    + '每天第一次打开，我递你一张早安卡：天气、今天的事、一句话。没做完的事不用天天搬，我替你收进「想做的事」。\n'
     + '左上 ☰ 是总日历、分组、搜索和设置；设置里可以开云备份，交给我盯着。'
     + '</div><button class="rv-confirm" id="obGo" style="margin-top:14px">开始记录</button></div>';
   $('#obGo').onclick = () => R.classList.remove('on');
   R.classList.add('on');
 }
+
+/* ============ v2.28 早安卡 · 日子 / 天气 / 今天的事 / 翻到一页 / 一句话 ============ */
+const JQ_NM = ['小寒','大寒','立春','雨水','惊蛰','春分','清明','谷雨','立夏','小满','芒种','夏至','小暑','大暑','立秋','处暑','白露','秋分','寒露','霜降','立冬','小雪','大雪','冬至'];
+const JQ_Y0 = 2024, JQ_TAB = '062004190520041905200521062207220722082307220621052003180520042005210521072207230723082307220721052004180520052005210521072307230723082307220722052004190621052006210621072308230823082307220722062004190520041905200521062207220722082307220621052003180520042005210521072207230723082307220721052004180520052005210521072307230723082307220722052004190621052006210621072308230823082307220722062004190520041905200521062207220722082307220621052003180520042005210521072207230723082307220721052004180520052005210521072307230723082307220722052004190621052005210621072307230823082307220722062004190520041905200521062207220722082307220621052003180520042005210521072207230722082307220721052004180520052005210521072307230723082307220722052004190621052005210621072307230823082307220722062004190520041905200521062207220722072307220621052003180520042005200521072207230722082307220721052004180520042005210521072207230723082307220722052004190621052005210621072307230823082307220722062004190520041905200521062207220722072307220621052003180520041905200521072207230722082307220721';   /* 2024–2045 北京时间节气日（天文算法逐个算出，已与历书核对） */
+function jieqiOf(k){
+  const a = k.split('.').map(Number), yi = a[0] - JQ_Y0;
+  if (yi < 0 || (yi + 1) * 48 > JQ_TAB.length) return null;
+  for (const j of [(a[1] - 1) * 2, (a[1] - 1) * 2 + 1]){
+    if (+JQ_TAB.substr(yi * 48 + j * 2, 2) === a[2]) return JQ_NM[j];
+  }
+  return null;
+}
+const FEST_S = {'1.1':'元旦','2.14':'情人节','3.8':'妇女节','4.1':'愚人节','5.1':'劳动节','5.4':'青年节','6.1':'儿童节','9.10':'教师节','10.1':'国庆节','11.11':'双十一','12.24':'平安夜','12.25':'圣诞节'};
+const FEST_L = {'1.1':'春节','1.15':'元宵节','2.2':'龙抬头','5.5':'端午节','7.7':'七夕','8.15':'中秋节','9.9':'重阳节','12.8':'腊八','12.23':'小年'};
+function festOf(k){
+  const a = k.split('.').map(Number), d = parseKey(k);
+  const L = solarToLunar(d);
+  if (L && !L.leap && FEST_L[L.lm + '.' + L.ld]) return FEST_L[L.lm + '.' + L.ld];
+  const nx = solarToLunar(parseKey(addDaysK(k, 1)));
+  if (nx && !nx.leap && nx.lm === 1 && nx.ld === 1) return '除夕';
+  if (FEST_S[a[1] + '.' + a[2]]) return FEST_S[a[1] + '.' + a[2]];
+  if (a[1] === 5 && d.getDay() === 0 && a[2] > 7 && a[2] <= 14) return '母亲节';
+  if (a[1] === 6 && d.getDay() === 0 && a[2] > 14 && a[2] <= 21) return '父亲节';
+  return null;
+}
+function nextHoliday(){
+  const ty = +TODAY.split('.')[0], tk = parseKey(TODAY), cands = [];
+  [ty, ty + 1].forEach(y => {
+    cands.push(['元旦', new Date(y, 0, 1)], ['劳动节', new Date(y, 4, 1)], ['国庆节', new Date(y, 9, 1)]);
+    [['春节', 1, 1], ['端午节', 5, 5], ['中秋节', 8, 15]].forEach(([n, lm, ld]) => { const t = lunarToSolar(y, lm, ld); if (t) cands.push([n, t]); });
+  });
+  let best = null;
+  cands.forEach(([n, t]) => { const dd = Math.round((t - tk) / 86400000); if (dd >= 3 && (!best || dd < best.days)) best = {n, days:dd}; });
+  return best;
+}
+function seedRng(s){
+  let h = 1779033703 ^ s.length;
+  for (let i = 0; i < s.length; i++){ h = Math.imul(h ^ s.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; }
+  return () => { h = Math.imul(h ^ (h >>> 16), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909); h ^= h >>> 16; return (h >>> 0) / 4294967296; };
+}
+function clipT(t, n){ t = String(t || '').trim(); return t.length > n ? t.slice(0, n) + '…' : t; }
+
+/* ---- 天气：Open-Meteo（免注册免 key，一次请求拿到昨天+今天）；取不到就不显示，别的照常 ---- */
+const WX_CITIES = [['杭州',30.27,120.16],['上海',31.23,121.47],['北京',39.90,116.40],['广州',23.13,113.26],['深圳',22.54,114.06],['成都',30.57,104.07],
+  ['南京',32.06,118.80],['武汉',30.59,114.31],['苏州',31.30,120.59],['重庆',29.56,106.55],['西安',34.34,108.94],['天津',39.13,117.20],
+  ['长沙',28.23,112.94],['郑州',34.75,113.62],['青岛',36.07,120.38],['厦门',24.48,118.09],['宁波',29.87,121.55],['合肥',31.82,117.23],
+  ['福州',26.07,119.30],['济南',36.65,117.12],['昆明',25.04,102.71],['沈阳',41.80,123.43],['大连',38.91,121.61],['哈尔滨',45.80,126.53],
+  ['长春',43.82,125.32],['石家庄',38.04,114.51],['太原',37.87,112.55],['南昌',28.68,115.86],['南宁',22.82,108.37],['贵阳',26.65,106.63],
+  ['兰州',36.06,103.83],['呼和浩特',40.84,111.75],['乌鲁木齐',43.83,87.62],['拉萨',29.65,91.13],['西宁',36.62,101.78],['银川',38.49,106.23],
+  ['海口',20.04,110.20],['三亚',18.25,109.51],['香港',22.32,114.17],['澳门',22.20,113.54],['台北',25.03,121.57],['无锡',31.49,120.31],
+  ['温州',28.00,120.67],['绍兴',30.00,120.58],['嘉兴',30.75,120.76],['湖州',30.89,120.09],['常州',31.81,119.97],['佛山',23.02,113.12],
+  ['东莞',23.02,113.75],['珠海',22.27,113.58],['徐州',34.21,117.28],['烟台',37.46,121.45],['洛阳',34.62,112.45],['桂林',25.27,110.29],
+  ['丽江',26.86,100.23],['大理',25.61,100.27]];
+const WX_TOP = ['杭州','上海','北京','广州','深圳','成都','南京','武汉'];
+function wxCfg(){ if (!SET.wx || !Array.isArray(SET.wx.cities)) SET.wx = {cities:[], cur:0}; return SET.wx; }
+function wxCity(){ const w = wxCfg(); if (!w.cities.length) return null; if (!(w.cur >= 0 && w.cur < w.cities.length)) w.cur = 0; return w.cities[w.cur]; }
+function wxTxt(c){
+  return c === 0 || c === 1 ? '晴' : c === 2 ? '多云' : c === 3 ? '阴' : c <= 48 ? '雾' : c <= 57 ? '毛毛雨'
+    : c === 61 ? '小雨' : c === 63 ? '中雨' : c === 65 ? '大雨' : c <= 67 ? '冻雨'
+    : c === 71 ? '小雪' : c === 73 ? '中雪' : c === 75 ? '大雪' : c === 77 ? '雪粒'
+    : c <= 81 ? '阵雨' : c === 82 ? '大阵雨' : c <= 86 ? '阵雪' : '雷阵雨';
+}
+function wxIc(c){ return c === 0 ? '☀️' : c === 1 ? '🌤' : c === 2 ? '⛅' : c === 3 ? '☁️' : c <= 48 ? '🌫' : c <= 57 ? '🌦' : c <= 67 ? '🌧' : c <= 77 ? '🌨' : c <= 82 ? '🌦' : c <= 86 ? '🌨' : '⛈'; }
+const wxWet = c => (c >= 51 && c <= 67) || (c >= 80 && c <= 82) || c >= 95;
+const wxSnowy = c => (c >= 71 && c <= 77) || c === 85 || c === 86;
+function wxURL(c){
+  return 'https://api.open-meteo.com/v1/forecast?latitude=' + c.la + '&longitude=' + c.lo
+    + '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max'
+    + '&hourly=precipitation_probability,weather_code&past_days=1&forecast_days=1&timezone=auto';
+}
+function wxParse(j){
+  const iso = key2iso(TODAY), D = j && j.daily;
+  if (!D || !Array.isArray(D.time)) return null;
+  const i = D.time.indexOf(iso);
+  if (i < 1) return null;   /* 必须同时有昨天和今天：缓存里的旧响应、离线兜底页都会在这被挡下 */
+  const num = v => (typeof v === 'number' && isFinite(v)) ? Math.round(v) : null;
+  const d = {hi:num(D.temperature_2m_max[i]), lo:num(D.temperature_2m_min[i]),
+    hiY:num(D.temperature_2m_max[i - 1]), loY:num(D.temperature_2m_min[i - 1]),
+    code:+(D.weather_code || [])[i] || 0, pmax:num((D.precipitation_probability_max || [])[i]), hrs:[]};
+  if ([d.hi, d.lo, d.hiY, d.loY].some(v => v === null)) return null;
+  const H = j.hourly || {};
+  (H.time || []).forEach((t, k) => {
+    if (String(t).slice(0, 10) === iso) d.hrs.push({h:+String(t).slice(11, 13), p:(H.precipitation_probability || [])[k], c:+(H.weather_code || [])[k] || 0});
+  });
+  return d;
+}
+function wxKey(){ const c = wxCity(); return c ? TODAY + '|' + c.n : null; }
+function wxHit(){ const k = wxKey(); return (k && SET.wxc && SET.wxc[k]) || null; }
+function wxCached(){ const h = wxHit(); return h ? h.d : null; }
+function wxStale(){ const h = wxHit(); return !h || Date.now() - h.t > 3 * 3600000; }
+let wxBusy = null;
+function wxFetch(force){
+  const c = wxCity(); if (!c) return Promise.resolve(null);
+  const key = wxKey();
+  if (!SET.wxc || typeof SET.wxc !== 'object') SET.wxc = {};
+  const hit = SET.wxc[key];
+  if (!force && hit && Date.now() - hit.t < 3 * 3600000) return Promise.resolve(hit.d);
+  if (wxBusy && wxBusy.key === key) return wxBusy.p;
+  const ctl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  const tm = setTimeout(() => { try{ if (ctl) ctl.abort(); }catch(_){} }, 8000);
+  const p = fetch(wxURL(c), ctl ? {signal:ctl.signal, cache:'no-store'} : {cache:'no-store'})
+    .then(r => r.json())
+    .then(j => {
+      const d = wxParse(j); if (!d) throw new Error('wx');
+      Object.keys(SET.wxc).forEach(k2 => { if (k2.indexOf(TODAY + '|') !== 0) delete SET.wxc[k2]; });
+      SET.wxc[key] = {t:Date.now(), d};
+      P().wx = {c:c.n, hi:d.hi, lo:d.lo, k:d.code};   /* 顺手给这一页记下天气，以后翻回忆用 */
+      scheduleSave(); return d;
+    })
+    .catch(() => (hit ? hit.d : null))
+    .then(d => { clearTimeout(tm); if (wxBusy && wxBusy.key === key) wxBusy = null; return d; });
+  wxBusy = {key, p}; return p;
+}
+function hourCN(h){ return h < 12 ? '上午 ' + h + ' 点' : h === 12 ? '中午 12 点' : h < 18 ? '下午 ' + (h - 12) + ' 点' : '晚上 ' + (h - 12) + ' 点'; }
+function wxAdvice(d){
+  const dd = Math.round(((d.hi - d.hiY) + (d.lo - d.loY)) / 2);
+  const cmp = dd <= -3 ? {t:'↓ 比昨天冷 ' + (-dd) + '°', c:'cold'} : dd >= 3 ? {t:'↑ 比昨天暖 ' + dd + '°', c:'warm'} : {t:'和昨天差不多', c:'same'};
+  let cloth, short;
+  if (d.hi <= 5){ cloth = '很冷，帽子围巾安排上'; short = '穿厚点'; }
+  else if (dd <= -6){ cloth = '降温挺猛，穿厚一点'; short = '穿厚点'; }
+  else if (dd <= -3){ cloth = '降温了，加件外套'; short = '加外套'; }
+  else if (d.hi >= 33){ cloth = '很热，防晒、多喝水'; short = '防晒'; }
+  else if (dd >= 3){ cloth = '回暖了，可以少穿一件'; short = '少穿一件'; }
+  else { cloth = '照昨天穿就行'; short = '照昨天穿'; }
+  const nowH = new Date().getHours();
+  const hit = (d.hrs || []).find(x => x.h >= nowH && x.h <= 22 && ((typeof x.p === 'number' && x.p >= 50) || wxWet(x.c) || wxSnowy(x.c)));
+  let rain = null, rainShort = '';
+  if (hit){
+    const sn = wxSnowy(hit.c), when = hit.h <= nowH ? '现在' : hourCN(hit.h) + '后';
+    rain = (sn ? '❄ ' : '☂ ') + when + (sn ? '有雪，路上慢点' : '有雨，带把伞');
+    rainShort = sn ? '有雪' : '带伞';
+  }
+  const range = (d.hi - d.lo >= 10) ? '早晚温差 ' + (d.hi - d.lo) + '°，外套带上方便穿脱' : null;
+  return {dd, cmp, cloth, short, rain, rainShort, range, snow:!!(hit && wxSnowy(hit.c)), rainy:!!hit, hi:d.hi, sunny:d.code <= 1};
+}
+function wxDesc(d){
+  const seg = (a, b) => {
+    const cnt = {};
+    (d.hrs || []).filter(x => x.h >= a && x.h < b).forEach(x => { const t = wxTxt(x.c); cnt[t] = (cnt[t] || 0) + 1; });
+    return Object.keys(cnt).sort((p, q) => cnt[q] - cnt[p])[0] || null;
+  };
+  const m = seg(6, 12), n = seg(12, 21);
+  if (m && n && m !== n) return m + '转' + n;
+  return m || n || wxTxt(d.code);
+}
+
+/* ---- 卡片内容 ---- */
+function helloGreet(){ const h = new Date().getHours(); return h < 5 ? '夜深了' : h < 11 ? '早上好' : h < 13 ? '中午好' : h < 18 ? '下午好' : '晚上好'; }
+function lastRecordGap(){
+  const tk = parseKey(TODAY); let best = null;
+  Object.keys(PAGES).forEach(k => {
+    const d = parseKey(k); if (d >= tk) return;
+    const p = PAGES[k]; if (!((p.plan || []).length || (p.flow || []).length)) return;
+    if (!best || d > best) best = d;
+  });
+  return best ? Math.round((tk - best) / 86400000) : 0;
+}
+function helloTags(){
+  const tags = [];
+  ['今天', '明天', '后天'].forEach((w, i) => {
+    const k = addDaysK(TODAY, i);
+    [festOf(k), jieqiOf(k)].forEach(x => { if (x && tags.length < 2) tags.push({t:w + x, acc:true}); });
+  });
+  const h = nextHoliday();
+  if (h && h.days <= 120 && !tags.some(t => t.t.indexOf(h.n) >= 0)) tags.push({t:'距' + h.n + ' ' + h.days + ' 天', acc:false});
+  return tags.slice(0, 3);
+}
+function helloItems(){
+  return (P().plan || []).filter(e => (e.text || '').trim()
+    && ((e.sym === 'task' && e.state === 'open') || (e.sym === 'note' && e.cyc)));
+}
+function helloItemHTML(e){
+  let t = (e.text || '').trim(), ic = '<span class="ic dt"></span>', when = '';
+  if (e.cyc){
+    const c = (SET.cycles || []).find(x => x.id === e.cyc);
+    const icon = c ? cycIcon(c) : '🔁';
+    if (t.indexOf(icon) === 0) t = t.slice(icon.length).trim();
+    ic = '<span class="ic">' + icon + '</span>';
+    if (e.sym === 'task') when = icon === '🎂' ? '记得说一声' : icon === '💍' ? '别忘了' : icon === '💳' ? '记得还' : '';
+  } else if (/^问问 /.test(t)){ ic = '<span class="ic arr">→</span>'; when = '转交跟进'; }
+  else {
+    const hm = detectTimeHM(t);
+    if (hm){ when = hm; t = t.replace(/\s*([01]?\d|2[0-3])[:：][0-5]\d\s*/, ' ').trim() || t; }
+    else { const cn = detectTimeCN(t); if (cn) when = cn; }
+  }
+  if (!when && e.lateFrom) when = '原定 ' + fmtShort(e.lateFrom);
+  return '<div class="hl-it" data-hid="' + (e._id || '') + '">' + ic + '<span class="tx">' + vEsc(t) + '</span>'
+    + (when ? '<span class="when">' + vEsc(when) + '</span>' : '') + '</div>';
+}
+function helloMemory(){
+  const cut = parseKey(addDaysK(TODAY, -7)), cands = [];
+  Object.keys(PAGES).forEach(k => {
+    if (parseKey(k) > cut) return;
+    PAGES[k].plan.concat(PAGES[k].flow).forEach(e => {
+      if (!e.text || e.sym === 'task' || e.sym === 'mood' || e.cyc || isMinor(e)) return;
+      if (e.text.trim().length < 8) return;
+      cands.push({k, e, w:(e.sym === 'event' ? 2 : 1) + ((e.groups || []).length ? 3 : 0)});
+    });
+  });
+  cands.sort((x, y) => parseKey(y.k) - parseKey(x.k));   /* 固定顺序：同一天抽到的永远是同一条 */
+  if (!cands.length) return null;
+  const r = seedRng(TODAY + '|mem');
+  const pick = arr => { let v = r() * arr.reduce((s, x) => s + x.w, 0); for (const x of arr){ v -= x.w; if (v <= 0) return x; } return arr[arr.length - 1]; };
+  const ta = TODAY.split('.').map(Number);
+  for (const [m, label] of [[12, '一年前的今天'], [6, '半年前的今天'], [3, '三个月前的今天'], [2, '两个月前的今天'], [1, '一个月前的今天']]){
+    const d = new Date(ta[0], ta[1] - 1 - m, ta[2]);
+    if (d.getDate() !== ta[2]) continue;
+    const hit = cands.filter(x => x.k === dkey(d));
+    if (hit.length) return Object.assign({label}, pick(hit));
+  }
+  return Object.assign({label:'翻到一页'}, pick(cands));
+}
+const JQ_TIP = {'立春':'立春了，天要慢慢暖起来了。','春分':'春分，今天昼夜一样长。','清明':'清明，适合想一想想念的人。','立夏':'立夏了，夏天正式开始。',
+  '夏至':'夏至，一年里白天最长的一天。','立秋':'立秋了，暑气要慢慢退了。','秋分':'秋分，昼夜又一样长了。','立冬':'立冬了，吃顿热乎的。',
+  '冬至':'冬至，记得吃饺子或汤圆。','小寒':'小寒，最冷的日子要来了，穿暖和。','大寒':'大寒，再冷也快过年了。'};
+const CHEER_GEN = ['今天做完一件事，就算赢。','不用很厉害，慢慢来也很好。','想到什么写什么，剩下的交给我。','做不完的明天再说，我不追你。',
+  '记下来的，就不会被忘掉。','先做最想做的那件。','今天也要好好吃饭。','累了就歇会儿，我一直在。','有好吃的、好看的，记得告诉我。','快过遗忘，慢成习惯。'];
+function helloCheer(cx){
+  let a = null;
+  if (cx.gap >= 7) a = seedRng(TODAY + '|gap')() < 0.5 ? '好久不见！今天是新的一页。' : '回来就好，从今天写起就行。';
+  else if (cx.fest) a = cx.fest === '除夕' ? '除夕快乐，今晚好好吃顿饭。' : cx.fest + '快乐！';
+  else if (cx.jq && JQ_TIP[cx.jq]) a = JQ_TIP[cx.jq];
+  else if (cx.bd) a = '今天有人过生日，记得说一声。';
+  else if (cx.wa){
+    const w = cx.wa;
+    if (w.snow) a = '下雪了！路上慢点。';
+    else if (w.dd <= -5) a = '降温了，对自己好一点。';
+    else if (w.rainy) a = '下雨天，事情慢一点也没关系。';
+    else if (w.hi >= 33) a = '好热，记得多喝水。';
+    else if (w.sunny && w.hi >= 15 && w.hi <= 28) a = '天气不错，有空出门走走。';
+  }
+  if (!a){
+    const wd = parseKey(TODAY).getDay();
+    a = wd === 1 ? '周一了，慢慢进入状态就好。' : wd === 5 ? '周五了，再撑一下就是周末。' : (wd === 6 || wd === 0) ? '周末，允许自己什么都不做。' : null;
+  }
+  const b = (cx.h < 11 && cx.wa && cx.wa.hi <= 15 && seedRng(TODAY + '|bf')() < 0.5)
+    ? '天冷了，早饭吃点热乎的。' : CHEER_GEN[Math.floor(seedRng(TODAY + '|gen')() * CHEER_GEN.length)];
+  return a ? [a, b] : [b];
+}
+function helloCtx(wx){
+  return {gap:lastRecordGap(), fest:festOf(TODAY), jq:jieqiOf(TODAY),
+    bd:helloItems().some(e => e.cyc && e.sym === 'task' && (e.text || '').indexOf('🎂') >= 0),
+    wa:wx ? wxAdvice(wx) : null, h:new Date().getHours()};
+}
+
+/* ---- 天气块 ---- */
+function wxBlockHTML(d){
+  const c = wxCity(), a = wxAdvice(d);
+  const lo0 = Math.min(d.lo, d.loY) - 2, hi0 = Math.max(d.hi, d.hiY) + 2, sp = Math.max(1, hi0 - lo0);
+  const bar = (lo, hi, col) => '<div class="hl-rng"><i style="left:' + ((lo - lo0) / sp * 100).toFixed(1) + '%;width:'
+    + Math.max(4, (hi - lo) / sp * 100).toFixed(1) + '%;background:' + col + '"></i></div>';
+  const tcol = a.cmp.c === 'cold' ? '#4E7A9B' : a.cmp.c === 'warm' ? 'var(--accent)' : 'var(--ink-soft)';
+  const tips = ['👕 ' + a.cloth];
+  if (a.rain) tips.push(a.rain); else if (a.range) tips.push('🧥 ' + a.range);
+  return '<div class="hl-wx">'
+    + '<div class="hl-r1"><span style="font-size:22px">' + wxIc(d.code) + '</span><span class="hl-t">' + d.hi + '°<small> / ' + d.lo + '°</small></span>'
+    + '<span class="hl-d">' + vEsc(wxDesc(d)) + '</span><button class="hl-city" id="hlCity">' + vEsc(c ? c.n : '') + ' ⇄</button></div>'
+    + '<div class="hl-rr"><span class="k">昨天</span>' + bar(d.loY, d.hiY, 'var(--line-strong)') + '<span class="v">' + d.loY + '°–' + d.hiY + '°</span></div>'
+    + '<div class="hl-rr"><span class="k">今天</span>' + bar(d.lo, d.hi, tcol) + '<span class="v">' + d.lo + '°–' + d.hi + '°</span></div>'
+    + '<div class="hl-cmp ' + a.cmp.c + '">' + a.cmp.t + '</div>'
+    + '<div class="hl-tip">' + tips.map(vEsc).join('<br>') + '</div></div>';
+}
+function wxPickHTML(addMode){
+  const cs = wxCfg().cities;
+  return '<div class="hl-wx hl-wx0">' + (addMode ? '选一个城市（存过的点一下就切过去）：' : '告诉我你在哪，每天早上帮你看天气，比昨天冷还是暖：')
+    + '<div class="gs-chips" style="margin-top:8px"><button class="gs-chip" data-wxgeo="1">📍 定位</button>'
+    + cs.map((c, i) => '<button class="gs-chip on" data-wxi="' + i + '">' + vEsc(c.n) + '</button>').join('')
+    + WX_TOP.filter(n => !cs.some(c => c.n === n)).map(n => '<button class="gs-chip" data-wxadd="' + n + '">' + n + '</button>').join('')
+    + '</div><div class="hl-fine">更多城市：设置 → 天气城市（最多存 3 个，卡片上点城市名来回切）</div></div>';
+}
+function bindWxPick(box){
+  box.querySelectorAll('[data-wxadd]').forEach(b => b.onclick = () => {
+    const c = WX_CITIES.find(x => x[0] === b.dataset.wxadd);
+    if (c && wxAddCity({n:c[0], la:c[1], lo:c[2]})) helloWxRender();
+  });
+  box.querySelectorAll('[data-wxi]').forEach(b => b.onclick = () => { wxCfg().cur = +b.dataset.wxi; scheduleSave(); helloWxRender(); });
+  const g = box.querySelector('[data-wxgeo]'); if (g) g.onclick = () => wxLocate(() => helloWxRender());
+}
+function bindWxBlock(box){
+  const b = box.querySelector('#hlCity'); if (!b) return;
+  b.onclick = () => {
+    const w = wxCfg();
+    if (w.cities.length >= 2){ w.cur = (w.cur + 1) % w.cities.length; scheduleSave(); helloWxRender(); helloStripRefresh(); }
+    else { box.innerHTML = wxPickHTML(true); bindWxPick(box); }
+  };
+}
+function helloWxRender(){
+  const box = $('#hlWx'); if (!box) return;
+  const c = wxCity();
+  if (!c){ box.innerHTML = wxPickHTML(false); bindWxPick(box); return; }
+  const d = wxCached();
+  if (d){ box.innerHTML = wxBlockHTML(d); bindWxBlock(box); }
+  else box.innerHTML = '<div class="hl-wx hl-wx0">' + vEsc(c.n) + ' · 看一眼天气…</div>';
+  if (d && !wxStale()) return;
+  wxFetch().then(d2 => {
+    helloStripRefresh();
+    const b2 = $('#hlWx'); if (!b2 || !$('#hello').classList.contains('on')) return;
+    const c2 = wxCity(); if (!c2 || c2.n !== c.n) return;   /* 期间换了城市：以新一轮为准 */
+    if (d2){ b2.innerHTML = wxBlockHTML(d2); bindWxBlock(b2); helloCheerRefresh(); }
+    else if (!d){
+      b2.innerHTML = '<div class="hl-wx hl-wx0">' + vEsc(c.n) + ' 的天气没拿到（可能没网）'
+        + '<div class="gs-chips" style="margin-top:8px"><button class="gs-chip" id="hlWxRetry">再试一次</button><button class="gs-chip" id="hlWxCity">换城市</button></div></div>';
+      $('#hlWxRetry').onclick = () => { b2.innerHTML = '<div class="hl-wx hl-wx0">' + vEsc(c.n) + ' · 再看一眼…</div>'; wxFetch(true).then(() => helloWxRender()); };
+      $('#hlWxCity').onclick = () => { b2.innerHTML = wxPickHTML(true); bindWxPick(b2); };
+    }
+  });
+}
+function helloCheerRefresh(){
+  const el = $('#hlCheer'); if (!el) return;
+  el.innerHTML = helloCheer(helloCtx(wxCached())).map(vEsc).join('<br>') + '<span>—— 点点</span>';
+}
+function wxAddCity(c){
+  const w = wxCfg(), i = w.cities.findIndex(x => x.n === c.n);
+  if (i >= 0){ w.cur = i; scheduleSave(); return true; }
+  if (w.cities.length >= 3){ toast('最多存 3 个城市 · 去设置里删一个再加'); return false; }
+  w.cities.push({n:c.n, la:+(+c.la).toFixed(2), lo:+(+c.lo).toFixed(2)}); w.cur = w.cities.length - 1;
+  scheduleSave(); return true;
+}
+function wxLocate(done){
+  if (!navigator.geolocation){ toast('这台设备拿不到定位 · 直接选城市吧'); return; }
+  toast('正在定位…');
+  navigator.geolocation.getCurrentPosition(pos => {
+    const la = pos.coords.latitude, lo = pos.coords.longitude;
+    let best = null, bd = Infinity;
+    WX_CITIES.forEach(c => { const dx = (c[2] - lo) * Math.cos(la * Math.PI / 180), dy = c[1] - la, d2 = dx * dx + dy * dy; if (d2 < bd){ bd = d2; best = c; } });
+    const near = best && Math.sqrt(bd) * 111 < 60;
+    if (wxAddCity(near ? {n:best[0], la:best[1], lo:best[2]} : {n:'我这儿', la, lo})){
+      toast('📍 ' + (near ? best[0] : '已按定位') + ' · 天气马上来'); if (done) done();
+    }
+  }, () => toast('没拿到位置 · 直接点城市也行'), {timeout:9000, maximumAge:3600000});
+}
+function wxCitySheet(){
+  const S = $('#gsheet'), w = wxCfg();
+  const paint = () => {
+    S.innerHTML = '<div class="gs-title">天气城市 · 最多 3 个</div>'
+      + '<div class="vt-note" style="margin:-2px 0 10px">早安卡上点城市名来回切 · 常在两地跑就都存上</div>'
+      + '<div class="gs-chips" id="wxMine">' + (w.cities.length ? w.cities.map((c, i) => '<button class="gs-chip on" data-rm="' + i + '">'
+          + vEsc(c.n) + (i === w.cur ? ' · 当前' : '') + ' ✕</button>').join('') : '<span class="vt-note">还没存城市</span>') + '</div>'
+      + '<button class="gm-btn" id="wxGeo" style="width:100%;margin:12px 0 10px;padding:10px">📍 用定位找我在哪</button>'
+      + '<div class="gs-chips" style="max-height:28vh;overflow-y:auto">' + WX_CITIES.filter(c => !w.cities.some(x => x.n === c[0]))
+          .map(c => '<button class="gs-chip" data-add="' + c[0] + '">' + c[0] + '</button>').join('') + '</div>'
+      + '<div style="display:flex;gap:8px;margin-top:10px"><input class="vt-in" id="wxQ" placeholder="其他城市，如 绍兴 / 大阪" style="flex:1;margin:0">'
+      + '<button class="gm-btn" id="wxFind" style="padding:0 14px">找</button></div>'
+      + '<div class="gs-chips" id="wxRes" style="margin-top:8px"></div>'
+      + '<button class="gs-done" id="wxOk">好了</button>';
+    S.querySelectorAll('[data-rm]').forEach(b => b.onclick = () => {
+      w.cities.splice(+b.dataset.rm, 1); if (w.cur >= w.cities.length) w.cur = 0; scheduleSave(); paint();
+    });
+    S.querySelectorAll('[data-add]').forEach(b => b.onclick = () => {
+      const c = WX_CITIES.find(x => x[0] === b.dataset.add); if (c && wxAddCity({n:c[0], la:c[1], lo:c[2]})) paint();
+    });
+    $('#wxGeo').onclick = () => wxLocate(paint);
+    $('#wxFind').onclick = () => {
+      const q = $('#wxQ').value.trim(); if (!q) return;
+      const box = $('#wxRes'); box.innerHTML = '<span class="vt-note">找一找…</span>';
+      fetch('https://geocoding-api.open-meteo.com/v1/search?count=6&language=zh&format=json&name=' + encodeURIComponent(q))
+        .then(r => r.json()).then(j => {
+          const rs = (j && j.results) || [];
+          if (!rs.length){ box.innerHTML = '<span class="vt-note">没找到 · 换个写法试试（拼音也行）</span>'; return; }
+          box.innerHTML = rs.map((x, i) => '<button class="gs-chip" data-gi="' + i + '">' + vEsc(x.name)
+            + (x.admin1 && x.admin1 !== x.name ? ' · ' + vEsc(x.admin1) : '') + '</button>').join('');
+          box.querySelectorAll('[data-gi]').forEach(b => b.onclick = () => {
+            const x = rs[+b.dataset.gi]; if (wxAddCity({n:x.name, la:x.latitude, lo:x.longitude})) paint();
+          });
+        }).catch(() => { box.innerHTML = '<span class="vt-note">没连上 · 稍后再试</span>'; });
+    };
+    $('#wxOk').onclick = () => { closeSheet(); render(); };
+  };
+  paint();
+  S.classList.add('on'); $('#mask').classList.add('on');
+}
+
+/* ---- 早安卡本体（方案 A：全屏一页） ---- */
+let helloReopen = false;
+function openHello(reopen){
+  const H = $('#hello'); if (!H) return;
+  helloReopen = !!reopen;
+  try{ dismissKB(); }catch(_){}
+  const ta = TODAY.split('.').map(Number), L = solarToLunar(parseKey(TODAY));
+  const sub = weekCN(TODAY) + (L ? ' · 农历' + (L.leap ? '闰' : '') + LM_NM[L.lm - 1] + '月' + lDayNm(L.ld) : '');
+  const items = helloItems(), mem = helloMemory(), cx = helloCtx(wxCached());
+  const pooled = (!SET.duty && P().pooled) ? P().pooled : 0;
+  H.innerHTML = '<div class="hl-body">'
+    + '<div class="hl-top"><div style="min-width:0">'
+    + '<div class="hl-hi">' + (cx.gap >= 7 ? '好久不见 · ' : '') + helloGreet() + '</div>'
+    + '<div class="hl-date">' + ta[1] + '月' + ta[2] + '日</div>'
+    + '<div class="hl-sub">' + sub + '</div>'
+    + '<div class="hl-tags">' + helloTags().map(t => '<span class="hl-tag' + (t.acc ? ' acc' : '') + '">' + vEsc(t.t) + '</span>').join('') + '</div>'
+    + '</div><div class="hl-dot">' + dotSVG(64) + '</div></div>'
+    + '<div id="hlWx"></div>'
+    + '<div class="hl-lab">今天的事</div>'
+    + (items.length ? items.slice(0, 5).map(helloItemHTML).join('')
+        + (items.length > 5 ? '<div class="hl-none">还有 ' + (items.length - 5) + ' 件 · 在今日页</div>' : '')
+      : '<div class="hl-none">今天没有约好的事，随心过。</div>')
+    + (pooled ? '<div class="hl-pool" id="hlPool">之前没做完的 ' + pooled + ' 件，我收进了「想做的事」 ›</div>' : '')
+    + (mem ? '<div class="hl-lab">' + mem.label + '</div><div class="hl-mem" id="hlMem"><b>' + fmtKey(mem.k) + '</b> · ' + vEsc(clipT(mem.e.text, 46)) + ' ›</div>' : '')
+    + '<div class="hl-cheer" id="hlCheer">' + helloCheer(cx).map(vEsc).join('<br>') + '<span>—— 点点</span></div>'
+    + '<button class="hl-go" id="hlGo">' + (reopen ? '收起' : '开始全新的一天') + '</button>'
+    + '</div>';
+  H.classList.add('on');
+  $('#hlGo').onclick = closeHello;
+  H.querySelectorAll('[data-hid]').forEach(el => el.onclick = () => {
+    const id = +el.dataset.hid; closeHello(); if (id) jumpToEntry(TODAY, id);
+  });
+  if ($('#hlPool')) $('#hlPool').onclick = () => { closeHello(); cur = {name:'agg', key:'someday'}; render(); };
+  if (mem) $('#hlMem').onclick = () => { closeHello(); jumpToEntry(mem.k, mem.e._id || (mem.e._id = ++uid)); };
+  helloWxRender();
+}
+function closeHello(){
+  const H = $('#hello'); if (!H || !H.classList.contains('on')) return;
+  H.classList.remove('on');
+  const first = !helloReopen; helloReopen = false;
+  helloStripRefresh();
+  if (first && SET.duty) morningCheck();
+}
+function helloBoot(){
+  if (!modOn('hello') || !SEEN.onboard){ if (SET.duty) morningCheck(); return; }
+  if (!P().hello){ P().hello = 1; scheduleSave(); openHello(false); return; }
+  if (SET.duty) morningCheck();
+  if (wxCity() && wxStale()) wxFetch().then(() => helloStripRefresh());
+}
+/* ---- 收起后：今日页顶上一行 ---- */
+function helloStripHTML(){
+  const d = wxCached(), segs = [];
+  let head;
+  if (d){
+    const a = wxAdvice(d);
+    head = '<span>' + wxIc(d.code) + '</span><b>' + d.hi + '°</b>'
+      + (a.cmp.c !== 'same' ? '<span class="' + a.cmp.c + '">' + (a.dd > 0 ? '↑' : '↓') + Math.abs(a.dd) + '°</span>' : '');
+    segs.push(a.short); if (a.rainShort) segs.push(a.rainShort);
+  } else head = '<span>☀</span><b>早安卡</b>';
+  const tg = helloTags().filter(t => t.acc)[0]; if (tg) segs.push(tg.t);
+  const bd = helloItems().find(e => e.cyc && e.sym === 'task'); if (bd) segs.push((bd.text || '').trim());
+  return head + '<span class="hs-tx">' + (segs.length ? '· ' + vEsc(segs.join(' · ')) : '') + '</span><span class="op">▾</span>';
+}
+function helloStripNode(){
+  const s = document.createElement('div'); s.className = 'hello-strip';
+  s.innerHTML = helloStripHTML();
+  s.onclick = () => openHello(true);
+  return s;
+}
+function helloStripRefresh(){ const s = view.querySelector('.hello-strip'); if (s) s.innerHTML = helloStripHTML(); }
+
+/* ---- 想做的事：捞回今天 ---- */
+function somedayPull(t, k){
+  snapshot('处理任务');
+  t.state = 'migrated'; t.badge = '→' + fmtShort(TODAY) + ' 捞回';
+  P().plan.push({sym:'task', state:'open', text:t.text, groups:t.groups ? [...t.groups] : undefined, mig:t.mig,
+    src:t.src || undefined, srcDay:k || undefined, srcId:t._id || (t._id = ++uid), _id:++uid});
+  scheduleSave();
+}
+
+/* ---- App 在后台过了夜：回来自动翻到新的一天；切走前把没落盘的存掉 ---- */
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible'){ if (saveTm){ clearTimeout(saveTm); saveTm = null; saveNow(); } return; }
+  if (dkey(effNow()) !== TODAY){ if (saveTm){ clearTimeout(saveTm); saveTm = null; } saveNow(); location.reload(); }
+});
+window.addEventListener('pagehide', () => { if (saveTm){ clearTimeout(saveTm); saveTm = null; saveNow(); } });
 
 /* ============ 启动 ============ */
 if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0){
@@ -5377,7 +5965,7 @@ cycMaterialize();
 backfillThumbs();
 buildToolbar(); render();
 $('#drawerDot').innerHTML = dotSVG(34);
-morningCheck(); showOnboard();
+helloBoot(); showOnboard();
 if (SET.gh && SET.gh.on) setTimeout(() => ghPush(false), 4000);
 </script>
 </body>
