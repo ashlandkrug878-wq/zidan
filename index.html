@@ -538,31 +538,63 @@
   .pk-re{flex:1;border:1px solid var(--line-strong);border-radius:13px;background:var(--card);color:var(--ink);font-size:15px;padding:13px 0;font-family:inherit;cursor:pointer}
   .pk-note{font-size:11.5px;color:var(--ink-faint);text-align:center;margin-top:9px;line-height:1.6}
   .badge.warn{background:#F6E1DC;color:var(--red);font-weight:600}
-  /* ---------- v2.29 说一段，我来安排 ---------- */
-  .vo-entry{margin:2px 0 10px;padding:10px 14px;border-radius:12px;border:1px dashed #F3C9A6;background:var(--accent-soft);color:var(--accent);font-size:14px;cursor:pointer}
-  .vo-entry b{font-weight:700}
-  #voFab{position:absolute;right:18px;bottom:calc(26px + env(safe-area-inset-bottom));width:54px;height:54px;border-radius:50%;border:none;
-    background:var(--ink);color:#FFFDF6;display:none;align-items:center;justify-content:center;z-index:5;cursor:pointer;
-    box-shadow:0 6px 18px rgba(31,28,23,.22),0 1px 3px rgba(31,28,23,.18)}
+  /* ---------- v2.30 说一段 · 我来分拣 ---------- */
+  #voFab{position:absolute;right:16px;bottom:calc(24px + env(safe-area-inset-bottom));display:none;align-items:center;gap:8px;border:none;border-radius:999px;
+    background:var(--ink);color:#FFFDF6;padding:12px 18px 12px 14px;font-family:inherit;font-size:15px;font-weight:700;z-index:5;cursor:pointer;
+    box-shadow:0 8px 20px rgba(31,28,23,.25)}
+  #voFab small{font-weight:500;opacity:.72;font-size:13px}
   #voFab.on{display:flex}
-  #voFab:active{transform:scale(.94)}
+  #voFab:active{transform:scale(.96)}
   #phone.typing #voFab{display:none}
   .ss-f{display:flex;align-items:center;gap:8px;border:1px solid var(--line-strong);border-radius:10px;padding:0 12px;margin-top:10px;background:var(--card);min-width:0}
   .ss-f span{flex:none;font-size:12.5px;color:var(--ink-faint)}
   .ss-f input{flex:1;min-width:0;border:none;background:none;outline:none;font-family:inherit;font-size:16px;color:var(--ink);padding:9px 0}
-  .vo-in{width:100%;border:1px solid var(--line-strong);border-radius:12px;padding:12px;font-size:16px;line-height:1.6;font-family:inherit;background:#FFFEF9;color:var(--ink);resize:none;outline:none;min-height:118px;display:block}
-  .vo-tip{font-size:12px;color:var(--ink-faint);margin:8px 2px 4px;line-height:1.6}
-  .vo-list{max-height:50vh;overflow-y:auto}
-  .vo-row{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px;padding:9px 0;border-bottom:1px dashed var(--line)}
-  .vo-row.off{opacity:.35}
-  .vo-dest{flex:none;border:none;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;background:var(--badge-bg);color:var(--badge-ink);white-space:nowrap}
+  #voice{position:absolute;inset:0;background:var(--bg);z-index:13;display:none;flex-direction:column}
+  #voice.on{display:flex}
+  .vo-hd{flex:none;display:flex;align-items:center;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;border-bottom:1px solid var(--line)}
+  .vo-hl,.vo-hr{width:76px;flex:none;border:none;background:none;font-family:inherit;font-size:15px;cursor:pointer;padding:6px 0}
+  .vo-hl{text-align:left;color:var(--ink-soft)}
+  .vo-hr{text-align:right;color:var(--accent);font-weight:700}
+  .vo-ht{flex:1;text-align:center;font-size:17px;font-weight:700}
+  .vo-hs{font-size:11.5px;color:var(--ink-faint);font-weight:400;margin-top:2px}
+  .vo-body{flex:1;overflow-y:auto;padding:14px 16px 24px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+  .vo-in{width:100%;border:1px solid var(--line-strong);border-radius:14px;padding:13px 14px;font-size:16.5px;line-height:1.75;font-family:inherit;background:var(--card);color:var(--ink);resize:none;outline:none;min-height:200px;display:block}
+  .vo-tip{font-size:12.5px;color:var(--ink-faint);margin:9px 2px 4px;line-height:1.7}
+  .vo-tip b{color:var(--ink-soft);font-weight:600}
+  .vo-clr{border:none;background:none;color:var(--accent);font-family:inherit;font-size:12.5px;padding:0 2px;cursor:pointer}
+  .vo-list{padding-bottom:120px}
+  .vo-gh{display:flex;align-items:center;gap:8px;margin:16px 0 6px}
+  .vo-gh:first-child{margin-top:2px}
+  .vo-dest{font-size:12.5px;font-weight:700;border-radius:999px;padding:4px 11px;background:var(--badge-bg);color:var(--badge-ink);white-space:nowrap}
   .vo-dest.d-plan{background:#E3EDF4;color:#4E7A9B}
   .vo-dest.d-day{background:var(--accent-soft);color:var(--accent)}
   .vo-dest.d-past{background:#ECE7F4;color:#8A6FB1}
-  .vo-t{flex:1;min-width:0;border:none;background:none;font-size:15px;line-height:1.5;font-family:inherit;color:var(--ink);outline:none;padding:3px 0;resize:none;overflow:hidden;display:block}
-  .vo-x{flex:none;border:none;background:none;color:var(--ink-faint);font-size:15px;cursor:pointer;padding:2px 4px}
-  .vo-hint{flex-basis:100%;font-size:11.5px;color:var(--ink-soft);padding-left:2px}
-  .vo-hint:empty{display:none}
+  .vo-gn{font-size:12px;color:var(--ink-faint)}
+  .vo-it{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:9px 6px 10px 12px;margin-bottom:8px}
+  .vo-it.off{opacity:.38}
+  .vo-r1{display:flex;gap:2px;align-items:flex-start}
+  .vo-t{flex:1;min-width:0;border:none;background:none;font-size:15.5px;line-height:1.6;font-family:inherit;color:var(--ink);outline:none;padding:1px 0;resize:none;overflow:hidden;display:block}
+  .vo-op{flex:none;border:none;background:none;color:var(--ink-faint);font-size:16px;cursor:pointer;padding:2px 7px;font-family:inherit}
+  .vo-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;padding-right:6px}
+  .vo-meta .vo-fx{cursor:pointer;font-weight:600}
+  .badge.vo-food{background:#E9E6F3;color:#6F6699}
+  .vo-note{font-size:11.5px;color:var(--ink-faint);margin-top:6px;line-height:1.6;padding-right:6px}
+  .vo-pick{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .vo-date{position:relative;overflow:hidden}
+  .vo-date input{position:absolute;inset:0;opacity:0;width:100%}
+  .vo-bot{position:absolute;left:0;right:0;bottom:0;display:flex;gap:10px;padding:14px 16px calc(14px + env(safe-area-inset-bottom));background:linear-gradient(rgba(246,239,227,0),var(--bg) 32%)}
+  .vo-b1{flex:1;border:1px solid var(--line-strong);background:var(--card);border-radius:13px;padding:13px 0;font-size:15px;font-family:inherit;color:var(--ink);cursor:pointer}
+  .vo-b2{flex:2;border:none;background:var(--ink);color:#F6EFE3;border-radius:13px;padding:13px 0;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer}
+  .vo-out{margin:6px 0 4px 30px;border-left:2px solid var(--line-strong);padding:2px 0 2px 10px}
+  .vo-oh{font-size:11.5px;color:var(--ink-faint);margin-bottom:2px}
+  .vo-oi{font-size:13px;color:var(--ink-soft);line-height:1.8;cursor:pointer}
+  .vo-oi b{font-weight:600}
+  .badge.vo-fixb{cursor:pointer;font-weight:600}
+  .dc-chips{display:flex;flex-wrap:wrap;gap:7px;margin:4px 0 8px}
+  .dc-chip{border:1px solid var(--line-strong);background:var(--card);border-radius:999px;padding:6px 12px;font-size:13.5px;font-family:inherit;color:var(--ink);cursor:pointer;text-align:left}
+  .dc-chip i{font-style:normal;color:var(--ink-faint);font-size:12px}
+  .dc-chip small{color:var(--ink-faint);font-size:11.5px}
+  .dc-row .dc-x{margin-left:8px;padding:3px 9px}
 </style>
 </head>
 <body>
@@ -578,7 +610,7 @@
   <div id="tagSug"></div>
   <div id="recall"></div>
   <div id="toolbar"></div>
-  <button id="voFab" aria-label="说一段"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.5" width="6" height="12" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5v3.5"/></svg></button>
+  <button id="voFab" aria-label="说一段，我来分拣"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 4v-4H6.5A2.5 2.5 0 0 1 4 13.5z"/><path d="M8 7.5h8M8 11h5"/></svg>说一段 <small>· 我来分拣</small></button>
   <div id="mask"></div>
   <aside id="drawer">
     <div class="drawer-head">
@@ -590,6 +622,7 @@
   </aside>
   <div id="review"></div>
   <div id="hello"></div>
+  <div id="voice"></div>
   <div id="gsheet"></div>
   <div id="qsheet"></div>
   <div id="report"></div>
@@ -646,7 +679,7 @@ function jstrip(k, v){ return k === '_pc' ? undefined : v; }
 function scheduleSave(){
   if (typeof KNOWN_PPL !== 'undefined') KNOWN_PPL = null;
   if (typeof KNOWN_STORE !== 'undefined') KNOWN_STORE = null;
-  STORE_IDX = null;
+  STORE_IDX = null; PPL_CNT = null; DICT_T = null; STORE_CORES = null;
   clearTimeout(saveTm);
   saveTm = setTimeout(() => { saveTm = null; saveNow(); }, 300);
 }
@@ -994,7 +1027,8 @@ function chipRow(e, editable){
   const warn = (modOn('meals') && e.text) ? foodWarn(e) : null;   /* v2.29 又写到避雷过的店 */
   const canSplit = editable && !e.noSplit && e.text && ['event','note','ask','bang'].includes(e.sym)
     && /[。\n]/.test(e.text.trim().replace(/[。\s]+$/, '')) && splitSentences(e.text).length >= 2;   /* v2.29 一段话拆条 */
-  if (!e.badge && !e.time && !e.due && !hasG && !e.src && !e.srcDay && !e.note && !e.nbId && !e.meal && !expK && !warn && !canSplit) return null;
+  const fxs = entryFixes(e);   /* v2.30 听写纠错小标 */
+  if (!e.badge && !e.time && !e.due && !hasG && !e.src && !e.srcDay && !e.note && !e.nbId && !e.meal && !expK && !warn && !canSplit && !fxs.length) return null;
   const c = document.createElement('div'); c.className = 'chips';
   if (e.meal && MEAL_WORD[e.meal]){
     const mb = document.createElement('span'); mb.className = 'badge';
@@ -1059,6 +1093,11 @@ function chipRow(e, editable){
     x.onclick = ev => { ev.stopPropagation(); e.noSplit = 1; scheduleSave(); render(); };
     c.appendChild(b); c.appendChild(x);
   }
+  fxs.forEach(f => {
+    const b = document.createElement('span'); b.className = 'badge acc vo-fixb'; b.textContent = '「' + f.from + '」→ ' + f.to + ' ↺';
+    b.onclick = ev => { ev.stopPropagation(); voUndoFix(e, f); };
+    c.appendChild(b);
+  });
   return c;
 }
 function growTA(t){ if (!t || !t.isConnected) return; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px'; }
@@ -1114,7 +1153,7 @@ function entryNode(e, editable, isChild, flat, liveSym){
     inp.setAttribute('autocomplete', 'off');
     requestAnimationFrame(() => growTA(inp));
     inp.addEventListener('input', () => { e.text = inp.value; growTA(inp); updateTagSug(e, inp); updateRecall(e, inp); smartBarUpd(e); keepAboveKeyboard(inp); });
-    inp.addEventListener('focus', () => { focusRef = e; pendingDel = null; });
+    inp.addEventListener('focus', () => { focusRef = e; pendingDel = null; inp._t0 = e.text; });
     inp.addEventListener('keydown', ev => {
       if (ev.isComposing) return;
       if (ev.key === 'Enter'){
@@ -1158,6 +1197,11 @@ function entryNode(e, editable, isChild, flat, liveSym){
       setTimeout(() => {
         if (!inp.isConnected) return;
         const changed = commit(e);
+        if (inp._t0 != null && inp._t0 !== e.text){   /* v2.30 把名字改成听起来一样的熟人 / 熟店 → 词典记住 */
+          const L = dictLearnEdit(inp._t0, e.text); inp._t0 = e.text;
+          if (L && L.from) toast('记住了：「' + L.from + '」就是「' + L.to + '」，以后自动改');
+          else if (L && L.no) toast('好，以后不把「' + L.no + '」改成「' + L.to + '」');
+        }
         const keep = (e.images && e.images.length) || (e.children && e.children.length) || e._imgPending
           || (sheetTarget === e && $('#gsheet').classList.contains('on'));
         if (!e.text.trim() && !keep){ removeEntry(e); if (focusRef === e) focusRef = null; render(); return; }
@@ -1329,13 +1373,9 @@ function renderPageInto(box, date, editable){
       box.appendChild(mb2);
     }
   }
+  if (p.voOut && p.voOut.length){ const vo = voOutNode(p.voOut); if (vo) box.appendChild(vo); }   /* v2.30 说一段时放到别的日子的 */
   if (editable) box.appendChild(tapZone('点这里，记下今天发生的事…（○ 会接住它引发的一切）', true, () => addLine(p.flow), true));
   else if (!p.flow.length){ const d = document.createElement('div'); d.className = 'empty-hint'; d.textContent = '这天没有流水记录'; box.appendChild(d); }
-  if (editable && date === TODAY && !SET.voUsed){   /* v2.29 说一段，我来安排（用过一次后只留右下角 🎙） */
-    const vb = document.createElement('div'); vb.className = 'vo-entry';
-    vb.innerHTML = '🎙 <b>说一段</b>，我来安排放哪 · 哪天要做、吃了啥、花了多少都行';
-    vb.onclick = () => voSheet(); box.appendChild(vb);
-  }
 }
 
 /* ============ 汇总 ============ */
@@ -1688,6 +1728,7 @@ function render(){
       SET.duty = !SET.duty; scheduleSave(); render();
       toast(SET.duty ? '已切到对账：早上逐件表态、复盘逐件过' : '已切到随缘：没做完的第二天自动收进「想做的事」');
     });
+    mkRow('📖 我的词典', sub(dictPeopleList().length + ' 人 · ' + dictStoreList().length + ' 家店 · ' + dictFixCount() + ' 条纠正 ›'), () => { cur = {name:'dict'}; render(); });
     view.appendChild(sectionLabel('板块管理 · 关掉的从侧栏消失，数据不动'));
     [['notes','📓 笔记本','基础'],['meals','🍚 美食','扩展'],['ledger','💰 记账','扩展'],['people','👥 熟人册','扩展'],['vault','🔐 账号小本','扩展'],['cycles','🔁 循环提醒','基础']].forEach(([k, nm, tier]) => {
       const on = modOn(k);
@@ -1725,13 +1766,17 @@ function render(){
         toast(!on ? '已开启 · 写一行「明天下午三点交方案」试试' : '已关闭 · 随时回来再开');
       };
     })();
-    mkRow('版本记录', sub('v2.29 ›'), showChangelog);
+    mkRow('版本记录', sub('v2.30 ›'), showChangelog);
     mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
     mkRow('清空全部数据', sub('谨慎操作'), () => {
       if (pendingWipe){ localStorage.removeItem(LSKEY); location.reload(); return; }
       pendingWipe = true; toast('再点一次确认清空（建议先导出备份）');
       setTimeout(() => pendingWipe = false, 4000);
     });
+  }
+  else if (cur.name === 'dict'){
+    topTitle.textContent = '📖 我的词典'; reviewBtn.textContent = '回今日';
+    renderDict();
   }
   else if (cur.name === 'cycles'){
     topTitle.textContent = '循环提醒'; reviewBtn.textContent = '回今日';
@@ -2642,7 +2687,7 @@ function renderReview(){
       + (rvLeft ? '<div class="rv-q" style="margin-top:14px;text-align:center">还有 ' + rvLeft + ' 件没做完 · 明天我替你收进「想做的事」'
           + '<br><button class="gm-btn" id="rvWalk" style="margin-top:8px;padding:8px 16px">现在过一遍 ›</button></div>' : '')
       + mealsHtml
-      + '<div class="rv-q" style="margin-top:18px">🎙 说说今天</div><div id="rvVoice"><button class="gm-btn" id="rvVoGo" style="width:100%;padding:10px">说一段，我来安排放哪 ›</button></div>'
+      + '<div class="rv-q" style="margin-top:18px">🗣 说说今天</div><div id="rvVoice"><button class="gm-btn" id="rvVoGo" style="width:100%;padding:10px">说一段，我来分拣 ›</button></div>'
       + '<div class="rv-q" style="margin-top:18px">给今天盖个章</div>'
       + '<div class="gs-chips" id="rvStamps">' + stAll.map(x => '<button class="gs-chip' + (stCur === x ? ' on' : '') + '" data-st="' + escAttr(x) + '">' + vEsc(x) + '</button>').join('') + '</div>'
       + '<input id="rvNewStamp" class="qdate" placeholder="或自己刻一个章（会存进你的章库）" style="margin-top:10px">'
@@ -2651,7 +2696,7 @@ function renderReview(){
       + '<button class="gm-btn" id="rvShare" style="width:100%;margin-top:12px;padding:10px">▣ 把今天做成分享图</button></div>';
     $('#rvClose').onclick = closeReview;
     if ($('#rvWalk')) $('#rvWalk').onclick = () => { queue = queue.filter(t => t.state === 'open'); qi = 0; renderReview(); };
-    if ($('#rvVoGo')) $('#rvVoGo').onclick = () => { voMount($('#rvVoice'), {onDone:() => renderReview()}); const vt = $('#voTxt'); if (vt){ try{ vt.focus(); }catch(_){} } };
+    if ($('#rvVoGo')) $('#rvVoGo').onclick = () => openVoice({onDone:() => renderReview()});
     R.querySelectorAll('[data-st]').forEach(b => b.onclick = () => {
       P().stamp = b.dataset.st; scheduleSave();
       R.querySelectorAll('[data-st]').forEach(x => x.classList.toggle('on', x === b));
@@ -2945,7 +2990,7 @@ function showManual(){
     + '【因果记录】\n事件行回车：下一行自动挂在这件事下面\n空的子行再回车：回到顶层\n事件行尾「＋」：随时在这件事下补一笔；「▾3」点击折叠\n\n'
     + '【处理任务】\n点符号 = 完成；长按符号 = 推迟 / 不做了 / 转交 / 恢复\n推迟可选任意日期并填进度；转交要填给谁和跟进日，到期自动提醒\n处理面板里的备注会进日报周报\n\n'
     + '【翻阅】\n今日页左右滑（或顶栏 ‹ ›）翻到前一天 / 后一天\n☰ 抽屉：总日历（点日子翻本）、分组集子、各类汇总、搜索\n汇总里点符号可直接勾掉，点文字跳回当天并高亮\n「◂ 8.6 转来」芯片点击跳回源头；历史页的「→8.12」跳去目标日\n\n'
-    + '【🎙 说一段】\n点今日页右下角的 🎙（复盘里是「说说今天」），用键盘右下角的 🎤 一口气说完，点「整理一下」：哪天要做、今天发生、吃了哪家、花了多少，自动放好，放之前能改\n\n'
+    + '【🗣 说一段 · 我来分拣】\n点今日页右下角的「说一段」（复盘里是「说说今天」），按键盘右下角的 🎤 一口气说完，点「分拣」：今天发生、要做的、别的日子的分好组给你看，确认才放进去。听错的名字照你的词典改好（设置 → 我的词典），点 ↺ 改回\n\n'
     + '【🎲 今天吃什么】\n美食 → 吃什么：只从你说过好吃的店里抽，理由全是你自己写过的话；吃完点 ✓ 一键评价。只记喜欢的和避雷的，三餐打卡在设置里可以再打开\n\n'
     + '【早安卡】\n每天第一次打开递上一张：日期农历节气、天气和昨天比冷暖、今天约好的事、翻到一页旧记录、一句话\n收起后今日页顶上留一行天气条，点开再看；城市在 设置 → 天气城市 里加，最多 3 个\n\n'
     + '【复盘与报告】\n右上「复盘」直达今日快照和盖章；想逐件过没做完的，点「现在过一遍」\n没日子的事当天没做完，第二天自动收进「☾ 想做的事」，不催不计数（设置 → 任务风格 可切回「对账」）\n分组视图里一键生成日报 / 周报 / 月报，可选含心情\n\n'
@@ -2961,7 +3006,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.29（当前 · 2026.11.5）\n【🎲 今天吃什么 · 抽卡】\n· 美食板块第二个页签换成「吃什么」：只从你说过好吃的店里抽，避雷的永远不会出现；宝藏是金边卡\n· 理由全是你自己写过的话：原话、你给自己的提醒（几点去、几个人去）、必点和别点、上次和谁花了多少，再加上今天的天气\n· 城市跟早安卡走，可选堂食 / 外卖；降温的日子「想吃热乎的」自动亮；好久没去的店更容易出现\n· 点「就它了」进今天要做；吃完点 ✓，一键说「宝藏 / 还想去 / 一般 / 避雷」，就算去过一次\n· 早安卡在饭点多一行「中午 / 晚上吃什么？抽一张」\n【🍚 只记喜欢的和避雷的】\n· 三餐打卡退役：三餐页签和复盘里的三餐格子默认收起，以前的记录都在，设置里可以再打开\n· 新增「记一家店」：店名、宝藏 / 还想去 / 避雷、一句话，必点别点城市花费都可不填\n· 去过几次：任何一句话里提到这家店都算（同一天算一次）\n· 又写到避雷过的店，那行下面冒一枚红签，提醒你当时说过什么\n· 识别补强：「可复购」「不会再吃了」认得了；「天使面没那么好吃了」「避雷蓝龙虾」只算单品，不冤枉整家店\n【🎙 说一段，我来安排】\n· 今日页右下角常驻一颗 🎙，复盘里也有「说说今天」：用 iPhone 键盘的听写一口气说，点「整理一下」，每句自动放到该去的地方——后天要做的进后天，今天吃的进今天还认出店名和好不好吃，花的钱进记账（「打车花了45」没说元也认），昨天的事放回昨天\n· 放之前给你看一眼，哪句放哪点一下就能换，不要的划掉\n· 直接在某一行里说了一大段，行下会出现「✂ 拆成 N 条」\n\n'
+    + 'v2.30（当前 · 2026.11.5）\n【🗣 说一段 · 我来分拣】\n· 右下角的话筒换成「说一段 · 我来分拣」：点开是整屏，键盘直接弹好，按键盘右下角的 🎤 一口气说完，点右上角「分拣」\n· 分拣结果按放到哪分组：今天发生 / 今天要做 / 后天 / 昨天…，每条能改字、⇄ 换地方、✕ 不要；没问题点「确认」才放进去\n· 放到别的日子的，会去掉「后天」「昨天」这类词，到了那天读着才对；今天这页留一行小字，点一下跳过去\n· 说到一半退出也不丢，下次打开接着说\n【📖 我的词典 · 从你的记录里长出来】\n· 认识的人、去过的店自动收进词典，越常写越靠前；英文名（orion）也认得了\n· 听写打错的名字自动改好并标出来（「布尔」→ 不二），点 ↺ 改回，以后就不这样改\n· 店名说简称也认得：「陈先进」就是陈先进小馆，算去过一次；「姐姐」「我姐」算同一个人\n· 你手动把名字改对一次，它就记住；设置 → 我的词典 里能看、能删、能手动加「A 就是 B」\n· 「和旭旭、不二、orion、姐夫」这种一长串名单，每个人都算上\n\n'
+    + 'v2.29（2026.11.5）\n【🎲 今天吃什么 · 抽卡】\n· 美食板块第二个页签换成「吃什么」：只从你说过好吃的店里抽，避雷的永远不会出现；宝藏是金边卡\n· 理由全是你自己写过的话：原话、你给自己的提醒（几点去、几个人去）、必点和别点、上次和谁花了多少，再加上今天的天气\n· 城市跟早安卡走，可选堂食 / 外卖；降温的日子「想吃热乎的」自动亮；好久没去的店更容易出现\n· 点「就它了」进今天要做；吃完点 ✓，一键说「宝藏 / 还想去 / 一般 / 避雷」，就算去过一次\n· 早安卡在饭点多一行「中午 / 晚上吃什么？抽一张」\n【🍚 只记喜欢的和避雷的】\n· 三餐打卡退役：三餐页签和复盘里的三餐格子默认收起，以前的记录都在，设置里可以再打开\n· 新增「记一家店」：店名、宝藏 / 还想去 / 避雷、一句话，必点别点城市花费都可不填\n· 去过几次：任何一句话里提到这家店都算（同一天算一次）\n· 又写到避雷过的店，那行下面冒一枚红签，提醒你当时说过什么\n· 识别补强：「可复购」「不会再吃了」认得了；「天使面没那么好吃了」「避雷蓝龙虾」只算单品，不冤枉整家店\n【🎙 说一段，我来安排】\n· 今日页右下角常驻一颗 🎙，复盘里也有「说说今天」：用 iPhone 键盘的听写一口气说，点「整理一下」，每句自动放到该去的地方——后天要做的进后天，今天吃的进今天还认出店名和好不好吃，花的钱进记账（「打车花了45」没说元也认），昨天的事放回昨天\n· 放之前给你看一眼，哪句放哪点一下就能换，不要的划掉\n· 直接在某一行里说了一大段，行下会出现「✂ 拆成 N 条」\n\n'
     + 'v2.28（2026.11.5）\n【☀ 早安卡 · 每天第一次打开】\n· 今天几号、农历、节气节日，离下个假期还有几天\n· 天气：今天和昨天的温度画成两根条，冷了暖了一眼看出；跟着给穿衣建议（加外套 / 少穿一件 / 照昨天穿），几点开始下雨也说\n· 今天的事：谁过生日、约好今天的、转交该跟进的——只放有日子的\n· 翻到一页：从旧记录里抽一条（一个月前的今天优先），点一下跳回那天\n· 最后点点说一句话；点「开始全新的一天」进今日页\n· 收起后今日页顶上留一行天气条，点开再看整张卡\n· 天气城市在 设置 → 天气城市：最多存 3 个，卡片上点城市名来回切，也能一键定位；没网就不显示天气，别的照常\n【随缘：没做完的不再天天搬】\n· 没日子的任务当天没做完，第二天自动收进「☾ 想做的事」：不弹窗、不计次、不催；今日页一行小字能看到，想做哪件点「⤴ 今天做」\n· 推迟到某天、那天正好没打开的不会再丢：两天内补到今天（带「原定」小签），更久的收进想做的事\n· 晚间复盘直达快照和盖章；想逐件过，点「现在过一遍」\n· 今日页不再挂「>×5」这类拖延计数\n· 喜欢每天逐件表态的，设置 → 任务风格 切回「对账」，一切照旧\n· Someday 改叫「想做的事」\n【三餐不追“没吃”】\n· 打卡墙上没记的那顿只是一个小点，不再是等你填的虚圈\n· 「三餐齐全连击」退役，换成只增不减的「本月吃到新店」\n【其他】\n· App 在后台过了夜，回来自动翻到新的一天；切走前没存的内容先存好\n\n'
     + 'v2.27（2026.8.28）\n【⚙ 今日小事折叠条 · 正文归正文】\n· 模块生出来的行——三餐打卡（含没吃）、本子足迹（开了/写了）、「记一笔」的账——不再混在流水里，收进页尾一条：「⚙ 今日小事 · 5 条　🍚没吃×2 · 📓本子×2 · 💰记账×1」\n· 你亲手写的句子永远在正文，哪怕带着 🍚💰 小签；点条展开是完整的行，照旧能改能删能挂；手动挂到事件下面的小事跟着事件走，不折叠\n· 复盘快照和一日分享卡默认只算正文（任务不受影响）；从汇总/搜索/打卡墙跳到某条小事时会自动帮你展开\n\n'
     + 'v2.26（2026.8.26）\n【记账类别 · 你说了算】\n· 类别管理（盘点页「✎ 类别」或换类面板底部进）：预置八类可改叫法（自动识别规则照旧），自定义的可改名可删——改名会带着用过它的记录一起换，删了的回到自动分类（双确认）\n【点类别看它的全部】\n· 盘点里点任何一个类别条，跳到流水只看那一类：大数字、日均、逐日账单全部只算它；流水页的图例也能点；「只看 · 出行 ✕」一点回到全部\n\n'
@@ -3077,6 +3123,8 @@ function parseLine(text){
   if (!r.store){
     for (const st of storeSet()){ if (st.length >= 3 && t.includes(st)){ r.store = st; break; } }
   }
+  if (!r.store){ const sl = storeLink(t); if (sl) r.store = sl; }   /* v2.30 简称 / 叫法 / 两个字的店名 */
+  if (r.store) r.store = canonStore(r.store);
   if (/外卖/.test(t)) r.delivery = true;
   const ws = parseCompanions(t);
   if (ws.length){ r.withs = ws; r.with = ws[0]; }
@@ -3116,8 +3164,8 @@ function peopleSet(){
     (SET.people || []).forEach(p => personAliases(p).forEach(n => { if (n.length >= 2 && n.length <= 6) KNOWN_PPL.add(n); }));   /* 熟人册的本名和昵称直接进词典 */
     walk((d, e) => {
       if (e.delegate && e.delegate.to && e.delegate.to.length <= 4) KNOWN_PPL.add(e.delegate.to);
-      extractPplList(e.text).forEach(n => {
-        if (n.length >= 2 && n.length <= 4 && !/\d/.test(n)) KNOWN_PPL.add(n);
+      extractPplList(e.text).map(pplClean).forEach(n => {   /* v2.30 英文名（orion）也算 */
+        if (((n.length >= 2 && n.length <= 4) || /^[A-Za-z][A-Za-z .'-]{1,11}$/.test(n)) && !/\d/.test(n) && !(SET.pplNo && SET.pplNo[n])) KNOWN_PPL.add(n);
       });
     });
   }
@@ -3130,20 +3178,226 @@ function storeSet(){
       if (!((e.groups || []).some(g => tplOf(g) === 'food'))) return;   /* 只跟美食组学店名，引号强调不误伤 */
       const re = /[“"『「]([^”"』」]{2,14})[”"』」]/g; let m;
       const t = String(e.text || '');
-      while ((m = re.exec(t))) KNOWN_STORE.add(m[1]);
+      while ((m = re.exec(t))) if (!DD().nost[m[1]]) KNOWN_STORE.add(m[1]);
     });
   }
   return KNOWN_STORE;
 }
 const GENERIC_PPL = ['家人','爸妈','爸爸','妈妈','朋友','同事','闺蜜','室友'];
-function parseCompanions(t){
+/* ============ v2.30 你的词典：从记录里长出来的人名 / 店名 · 听写纠错 ============ */
+/* 拼音表：GB2312 常用 6763 字，不分声调，每字最多两个读音（「音节 字字字|…」） */
+const PY_SRC = 'a 啊阿吖嗄腌锕|ai 埃挨哎唉哀皑癌蔼矮艾碍爱隘乃捱呃嗳嗌噫嫒瑷暧砹锿霭|an 鞍氨安俺按暗岸胺案干盒谙埯揞犴庵桉铵鹌黯|ang 肮昂盎仰|ao 凹敖熬翱袄傲奥懊澳嚣坳拗嗷岙廒遨媪骜獒燠聱螯鏊鳌鏖|ba 芭捌扒叭吧笆八疤巴拔跋靶把耙坝霸罢爸湃茇菝捭岜灞杷钯粑鲅魃|bai 白柏百摆佰败拜稗伯排捭呗掰擘|ban 斑班搬扳般颁板版扮拌伴瓣半办绊辨彬阪坂豳钣瘢癍舨|bang 邦帮梆榜膀绑棒磅蚌镑傍谤蒡浜螃|bao 苞胞包褒剥薄雹保堡饱宝抱报暴豹鲍爆呆刨炮袍曝瀑勹裒葆孢煲鸨褓趵龅|bei 跋杯碑悲卑北辈背贝钡倍狈备惫焙被臂波葡菩孛俾陂邶蓓呗悖碚鹎褙鐾鞴|ben 奔苯本笨夯体畚坌贲锛|beng 榜蚌崩绷甭泵蹦迸抨俸堋唪嘣甏|bi 卑被逼鼻比鄙笔彼碧蓖蔽毕毙毖币庇痹闭敝弊必辟壁臂避陛肥拂幅服虑秘泌瞥匕仳俾陴埤芘荜荸萆薜吡哔狴庳愎滗濞弼妣婢媲嬖璧枇檗殍贲畀铋秕馥裨筚箅篦舭襞跛跸髀|bian 鞭边编贬扁便变卞辨辩辫遍封匾弁苄拚忭汴缏煸砭碥稹窆褊蝙笾鳊|biao 标彪膘表漂剽婊嫖骠杓飑飙飚灬镖镳瘭裱鳔髟鏖|bie 捌蔽鳖憋别瘪撇蹩|bin 彬斌濒滨宾摈份傧豳浜缤玢槟殡膑镔髌鬓|bing 兵冰柄丙秉饼炳病并拼屏禀冫邴摒枋槟燹|bo 拔白柏百剥薄爆玻菠播拨钵波博勃搏铂箔伯帛舶脖膊渤泊驳卜簿募怕拍潘跑魄蒲孛亳蕃薜蘖擗啵饽艴檗擘礴钹鹁簸趵跛踣鲅|bu 堡捕卜哺补埠不布步簿部怖附埔拊卟逋瓿晡钚钸醭|ca 擦嚓礤|cai 猜裁材才财睬踩采彩菜蔡|can 餐参蚕残惭惨灿掺孱骖璨粲黪|cang 苍舱仓沧藏伧臧|cao 操糙槽曹草澡造艹嘈漕屮螬艚|ce 厕策侧册测赦恻|cen 参岑涔|ceng 层蹭僧增曾噌|cha 插叉茬茶查碴搽察岔差诧刹喳苴荼嚓猹馇汊姹杈楂槎檫锸镲衩|chai 差拆柴豺搓侪钗瘥虿|chan 搀掺蝉馋谗缠铲产阐颤单厘兔冁谄蒇廛忏潺澶孱羼婵嬗骣觇禅镡蟾躔|chang 昌猖场尝常长偿肠厂敞畅唱倡尚裳倘淌伥鬯苌菖徜怅惝阊娼嫦昶氅鲳|chao 超抄钞朝嘲潮巢吵炒绰剿怊晁焯耖|che 拆车扯撤掣彻澈尺斥宅坼屮砗|chen 郴臣辰尘晨忱沉陈趁衬称堪帘沈填湛枕疹伧谌谶抻嗔宸琛榇肜胂碜眈龀|cheng 敞撑称城橙成呈乘程惩澄诚承逞骋秤盯净盛醒丞郢埕噌嵊枨柽樘晟塍瞠铖铛裎蛏酲|chi 茬吃痴持匙池迟弛驰耻齿侈尺赤翅斥炽哆离莉抬拖喜移治傺郗坻墀芪茌搋叱哧啻嗤彳饬媸柢敕胝眙眵鸱瘛褫蚩螭笞篪豉踅踟魑|chong 充冲虫崇宠茧涌盅种重烛茺忡憧潼铳舂艟|chou 抽酬畴踌稠愁筹仇绸瞅丑臭扭俦揄帱惆溴妯瘳雠|chu 初出橱厨躇锄雏滁除楚础储矗搐触处硫柠淑涂畜絮助亍刍怵憷绌杵楮樗褚蜍蹰黜|chuai 揣搋啜嘬膪踹|chuan 川穿椽传船喘串掾舛惴遄巛氚钏舡|chuang 疮窗幢床闯创葱囱怆舂|chui 吹炊捶锤垂椎陲棰槌|chun 春椿醇唇淳纯蠢莼肫鹑蝽|chuo 躇戳绰簇促醛荃啜辶辍斫踔踱龊|ci 柴疵茨磁雌辞慈瓷词此刺赐次司伺兹滋茈呲嵯祠鹚蚝螅粢糍趑|cong 窗聪葱囱匆从丛偬苁淙骢琮璁枞|cou 凑奏揍蔟楱辏腠|cu 粗醋簇促戚趣卒蔟徂猝槭殂酢蹙蹴|cuan 蹿篡窜攒汆撺爨镩|cui 察摧崔催脆瘁粹淬翠萃啐悴璀榱毳隹|cun 村存寸忖皴|cuo 磋撮搓措挫错昔最厝嵯脞锉矬痤瘥鹾蹉|da 搭达答瘩打大塌塔耷哒嗒怛妲沓疸褡笪靼鞑|dai 大呆歹傣戴带殆代贷袋待逮怠毒隶埭甙呔岱迨逯骀绐玳黛|dan 忱耽担丹单郸掸胆旦氮但惮淡诞弹蛋憾石蜒詹儋萏啖怛澹澶檐殚赕膻眈疸瘅聃箪|dang 当挡党荡档谠凼菪宕砀铛裆|dao 刀捣蹈倒岛祷导到稻悼道盗受刂叨帱忉氘焘忑纛|de 德得的登底地陟锝|dei 得|deng 橙澄蹬灯登等瞪凳邓噔嶝戥磴镫簦|di 逮的堤低滴迪敌笛狄涤翟嫡抵底地蒂第帝弟递缔提蹄逐氐籴诋谛邸坻荻啻嘀娣柢棣觌砥碲睇镝羝骶|dia 嗲|dian 颠掂滇碘点典靛垫电佃甸店惦奠淀殿拈阽坫埝巅玷钿癜癫蜓簟踮|diao 刀碉叼雕凋刁掉吊钓调鸟跳佻倜莜铞铫蜩踔貂鲷|die 跌爹碟蝶迭谍叠涉踢至窒佚垤堞揲喋嗲渫牒瓞褶耋蹀鲽|ding 灯丁盯叮钉顶鼎锭定订汀仃葶啶玎腚碇町铤疔耵酊|diu 丢铥|dong 东冬董懂动栋侗恫冻洞桐酮筒垌咚岽峒氡胨胴硐甬鸫|dou 兜抖斗陡豆逗痘都读投逾蔸钭窦窬蚪篼|du 都督毒犊独读堵睹赌杜镀肚度渡妒顿土芏嘟渎椟橐牍碡蠹竺笃纛髑黩|duan 端短锻段断缎椴煅簖|dui 堆兑队对敦追怼憝碓镦|dun 墩吨蹲敦顿囤钝盾遁沌豚炖砘礅盹镦趸|duo 揣捶度掇哆多夺垛躲朵跺舵剁惰堕隋陀驮杂咄哚沱缍柁棰铎裰酡踱|e 啊阿隘胺歹蛾峨鹅俄额讹娥恶厄扼遏鄂饿哦邑噩谔垩苊莪萼呃愕阏屙婀轭曷腭硪锇锷鹗疴颚鳄|ei 诶|en 恩蒽摁|er 而儿耳尔饵洱二贰佴迩珥铒鸸鲕|fa 发罚筏伐乏阀法珐垡砝|fan 藩帆番翻樊矾钒繁凡烦反返范贩犯饭泛蕃蘩幡梵燔畈袢蟠蹯|fang 坊芳方肪房防妨仿访纺放匚邡彷枋钫舫鲂|fei 菲非啡飞肥匪诽吠肺废沸费裴芾狒怫悱淝妃绯榧腓斐扉祓砩镄痱蜚篚翡霏鲱|fen 扮奔匪芬酚吩氛分纷坟焚汾粉奋份忿愤粪盼偾瀵玢棼燔愍鲼鼢|feng 泛丰封枫蜂峰锋风疯烽逢冯缝讽奉凤捧俸酆葑唪沣逄砜|fo 佛|fou 不否缶|fu 哺沸佛夫敷肤孵扶拂辐幅氟符伏俘服浮涪福袱弗甫抚辅俯釜斧脯腑府腐赴副覆赋复傅付阜父腹负富讣附妇缚咐怀仅莆市匐凫阝郛芙芾苻茯莩菔拊掊呋幞彳怫溥滏宓艴孚驸绂绋桴赙祓砩黻黼罘稃馥蚨蜉蝠蝮麸趺跗鲋鳆鞴|ga 噶嘎胳夹咖伽尬呷尕尜戛旮钆|gai 该改概钙盖溉骸芥汽丐陔垓戤赅胲|gan 干甘杆柑竿肝赶感秆敢赣个汗奸乾坩苷尴擀泔淦澉绀橄旰矸疳酐|gang 冈刚钢缸肛纲岗港杠扛抗亢伉戆罡筻|gao 篙皋高膏羔糕搞镐稿告浩咎睾诰郜蒿藁缟槔槁杲锆|ge 噶盖哥歌搁戈鸽胳疙割革葛格蛤阁隔铬个各菏合介咯可屹鬲仡哿圪塥嗝纥搿膈硌镉袼颌虼舸骼髂|gei 给|gen 根跟痕亘茛哏艮|geng 耕更庚羹埂耿梗颈邢硬哽赓绠鲠|gong 杠工攻功恭龚供躬公宫弓巩汞拱贡共红廾咣珙肱蚣蛩觥|gou 钩勾沟苟狗垢构购够拘句佝诟岣遘媾缑枸觏彀笱篝鞲|gu 辜菇咕箍估沽孤姑鼓古蛊骨谷股故顾固雇滑贾枯苦嘏诂菰呱哌崮汩梏轱牯牿胍臌毂瞽罟钴锢鸪鹄痼蛄酤觚鲴骰鹘|gua 刮瓜剐寡挂褂括舌卦诖呱栝胍鸹聒|guai 乖拐怪掴|guan 串棺关官冠观管馆罐惯灌贯纶斡倌莞菅掼涫盥鹳鳏|guang 光广逛横恍咣犷潢桄胱|gui 概瑰规圭硅归龟闺轨鬼诡癸桂柜跪贵刽撅傀祈炔哇洼娃桅匦匮刿庋宄妫桧炅晷皈簋蹶鲑鳜|gun 辊滚棍混丨衮绲磙鲧|guo 锅郭国果裹过划活涡馘蠃埚掴呙囗帼崞猓椁虢聒蜮蜾蝈|ha 蛤哈呵虾獬铪|hai 骸孩海氦亥害骇还咳咴嗨胲醢|han 厂甘感酣憨邯韩含涵寒函喊罕翰撼捍旱憾悍焊汗汉嵌邗菡撖犴阚泔淦澉瀚旰晗焓矸顸颔蚶鼾|hang 肮夯杭航炕吭狼巷行沆绗珩桁颃酐|hao 皋镐壕嚎豪毫郝好耗号浩貉睾蒿薅嗥嚆濠灏妞昊皓颢蚝|he 硅哈害呵喝荷菏核禾和何合盒貉阂河涸赫褐鹤贺霍苛洽吓蝎诃劾壑藿嗑嗬阖纥曷盍颌蚵翮|hei 嘿黑嗨|hen 痕很狠恨掀哏艮|heng 哼亨横衡恒蘅珩桁|hng 哼|hong 港共轰哄烘虹鸿洪宏弘红汪黉訇讧荭蕻薨闳泓洚|hou 喉侯猴吼厚候后堠後逅瘊篌糇鲎骺|hu 雇核和呼乎忽瑚壶葫胡蝴狐糊湖弧虎唬护互沪户芦戏许羽冱芴唿囫岵猢怙惚浒滹琥槲轷觳烀煳戽扈祜瓠鹄鹕鹱虍笏醐斛鹘|hua 敌花哗华猾滑画划化话豁找劐侉叱骅桦砉铧稞|huai 槐徊怀淮坏坯喟踝|huan 灌欢环桓还缓换患唤痪豢焕涣宦幻皖眩援郇奂垸萑擐圜獾洹浣漶寰逭缳瑗脘锾鲩鬟|huang 荒慌黄磺蝗簧皇凰惶煌晃幌恍谎芒茫隍徨湟潢遑璜肓癀蟥篁鳇|hui 虫堕徊涣灰挥辉徽恢蛔回毁悔慧卉惠晦贿秽会烩汇讳诲绘溃诙茴荟蕙咴哕喙隳洄浍彗缋珲桧晖恚眭睢皓虺蟪麾|hun 棍荤昏婚魂浑混昆捆诨馄阍溷珲|huo 化豁活伙火获或惑霍货祸越劐壑藿攉嚯夥灬砉钬锪镬瓠耠蠖|ji 革给击圾基机畸稽积箕肌饥迹激讥鸡姬绩缉吉极棘辑籍集及急疾汲即嫉级挤几脊己蓟技冀季伎祭剂悸济寄寂计记既忌际妓继纪秸洁藉居期其棋奇齐系揖倚丌亟乩厝剞佶偈脔诘郅墼芨芰荠萁蒺蕺掎卟叽咭哜唧岌嵴猗洎彐屐骥畿玑楫殛戟戢赍觊犄齑矶睽羁嵇稷瘠瘵虮笈笄暨跻跽霁鲚鲫髻麂|jia 嘉枷夹佳家加荚颊贾甲钾假稼价架驾嫁揩茄暇夏挟嘏伽郏葭拮岬浃迦珈柙戛胛恝铗镓痂瘕袷蛱笳袈跏骱|jian 歼监坚尖笺间煎兼肩艰奸缄茧检柬碱硷拣捡简俭剪减荐槛鉴践贱见键箭件健舰剑饯渐溅涧建沮前浅咸僭谏谫茛菅蒹搛囝湔蹇謇缣枧楗戋戬牮犍毽腱睑锏鹣裥笕箴翦趼踺鲣鞯|jiang 虹僵姜将浆江疆蒋桨奖讲匠酱降强茳洚绛缰犟礓耩糨豇|jiao 激蕉椒礁焦胶交郊浇骄娇嚼搅铰矫侥脚狡角饺缴绞剿教酵轿较叫窖觉校妖咬佼僬艽茭菽挢叽噍峤徼湫姣敫爝皎鹪蛟醮跤鲛|jie 担亥圾籍家假价揭接皆秸街阶截劫节桔杰捷睫竭洁结解姐戒藉芥界借介疥诫届楷渴她祖偕偈讦诘卩拮唧喈嗟婕孑桀砝碣疖颉蚧羯暨鲒骱髻|jin 巾筋斤金今津襟紧锦仅谨进靳晋禁近烬浸尽劲吟卺荩堇噤馑廑妗缙瑾槿赆觐钅衿矜|jing 劲荆兢茎睛晶鲸京惊精粳经井警景颈静境敬镜径痉靖竟竞净青刭儆阱菁獍憬泾迳弪婧檠肼胫腈旌蜻箐靓|jiong 炯窘坷冂垧迥炅扃|jiu 揪究纠玖韭久灸九酒厩救旧臼舅咎就疚僦啾噍阄柩桕鸠鹫赳鬏|ju 车告拱柜桔姐鞠拘狙疽居驹菊局咀矩举沮聚拒据巨具距踞锯俱句惧炬剧且蛆渠娶租足倨讵鄹苣苴莒菹蘧掬遽屦琚枸椐榘榉橘犋飓钜锔窭裾趄醵踽龃雎瞿鞫|juan 捐鹃娟倦眷卷绢圈蕊身甄鄄擐狷泫涓桊蠲锩镌蜷隽|jue 嚼脚角撅攫抉掘倔爵觉决诀绝狂屈蛙穴乙厥劂谲矍蕨蕞嗟噘噱崛獗孓珏柽梏桷橛爝镢蠼蹶觖|jun 龟均菌钧军君峻俊竣浚郡骏旬匀訇捃睃皲筠隽麇|ka 喀咖卡咯佧咔胩|kai 开揩楷凯慨岂剀劾垲蒈忾恺溘铠锎锴雉|kan 喊槛刊堪勘坎砍看侃凵莰阚戡龛瞰|kang 奋杭荒康慷糠扛抗亢炕坑伉闶沆钪|kao 考拷烤靠尻栲槁犒铐|ke 喀坷苛柯棵磕颗科壳咳可渴克刻客课嗑岢恪溘骒缂珂轲氪碣瞌盍钶锞稞疴窠颏蚵蝌髁|kei 刻|ken 肯啃垦恳垠裉龈|keng 坑吭忐硎铿|kong 空恐孔控腔倥崆穹箜|kou 抠口扣寇刳佝芤蔻叩彀眍筘|ku 古掘枯哭窟苦酷库裤挎跨圣刳堀喾绔骷|kua 夸垮挎跨胯侉髁|kuai 会块筷侩快魁蒯郐哙狯浍脍|kuan 棵宽款完髋|kuang 呈逛磺匡筐狂框矿眶旷况枉兄诓诳邝圹夼哐湟纩贶|kui 踩亏盔岿窥葵奎魁傀馈愧溃缺馗匮夔隗蒉揆喹喟悝愦逵暌睽聩蝰篑跬觖|kun 坤昆捆困卵悃阃琨锟醌鲲髡|kuo 括扩廓阔适蛞|la 垃拉喇蜡腊辣啦蓝落剌摺邋旯砬瘌|lai 莱来赖崃徕涞濑赉睐铼癞籁黧|lan 郴蓝婪栏拦篮阑兰澜谰揽览懒缆烂滥啉岚懔漤榄斓罱镧褴|lang 羹琅榔狼廊郎朗浪莨蒗啷阆锒稂螂踉|lao 捞劳牢老佬姥酪烙涝撩僚潦络唠崂獠栳铑铹痨耢醪|le 勒乐肋了仂叻嘞泐鳓|lei 勒雷镭蕾磊累儡垒擂肋类泪羸诔嘞嫘缧檑耒酹|leng 棱楞冷塄愣|li 厘梨犁黎篱狸离漓理李里鲤礼莉荔吏栗丽厉励砾历利傈例俐痢立粒沥隶力璃哩列泣位鬲仂俪俚郦坜苈莅蓠藜捩叻呖唳喱猁悝溧澧逦娌嫠骊缡珞枥栎轹戾砺砬詈罹锂鹂疠疬蛎蜊蠡笠篥粝翮醴跞雳霾鲡鳢黧|lia 俩|lian 联莲连镰廉怜涟帘敛脸链恋炼练零令羸苓蔹奁搛潋濂琏楝殓臁膦瞵裢裣蠊鲢|liang 惊俩粮凉梁粱良两辆量晾亮谅墚莨椋踉靓魉|liao 佬撩聊僚疗燎寥辽潦了撂镣廖料蓼尥嘹獠寮缭钌鹩|lie 栗例列裂烈劣猎冽埒捩咧洌邋趔躐鬣|lin 琳林磷霖临邻鳞淋凛赁吝拎任蔺啉嶙廪懔遴檩辚膦瞵粼躏麟|ling 棱冷怜磷拎玲菱零龄铃伶羚凌灵陵岭领另令酃苓呤囹泠绫柃棂瓴聆蛉翎鲮|liu 聊溜琉榴硫馏留刘瘤流柳六碌陆游泖浏遛骝绺旒熘锍镏鹨鎏|long 龙聋咙笼窿隆垄拢陇弄垅茏泷珑栊胧砻癃|lou 牢楼娄搂篓漏陋露偻蒌喽嵝镂瘘耧蝼髅|lu 谷六芦卢颅庐炉掳卤虏鲁麓碌露路赂鹿潞禄录陆戮绿垆蓼撸噜泸渌漉逯璐栌橹轳辂辘氇胪镥鸬鹭瘳簏舻鲈|luan 峦挛孪滦卵乱脔娈栾鸾銮|lun 抡轮伦仑沦纶论囵|luo 格果酪烙路萝螺罗逻锣箩骡裸落洛骆络倮蠃荦捋摞猓猡泺漯珞椤脶硌镙瘰袼蜾蠡跞雒|lv 累鹿驴吕铝侣旅履屡缕虑氯律率滤绿偻捋闾榈膂稆褛|lve 掠略锊|m 呒|ma 妈麻玛码蚂马骂嘛吗靡摩抹唛犸嬷杩蟆貊麽|mai 哩埋买麦卖迈脉派劢荬唛霾|man 埋瞒馒蛮满蔓曼慢漫谩幕墁幔缦熳镘颟螨鳗鞔|mang 芒茫盲氓忙莽邙瞢漭朦硭蟒|mao 耗猫茅锚毛矛铆卯茂冒帽貌贸描侔袤勖茆峁泖瑁昴牦耄旄懋瞀蛑蝥蟊髦|me 么末|mei 玫枚梅酶霉煤没眉媒镁每美昧寐妹媚糜谜墨某味坶莓嵋猸浼湄楣镅鹛袂魅|men 门闷们扪焖懑钔鞔|meng 氓萌蒙檬盟锰猛梦孟明勐甍瞢懵朦礞瞑虻蜢蟒蟊蠓艋艨|mi 眯醚靡糜迷谜弥米秘觅泌蜜密幂芈冖谧蘼咪嘧猕汨溟宓弭幺脒祢敉糸縻麋|mian 棉眠绵冕免勉娩缅面冥沔泯渑湎宀腼眄黾|miao 吵猫苗描瞄藐秒渺庙妙喵邈缈缪杪淼眇鹋蜱|mie 蔑灭乜咩咪蠛篾|min 眠民抿皿敏悯闽苠岷闵汶泯缗玟珉愍黾鳘|ming 萌盟皿明螟鸣铭名命冥茗溟暝瞑酩|miu 谬|mo 佰嘿脉冒貌没藐摸摹蘑模膜磨摩魔抹末莫墨默沫漠寞陌帕袜万无勿谟茉蓦馍嫫嬷殁镆秣瘼耱蟆貊貘麽|mou 件谋牟某毋侔袤厶哞婺缪眸蛑鍪|mu 姥模莫牟拇牡亩姆母墓暮幕募慕木目睦牧穆仫坶苜沐毪钼|n 嗯|na 拿哪呐钠那娜纳南内捺呶肭镎衲箬|nai 氖乃奶耐奈鼐佴艿萘柰|nan 南男难冉喃囝囡楠腩罱蝻赧|nang 囊攮囔馕曩|nao 挠脑恼闹淖孬垴呶猱瑙硇铙蛲|ne 哪呐呢讷疒疔|nei 馁内|nen 嫩枘恁|neng 而耐能|ng 唔嗯|ni 呢妮霓倪泥尼拟你匿腻逆溺伲坭嶷猊怩昵旎祢慝睨铌鲵|nian 蔫拈年碾撵捻念粘辗廿埝辇黏鲇鲶|niang 娘酿|niao 鸟尿茑尥嬲脲袅|nie 倪泥捻捏聂孽啮镊镍涅幸乜陧蘖嗫囡颞臬蹑|nin 您|ning 冰年柠狞凝宁拧泞攘疑佞咛甯聍|niu 牛扭钮纽拗狃忸妞蚴|nong 脓浓农弄侬咔哝|nou 耨|nu 奴努怒褥帑弩胬孥驽肭|nuan 暖暧|nuo 掉那娜挪懦糯诺需傩搦喏锘|nv 女狃胬恧钕衄|nve 虐疟|o 哦喔噢|ou 欧鸥殴藕呕偶沤区握讴怄渥瓯耦|pa 芭扒叭吧把耙啪趴爬帕怕琶葩杷钯筢|pai 拍排牌徘湃派脾迫俳蒎哌|pan 扳般拌伴半卞番攀潘盘磐盼畔判叛胖片彦弁拚爿泮皤袢襻蟠蹒|pang 膀磅傍方房仿乓庞旁耪胖彭蒡彷滂逄螃|pao 苞胞包抱抛咆刨炮袍跑泡匏狍庖脬疱|pei 倍啡肺呸胚培裴赔陪配佩沛茇辔帔淠妃旆锫蜚醅霈|pen 吩汾喷盆湓|peng 逢旁砰抨烹澎彭蓬棚硼篷膨朋鹏捧碰苹庄堋嘭怦滂蟛|pi 比庇辟否副坏坯砒霹批披劈琵毗啤脾疲皮匹痞僻屁譬扑丕仳陂陴邳郫鄱圮埤鼙芘苤萆擗吡噼帔庀庳淠濞媲纰枇甓睥罴铍痦癖裨疋蚍蜱篦貔|pian 扁便篇偏片骗平谝骈缏犏胼褊蝙翩蹁|piao 膘飘漂瓢票朴剽莩嘌嫖骠缥殍瞟螵髟|pie 撇瞥丿苤氕|pin 泵拼频贫品聘匕姘娉嫔榀牝颦|ping 秤冯砰聘乒坪苹萍平凭瓶评屏俜娉枰鲆|po 霸膊泊繁坡泼颇婆破魄迫粕剖叵鄱泺珀钋钷皤笸|pou 部涪培剖裒掊瓿踣|pu 暴扶甫脯扑铺仆莆葡菩蒲埔朴圃普浦谱曝瀑匍苻噗溥濮璞攴氆攵镤镨蹼|qi 甭吃刺畸稽缉己技揭期欺栖戚妻七凄漆柒沏其棋奇歧畦崎脐齐旗祈祁骑起岂乞企启契砌器气迄弃汽泣讫切勤示溪枝支丌亟亓俟圻芑芪荠萁萋葺蕲嘁屺岐忮忾汔淇骐绮琪琦杞桤槭耆挈欹祺恝憩碛颀蛴蜞綦綮蹊鳍麒|qia 卡客掐恰洽葜袷髂|qian 柑赶筋牵扦钎铅千迁签仟谦乾黔钱钳前潜遣浅谴堑嵌欠歉纤倩佥阡凵芊芡茜荨掮撖岍忏悭慊涔骞搴褰缱椠犍肷腱愆钤虔箝|qiang 将控枪呛腔羌墙蔷强抢哐丬爿戕嫱樯戗炝锖锵镪襁蜣羟跫跄|qiao 愁搞蕉焦壳橇锹敲悄桥瞧乔侨巧鞘撬翘峭俏窍雀硝招劁诮谯荞峤愀憔缲樵毳敫硗醮跷跤鞒|qie 捷漆沏砌切茄且怯窃郄蕺唼惬慊妾婕挈脞锲箧趄|qin 浸钦侵亲秦琴勤芹擒禽寝沁芩堇蓁揿吣嗪噙廑溱槿檎锓衿矜覃螓衾|qing 精亲青轻氢倾卿清擎晴氰情顷请庆声倩苘圊檠磬蜻罄箐綮謦鲭黥|qiong 琼穷邛芎茕穹蛩筇跫銎|qiu 仇秋丘邱球求囚酋泅团馗俅氽邺巯艽犰惆愀湫逑遒楸赇虬蚯蝤裘糗鳅鼽|qu 鞠巨蜡趋区蛆曲躯屈驱渠取娶龋趣去戌诎劬苣蕖蘧岖衢阒遽璩觑氍朐祛磲鸲癯蛐蠼麴瞿鞫黢|quan 卷圈颧权醛泉全痊拳犬券劝栓拴诠圳荃犭獾悛绻桊辁畎铨蜷筌鬈|que 缺炔瘸却鹊榷确雀攉阕阙觳悫舄|qun 遁裙群逡麇|ran 然燃冉染苒蚺髯|rang 瓤壤攘嚷让禳穰|rao 饶扰绕荛娆桡|re 惹热若偌喏|ren 儿壬仁人忍韧任认刃妊纫亻仞荏葚饪轫恁稔衽|reng 耳扔仍戎艿穰|ri 日|rong 隔戎茸蓉荣融熔溶容绒冗嵘狨榕肜蝾|rou 揉柔肉糅蹂鞣|ru 女肉茹蠕儒孺如辱乳汝入褥月蓐薷嚅洳溽濡缛铷襦颥|ruan 软阮濡朊|rui 兑蕊瑞锐芮蕤枘睿蚋|run 闰润|ruo 溺惹若弱偌芮箬|sa 蔡撒洒萨卅仨檫挲脎飒趿|sai 腮鳃塞赛思噻|san 三叁伞散馓毵糁霰|sang 桑嗓丧搡磉颡|sao 搔骚扫嫂哨燥埽缫缲臊瘙鳋|se 塞瑟色涩寨啬铯穑|sen 森|seng 僧|sha 莎砂杀刹沙纱傻啥煞杉厦唼嗄歃铩痧裟霎鲨|shai 色筛晒酾|shan 掸邓珊苫杉山删煽衫闪陕擅赡膳善汕扇缮檀栅剡儋讪鄯埏芟彡潸姗嬗骟膻禅钐疝蟮舢跚鳝|shang 墒伤商赏晌上尚裳汤垧绱殇熵觞|shao 鞘梢捎稍烧芍勺韶少哨邵绍召劭苕溲潲杓裢蛸笤筲艄|she 碟睫奢赊蛇舌舍赦摄射慑涉社设拾折厍佘揲猞滠歙畲蛞麝|shei 谁|shen 砷申呻伸身深娠绅神沈审婶甚肾慎渗什信震诜谂莘葚抻吲哂渖椹胂矧蜃糁|sheng 乘声生甥牲升绳省盛剩胜圣姓丞冼垩嵊渑晟媵眚笙|shi 匙郝赫舍师失狮施湿诗尸虱十石拾时什食蚀实识史矢使屎驶始式示士世柿事拭誓逝势是嗜噬适仕侍释饰氏市恃室视试斯寺似嘘液肢殖峙谥埘莳蓍弑唑饣彖轼贳炻礻铈螫舐筮豉酾豕鲥鲺|shou 收手首守寿授售受瘦兽熟扌狩绶艏|shu 售蔬枢梳殊抒输叔舒淑疏书赎孰熟薯暑曙署蜀黍鼠属术述树束戍竖墅庶数漱恕透野俞朱倏塾菽摅沭澍姝纾杼毹腧殳秫疋|shua 刷耍唆唰涮|shuai 率摔衰甩帅蟀|shuan 汕栓拴闩涮踹|shuang 霜双爽泷淙孀|shui 谁水睡税说氵|shun 盾俊吮瞬顺舜恂巛|shuo 勺数说硕朔烁嗽溯蒴搠嗍濯妁槊铄|si 厕食斯撕嘶思私司丝死肆寺嗣四伺似饲巳析已以肄厮俟兕厶菥咝徙汜泗澌姒驷纟缌祀祠锶鸶耜蛳笥糸|song 松耸怂颂送宋讼诵凇菘崧嵩忪悚淞竦|sou 搜艘擞嗽族叟薮嗖嗾馊涑溲敕飕瞍锼螋|su 搬苏酥俗素速粟僳塑溯宿诉肃缩夙谡蔌蓿嗖嗉愫涑簌觫稣|suan 酸蒜算狻|sui 粹尿虽隋随绥髓碎岁穗遂隧祟蓑谇荽濉邃彗燧眭睢|sun 餐孙损笋荪狲飧榫跣隼|suo 抄莎沙衰蓑梭唆缩琐索锁所些唢嗦嗍娑桫挲睃羧|ta 搭塌他它她塔獭挞蹋踏太拓嗒闼溻漯遢榻沓铊趿鳎|tai 能胎苔抬台泰酞太态汰邰薹呔骀肽炱钛跆鲐|tan 胆但弹坍摊贪瘫滩坛檀痰潭谭谈坦毯袒碳探叹炭舔炎郯蕈澹昙忐钽锬镡覃|tang 汤塘搪堂棠膛唐糖倘躺淌趟烫傥帑饧惝溏瑭樘铴镗耥螗螳羰醣|tao 掏涛滔绦萄桃逃淘陶讨套挑鼗叨啕洮韬焘饕|te 匿式特忒忑慝铽|teng 藤腾疼誊滕|ti 达堤狄弟是肆梯剔踢锑提题蹄啼体替嚏惕涕剃屉倜荑悌逖绨缇棣睇鹈裼醍|tian 蚕滇典佃甸苫天添填田甜恬舔腆吞沾掭嗔忝阗栝殄畋钿蚺|tiao 超稠调桃挑条迢眺跳姚佻苕祧窕蜩笤粜龆鲦髫|tie 蝶贴铁帖占萜怙餮|ting 奠厅听烃汀廷停亭庭挺艇莛葶婷梃町铤蜓霆|tong 侗恫洞通桐酮瞳同铜彤童桶捅筒统痛恿佟僮仝垌茼嗵峒恸潼砼硐|tou 偷投头透愉亠钭骰|tu 跌杜凸秃突图徒途涂屠土吐兔余堍荼菟钍酴|tuan 痪湍团抟彖疃|tui 推颓腿蜕褪退脱忒煺|tun 吨囤褪吞屯臀吴氽饨暾豚炖窀|tuo 池惰税他它拖托脱鸵陀驮驼椭妥拓唾乇佗坨庹沲沱迤柝柁橐砣铊箨酡跎鼍|wa 凹挖哇蛙洼娃瓦袜鞋佤娲腽|wai 歪外崴|wan 蔓娩豌弯湾玩顽丸烷完碗挽晚皖惋宛婉万腕园剜芄莞菀纨绾琬朊脘畹蜿箢|wang 皇匡汪王亡枉网往旺望忘妄罔尢惘辋魍|wei 机立威巍微危韦违桅围唯惟为潍维苇萎委伟伪尾纬未蔚味畏胃喂魏位渭谓尉慰卫遗有于倭偎诿阢隈隗圩芟荽葳薇囗帏帷崴嵬猥猬闱沩洧涠逶娓玮韪軎炜煨痿艉鲔|wen 昧免瘟温蚊文闻纹吻稳紊问限眼刎愠阌汶玟璺殁笏雯|weng 嗡翁瓮壅蓊蕹|wo 瘟挝蜗涡窝我斡卧握沃夭倭莴喔幄渥杌肟硪龌|wu 恶母亡巫呜钨乌污诬屋无芜梧吾吴毋武五捂午舞伍侮坞戊雾晤物勿务悟误兀仵阢邬圬芴呒唔庑怃忤浯寤迕妩婺骛杌牾於旄焐瞀鹉鹜痦蜈蝥鋈鼯|xi 既腊猎卤栖洒屎撕昔熙析西硒矽晰嘻吸锡牺稀息希悉膝夕惜熄烯溪汐犀檄袭席习媳喜铣洗系隙戏细僖兮隰郄郗茜菥葸蓰奚咭咦唏徙饩阋浠淅屣嬉玺樨曦觋欷歙熹禊禧嵇皙穸裼蜥蜴螅蟋舄舾羲粞翕醯蹊鼷|xia 瞎虾匣霞辖暇峡侠狭下厦夏吓斜押呀葭呷哧岈狎遐瑕柙歃硖瘕罅黠|xian 捍肩碱见探铣洗掀锨先仙鲜纤咸贤衔舷闲涎弦嫌显险现献县腺馅羡宪陷限线矣冼苋莶藓岘彡猃濂寰暹妗娴氙燹祆黹锬鹇痫蚬筅籼酰跣跹霰|xiang 亨降相厢镶香箱襄湘乡翔祥详想响享项巷橡像向象洋芗葙饷庠骧缃蟓舡鲞飨|xiao 号呼唬胶狡俏梢捎芍搜萧硝霄削哮嚣销消宵淆晓小孝校肖啸笑效爻佼叟茭哓崤潇逍姣骁绡枭枵蛸筱箫魈|xie 溉接解契楔些歇蝎鞋协挟携邪斜胁谐写械卸蟹懈泄泻谢屑血耶叶豫汁偕亵隰勰燮薤撷唏喈獬廨渫瀣迦邂绁缬榭榍颉跬躞鲑|xin 款薪芯锌欣辛新忻心信衅寻囟馨莘忄昕歆鑫|xing 省胜星腥猩惺兴刑型形邢行醒幸杏性姓研陉荇荥擤饧悻硎|xiong 宪兄凶胸匈汹雄熊芎|xiu 臭宿休修羞朽嗅锈秀袖绣莠咻岫馐庥溴煦鸺貅髹|xu 休墟戌需虚嘘须徐许蓄酗叙旭序畜恤絮婿绪续芋吁馘诩勖圩蓿咻怵洫浒溆顼栩旮肷朐煦盱胥糈醑雩|xuan 暖券轩喧宣悬旋玄选癣眩绚撰亘儇谖萱揎泫洵渲漩璇楦昕暄炫煊碹铉镟痃|xue 削哮靴薛学穴雪血谑噱嚯泶踅鳕|xun 荤浚梭潭勋熏循旬询寻驯巡殉汛训讯逊迅巽郇埙荀荨蕈薰峋徇狻獯恂悛洵浔逡曛窨醺鑫鲟|ya 歇邪压押鸦鸭呀丫芽牙蚜崖衙涯雅哑亚讶御札轧伢垭揠吖岈迓娅琊桠氩砑睚痖|yan 癌俺淡广狠蔫铅涎羡巡焉咽阉烟淹盐严研蜒岩延言颜阎炎沿奄掩眼衍演艳堰燕厌砚雁唁彦焰宴谚验殷淫厣赝剡俨偃兖讠谳阽郾鄢埏埯芫菸揞崦庵恹闫阏洇湮滟妍嫣琰檐晏氤胭腌焱罨筵酽趼魇餍鼹|yang 昂殃央鸯秧杨扬佯疡羊洋阳氧仰痒养样漾英映徉怏泱炀烊恙蛘鞅|yao 侥么疟陶邀腰妖瑶摇尧遥窑谣姚咬舀药要耀由幼约钥夭爻吆崤崾徭徼洮瀹幺珧杳轺曜肴铫鹞窈繇鳐|ye 喝射墅咽椰噎耶爷野冶也页掖业叶曳腋夜液拽靥谒邺揶晔烨铘|yi 艾怠迭蛾疙姬崎蛇失施巳台叹尾熙夕泄焉噎也一壹医揖铱依伊衣颐夷遗移仪胰疑沂宜姨彝椅蚁倚已乙矣以艺抑易邑屹亿役臆逸肄疫亦裔意毅忆义益溢诣议谊译异翼翌绎印丿刈劓仡佚佗佾诒圪圯坨埸懿苡荑薏弈奕挹掎弋呓咦咿嗌噫峄嶷猗饴怿怡悒洫漪迤驿缢殪轶贻犄欹旖焱熠眙钇镒镱痍瘗癔翊衤袂蜴舣羿翳酏黝黟|yin 币垦听烟言壹沂茵荫因殷音阴姻吟银淫寅饮尹引隐印众胤鄞廴圻垠堙芩茚吲喑狺夤洇湮氤铟瘾窨蚓霪龈|ying 逞景央英樱婴鹰应缨莹萤营荧蝇迎赢盈影颖硬映嬴郢茔荥莺萦蓥撄哽嘤膺滢潆瀛瑛璎楹媵鹦瘿颍罂|yo 哟唷|yong 容拥佣臃痈庸雍踊蛹咏泳涌永恿勇用遇俑壅墉蕹喁慵邕镛甬臾鳙饔|you 泅扰幽优悠忧尤由邮铀犹油游酉有友右佑釉诱又幼卣攸侑坳莠莜莸尢呦囿宥柚猷牖铕疣聱蚰蚴蝣蝤繇鱿黝鼬|yu 奥懊澳或亏舒王蔚尉梧吾衙迂淤于盂榆虞愚舆余俞逾鱼愉渝渔隅予娱雨与屿禹宇语羽玉域芋郁吁遇喻峪御愈欲狱育誉浴寓裕预豫驭苑粥禺毓伛俣谀谕萸菸菀蓣揄唷喁噢圄圉崛嵛狳饫馀庾阈汩鬻妪妤纡瑜栩昙昱觎毹腴腧欤於煜煨熨燠肀聿钰鹆鹬瘐瘀窬窳蜍蜮蝓竽臾舁雩龉|yuan 穿捐阮宛鸳渊冤元垣袁原援辕园员圆猿源缘远苑愿怨院允垸塬芫掾圜沅涓媛瑗橼爰眢畹鸢螈箢鼋|yue 块乐蜕曰约越跃钥岳粤月悦阅龠哕瀹妁栎樾刖钺蠖|yun 均温尹员怨耘云郧匀陨允运蕴酝晕韵孕郓芸狁恽愠媪纭韫殒昀氲熨筠|za 匝砸杂咱扎咋籴拶咂|zai 才栽哉灾宰载再在仔崽甾|zan 咱攒暂赞拶湔瓒昝簪糌趱錾|zang 藏赃脏葬奘戕驵臧|zao 槽草窖遭糟凿藻枣早澡蚤躁噪造皂灶燥唣|ze 侧措责择则泽咋仄赜啧帻迮昃稷笮箦舴|zei 贼|zen 怎僭谮|zeng 增憎曾赠综缯甑罾锃|zha 册插查扎喳渣札轧铡闸眨栅榨乍炸诈柞揸吒咤哳喋馇怍楂膪砟痄蚱齄|zhai 翟祭择摘斋宅窄债寨砦瘵豸|zhan 颤袒瞻毡詹粘沾盏斩辗崭展蘸栈占战站湛绽谵搌旃躔|zhang 长樟章彰漳张掌涨杖丈帐账仗胀瘴障仉鄣幛嶂獐嫜璋蟑|zhao 朝嘲淖蚤招昭找沼赵照罩兆肇召爪着诏啁棹晁钊笊|zhe 堵遮折哲蛰辙者锗蔗这浙着乇谪陬耷摺嘀柘辄磔鹧褚褶蜇螫赭|zhei 这|zhen 趁唇鼎慎珍斟真甄砧臻贞针侦枕疹诊震振镇阵帧圳坫蓁浈溱缜桢椹榛轸戡赈胗朕祯畛稹鸩箴|zheng 承丁趟蒸挣睁征狰争怔整拯正政帧症郑证诤峥徵瞠钲铮筝鲭|zhi 埃抵积伎祁识氏恃芝枝支吱蜘知肢脂汁之织职直植殖执值侄址指止趾只旨纸志挚掷至致置帜峙制智秩稚质炙痔滞治窒卮氐陟郅埴芷摭帙徵夂忮彘咫骘栉枳栀桎轵轾昵耆贽胝膣祉祗砥黹雉鸷痣蛭絷酯跖踬踯豸觯|zhong 董童中盅忠钟衷终种肿重仲众冢夂忪锺蚣螽舯踵|zhou 育舟周州洲诌粥轴肘帚咒皱宙昼骤注祝啄侏荮啁喙鬻妯纣绉柚胄碡籀舳酎|zhu 除斗逗宁泞属术庶予之珠株蛛朱猪诸诛逐竹烛煮拄瞩嘱主著柱助蛀贮铸筑住注祝驻茁阻丶伫侏邾苎茱洙渚潴澍杼楮槠橥炷铢疰瘃蚰竺箸舳翥躅麈|zhua 挝抓爪|zhuai 拽转|zhuan 传湍专砖转撰赚篆巽啭馔沌颛|zhuang 幢桩庄装妆撞壮状僮奘憧戆艟|zhui 垂隧致椎锥追赘坠缀萑惴骓缒槌隹|zhun 淳屯谆准肫胗盹窀|zhuo 掇缴著捉拙卓桌琢茁酌啄灼浊倬诼擢浞涿濯棹焯禚斫镯箸躅|zi 疵次事吱兹咨资姿滋淄孜紫仔籽滓子自渍字谘茈呲嵫姊孳缁甾梓辎赀恣眦锱秭耔笫粢趑觜訾龇鲻髭|zong 从鬃棕踪宗综总纵偬枞腙粽|zou 邹走奏揍诹陬鄹驺楱鲰|zu 淬租足卒族祖诅阻组俎菹啐嘁镞蹴|zuan 赚钻纂攥缵躜|zui 摧堆咀嘴醉最罪蕞羧觜|zun 蹲尊遵撙樽鳟|zuo 醋撮挫凿乍琢昨左佐柞做作坐座阼唑嘬怍迮胙祚砟笮酢';
+let PY_MAP = null;
+function pyOf(ch){
+  if (!PY_MAP){
+    PY_MAP = new Map();
+    PY_SRC.split('|').forEach(g => {
+      const sp = g.indexOf(' '), syl = g.slice(0, sp);
+      for (const c of g.slice(sp + 1)){ const a = PY_MAP.get(c); if (a) a.push(syl); else PY_MAP.set(c, [syl]); }
+    });
+  }
+  return PY_MAP.get(ch) || null;
+}
+const pyFuzz = s => s.replace(/^([zcs])h/, '$1').replace(/([aei])ng$/, '$1n');   /* 平翘舌、前后鼻音听写常混 */
+function pySame(a, b, fuzzy){
+  if (!a || !b || a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++){
+    if (a[i] === b[i]) continue;
+    const pa = pyOf(a[i]), pb = pyOf(b[i]);
+    if (!pa || !pb) return false;
+    if (!pa.some(x => pb.some(y => x === y || (fuzzy && pyFuzz(x) === pyFuzz(y))))) return false;
+  }
+  return true;
+}
+/* 词典里你教过的：fix＝听错的字（以后自动改）· same＝另一种叫法（只认不改字）· no＝别这样改 · nost＝不当店名 */
+function DD(){ const d = SET.dict || (SET.dict = {}); d.fix = d.fix || {}; d.same = d.same || {}; d.no = d.no || {}; d.nost = d.nost || {}; return d; }
+var PPL_CNT = null, PPL_FIRST = null, DICT_T = null, STORE_CORES = null;
+function dictChanged(){ PARSE_GEN++; scheduleSave(); }
+/* 叫法：同一个人的几种说法，统一成你最常写的那个 */
+const REL_GROUPS = [['姐姐','我姐','老姐','姐'], ['哥哥','我哥','老哥','哥'], ['妹妹','我妹','老妹'], ['弟弟','我弟','老弟'],
+  ['妈妈','我妈','老妈','妈'], ['爸爸','我爸','老爸','爸'], ['奶奶','我奶'], ['爷爷','我爷'], ['外婆','姥姥'], ['外公','姥爷']];
+const REL_OF = new Map(); REL_GROUPS.forEach(g => g.forEach(n => REL_OF.set(n, g)));
+const COMMON_W = ['一下','一会','一起','一样','我们','你们','他们','她们','大家','别人','自己','这个','那个','时候','什么','怎么','东西','事情','家里','公司','老师','孩子','对象','同事','同学','朋友'];
+function pplCounts(){
+  if (PPL_CNT) return PPL_CNT;
+  const m = new Map(), f = new Map();
+  walk((d, e) => {
+    if (!e.text || e.state === 'migrated') return;   /* 推迟留下的旧副本不重复算 */
+    const ns = new Set(parseCompanionsRaw(e.text).filter(n => n !== '独自'));
+    if (e.delegate && e.delegate.to) ns.add(e.delegate.to);
+    ns.forEach(n => { m.set(n, (m.get(n) || 0) + 1); if (!f.has(n) || parseKey(d) < parseKey(f.get(n))) f.set(n, d); });
+  });
+  PPL_FIRST = f; PPL_CNT = m; return m;
+}
+function canonPerson(n){
+  if (!n || n === '独自') return n;
+  const d = DD();
+  let x = d.same[n] || d.fix[n] || n;
+  if (/^[A-Za-z]/.test(x)){   /* orion / Orion 是同一个人：用你最常写的大小写 */
+    const c = pplCounts(), lx = x.toLowerCase(); let best = null;
+    c.forEach((v, k) => { if (k.toLowerCase() === lx && (!best || v > best.v || (v === best.v && parseKey(PPL_FIRST.get(k)) < parseKey(PPL_FIRST.get(best.n))))) best = {n:k, v}; });
+    if (best) x = best.n;
+  }
+  const g = REL_OF.get(x);
+  if (g){   /* 写得最多的那个；一样多就用你最早写的那个，免得来回变 */
+    const c = pplCounts(); let best = null;
+    g.forEach(m2 => { const v = c.get(m2) || 0; if (!v) return;
+      if (!best || v > best.v || (v === best.v && parseKey(PPL_FIRST.get(m2)) < parseKey(PPL_FIRST.get(best.n)))) best = {n:m2, v}; });
+    if (best) x = best.n;
+  }
+  return x;
+}
+/* 店：去掉「小馆 / 餐厅 / 火锅…」的尾巴就是简称 */
+const STORE_SUFFIX_RE = /(小馆|餐厅|饭店|饭馆|菜馆|酒家|酒楼|食堂|面馆|粉馆|火锅|烧烤|烤肉|小吃|大排档|料理|私房菜|家常菜|小厨|厨房|咖啡馆|咖啡|茶餐厅|酒馆|甜品|奶茶)店?$/;
+function storeCoreOf(s){ const c = String(s || '').replace(STORE_SUFFIX_RE, ''); return (c !== s && c.length >= 2 && !CITY_LIST.includes(c)) ? c : null; }
+function storeCores(){
+  if (STORE_CORES) return STORE_CORES;
+  const m = new Map();
+  for (const st of storeSet()){ const c = storeCoreOf(st); if (c && (!m.has(c) || m.get(c).length < st.length)) m.set(c, st); }
+  STORE_CORES = m; return m;
+}
+function isStoreName(x){ return storeSet().has(x) || storeCores().has(x); }
+function canonStore(s){
+  if (!s) return s;
+  const d = DD(); let x = d.same[s] || d.fix[s] || s;
+  const cs = storeCores(); if (cs.has(x)) x = cs.get(x);
+  return x;
+}
+const STORE_TRIG_RE = /(?:吃了?|去了?|在|到了?|点了?|叫了?|逛了?)$/;
+function storeLink(t){
+  const d = DD();
+  for (const [v, c] of Object.entries(d.same).concat(Object.entries(d.fix))){
+    if (v.length >= 2 && t.includes(v) && isStoreName(c)) return c;
+  }
+  for (const [c, st] of storeCores()){ if (c.length >= 3 && t.includes(c)) return st; }
+  for (const st of storeSet()){   /* 两个字的店名：前面得有「吃 / 去 / 在」才算 */
+    if (st.length !== 2) continue;
+    let i = t.indexOf(st);
+    while (i >= 0){ if (STORE_TRIG_RE.test(t.slice(Math.max(0, i - 3), i))) return st; i = t.indexOf(st, i + 1); }
+  }
+  return null;
+}
+/* 纠错的靶子：写过的人（按次数）、记过的店（全名和简称） */
+function dictTargets(){
+  if (DICT_T) return DICT_T;
+  const d = DD(), pc = pplCounts(), ppl = [];
+  pc.forEach((c, n) => {
+    if (!/^[一-龥]{2,4}$/.test(n) || REL_OF.has(n) || GENERIC_PPL.includes(n) || d.fix[n] || (SET.pplNo && SET.pplNo[n])) return;
+    ppl.push({n, c, forms:[n]});
+  });
+  (SET.people || []).forEach(p => personAliases(p).forEach(n => { if (/^[一-龥]{2,4}$/.test(n) && !ppl.some(o => o.n === n)) ppl.push({n, c:2, forms:[n]}); }));
+  const idx = storeIndex(), st = [];
+  for (const s of storeSet()){
+    if (d.fix[s]) continue;
+    const forms = [s], core = storeCoreOf(s); if (core) forms.push(core);
+    st.push({n:s, c:(idx[canonStore(s)] || {}).cnt || 1, forms});
+  }
+  DICT_T = {ppl, st}; return DICT_T;
+}
+function dictProtected(w, kind){
+  if (REL_OF.has(w) || GENERIC_PPL.includes(w) || CITY_LIST.includes(w) || COMMON_W.includes(w)) return true;
+  if (storeSet().has(w) || storeCores().has(w)) return true;
+  const c = pplCounts().get(w) || 0;
+  return c >= 2 || (kind === 's' && c >= 1);   /* 写过两次以上的名字是真有其人，不动 */
+}
+const FIX_P_TRIG = /(?:和|与|跟|同|陪|约了?|给|找|问|请|帮|带|叫上|送|、)/g;
+const FIX_S_TRIG = /(?:吃了?|去了?|在|到了?|点了?|叫了?|逛了?)/g;
+const FIX_FOLLOW = /^(?:$|[、，,。.！!？?；;\s和与跟及也都一去来吃看玩逛见喝聊说打的在从给请约陪带上下过家店])/;
+/* 听写纠错：只在「和X、跟X、给X」这种说人的位置，和「吃了X、去X、在X」这种说店的位置上改 */
+function dictFix(s){
+  const T = dictTargets(), d = DD();
+  let t = String(s || ''); const fixes = [];
+  const scan = (re, list, kind) => {
+    re.lastIndex = 0; let m; const starts = [];
+    while ((m = re.exec(t))) starts.push(m.index + m[0].length);
+    if (kind === 'p') starts.unshift(0);
+    starts.sort((a, b) => b - a).forEach(i0 => {
+      for (const [v, c] of Object.entries(d.fix)){   /* 你教过的，直接改 */
+        if (v.length && t.startsWith(v, i0) && FIX_FOLLOW.test(t.slice(i0 + v.length, i0 + v.length + 1)) && !d.no[v + '>' + c]
+            && (kind === 'p' ? !isStoreName(c) : isStoreName(c))){
+          t = t.slice(0, i0) + c + t.slice(i0 + v.length); fixes.push({from:v, to:c, k:kind, learned:1}); return;
+        }
+      }
+      if (i0 === 0) return;   /* 句首只用教过的 */
+      let best = null, second = null;
+      list.forEach(o => o.forms.forEach(f => {
+        const L = f.length, w = t.substr(i0, L);
+        if (L < 2 || w.length !== L || w === f) return;
+        if (!FIX_FOLLOW.test(t.slice(i0 + L, i0 + L + 1)) || d.no[w + '>' + f] || dictProtected(w, kind)) return;
+        const lv = pySame(w, f, false) ? 2 : (o.c >= 2 && pySame(w, f, true) ? 1 : 0);
+        if (!lv) return;
+        const x = {sc:lv * 100000 + o.c * 10 + L, lv, w, f, L, c:o.c, n:o.n};
+        if (!best || x.sc > best.sc){ if (best && best.n !== x.n) second = best; best = x; }
+        else if (x.n !== best.n && (!second || x.sc > second.sc)) second = x;
+      }));
+      if (!best) return;
+      if (second && second.lv === best.lv && second.c * 2 > best.c) return;   /* 两个都像、拿不准就不动 */
+      t = t.slice(0, i0) + best.f + t.slice(i0 + best.L);
+      fixes.push({from:best.w, to:best.f, k:kind});
+    });
+  };
+  scan(FIX_P_TRIG, T.ppl, 'p');
+  scan(FIX_S_TRIG, T.st, 's');
+  return {text:t, fixes};
+}
+/* 改一次就记住：把一个名字改成了听起来一样的熟人 / 熟店 → 记下；把点点改过的又改回去 → 记下「别这样改」 */
+function dictLearnEdit(a, b){
+  a = String(a || ''); b = String(b || '');
+  if (!a || !b || a === b || a.length !== b.length) return null;
+  let p = 0; while (p < a.length && a[p] === b[p]) p++;
+  let s = 0; while (s < a.length - p && a[a.length - 1 - s] === b[b.length - 1 - s]) s++;
+  const mid = a.length - p - s; if (mid < 1 || mid > 6) return null;
+  const T = dictTargets(), d = DD(), pc = pplCounts(), cands = [];
+  T.ppl.forEach(o => cands.push({f:o.n, k:'p'}));
+  T.st.forEach(o => o.forms.forEach(f => cands.push({f, k:'s'})));
+  const cover = (txt, f, cb) => { let i = txt.indexOf(f); while (i >= 0){ if (i <= p && i + f.length >= p + mid && cb(i)) return true; i = txt.indexOf(f, i + 1); } return false; };
+  for (const x of cands){
+    if (x.f.length < 2) continue;
+    let got = null;
+    cover(b, x.f, i => { const old = a.substr(i, x.f.length);
+      if (old !== x.f && pySame(old, x.f, true) && (pc.get(old) || 0) <= 1 && !storeSet().has(old)){ got = old; return true; } return false; });
+    if (got){ d.fix[got] = x.f; delete d.no[got + '>' + x.f]; dictChanged(); return {from:got, to:x.f}; }
+  }
+  for (const x of cands){
+    if (x.f.length < 2) continue;
+    let got = null;
+    cover(a, x.f, i => { const nw = b.substr(i, x.f.length);
+      if (nw !== x.f && pySame(nw, x.f, true) && !dictProtected(nw, x.k)){ got = nw; return true; } return false; });
+    if (got){ d.no[got + '>' + x.f] = 1; if (d.fix[got] === x.f) delete d.fix[got]; dictChanged(); return {no:got, to:x.f}; }
+  }
+  return null;
+}
+function parseCompanionsRaw(t){
+  t = String(t || '');
   if (/独自|一个人/.test(t)) return ['独自'];
   const out = [];
-  const add = n => { n = (n || '').trim();
-    if (n && n.length <= 6 && !PPL_BLACK.includes(n) && !out.includes(n)) out.push(n); };
+  const add = n => { n = pplClean(n);
+    if (n && (/^[A-Za-z]/.test(n) ? n.length <= 12 : n.length <= 6) && !PPL_BLACK.includes(n) && !out.includes(n) && !(SET.pplNo && SET.pplNo[n])) out.push(n); };
   extractPplList(t).forEach(add);
-  for (const n of peopleSet()){ if (n && PPL_PREPS.some(pp => t.includes(pp + n))) add(n); }
+  const known = peopleSet();
+  for (const n of known){ if (n && PPL_PREPS.some(pp => t.includes(pp + n))) add(n); }
   for (const g of GENERIC_PPL){ if (PPL_PREPS.some(pp => t.includes(pp + g))) add(g); }
+  /* v2.30「和旭旭、不二、orion、姐夫」：认识的名字一路接下去 */
+  const re = /[和与跟同]/g; let m;
+  while ((m = re.exec(t))){
+    let i = m.index + 1, guard = 0;
+    while (i < t.length && guard++ < 12){
+      let hit = null;
+      for (const n of known){ if (n.length >= 2 && t.startsWith(n, i) && (!hit || n.length > hit.length)) hit = n; }
+      if (!hit) for (const r2 of REL_OF.keys()){ if (r2.length >= 2 && t.startsWith(r2, i) && (!hit || r2.length > hit.length)) hit = r2; }
+      if (!hit) break;
+      add(hit); i += hit.length;
+      const sep = t.slice(i).match(/^\s*[、,，和与跟]\s*/); if (!sep) break; i += sep[0].length;
+    }
+  }
+  return out;
+}
+/* 「和orion畅聊」里抽出的「orion畅」→ orion */
+function pplClean(n){ n = String(n || '').trim(); const m = n.match(/^([A-Za-z][A-Za-z.'-]{1,11})[\u4e00-\u9fa5]{1,2}$/); return m ? m[1] : n; }
+/* 同行人：叫法统一（姐姐 → 我姐）、教过的说法换成本名 */
+function parseCompanions(t){
+  const raw = parseCompanionsRaw(t); if (raw[0] === '独自') return raw;
+  const out = []; raw.forEach(n => { const c = canonPerson(n); if (c && !out.includes(c)) out.push(c); });
   return out;
 }
 /* 店的判决＝括号外、位置最早的判决词；括号内视为单品评价 */
@@ -6418,7 +6672,7 @@ function helloPickLine(){
   return '<div class="hl-pool" id="hlPick">🎲 ' + (h < 15 ? '中午' : '晚上') + '吃什么？抽一张 ›</div>';
 }
 
-/* ============ v2.29 说一段，点点来安排（配合 iPhone 键盘听写） ============ */
+/* ============ v2.30 说一段 · 我来分拣（整屏：说 → 分拣确认 → 放好） ============ */
 const VO_TASK_RE = /(要|得去|记得|别忘了|准备|打算|计划|约了|需要|该去|待会|回头)/;
 const VO_LEAD_RE = /^(然后|另外|还有|对了|那个|嗯|呃)[，,\s]*/;
 const VO_BREAK_RE = /^(然后|另外|还有|对了|今天|明天|后天|大后天|下周|下个月|晚上|中午|下午|早上|上午|昨天|昨晚|前天)/;
@@ -6444,21 +6698,190 @@ function voRoute(t){
   if (VO_TASK_RE.test(t) && !/了(?:[，,。！!？?]|$)/.test(t)) return {dest:'plan'};
   return {dest:'flow'};
 }
-function voDestLabel(it){
+function voRelDay(k){
+  return k === TOMORROW ? '明天' : k === addDaysK(TODAY, 2) ? '后天' : k === addDaysK(TODAY, 3) ? '大后天'
+    : k === addDaysK(TODAY, -1) ? '昨天' : k === addDaysK(TODAY, -2) ? '前天' : '';
+}
+function voGroupLabel(it){
   if (it.dest === 'flow') return '今天发生';
   if (it.dest === 'plan') return '今天要做';
-  const rel = it.day === TOMORROW ? '明天' : it.day === addDaysK(TODAY, 2) ? '后天'
-    : it.day === addDaysK(TODAY, -1) ? '昨天' : it.day === addDaysK(TODAY, -2) ? '前天' : '';
-  return (rel ? rel + ' ' : '') + fmtKey(it.day) + (it.dest === 'past' ? ' 发生' : ' 要做');
+  const r = voRelDay(it.day);
+  return (r ? r + ' ' : '') + fmtKey(it.day) + (it.dest === 'past' ? ' · 发生' : ' · 要做');
 }
-function voHints(t){
-  const p = parseLine(t), hs = [];
-  if (p.store) hs.push('🍚 ' + p.store + (p.verdict ? ' · ' + (p.vNeg ? '👎 ' : '') + p.verdict : ''));
-  if (p.title) hs.push('《' + p.title + '》' + (p.score != null ? ' ' + p.score + '分' : ''));
-  if ((p.prices || []).length) hs.push('💰 ¥' + p.prices[0]);
-  const tm = detectTime(t); if (tm) hs.push('⏰ ' + tm);
-  if ((p.withs || []).length && p.withs[0] !== '独自') hs.push('和' + p.withs.slice(0, 2).join('、'));
-  return hs.join(' · ');
+function voDestLabel(it){ return voGroupLabel(it); }
+/* 放到别的日子时，去掉「后天 / 昨天」这类词：到了那天读着才对 */
+const VO_DAY_PATS = [/\d{1,2}\.\d{1,2}号?/, /大后天/, /后天/, /明天/, /下+周[一二三四五六日天]/, /(?:这周|本周|周)[一二三四五六日天]/, /下个?月\d{1,2}[号日]/, /\d{1,2}月\d{1,2}[号日]/, /下个?月/];
+function voStripDay(t, it){
+  const tidy = s => s.replace(/^[，,、\s]+/, '').replace(/([，,])\s*[，,]/g, '$1').replace(/\s{2,}/g, ' ').trim();
+  if (it.dest === 'past'){
+    const m = t.match(/^(昨天|昨儿|前天)(?:的)?/);
+    if (m && addDaysK(TODAY, m[1] === '前天' ? -2 : -1) === it.day){ const r = tidy(t.slice(m[0].length)); if (r.length >= 2) return {text:r, cut:m[1]}; }
+    if (/^昨晚/.test(t) && it.day === addDaysK(TODAY, -1)) return {text:'晚上' + t.slice(2), cut:'昨晚'};
+  }
+  if (it.dest === 'day'){
+    for (const re of VO_DAY_PATS){
+      const m = t.match(re); if (!m) continue;
+      const dd = detectDue(m[0]); if (!dd || dd.key !== it.day) continue;
+      const r = tidy(t.slice(0, m.index) + t.slice(m.index + m[0].length));
+      if (r.length >= 2) return {text:r, cut:m[0]};
+    }
+  }
+  return {text:t, cut:null};
+}
+function voBuild(draft, prev){
+  return voSplit(draft).map(src => {
+    const old = (prev || []).find(x => x.src === src);
+    if (old) return old;
+    const fx = dictFix(src);
+    const it = Object.assign({src, fixed:fx.text, fixes:fx.fixes}, voRoute(fx.text));
+    const sd = voStripDay(fx.text, it); it.text = sd.text; it.cut = sd.cut;
+    return it;
+  });
+}
+function voSetDest(it, dest, day){
+  it.dest = dest; if (day) it.day = day; else delete it.day;
+  if (!it.edited){ const sd = voStripDay(it.fixed, it); it.text = sd.text; it.cut = sd.cut; }
+}
+function voMeta(it){
+  const t = it.text || '', p = parseLine(t), chips = [], notes = [];
+  (it.fixes || []).forEach((f, fi) => { if (t.includes(f.to)) chips.push({t:'听写的「' + f.from + '」→ ' + f.to + ' ↺', cls:'fix', fi}); });
+  if (p.store){
+    const o = storeIndex()[p.store];
+    const visit = it.dest === 'flow' || it.dest === 'past', dk = it.dest === 'past' ? it.day : TODAY;
+    let lab;
+    if (visit){ const n = o ? o.cnt + (o.days.has(dk) ? 0 : 1) : 1; lab = n === 1 ? '第一次' : '第 ' + n + ' 次'; }
+    else lab = o ? '去过 ' + o.cnt + ' 次' : '还没去过';
+    chips.push({t:'🍚 ' + p.store + ' · ' + lab, cls:'food'});
+    if (!t.includes(p.store)){
+      const d = DD();
+      const said = ([...storeCores()].find(([c, st]) => st === p.store && t.includes(c)) || [])[0]
+        || (Object.entries(d.same).concat(Object.entries(d.fix)).find(([v, c]) => t.includes(v) && canonStore(c) === p.store) || [])[0];
+      if (said) notes.push('「' + said + '」认成你' + (o ? ' ' + fmtKey(o.last) + ' ' : '') + '记过的「' + p.store + '」');
+    }
+  }
+  if (p.verdict) chips.push({t:(p.vNeg ? '👎 ' : '') + p.verdict});
+  const ws = (p.withs || []).filter(w => w !== '独自');
+  if (ws.length) chips.push({t:'和 ' + ws.slice(0, 4).join('、')});
+  parseCompanionsRaw(t).forEach(r => { const c = canonPerson(r); if (c !== r && !(it.fixes || []).some(f => f.from === r)) notes.push('「' + r + '」就是你写的「' + c + '」'); });
+  if ((p.prices || []).length){
+    const k = expKindOf({sym:'event', text:t}, p), sum = p.prices.reduce((a, b) => a + b, 0);
+    chips.push({t:'💰 ' + (k ? expLabel(k) + ' ' : '') + '¥' + sum});
+  }
+  if (p.title) chips.push({t:'🎬 《' + p.title + '》' + (p.score != null ? ' ' + p.score + '分' : '')});
+  const tm = detectTime(t); if (tm) chips.push({t:'⏰ ' + tm});
+  if (it.cut && !it.edited) notes.push('原话「' + it.fixed + '」· 放到那天时去掉「' + it.cut + '」');
+  return {chips, notes};
+}
+function voMetaHTML(it, i){
+  const m = voMeta(it);
+  return (m.chips.length ? '<div class="vo-meta">' + m.chips.map(c => '<span class="badge' + (c.cls === 'fix' ? ' acc vo-fx' : c.cls === 'food' ? ' vo-food' : '') + '"'
+      + (c.fi != null ? ' data-fi="' + c.fi + '" data-i="' + i + '"' : '') + '>' + vEsc(c.t) + '</span>').join('') + '</div>' : '')
+    + (m.notes.length ? '<div class="vo-note">' + m.notes.map(vEsc).join(' · ') + '</div>' : '');
+}
+function voPickerHTML(it, i){
+  const opts = [['flow', '', '今天发生'], ['plan', '', '今天要做'], ['day', TOMORROW, '明天要做'], ['day', addDaysK(TODAY, 2), '后天要做'], ['past', addDaysK(TODAY, -1), '昨天发生']];
+  if (it.day && !opts.some(o => o[1] === it.day)) opts.push([it.dest, it.day, fmtKey(it.day) + (it.dest === 'past' ? ' 发生' : ' 要做')]);
+  return '<div class="vo-pick">' + opts.map(o => '<button class="gs-chip' + (it.dest === o[0] && (it.day || '') === o[1] ? ' on' : '') + '" data-d="' + o[0] + '" data-k="' + o[1] + '">' + o[2] + '</button>').join('')
+    + '<label class="gs-chip vo-date">📅 选日子<input type="date" data-i="' + i + '"></label></div>';
+}
+function voItemHTML(it, i){
+  return '<div class="vo-it' + (it.off ? ' off' : '') + '" data-i="' + i + '">'
+    + '<div class="vo-r1"><textarea class="vo-t" rows="1" data-i="' + i + '">' + vEsc(it.text) + '</textarea>'
+    + '<button class="vo-op vo-mv" data-i="' + i + '" aria-label="换地方">⇄</button>'
+    + '<button class="vo-op vo-x" data-i="' + i + '" aria-label="不要">' + (it.off ? '↺' : '✕') + '</button></div>'
+    + voMetaHTML(it, i) + (VO.open === i ? voPickerHTML(it, i) : '') + '</div>';
+}
+let VO = null;
+function openVoice(opts){
+  VO = {items:null, prev:null, open:null, onDone:(opts || {}).onDone || null};
+  $('#voice').classList.add('on');
+  voPaint();
+  const ta = $('#voTxt');
+  if (ta){ try{ ta.focus(); const n = ta.value.length; ta.setSelectionRange(n, n); }catch(_){ } }
+}
+function closeVoice(){ const V = $('#voice'); V.classList.remove('on'); V.innerHTML = ''; VO = null; }
+function voSheet(){ openVoice({}); }
+function voRepaint(){ const L = $('#voList'), st = L ? L.scrollTop : 0; voPaint(); const L2 = $('#voList'); if (L2) L2.scrollTop = st; }
+function voBindFix(root){
+  root.querySelectorAll('.vo-fx').forEach(b => b.onclick = () => {
+    const it = VO.items[+b.dataset.i], f = (it.fixes || [])[+b.dataset.fi]; if (!f) return;
+    const back = s => { const k = s.indexOf(f.to); return k >= 0 ? s.slice(0, k) + f.from + s.slice(k + f.to.length) : s; };
+    it.text = back(it.text); it.fixed = back(it.fixed);
+    it.fixes = it.fixes.filter(x => x !== f);
+    const d = DD(); d.no[f.from + '>' + f.to] = 1; if (d.fix[f.from] === f.to) delete d.fix[f.from];
+    dictChanged(); voRepaint();
+    toast('改回「' + f.from + '」· 以后不这样改');
+  });
+}
+function voPaint(){
+  const V = $('#voice'); if (!VO) return;
+  if (!VO.items){
+    const dr = SET.voDraft || '';
+    V.innerHTML = '<div class="vo-hd"><button class="vo-hl" id="voCancel">取消</button><div class="vo-ht">一口气说完</div><button class="vo-hr" id="voGo">分拣 ›</button></div>'
+      + '<div class="vo-body"><textarea class="vo-in" id="voTxt" placeholder="比如：中午和不二去吃了陈先进，双皮奶还是好吃。打车花了45。后天去宜家看沙发。记得给妈打电话。"></textarea>'
+      + '<div class="vo-tip">按键盘右下角的 <b>🎤</b> 说，说完点右上角「分拣」。打字也行。<br>想到哪说到哪，不用分条，也不用管放哪。'
+      + (dr ? ' <button class="vo-clr" id="voClr">清空重说</button>' : '') + '</div></div>';
+    const ta = $('#voTxt'); ta.value = dr;
+    const fit = () => { ta.style.height = 'auto'; ta.style.height = Math.max(200, ta.scrollHeight) + 'px'; };
+    fit();
+    ta.oninput = () => { SET.voDraft = ta.value; fit(); scheduleSave(); };
+    if ($('#voClr')) $('#voClr').onclick = () => { ta.value = ''; SET.voDraft = ''; VO.prev = null; scheduleSave(); fit(); $('#voClr').remove(); try{ ta.focus(); }catch(_){ } };
+    $('#voCancel').onclick = () => { SET.voDraft = ta.value; scheduleSave(); closeVoice(); };
+    $('#voGo').onclick = () => {
+      if (!voSplit(ta.value).length){ toast('还没说话呢 · 按键盘右下角的 🎤'); return; }
+      SET.voDraft = ta.value; scheduleSave();
+      try{ ta.blur(); }catch(_){ }
+      VO.items = voBuild(ta.value, VO.prev); VO.open = null; voPaint();
+    };
+    return;
+  }
+  const items = VO.items, groups = [], gmap = {};
+  items.forEach((it, i) => { const key = it.dest + ':' + (it.day || '');
+    if (!gmap[key]){ gmap[key] = {it0:it, list:[]}; groups.push(gmap[key]); } gmap[key].list.push(i); });
+  const ord = g => { const it = g.it0; return it.dest === 'flow' ? 0 : it.dest === 'plan' ? 1 : it.dest === 'day' ? 2 + parseKey(it.day) / 1e14 : 5 - parseKey(it.day) / 1e14; };
+  groups.sort((a, b) => ord(a) - ord(b));
+  const live = items.filter(x => !x.off && x.text.trim()).length;
+  V.innerHTML = '<div class="vo-hd"><button class="vo-hl" id="voCancel">取消</button><div class="vo-ht">我这样分，你看看<div class="vo-hs">点字能改 · ⇄ 换地方 · ✕ 不要</div></div><div class="vo-hr"></div></div>'
+    + '<div class="vo-body vo-list" id="voList">' + groups.map(g => '<div class="vo-gh"><span class="vo-dest d-' + g.it0.dest + '">' + vEsc(voGroupLabel(g.it0)) + '</span>'
+      + '<span class="vo-gn">' + g.list.length + ' 条</span></div>' + g.list.map(i => voItemHTML(items[i], i)).join('')).join('') + '</div>'
+    + '<div class="vo-bot"><button class="vo-b1" id="voBack">‹ 接着说</button><button class="vo-b2" id="voSave">确认，放进去（' + live + ' 条）</button></div>';
+  V.querySelectorAll('.vo-t').forEach(ta => {
+    const i = +ta.dataset.i, it = items[i];
+    const fit = () => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; };
+    fit();
+    ta.onfocus = () => { ta._t0 = it.text; };
+    ta.oninput = () => { it.text = ta.value; it.edited = true; fit(); };
+    ta.onblur = () => {
+      if (ta._t0 == null || ta._t0 === it.text) return;
+      const L = dictLearnEdit(ta._t0, it.text); ta._t0 = it.text;
+      if (L && L.from) toast('记住了：「' + L.from + '」就是「' + L.to + '」，以后自动改');
+      else if (L && L.no) toast('好，以后不把「' + L.no + '」改成「' + L.to + '」');
+      const card = ta.closest('.vo-it');
+      if (card){ card.querySelectorAll('.vo-meta,.vo-note').forEach(x => x.remove()); card.querySelector('.vo-r1').insertAdjacentHTML('afterend', voMetaHTML(it, i)); voBindFix(card); }
+    };
+  });
+  V.querySelectorAll('.vo-mv').forEach(b => b.onclick = () => { const i = +b.dataset.i; VO.open = VO.open === i ? null : i; voRepaint(); });
+  V.querySelectorAll('.vo-x').forEach(b => b.onclick = () => { const it = items[+b.dataset.i]; it.off = !it.off; voRepaint(); });
+  V.querySelectorAll('.vo-pick [data-d]').forEach(b => b.onclick = () => {
+    voSetDest(items[VO.open], b.dataset.d, b.dataset.k || null); VO.open = null; voRepaint(); });
+  V.querySelectorAll('.vo-pick input[type=date]').forEach(inp => inp.onchange = () => {
+    if (!inp.value) return;
+    const a = inp.value.split('-').map(Number), k = a[0] + '.' + a[1] + '.' + a[2], it = items[+inp.dataset.i];
+    if (k === TODAY) voSetDest(it, (it.dest === 'past' || it.dest === 'flow') ? 'flow' : 'plan', null);
+    else voSetDest(it, parseKey(k) < parseKey(TODAY) ? 'past' : 'day', k);
+    VO.open = null; voRepaint();
+  });
+  voBindFix(V);
+  $('#voCancel').onclick = () => closeVoice();
+  $('#voBack').onclick = () => { VO.prev = VO.items; VO.items = null; VO.open = null; voPaint(); const ta = $('#voTxt'); if (ta){ try{ ta.focus(); }catch(_){ } } };
+  $('#voSave').onclick = () => {
+    if (!items.some(x => !x.off && x.text.trim())){ toast('一条都没留 · 点 ↺ 恢复，或者接着说'); return; }
+    const sum = voPlace(items);
+    SET.voDraft = ''; scheduleSave();
+    const cb = VO.onDone; closeVoice();
+    if (cb) cb(sum); else render();
+    toast('放好了 · ' + sum);
+  };
 }
 function movieGroupName(){
   let mg = (extraGroups || []).find(g => tplOf(g) === 'movie') || null;
@@ -6466,92 +6889,166 @@ function movieGroupName(){
   return mg;
 }
 function voPlace(items){
-  const cnt = {};
+  const cnt = {}, order = [], d = DD();
   items.filter(it => !it.off && it.text.trim()).forEach(it => {
     const t = it.text.trim();
-    let list, ne;
+    let list, ne, k;
     if (it.dest === 'flow' || it.dest === 'past'){
-      const k = it.dest === 'past' ? it.day : TODAY;
+      k = it.dest === 'past' ? it.day : TODAY;
       if (!PAGES[k]) PAGES[k] = {plan:[], flow:[]};
       ne = {sym:'event', defSym:true, text:t, _id:++uid}; list = PAGES[k].flow;
     } else {
-      const k = it.dest === 'day' ? it.day : TODAY;
+      k = it.dest === 'day' ? it.day : TODAY;
       if (!PAGES[k]) PAGES[k] = {plan:[], flow:[]};
       ne = {sym:'task', state:'open', text:t, _id:++uid}; list = PAGES[k].plan;
+    }
+    const fx = (it.fixes || []).filter(f => t.includes(f.to));
+    if (fx.length){
+      ne.fix = fx.map(f => ({from:f.from, to:f.to})); ne.fixAt = TODAY;
+      fx.forEach(f => { if (!d.fix[f.from] && !d.no[f.from + '>' + f.to]) d.fix[f.from] = f.to; });   /* 你确认过的纠正，以后照这样改 */
+      PARSE_GEN++;
     }
     const p = parseLine(t);
     if (p.store && modOn('meals')){ const fg = foodGroupName() || '美食'; if (!foodGroupName() && !extraGroups.includes(fg)) extraGroups.push(fg); ne.groups = [fg]; }
     else if (p.title && /看了|电影|二刷|补看|影院|观影/.test(t)){ const mg = movieGroupName(); if (mg) ne.groups = [mg]; }
     list.push(ne); commit(ne);
-    const lab = voDestLabel(it); cnt[lab] = (cnt[lab] || 0) + 1;
+    if (k !== TODAY){ const pg = P(); (pg.voOut = pg.voOut || []).push({d:k, id:ne._id}); }
+    const lab = (it.dest === 'flow' || it.dest === 'plan') ? '今天' : (voRelDay(k) || fmtKey(k));
+    if (!cnt[lab]){ cnt[lab] = 0; order.push(lab); } cnt[lab]++;
   });
-  SET.voUsed = 1; scheduleSave();
-  return Object.entries(cnt).map(([k, v]) => k + ' ' + v).join(' · ');
+  scheduleSave();
+  return order.map(l => l + ' ' + cnt[l]).join(' · ');
 }
-function voMount(box, opts){
-  opts = opts || {};
-  let items = null, draft = '';
-  const paint = () => {
-    if (!items){
-      box.innerHTML = (opts.title ? '<div class="gs-title">' + opts.title + '</div>' : '')
-        + '<textarea class="vo-in" id="voTxt" rows="4" placeholder="点这里，按键盘右下角的 🎤 直接说&#10;比如：后天去宜家看沙发。中午和老韩吃了七豚拉面，一般。打车花了45。"></textarea>'
-        + '<div class="vo-tip">说完点「整理一下」，我把每句放到该去的地方：哪天要做、今天发生、吃了哪家店、花了多少。放之前你都能改。</div>'
-        + '<button class="gs-done" id="voGo">整理一下 ›</button>';
-      const ta = box.querySelector('#voTxt'); ta.value = draft;
-      ta.oninput = () => { draft = ta.value; };
-      box.querySelector('#voGo').onclick = () => {
-        draft = ta.value;
-        const parts = voSplit(draft);
-        if (!parts.length){ toast('还没说话呢 · 点框里，按键盘右下角的 🎤'); return; }
-        items = parts.map(s => Object.assign({text:s}, voRoute(s)));
-        paint();
-      };
-      return;
-    }
-    box.innerHTML = (opts.title ? '<div class="gs-title">' + opts.title + '</div>' : '')
-      + '<div class="vo-tip" style="margin-top:-4px">我这样安排 · 点左边的签可以换地方，✕ 不要这句</div>'
-      + '<div class="vo-list">' + items.map((it, i) => '<div class="vo-row' + (it.off ? ' off' : '') + '">'
-        + '<button class="vo-dest d-' + it.dest + '" data-i="' + i + '">' + vEsc(voDestLabel(it)) + '</button>'
-        + '<textarea class="vo-t" rows="1" data-i="' + i + '">' + vEsc(it.text) + '</textarea>'
-        + '<button class="vo-x" data-i="' + i + '">' + (it.off ? '↺' : '✕') + '</button>'
-        + '<div class="vo-hint">' + vEsc(voHints(it.text)) + '</div></div>').join('') + '</div>'
-      + '<div class="gs-new" style="margin-top:8px"><button class="gm-btn" id="voBack" style="flex:1;padding:10px">‹ 重说</button>'
-      + '<button class="gm-btn" id="voSave" style="flex:2;padding:10px;background:var(--ink);color:#fff;border-color:var(--ink)">放进去（' + items.filter(x => !x.off).length + ' 条）</button></div>';
-    box.querySelectorAll('.vo-dest').forEach(b => b.onclick = () => {
-      const it = items[+b.dataset.i];
-      const ring = it.day ? (it.dest === 'past' ? ['past', 'flow', 'plan'] : ['day', 'plan', 'flow']) : ['flow', 'plan'];
-      it.dest = ring[(ring.indexOf(it.dest) + 1) % ring.length]; paint();
-    });
-    const fit = el => { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; };
-    box.querySelectorAll('.vo-t').forEach(inp => {
-      fit(inp);
-      inp.oninput = () => { items[+inp.dataset.i].text = inp.value; fit(inp); };
-      inp.onblur = () => { const h = inp.parentNode.querySelector('.vo-hint'); if (h) h.textContent = voHints(inp.value); };
-    });
-    box.querySelectorAll('.vo-x').forEach(b => b.onclick = () => { const it = items[+b.dataset.i]; it.off = !it.off; paint(); });
-    box.querySelector('#voBack').onclick = () => { items = null; paint(); };
-    box.querySelector('#voSave').onclick = () => {
-      const live = items.filter(x => !x.off && x.text.trim());
-      if (!live.length){ toast('一条都没留 · 点 ↺ 恢复或者重说'); return; }
-      const sum = voPlace(items);
-      toast('放好了 · ' + sum);
-      if (opts.onDone) opts.onDone(sum);
-    };
-  };
-  paint();
+/* 说一段时放到别的日子的：今天这页留一行小字，点一下跳过去 */
+function voOutNode(list){
+  const rows = [];
+  (list || []).forEach(o => { let hit = null; walkPage(o.d, e => { if (e._id === o.id) hit = e; }); if (hit && hit.text) rows.push({o, e:hit}); });
+  if (!rows.length) return null;
+  const box = document.createElement('div'); box.className = 'vo-out';
+  box.innerHTML = '<div class="vo-oh">↗ 说一段时放到别的日子的</div>';
+  rows.forEach(({o, e}) => {
+    const r = document.createElement('div'); r.className = 'vo-oi';
+    r.innerHTML = '<b>' + fmtKey(o.d) + '</b> · ' + vEsc(e.text) + ' ›';
+    r.onclick = () => jumpToEntry(o.d, o.id);
+    box.appendChild(r);
+  });
+  return box;
 }
-(() => {   /* 🎙 常驻按钮：点开说一段；正在打字时让开 */
-  const vf = document.getElementById('voFab'); if (vf) vf.onclick = () => voSheet();
+/* 条目上的纠错小标：当天和第二天显示，点 ↺ 改回 */
+function entryFixes(e){
+  if (!e.fix || !e.fix.length || !e.fixAt || !e.text) return [];
+  if ((parseKey(TODAY) - parseKey(e.fixAt)) / 86400000 > 1) return [];
+  return e.fix.filter(f => e.text.includes(f.to));
+}
+function voUndoFix(e, f){
+  const i = (e.text || '').indexOf(f.to); if (i < 0) return;
+  try{ snapshot('撤回纠错'); }catch(_){ }
+  e.text = e.text.slice(0, i) + f.from + e.text.slice(i + f.to.length);
+  e.fix = (e.fix || []).filter(x => !(x.from === f.from && x.to === f.to)); if (!e.fix.length){ delete e.fix; delete e.fixAt; }
+  const d = DD(); d.no[f.from + '>' + f.to] = 1; if (d.fix[f.from] === f.to) delete d.fix[f.from];
+  dictChanged(); render();
+  toast('已改回「' + f.from + '」· 以后不这样改');
+}
+(() => {   /* 右下角「说一段」：点开整屏；正在打字时让开 */
+  const vf = document.getElementById('voFab'); if (vf) vf.onclick = () => openVoice({});
   const ph = document.getElementById('phone');
   const isTx = el => el && (el.tagName === 'TEXTAREA' || (el.tagName === 'INPUT' && !/^(button|checkbox|radio|file)$/i.test(el.type)));
   document.addEventListener('focusin', ev => { if (ph && isTx(ev.target)) ph.classList.add('typing'); });
   document.addEventListener('focusout', () => { setTimeout(() => { if (ph && !isTx(document.activeElement)) ph.classList.remove('typing'); }, 60); });
 })();
-function voSheet(){
+
+/* ============ v2.30 📖 我的词典（设置里） ============ */
+function dictPeopleList(){
+  const pc = pplCounts(), g = new Map();
+  pc.forEach((c, n) => {
+    if (n === '独自' || (SET.pplNo && SET.pplNo[n]) || GENERIC_PPL.includes(n) || /\d/.test(n)) return;
+    const cn = canonPerson(n), o = g.get(cn) || {n:cn, c:0, als:new Set()};
+    o.c += c; if (n !== cn) o.als.add(n); g.set(cn, o);
+  });
+  const d = DD();
+  Object.entries(d.same).forEach(([v, c]) => { const o = g.get(c); if (o) o.als.add(v); });
+  return [...g.values()].sort((a, b) => b.c - a.c || a.n.localeCompare(b.n));
+}
+function dictStoreList(){
+  const idx = storeIndex(), d = DD(), out = [], seen = new Set();
+  for (const s of storeSet()){
+    const cn = canonStore(s); if (seen.has(cn) || d.nost[cn]) continue; seen.add(cn);
+    const als = new Set();
+    for (const [c, st] of storeCores()) if (st === cn && (c.length >= 3 || storeSet().has(c))) als.add(c);
+    Object.entries(d.same).concat(Object.entries(d.fix)).forEach(([v, c]) => { if (canonStore(c) === cn && v !== cn) als.add(v); });
+    out.push({n:cn, c:(idx[cn] || {}).cnt || 0, als});
+  }
+  return out.sort((a, b) => b.c - a.c || a.n.localeCompare(b.n));
+}
+function dictFixCount(){ const d = DD(); return Object.keys(d.fix).length + Object.keys(d.same).length + Object.keys(d.no).length; }
+function renderDict(){
+  const d = DD();
+  const tip = document.createElement('div'); tip.className = 'vt-tip'; tip.style.marginTop = '14px';
+  tip.textContent = '从你写过的记录里自动长出来，不用维护。「说一段」时听错的名字照这里改；点 ↺ 改回过的，它记住以后别这样改。';
+  view.appendChild(tip);
+  const rows = [];
+  Object.entries(d.fix).forEach(([v, c]) => rows.push({t:'「' + v + '」→ ' + c, s:'听错的字 · 自动改', del:() => { delete d.fix[v]; }}));
+  Object.entries(d.same).forEach(([v, c]) => rows.push({t:'「' + v + '」＝ ' + c, s:'另一种叫法 · 不改字', del:() => { delete d.same[v]; }}));
+  Object.keys(d.no).forEach(k => { const a = k.split('>'); rows.push({t:'「' + a[0] + '」不改成 ' + a[1], s:'你改回过', del:() => { delete d.no[k]; }}); });
+  view.appendChild(sectionLabel('纠正 · ' + rows.length + ' 条'));
+  rows.forEach(r => {
+    const el = document.createElement('div'); el.className = 'set-row dc-row';
+    el.innerHTML = '<span>' + vEsc(r.t) + '</span><span class="sub" style="margin-left:auto">' + vEsc(r.s) + '</span><button class="gm-btn dc-x">✕</button>';
+    el.querySelector('.dc-x').onclick = ev => { ev.stopPropagation(); r.del(); dictChanged(); render(); toast('删掉了'); };
+    view.appendChild(el);
+  });
+  const add = document.createElement('button'); add.className = 'chip on'; add.id = 'dcAdd'; add.textContent = '＋ 加一条：A 就是 B'; add.style.margin = '8px 0 4px';
+  add.onclick = () => dictAddSheet('', '');
+  view.appendChild(add);
+  const ppl = dictPeopleList();
+  view.appendChild(sectionLabel('人 · ' + ppl.length + ' · 点名字：加叫法 / 不当人名'));
+  const pw = document.createElement('div'); pw.className = 'dc-chips';
+  ppl.forEach(o => { const b = document.createElement('button'); b.className = 'dc-chip'; b.dataset.n = o.n;
+    b.innerHTML = vEsc(o.n) + ' <i>' + o.c + '</i>' + (o.als.size ? '<small> · 也叫 ' + vEsc([...o.als].join('、')) + '</small>' : '');
+    b.onclick = () => dictItemSheet('p', o.n); pw.appendChild(b); });
+  view.appendChild(pw);
+  const sts = dictStoreList();
+  view.appendChild(sectionLabel('店 · ' + sts.length + ' · 点店名：加简称 / 不当店名'));
+  const sw = document.createElement('div'); sw.className = 'dc-chips';
+  sts.forEach(o => { const b = document.createElement('button'); b.className = 'dc-chip'; b.dataset.n = o.n;
+    b.innerHTML = vEsc(o.n) + ' <i>' + o.c + '</i>' + (o.als.size ? '<small> · 简称 ' + vEsc([...o.als].join('、')) + '</small>' : '');
+    b.onclick = () => dictItemSheet('s', o.n); sw.appendChild(b); });
+  view.appendChild(sw);
+}
+function dictAddSheet(v0, c0){
   const S = $('#gsheet');
-  voMount(S, {title:'🎙 说一段，我来安排', onDone:() => { closeSheet(); render(); }});
+  S.innerHTML = '<div class="gs-title">加一条 · A 就是 B</div>'
+    + '<label class="ss-f"><span>说法</span><input id="dcV" placeholder="比如：布尔 / 老姐 / 陈先进" value="' + escAttr(v0) + '"></label>'
+    + '<label class="ss-f"><span>其实是</span><input id="dcC" placeholder="比如：不二 / 我姐 / 陈先进小馆" value="' + escAttr(c0) + '"></label>'
+    + '<div class="gs-chips" id="dcK" style="margin:10px 0 0"><button class="gs-chip on" data-k="fix">听错的字 · 以后自动改</button><button class="gs-chip" data-k="same">另一种叫法 · 只认不改字</button></div>'
+    + '<button class="gs-done" id="dcSave">存下</button>';
+  let kind = 'fix';
+  S.querySelectorAll('#dcK [data-k]').forEach(b => b.onclick = () => { kind = b.dataset.k; S.querySelectorAll('#dcK [data-k]').forEach(x => x.classList.toggle('on', x === b)); });
+  $('#dcSave').onclick = () => {
+    const v = $('#dcV').value.trim(), c = $('#dcC').value.trim();
+    if (!v || !c || v === c){ toast('两边都写上，而且不一样'); return; }
+    const d = DD(); delete d.fix[v]; delete d.same[v]; delete d.no[v + '>' + c];
+    d[kind][v] = c; dictChanged(); closeSheet(); render();
+    toast(kind === 'fix' ? '记住了：以后「' + v + '」自动改成「' + c + '」' : '记住了：「' + v + '」就是「' + c + '」');
+  };
   S.classList.add('on'); $('#mask').classList.add('on');
-  const t = $('#voTxt'); if (t){ try{ t.focus(); }catch(_){} }
+  setTimeout(() => { const i = v0 ? $('#dcC') : $('#dcV'); if (i) i.focus(); }, 60);
+}
+function dictItemSheet(kind, n){
+  const S = $('#gsheet');
+  S.innerHTML = '<div class="gs-title">「' + vEsc(n) + '」</div>'
+    + '<label class="ss-f"><span>' + (kind === 'p' ? '另一种叫法' : '简称') + '</span><input id="dcAl" placeholder="' + (kind === 'p' ? '比如：老姐' : '比如：陈先进') + '"></label>'
+    + '<div class="gs-new" style="margin-top:10px"><button class="gm-btn" id="dcAlSave" style="flex:1;padding:10px">存下这个' + (kind === 'p' ? '叫法' : '简称') + '</button></div>'
+    + '<button class="gm-btn" id="dcIgn" style="width:100%;padding:10px;margin-top:10px;color:var(--ink-soft)">' + (kind === 'p' ? '这不是人名，别认它' : '这不是店名，别认它') + '</button>';
+  $('#dcAlSave').onclick = () => {
+    const v = $('#dcAl').value.trim(); if (!v || v === n){ toast('写一个不一样的说法'); return; }
+    const d = DD(); delete d.fix[v]; d.same[v] = n; dictChanged(); closeSheet(); render(); toast('记住了：「' + v + '」就是「' + n + '」');
+  };
+  $('#dcIgn').onclick = () => {
+    if (kind === 'p'){ SET.pplNo = SET.pplNo || {}; SET.pplNo[n] = 1; } else DD().nost[n] = 1;
+    dictChanged(); closeSheet(); render(); toast('好，不再把「' + n + '」当' + (kind === 'p' ? '人名' : '店名'));
+  };
+  S.classList.add('on'); $('#mask').classList.add('on');
 }
 
 /* ============ 启动 ============ */
