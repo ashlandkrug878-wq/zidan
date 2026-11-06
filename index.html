@@ -595,6 +595,78 @@
   .dc-chip i{font-style:normal;color:var(--ink-faint);font-size:12px}
   .dc-chip small{color:var(--ink-faint);font-size:11.5px}
   .dc-row .dc-x{margin-left:8px;padding:3px 9px}
+  /* ---------- v2.31 今日页四档 · 行首图标 · 点符号看细节 ---------- */
+  .section-label.sec4{display:flex;align-items:center;gap:6px;margin-top:20px}
+  .section-label .sec-n{letter-spacing:0;font-weight:500}
+  .section-label .sec-add{margin-left:auto;border:none;background:none;color:var(--ink-faint);font-size:19px;line-height:1;padding:0 2px 0 14px;cursor:pointer;font-family:inherit;letter-spacing:0}
+  .section-label.faint{color:#D6CCB8;cursor:pointer}
+  .section-label.faint .sec-add{color:#D6CCB8}
+  .tapzone.big.slim{min-height:26px;padding:0}
+  .tapzone.big.slim .penicon,.tapzone.big.slim span{display:none}
+  .tapzone.big.hint{min-height:70px;color:#CFC5B1;font-size:14px}
+  .tapzone.tail{min-height:14px;padding:0}
+  .sym{position:relative}
+  .sym .evi{font-size:16px;line-height:1;display:inline-block}
+  .sym.tapme{cursor:pointer}
+  .sym .wdot{position:absolute;top:0;right:-1px;width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 0 2px var(--bg)}
+  .e-line{display:flex;align-items:flex-start;gap:6px}
+  .e-line .line-input,.e-line .entry-text{flex:1;min-width:0}
+  .e-when{flex:none;display:flex;gap:5px;font-size:13px;line-height:25.6px;cursor:pointer;white-space:nowrap}
+  .e-when .tm{color:var(--accent);font-weight:700}
+  .e-when .due{color:var(--ink-faint);font-weight:500}
+  .rpop{position:absolute;left:44px;right:14px;background:var(--card);border:1px solid var(--line-strong);border-radius:16px;box-shadow:0 10px 30px rgba(31,28,23,.16);padding:2px 14px;z-index:7;max-height:62vh;overflow-y:auto}
+  .rp-r{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:14.5px;line-height:1.5}
+  .rp-r:last-child{border-bottom:none}
+  .rp-r .i{width:20px;flex:none;text-align:center;color:var(--ink-soft)}
+  .rp-r .t{flex:1;min-width:0}
+  .rp-r .a{flex:none;border:none;background:none;color:var(--accent);font-weight:600;font-size:13px;font-family:inherit;cursor:pointer;padding:2px 0 2px 8px;white-space:nowrap}
+  .rp-r .a.g{color:var(--ink-faint);font-weight:500}
+  .rp-r.warn .t{color:var(--red)}
+  .rp-r.tapr{cursor:pointer}
+  .rp-ico{display:none;flex-wrap:wrap;gap:6px;padding:4px 0 12px;border-bottom:1px dashed var(--line)}
+  .rp-ico.on{display:flex}
+  .rp-ico button{width:38px;height:38px;border-radius:10px;border:1px solid var(--line-strong);background:#FFFEFA;font-size:17px;cursor:pointer;font-family:inherit;padding:0}
+  .rp-ico button.on{border-color:var(--ink);box-shadow:0 0 0 1.5px var(--ink) inset}
+  .rp-ico button.auto{width:auto;padding:0 10px;font-size:12.5px;color:var(--ink-soft)}
+  .rp-to{display:flex;flex-wrap:wrap;gap:6px}
+  .rp-to button{border:1px solid var(--line-strong);background:#FFFEFA;border-radius:999px;padding:4px 10px;font-size:12.5px;font-family:inherit;color:var(--ink-soft);cursor:pointer}
+  .rp-to button.on{background:var(--ink);color:#F6EFE3;border-color:var(--ink)}
+  .qs-info{background:#F3EFE6;border-radius:12px;padding:0 12px;margin:-2px 0 12px}
+  .qs-info .rp-r{font-size:13.5px;color:var(--ink-soft);border-bottom-color:#E7E0D1}
+  .wx-pill{display:inline-block;font-size:12px;font-weight:500;letter-spacing:0;color:var(--ink-soft);background:var(--card);border:1px solid var(--line-strong);border-radius:999px;padding:1px 7px;margin-left:4px;vertical-align:2px;cursor:pointer;line-height:1.5}
+  #topTitle.has-wx{white-space:nowrap;letter-spacing:0}
+  #topTitle.has-wx::after{content:none}
+  @media (max-width:385px){#topTitle.has-wx{white-space:normal;line-height:1.25}#topTitle.has-wx .wx-pill{display:table;margin:2px auto 0;font-size:11px;padding:0 7px}}
+  /* 早安卡 v2.31：日期、天气、一句话在上，今天的事和往年今日在下 */
+  .hl-cheer.top{margin:18px 0 0;padding-top:0;font-size:20px;font-weight:800;line-height:1.55}
+  .hl-lower{margin-top:auto;padding-top:14px}
+  .hl-lower .hl-go{margin-top:18px}
+  /* 侧栏 v2.31 */
+  .dtiles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 4px 2px}
+  .dtile{background:var(--card);border:1px solid var(--line-strong);border-radius:14px;padding:11px 12px;display:flex;flex-direction:column;gap:3px;cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+  .dtile .ic{font-size:17px}
+  .dtile b{font-size:14.5px}
+  .dtile .s{font-size:11.5px;color:var(--ink-faint)}
+  .dtile-hint{font-size:11px;color:var(--ink-faint);text-align:right;margin:2px 6px 0}
+  .dchips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 4px 2px}
+  .dchip{display:inline-flex;align-items:center;font-size:13px;border:1px solid var(--line-strong);background:var(--card);border-radius:999px;padding:5px 10px;cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+  .dchip b{margin-right:1px}
+  .dchip i{font-style:normal;color:var(--ink-faint);font-size:11.5px;margin-left:3px}
+  .dchip.add{color:var(--ink-faint)}
+  .dtools{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:4px 4px 2px}
+  .dtool{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;color:var(--ink-soft);padding:8px 0;border-radius:12px;background:var(--card);border:1px solid var(--line);cursor:pointer}
+  .dtool .ic{font-size:18px}
+  .dfold{display:flex;align-items:center;gap:12px;padding:12px 6px;border-top:1px solid var(--line);cursor:pointer;font-size:15px;margin-top:10px}
+  .dfold + .dfold{margin-top:0}
+  .dfold .ic{width:20px;text-align:center;color:var(--ink-soft)}
+  .dfold small{display:block;font-size:11.5px;color:var(--ink-faint);margin-top:2px}
+  .dfold .ar{margin-left:auto;color:var(--ink-faint)}
+  .daggs{margin-bottom:8px}
+  .gm-sec{font-size:12px;color:var(--ink-faint);letter-spacing:2px;margin:14px 0 6px;font-weight:600}
+  /* 设置：工具箱 */
+  .tbox{display:flex;flex-wrap:wrap;gap:7px;padding:8px 2px 4px}
+  .tbox-c{font-size:13.5px;border:1px solid var(--line-strong);border-radius:999px;padding:6px 12px;background:var(--card);color:var(--ink-soft);font-family:inherit;cursor:pointer}
+  .tbox-c.on{border-color:#CFE0D0;background:#EEF5EE;color:var(--green)}
 </style>
 </head>
 <body>
@@ -1018,6 +1090,7 @@ function commit(e){
 
 /* ============ 条目渲染 ============ */
 function chipRow(e, editable){
+  if (CLEAN_ROWS && !isMinor(e)) return null;   /* v2.31 页面里不挂小签（小事折叠盒里照旧） */
   const hasG = e.groups && e.groups.length;
   let expK = null;
   if (modOn('ledger') && e.text){
@@ -1108,6 +1181,8 @@ function entryNode(e, editable, isChild, flat, liveSym){
   const row = document.createElement('div');
   row.className = 'entry ' + e.sym + ' ' + (e.state || '');
   const s = symNode(e);
+  if (e.sym === 'event' && !isMinor(e)){ const ic = evIcon(e); if (ic.i) s.innerHTML = '<span class="evi">' + ic.i + '</span>'; }   /* v2.31 发生的事用图标 */
+  if (CLEAN_ROWS && e.text && modOn('meals') && !isMinor(e) && foodWarn(e)){ const wd = document.createElement('i'); wd.className = 'wdot'; s.appendChild(wd); }
   if ((editable || liveSym) && e.sym === 'task'){
     let lpTimer = null, lpFired = false;
     s.addEventListener('pointerdown', () => {
@@ -1127,6 +1202,9 @@ function entryNode(e, editable, isChild, flat, liveSym){
       } else { qsTarget = e; openQSheet(); }
     });
     s.title = '点按完成 · 长按处理';
+  } else if (CLEAN_ROWS && (editable || liveSym)){   /* v2.31 点符号：这一行的细节小卡 */
+    s.classList.add('tapme'); s.title = '点一下看这一行';
+    s.addEventListener('click', ev => { ev.stopPropagation(); openRowPop(e, s); });
   } else s.classList.add('static');
   if (editable){
     let rpT = null, sx = 0, sy = 0;
@@ -1208,10 +1286,14 @@ function entryNode(e, editable, isChild, flat, liveSym){
         if (changed) render();
       }, 60);
     });
-    body.appendChild(inp);
+    const wn = CLEAN_ROWS ? whenNode(e, true) : null;   /* v2.31 时间 / 日子写在字前面 */
+    if (wn){ const ln = document.createElement('div'); ln.className = 'e-line'; ln.appendChild(wn); ln.appendChild(inp); body.appendChild(ln); }
+    else body.appendChild(inp);
   } else {
     const tx = document.createElement('div'); tx.className = 'entry-text'; tx.textContent = e.text;
-    body.appendChild(tx);
+    const wn = CLEAN_ROWS ? whenNode(e, false) : null;
+    if (wn){ const ln = document.createElement('div'); ln.className = 'e-line'; ln.appendChild(wn); ln.appendChild(tx); body.appendChild(ln); }
+    else body.appendChild(tx);
   }
   const chips = chipRow(e, editable); if (chips) body.appendChild(chips);
   if (e.images && e.images.length){
@@ -1235,7 +1317,7 @@ function entryNode(e, editable, isChild, flat, liveSym){
       kp.onclick = ev => { ev.stopPropagation(); e.collapsed = !e.collapsed; render(); };
       rt.appendChild(kp);
     }
-    if (editable && e.sym === 'event'){
+    if (editable && e.sym === 'event' && !CLEAN_ROWS){   /* v2.31 页面里「＋」收进点符号的小卡 */
       const ab = document.createElement('button'); ab.className = 'addchild'; ab.textContent = '＋';
       ab.title = '在这件事下记一笔';
       ab.onclick = ev => { ev.stopPropagation();
@@ -1332,50 +1414,73 @@ function renderPageInto(box, date, editable){
     st0.textContent = '🔖 ' + p.stamp + ' 的一天'; st0.onclick = () => stampSheet(date);
     box.appendChild(st0);
   }
-  box.appendChild(sectionLabel('今天要做'));
-  p.plan.forEach(e => box.appendChild(entryNode(e, editable)));
-  if (editable) box.appendChild(tapZone('＋ 补一条要做的', false, () => addLine(p.plan)));
-  if (editable && date === TODAY){   /* v2.28 想做的事：只是一行小字，想做时再捞 */
-    let sdN = 0; walk((k2, x) => { if (x.sym === 'task' && x.state === 'someday') sdN++; });
-    if (sdN){
-      const pl = document.createElement('div'); pl.className = 'pool-line';
-      pl.textContent = '☾ 想做的事 · ' + sdN + ' 件 · 想做哪件捞回来 ›';
-      pl.onclick = () => { cur = {name:'agg', key:'someday'}; render(); };
-      box.appendChild(pl);
+  CLEAN_ROWS = true;   /* v2.31 页面里行下不挂小签，细节点符号看 */
+  try{
+    /* ① 要做的事（流水里带日子转成的任务也算这一档） */
+    const flowTasks = p.flow.filter(e => e.sym === 'task' && !isMinor(e));
+    const tasks = p.plan.concat(flowTasks);
+    const nOpen = tasks.filter(e => e.sym === 'task' && e.state === 'open').length;
+    box.appendChild(secHead('要做的事', nOpen, !tasks.length, editable ? () => addLine(p.plan) : null));
+    tasks.forEach(e => box.appendChild(entryNode(e, editable)));
+    if (editable && tasks.length) box.appendChild(tailZone(() => addLine(p.plan)));
+    if (editable && date === TODAY){   /* v2.28 想做的事：只是一行小字，想做时再捞 */
+      let sdN = 0; walk((k2, x) => { if (x.sym === 'task' && x.state === 'someday') sdN++; });
+      if (sdN){
+        const pl = document.createElement('div'); pl.className = 'pool-line';
+        pl.textContent = '☾ 想做的事 · ' + sdN + ' 件 · 想做哪件捞回来 ›';
+        pl.onclick = () => { cur = {name:'agg', key:'someday'}; render(); };
+        box.appendChild(pl);
+      }
     }
-  }
-  box.appendChild(sectionLabel('今天发生'));
-  const majors = [], minors = [];
-  p.flow.forEach(e => (isMinor(e) ? minors : majors).push(e));
-  majors.forEach(e => box.appendChild(entryNode(e, editable)));
-  if (minors.length){
-    const meals2 = minors.filter(e => e.meal);
-    const skips2 = meals2.filter(e => /^没(有)?吃$/.test((e.text || '').trim()));
-    const nbs2 = minors.filter(e => e.nbId && !e.meal);
-    const lgs2 = minors.filter(e => e.ledger);
-    const segs = [];
-    if (meals2.length) segs.push('🍚 ' + (skips2.length === meals2.length ? '没吃×' + meals2.length : '三餐×' + meals2.length));
-    if (nbs2.length) segs.push('📓 本子×' + nbs2.length);
-    if (lgs2.length) segs.push('💰 记账×' + lgs2.length);
-    const open = minorOpen.has(date);
-    const strip = document.createElement('div'); strip.className = 'minor-strip';
-    strip.innerHTML = '⚙ <b>' + (date === TODAY ? '今日' : '这天') + '小事 · ' + minors.length + ' 条</b>'
-      + '<span class="ms-segs">' + segs.join(' · ') + '</span>'
-      + '<span class="ms-ar">' + (open ? '▴ 收起' : '▾ 展开') + '</span>';
-    strip.onclick = () => { if (open) minorOpen.delete(date); else minorOpen.add(date); render(); };
-    box.appendChild(strip);
-    if (open){
-      const mb2 = document.createElement('div'); mb2.className = 'minor-box';
-      minors.forEach(e => mb2.appendChild(entryNode(e, editable)));
-      const cap = document.createElement('div'); cap.className = 'minor-cap';
-      cap.textContent = '模块打卡、本子足迹、记的账都收在这 · 每条照旧能改能删';
-      mb2.appendChild(cap);
-      box.appendChild(mb2);
+    const majors = [], minors = [], thoughts = [], moods = [];
+    p.flow.forEach(e => {
+      if (isMinor(e)) minors.push(e);
+      else if (e.sym === 'task') return;
+      else if (e.sym === 'mood') moods.push(e);
+      else if (e.sym === 'note' || e.sym === 'ask' || e.sym === 'bang') thoughts.push(e);
+      else majors.push(e);
+    });
+    /* ② 发生的事 */
+    box.appendChild(secHead('发生的事', majors.length, !majors.length && !minors.length, editable ? () => addLine(p.flow) : null));
+    majors.forEach(e => box.appendChild(entryNode(e, editable)));
+    if (minors.length){
+      const meals2 = minors.filter(e => e.meal);
+      const skips2 = meals2.filter(e => /^没(有)?吃$/.test((e.text || '').trim()));
+      const nbs2 = minors.filter(e => e.nbId && !e.meal);
+      const lgs2 = minors.filter(e => e.ledger);
+      const segs = [];
+      if (meals2.length) segs.push('🍚 ' + (skips2.length === meals2.length ? '没吃×' + meals2.length : '三餐×' + meals2.length));
+      if (nbs2.length) segs.push('📓 本子×' + nbs2.length);
+      if (lgs2.length) segs.push('💰 记账×' + lgs2.length);
+      const open = minorOpen.has(date);
+      const strip = document.createElement('div'); strip.className = 'minor-strip';
+      strip.innerHTML = '⚙ <b>' + (date === TODAY ? '今日' : '这天') + '小事 · ' + minors.length + ' 条</b>'
+        + '<span class="ms-segs">' + segs.join(' · ') + '</span>'
+        + '<span class="ms-ar">' + (open ? '▴ 收起' : '▾ 展开') + '</span>';
+      strip.onclick = () => { if (open) minorOpen.delete(date); else minorOpen.add(date); render(); };
+      box.appendChild(strip);
+      if (open){
+        const mb2 = document.createElement('div'); mb2.className = 'minor-box';
+        minors.forEach(e => mb2.appendChild(entryNode(e, editable)));
+        const cap = document.createElement('div'); cap.className = 'minor-cap';
+        cap.textContent = '模块打卡、本子足迹、记的账都收在这 · 每条照旧能改能删';
+        mb2.appendChild(cap);
+        box.appendChild(mb2);
+      }
     }
-  }
-  if (p.voOut && p.voOut.length){ const vo = voOutNode(p.voOut); if (vo) box.appendChild(vo); }   /* v2.30 说一段时放到别的日子的 */
-  if (editable) box.appendChild(tapZone('点这里，记下今天发生的事…（○ 会接住它引发的一切）', true, () => addLine(p.flow), true));
-  else if (!p.flow.length){ const d = document.createElement('div'); d.className = 'empty-hint'; d.textContent = '这天没有流水记录'; box.appendChild(d); }
+    if (p.voOut && p.voOut.length){ const vo = voOutNode(p.voOut); if (vo) box.appendChild(vo); }   /* v2.30 说一段时放到别的日子的 */
+    if (editable){
+      const z = tapZone(majors.length ? '' : (date === TODAY ? '还没记 · 点这里写，或者右下角说一段' : '点这里补记这天发生的事'), true, () => addLine(p.flow), !majors.length);
+      z.classList.add(majors.length ? 'slim' : 'hint');
+      box.appendChild(z);
+    } else if (!p.flow.length){ const d = document.createElement('div'); d.className = 'empty-hint'; d.textContent = '这天没有流水记录'; box.appendChild(d); }
+    /* ③ 想法（含 ？疑问 ！重点） */
+    box.appendChild(secHead('想法', thoughts.length, !thoughts.length, editable ? () => addLineSym(p.flow, 'note') : null));
+    thoughts.forEach(e => box.appendChild(entryNode(e, editable)));
+    /* ④ 心情 */
+    box.appendChild(secHead('心情', moods.length, !moods.length, editable ? () => addLineSym(p.flow, 'mood') : null));
+    moods.forEach(e => box.appendChild(entryNode(e, editable)));
+  } finally { CLEAN_ROWS = false; }
 }
 
 /* ============ 汇总 ============ */
@@ -1543,6 +1648,7 @@ function renderGroupBody(){
     }
   }
 function render(){
+  closeRowPop(); topTitle.classList.remove('has-wx');
   if (cur.name === 'meals'){ cur.name = 'food'; if (!cur.tab) cur.tab = 'meal'; }   /* v2.23 三餐并入美食板块 */
   (() => {   /* v2.18 导航栈：自动记来路，二级页左上角变「‹ 返回」 */
     const ns2 = navSnap();
@@ -1571,7 +1677,7 @@ function render(){
   { const vf = $('#voFab'); if (vf) vf.classList.toggle('on', cur.name === 'today'); }
   if (cur.name === 'today'){
     topTitle.textContent = dayGroupTitle(TODAY); reviewBtn.textContent = '复盘';
-    if (modOn('hello')) view.appendChild(helloStripNode());   /* v2.28 早安卡收起后的一行 */
+    if (modOn('hello')){ topTitle.appendChild(wxPillNode()); topTitle.classList.add('has-wx'); }   /* v2.31 天气缩成日期旁的小签 */
     renderPageInto(view, TODAY, true);
   }
   else if (cur.name === 'agg'){
@@ -1681,14 +1787,33 @@ function render(){
   }
   else if (cur.name === 'settings'){
     topTitle.textContent = '设置'; reviewBtn.textContent = '回今日';
-    const sub = t => { const s = document.createElement('span'); s.className = 'sub'; s.textContent = t; return s; };
-    const mkRow = (label, right, fn) => {
-      const r = document.createElement('div'); r.className = 'set-row';
-      const l = document.createElement('span'); l.textContent = label; r.appendChild(l);
-      if (right) r.appendChild(right);
-      if (fn) r.onclick = fn;
-      view.appendChild(r); return r;
-    };
+    view.appendChild(sectionLabel('记录'));
+    (() => {
+      const sw = document.createElement('div'); sw.className = 'switch' + (SET.recog ? ' on' : ''); sw.innerHTML = '<i></i>';
+      sw.onclick = ev => { ev.stopPropagation(); SET.recog = !SET.recog;
+        toast(SET.recog ? '已开启自动识别' : '已关闭 · #分组与时间抽取不受影响'); render(); };
+      setRow('智能识别类型判断', sw, null);
+    })();
+    setRow('一天的边界', setSub('凌晨 4:00'), () => toast('4 点前的记录算前一天 · 适合夜猫子'));
+    setRow('📖 我的词典', setSub(dictPeopleList().length + ' 人 · ' + dictStoreList().length + ' 家店 · ' + dictFixCount() + ' 条纠正 ›'), () => { cur = {name:'dict'}; render(); });
+    view.appendChild(sectionLabel('提醒'));
+    (() => {
+      const on = modOn('hello'), tg = setToggle(on);
+      setRow('☀ 早安卡', tg, null);
+      tg.onclick = () => { SET.mods.hello = !on; scheduleSave(); render();
+        toast(!on ? '已打开 · 明天第一次打开就能看到' : '已关闭 · 日期旁的天气小签一起收起'); };
+    })();
+    setRow('提醒力度', setSub(SET.duty ? '严格 · 每天逐件表态 ›' : '温和 · 没做完的不催 ›'), () => {
+      SET.duty = !SET.duty; scheduleSave(); render();
+      toast(SET.duty ? '已切到严格：早上逐件表态、复盘逐件过' : '已切到温和：没做完的第二天自动收进「想做的事」');
+    });
+    if (modOn('cycles')) setRow('🔁 循环提醒', setSub('生日 · 还款 · 周期 ›'), () => { cur = {name:'cycles'}; render(); });
+    setRow('天气城市', setSub((wxCfg().cities.map(c => c.n).join('、') || '还没设') + ' ›'), wxCitySheet);
+    view.appendChild(sectionLabel('工具箱 · 关掉的不出现在侧栏，数据都在'));
+    view.appendChild(toolboxNode());
+    view.appendChild(sectionLabel('数据'));
+    setRow('数据与备份', setSub('导出 · 导入 · 云备份 · 恢复 ›'), () => { cur = {name:'data'}; render(); });
+    view.appendChild(sectionLabel('其他'));
     const accWrap = document.createElement('div'); accWrap.className = 'cdots'; accWrap.style.marginLeft = 'auto';
     ACCENTS.forEach((a, i) => {
       const dd = document.createElement('span');
@@ -1697,78 +1822,24 @@ function render(){
       dd.onclick = ev => { ev.stopPropagation(); SET.accent = i; applyAccent(); scheduleSave(); render(); };
       accWrap.appendChild(dd);
     });
-    mkRow('使用引导 · 功能手册', sub('随时回看 ›'), showManual);
-    mkRow('主题色', accWrap, null);
-    const sw = document.createElement('div'); sw.className = 'switch' + (SET.recog ? ' on' : ''); sw.innerHTML = '<i></i>';
-    sw.onclick = ev => { ev.stopPropagation(); SET.recog = !SET.recog;
-      toast(SET.recog ? '已开启自动识别' : '已关闭 · #分组与时间抽取不受影响'); render(); };
-    mkRow('智能识别类型判断', sw, null);
-    mkRow('一天的边界', sub('凌晨 4:00'), () => toast('4 点前的记录算前一天 · 适合夜猫子'));
-    mkRow('导出 Markdown 备份', sub('生成文件 ›'), exportMD);
-    mkRow('导入 Markdown（合并）', sub('以现有为准，只补缺 ›'), () => $('#mdInput').click());
-    mkRow('完整备份（.json 含图片）', sub('生成文件 ›'), exportJSON);
-    mkRow('云备份（GitHub 私有仓库）', sub(ghCfg().on ? ('自动 · ' + (ghCfg().last || '待首次备份')) : '未开启 ›'), openGhSheet);
-    mkRow('恢复备份（.json）', sub('整体替换 ›'), () => {
+    setRow('主题色', accWrap, null);
+    setRow('功能手册 · 实验室', setSub('›'), labSheet);
+    setRow('版本记录', setSub('v2.31 ›'), showChangelog);
+  }
+  else if (cur.name === 'data'){
+    topTitle.textContent = '数据与备份'; reviewBtn.textContent = '回今日';
+    setRow('导出 Markdown 备份', setSub('生成文件 ›'), exportMD);
+    setRow('导入 Markdown（合并）', setSub('以现有为准，只补缺 ›'), () => $('#mdInput').click());
+    setRow('完整备份（.json 含图片）', setSub('生成文件 ›'), exportJSON);
+    setRow('云备份（GitHub 私有仓库）', setSub(ghCfg().on ? ('自动 · ' + (ghCfg().last || '待首次备份')) : '未开启 ›'), openGhSheet);
+    setRow('恢复备份（.json）', setSub('整体替换 ›'), () => {
       if (!pendingRestore){ pendingRestore = true;
         toast('恢复将完全替换当前数据 · 再点一次选择文件');
         setTimeout(() => pendingRestore = false, 5000); return; }
       pendingRestore = false; $('#jsonInput').click();
     });
-    view.appendChild(sectionLabel('每天 · 早安卡与任务'));
-    (() => {
-      const on = modOn('hello');
-      const tg = document.createElement('button'); tg.className = 'gm-btn'; tg.style.marginLeft = 'auto';
-      tg.textContent = on ? '开 ✓' : '关'; tg.style.color = on ? 'var(--green)' : 'var(--ink-faint)';
-      mkRow('☀ 早安卡（每天第一次打开）', tg, null);
-      tg.onclick = () => { SET.mods.hello = !on; scheduleSave(); render();
-        toast(!on ? '已打开 · 明天第一次打开就能看到' : '已关闭 · 今日页顶上的天气条一起收起'); };
-    })();
-    mkRow('天气城市', sub((wxCfg().cities.map(c => c.n).join('、') || '还没设') + ' ›'), wxCitySheet);
-    mkRow('任务风格', sub(SET.duty ? '对账 · 每天逐件表态 ›' : '随缘 · 没做完的自动收起 ›'), () => {
-      SET.duty = !SET.duty; scheduleSave(); render();
-      toast(SET.duty ? '已切到对账：早上逐件表态、复盘逐件过' : '已切到随缘：没做完的第二天自动收进「想做的事」');
-    });
-    mkRow('📖 我的词典', sub(dictPeopleList().length + ' 人 · ' + dictStoreList().length + ' 家店 · ' + dictFixCount() + ' 条纠正 ›'), () => { cur = {name:'dict'}; render(); });
-    view.appendChild(sectionLabel('板块管理 · 关掉的从侧栏消失，数据不动'));
-    [['notes','📓 笔记本','基础'],['meals','🍚 美食','扩展'],['ledger','💰 记账','扩展'],['people','👥 熟人册','扩展'],['vault','🔐 账号小本','扩展'],['cycles','🔁 循环提醒','基础']].forEach(([k, nm, tier]) => {
-      const on = modOn(k);
-      const tg = document.createElement('button'); tg.className = 'gm-btn'; tg.style.marginLeft = 'auto';
-      tg.textContent = on ? '开 ✓' : '关'; tg.style.color = on ? 'var(--green)' : 'var(--ink-faint)';
-      mkRow(nm + '（' + tier + '）', tg, null);
-      tg.onclick = () => {
-        SET.mods[k] = !on;
-        if (k === 'meals'){ if (on) SET.mealsUserOff = 1; else delete SET.mealsUserOff; }
-        if (k === 'meals' && !on){
-          if (!foodGroupName() && !extraGroups.includes('美食')) extraGroups.push('美食');
-          try{ mealAutoTagAll(); }catch(_){}
-          toast('美食已打开 · 集子和三餐都在侧栏「美食」里');
-        }
-        if (k === 'ledger' && !on) toast('记账已打开 · 写「打车 45元」这样带金额的句子就自动成账');
-        scheduleSave(); render();
-      };
-    });
-    (() => {   /* v2.29 三餐打卡退役：想算卡路里时再开 */
-      const on = SET.mods.mealLog === true;
-      const tg = document.createElement('button'); tg.className = 'gm-btn'; tg.style.marginLeft = 'auto';
-      tg.textContent = on ? '开 ✓' : '关'; tg.style.color = on ? 'var(--green)' : 'var(--ink-faint)';
-      mkRow('🍚 三餐打卡（已退役 · 想算卡路里时再开）', tg, null);
-      tg.onclick = () => { SET.mods.mealLog = !on; scheduleSave(); render();
-        toast(!on ? '三餐打卡已打开 · 在美食的「三餐」页签' : '已收起 · 以前的三餐记录都还在'); };
-    })();
-    view.appendChild(sectionLabel('内测实验室 · 聪明工具条：打字时认出日期 / 时间 / 分组，键盘上递一排小抓手，点一下贴上、再点取消'));
-    (() => {
-      const on = modOn('smartbar');
-      const tg = document.createElement('button'); tg.className = 'gm-btn'; tg.style.marginLeft = 'auto';
-      tg.textContent = on ? '开 ✓' : '关'; tg.style.color = on ? 'var(--green)' : 'var(--ink-faint)';
-      mkRow('✨ 聪明工具条（内测）', tg, null);
-      tg.onclick = () => {
-        SET.mods.smartbar = !on; scheduleSave(); render();
-        toast(!on ? '已开启 · 写一行「明天下午三点交方案」试试' : '已关闭 · 随时回来再开');
-      };
-    })();
-    mkRow('版本记录', sub('v2.30 ›'), showChangelog);
-    mkRow('存储占用', sub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
-    mkRow('清空全部数据', sub('谨慎操作'), () => {
+    setRow('存储占用', setSub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
+    setRow('清空全部数据', setSub('谨慎操作'), () => {
       if (pendingWipe){ localStorage.removeItem(LSKEY); location.reload(); return; }
       pendingWipe = true; toast('再点一次确认清空（建议先导出备份）');
       setTimeout(() => pendingWipe = false, 4000);
@@ -2053,189 +2124,6 @@ function sbBuild(e){
 }
 
 /* ============ 抽屉 ============ */
-function buildDrawer(){
-  if (SET.mods.meals !== true && !SET.mealsUserOff && foodGroupName()) SET.mods.meals = true;   /* v2.23 集子在哪门就在哪；但用户手动关过就不自作主张 */
-  const box = $('#drawerList'); box.innerHTML = '';
-  const cal = document.createElement('div'); cal.className = 'd-item plain';
-  cal.innerHTML = '<span class="d-ico">▦</span><span>总日历</span>';
-  cal.onclick = () => {
-    const ta = TODAY.split('.').map(Number);
-    cur = {name:'cal', y:ta[0], m:ta[1]}; closeDrawer(); render();
-  };
-  box.appendChild(cal);
-  let mc = 0; const taSub = TODAY.split('.').map(Number);
-  walk((d, e) => { const a = d.split('.').map(Number); if (a[0] === taSub[0] && a[1] === taSub[1]) mc++; });
-  $('#drawerSub').textContent = taSub[0] + ' 年 ' + taSub[1] + ' 月 · 本月已记 ' + mc + ' 条';
-  const glab = document.createElement('div'); glab.className = 'drawer-label'; glab.textContent = '分组 · 长按或左滑管理'; box.appendChild(glab);
-  const GCNT = {}, ACNT = {};
-  walk((d, e) => {
-    (e.groups || []).forEach(g2 => GCNT[g2] = (GCNT[g2] || 0) + 1);
-    Object.keys(AGG).forEach(k2 => { if (AGG[k2].f(e)) ACNT[k2] = (ACNT[k2] || 0) + 1; });
-  });
-  allGroupNames().forEach(g => {
-    if (tplOf(g) === 'food') return;   /* v2.23 美食升格为板块，不再出现在分组区 */
-    const n = GCNT[g] || 0;
-    const it = document.createElement('div'); it.className = 'd-item';
-    const ic = document.createElement('span'); ic.className = 'd-ico';
-    const [, fg] = gStyle(g); ic.style.color = fg; ic.style.fontWeight = '700'; ic.textContent = '#';
-    it.appendChild(ic);
-    if (gEdit && gEdit.name === g && gEdit.mode === 'rename'){
-      const inp = document.createElement('input'); inp.className = 'gm-inline'; inp.value = g;
-      inp.addEventListener('click', ev => ev.stopPropagation());
-      it.appendChild(inp);
-      const ok = document.createElement('button'); ok.className = 'gm-btn'; ok.textContent = '确定';
-      ok.onclick = ev => { ev.stopPropagation();
-        const v = inp.value.trim().replace(/^#/, '');
-        if (v && v !== g) renameGroup(g, v);
-        gEdit = null; toast('已改名 · 全局生效'); render(); };
-      it.appendChild(ok);
-      setTimeout(() => inp.focus(), 30);
-      box.appendChild(it); return;
-    }
-    const name = document.createElement('span'); name.textContent = g; it.appendChild(name);
-    if (gEdit && gEdit.name === g && gEdit.mode === 'color'){
-      const wrap = document.createElement('div'); wrap.className = 'cdots';
-      GPAL.forEach((pal, i) => {
-        const dd = document.createElement('span');
-        dd.className = 'cdot' + ((GCOLOR[g] === i) ? ' on' : '');
-        dd.style.background = pal[1];
-        dd.onclick = ev => { ev.stopPropagation(); GCOLOR[g] = i; scheduleSave(); gEdit = null; toast('已换色'); render(); };
-        wrap.appendChild(dd);
-      });
-      it.appendChild(wrap);
-      box.appendChild(it); return;
-    }
-    if (gEdit && gEdit.name === g && gEdit.mode === 'tpl'){
-      const wrap = document.createElement('div'); wrap.className = 'cdots'; wrap.style.gap = '6px';
-      TPL_ORDER.forEach(k => {
-        const bt = document.createElement('button');
-        bt.className = 'gm-btn' + (tplOf(g) === k ? ' on' : '');
-        if (tplOf(g) === k){ bt.style.background = 'var(--ink)'; bt.style.color = '#fff'; bt.style.borderColor = 'var(--ink)'; }
-        bt.textContent = k ? TPLS[k].n : '无';
-        bt.onclick = ev => { ev.stopPropagation();
-          SET.gtpl[g] = k; scheduleSave(); gEdit = null;
-          toast(k ? ('#' + g + ' 已用「' + TPLS[k].n + '」模板 · 历史记录已识别') : ('#' + g + ' 已取消模板'));
-          render(); };
-        wrap.appendChild(bt);
-      });
-      it.appendChild(wrap);
-      box.appendChild(it); return;
-    }
-    if (gEdit && gEdit.name === g && gEdit.mode === 'reveal'){
-      const tb = document.createElement('button'); tb.className = 'gm-btn';
-      tb.textContent = '模板' + (tplOf(g) ? '·' + TPLS[tplOf(g)].n : '');
-      tb.onclick = ev => { ev.stopPropagation(); gEdit = {name:g, mode:'tpl'}; buildDrawer(); };
-      it.appendChild(tb);
-      const cl = document.createElement('button'); cl.className = 'gm-btn'; cl.textContent = '颜色';
-      cl.onclick = ev => { ev.stopPropagation(); gEdit = {name:g, mode:'color'}; buildDrawer(); };
-      it.appendChild(cl);
-      const rn = document.createElement('button'); rn.className = 'gm-btn'; rn.textContent = '改名';
-      rn.onclick = ev => { ev.stopPropagation(); gEdit = {name:g, mode:'rename'}; buildDrawer(); };
-      const del = document.createElement('button'); del.className = 'gm-btn danger';
-      del.textContent = (pendingGDel === g) ? '确认删除' : '删除';
-      del.onclick = ev => { ev.stopPropagation();
-        if (pendingGDel !== g){ pendingGDel = g; toast('只摘标签、不删条目 · 再点一次确认'); buildDrawer(); return; }
-        deleteGroup(g); pendingGDel = null; gEdit = null; toast('已删除分组 · 记录都还在'); render(); };
-      it.appendChild(rn); it.appendChild(del);
-    } else {
-      const c = document.createElement('span'); c.className = 'count'; c.textContent = n || ''; it.appendChild(c);
-    }
-    let lpT = null, sx = null, sy = null, moved = false, fired = false;
-    it.addEventListener('pointerdown', ev => {
-      sx = ev.clientX; sy = ev.clientY; moved = false; fired = false;
-      lpT = setTimeout(() => { fired = true; gEdit = {name:g, mode:'reveal'}; pendingGDel = null; buildDrawer(); }, 450);
-    });
-    it.addEventListener('pointermove', ev => {
-      if (sx === null) return;
-      if (Math.abs(ev.clientY - sy) > 12) clearTimeout(lpT);
-      if (Math.abs(ev.clientX - sx) > 8) moved = true;
-      if (ev.clientX - sx < -30 && !fired){
-        fired = true; clearTimeout(lpT);
-        gEdit = {name:g, mode:'reveal'}; pendingGDel = null; buildDrawer();
-      }
-    });
-    const cancel = () => { clearTimeout(lpT); sx = null; };
-    it.addEventListener('pointerup', cancel);
-    it.addEventListener('pointerleave', cancel);
-    it.addEventListener('click', () => {
-      if (fired || moved){ fired = false; return; }
-      if (gEdit){ gEdit = null; pendingGDel = null; buildDrawer(); return; }
-      cur = {name:'group', g}; closeDrawer(); render();
-    });
-    box.appendChild(it);
-  });
-  if (gEdit && gEdit.mode === 'new'){
-    const it = document.createElement('div'); it.className = 'd-item';
-    const ic = document.createElement('span'); ic.className = 'd-ico'; ic.textContent = '＋'; it.appendChild(ic);
-    const inp = document.createElement('input'); inp.className = 'gm-inline'; inp.placeholder = '分组名…'; it.appendChild(inp);
-    inp.addEventListener('click', ev => ev.stopPropagation());
-    inp.addEventListener('input', () => { const nt = $('#ngTplRow'); if (nt) nt.dataset.auto = ''; });
-    const ok = document.createElement('button'); ok.className = 'gm-btn'; ok.textContent = '确定';
-    const commitNew = () => {
-      const v = inp.value.trim().replace(/^#/, ''); if (!v){ gEdit = null; buildDrawer(); return; }
-      if (!extraGroups.includes(v)) extraGroups.push(v);
-      const pick = gEdit.tpl === undefined ? tplOf(v) : gEdit.tpl;
-      if (pick !== tplOf(v) || pick !== null) SET.gtpl[v] = pick || null;
-      gEdit = null; scheduleSave();
-      toast('已新建 #' + v + (pick ? ' · ' + TPLS[pick].n + '模板' : ''));
-      buildDrawer(); };
-    ok.onclick = ev => { ev.stopPropagation(); commitNew(); };
-    inp.addEventListener('keydown', ev => { if (ev.key === 'Enter' && !ev.isComposing){ ev.preventDefault(); commitNew(); } });
-    it.appendChild(ok);
-    box.appendChild(it);
-    const tr = document.createElement('div'); tr.className = 'd-item'; tr.id = 'ngTplRow';
-    tr.style.cssText = 'padding-top:2px;flex-wrap:wrap;gap:6px';
-    const tl = document.createElement('span');
-    tl.style.cssText = 'font-size:11.5px;color:var(--ink-faint);letter-spacing:1px;width:100%;margin-bottom:2px';
-    tl.textContent = '套用模板（可不选，之后长按分组也能改）';
-    tr.appendChild(tl);
-    TPL_ORDER.forEach(k => {
-      const bt = document.createElement('button'); bt.className = 'gm-btn';
-      const sel = (gEdit.tpl === undefined ? null : gEdit.tpl) === k;
-      if (sel){ bt.style.background = 'var(--ink)'; bt.style.color = '#fff'; bt.style.borderColor = 'var(--ink)'; }
-      bt.textContent = k ? TPLS[k].n : '无';
-      bt.onclick = ev => { ev.stopPropagation(); gEdit.tpl = k; buildDrawer(); setTimeout(() => {
-        const i2 = box.querySelector('.gm-inline'); if (i2){ i2.value = inp.value; i2.focus(); } }, 20); };
-      tr.appendChild(bt);
-    });
-    box.appendChild(tr);
-    setTimeout(() => { inp.focus(); }, 30);
-  } else {
-    const it = document.createElement('div'); it.className = 'd-item plain';
-    it.innerHTML = '<span class="d-ico">＋</span><span>新建分组</span>';
-    it.onclick = () => { gEdit = {mode:'new'}; pendingGDel = null; buildDrawer(); };
-    box.appendChild(it);
-  }
-  const lab = document.createElement('div'); lab.className = 'drawer-label'; lab.textContent = '按标记汇总'; box.appendChild(lab);
-  Object.keys(AGG).forEach(key => {
-    const n = ACNT[key] || 0;
-    const it = document.createElement('div'); it.className = 'd-item';
-    const fake = {sym:{task:'task',event:'event',note:'note',mood:'mood',ask:'ask',bang:'bang'}[key] || 'task',
-                  state:{done:'done',delegated:'delegated',dropped:'dropped',someday:'someday'}[key] || 'open'};
-    const sn = symNode(fake); sn.classList.add('static'); it.appendChild(sn);
-    const name = document.createElement('span'); name.textContent = AGG[key].title.slice(2); it.appendChild(name);
-    const c = document.createElement('span'); c.className = 'count'; c.textContent = n || ''; it.appendChild(c);
-    it.onclick = () => { cur = {name:'agg', key}; closeDrawer(); render(); };
-    box.appendChild(it);
-  });
-  const line = document.createElement('div'); line.className = 'drawer-line'; box.appendChild(line);
-  (() => {
-    const rows0 = [['☾','晚间复盘', () => { closeDrawer(); openReview(); }]];
-    if (modOn('notes')) rows0.push(['📓','笔记本', () => { cur = {name:'notes'}; closeDrawer(); render(); }]);
-    if (modOn('meals')) rows0.push(['🍚','美食', () => { cur = {name:'food'}; closeDrawer(); render(); }]);
-    if (modOn('ledger')) rows0.push(['💰','记账', () => { cur = {name:'ledger'}; closeDrawer(); render(); }]);
-    if (modOn('people')) rows0.push(['👥','熟人册', () => { cur = {name:'people'}; closeDrawer(); render(); }]);
-    if (modOn('cycles')) rows0.push(['🔁','循环提醒', () => { cur = {name:'cycles'}; closeDrawer(); render(); }]);
-    if (modOn('vault')) rows0.push(['🔐','账号小本', () => { cur = {name:'vault'}; closeDrawer(); render(); }]);
-    rows0.push(['⚙','设置', () => { cur = {name:'settings'}; closeDrawer(); render(); }]);
-    return rows0;
-  })()
-  .forEach(([ico, name, fn]) => {
-    const it = document.createElement('div'); it.className = 'd-item plain';
-    it.innerHTML = '<span class="d-ico">' + ico + '</span><span>' + name + '</span>';
-    it.onclick = fn; box.appendChild(it);
-  });
-}
 function openDrawer(){ buildDrawer(); const dl = $('#drawerList'); if (dl) dl.scrollTop = 0; $('#drawer').classList.add('on'); $('#mask').classList.add('on'); }
 function closeDrawer(){
   $('#drawer').classList.remove('on'); $('#mask').classList.remove('on');
@@ -2436,6 +2324,7 @@ function buildQSheet(){
   const t = qsTarget, S = $('#qsheet');
   const isSd = t.state === 'someday';
   S.innerHTML = '<div class="gs-title">处理 · ' + ((t.text || '未命名').slice(0, 14)) + '</div>'
+    + qsInfoHTML(t)
     + '<div class="rv-grid">'
     + (isSd ? '<button class="rv-btn b-done" id="qBack"><span class="g">⤴</span>捞回今天</button>'
             : '<button class="rv-btn b-done" id="qDone"><span class="g">✓</span>' + (t.state && t.state !== 'open' ? '恢复任务' : '完成') + '</button>')
@@ -2458,6 +2347,7 @@ function buildQSheet(){
     + '</div>'
     + '<button class="gm-btn" id="qShare" style="width:100%;margin-top:12px;padding:10px">▣ 把这条做成分享图</button>';
   const fin = msg => { toast(msg); closeQSheet(); };
+  if ($('#qsInfo')) bindRowActs($('#qsInfo'), t, rowInfoRows(t, true));   /* v2.31 来历写在处理面板顶上 */
   if ($('#qSd')) $('#qSd').onclick = () => {
     snapshot('处理任务');
     t.state = 'someday'; delete t.due; t.badge = '☾ 想做';
@@ -2985,15 +2875,15 @@ function showManual(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">功能手册</div>'
     + '<button class="pill-btn" id="mnClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + '【六种符号】\n•  任务——要做的事，点符号打勾完成\n○  事件——发生的事，是一天的锚点\n—  笔记——想法与信息\n＝  心情——当下的情绪\n？  疑问——还没弄清的事，句尾写？我会自己认（任务区不抢）\n！  重点——值得记住的一句，侧栏「重点」汇总能翻\n\n'
-    + '【书写】\n「今天要做」默认 •，「今天发生」默认 ○\n写「明天 / 下周四 / 8.15号」自动挂日期；写「下午三点 / 16:00」自动挂时间\n敲 # 弹出分组联想；带日期的默认事件会自动转成任务\n\n'
-    + '【因果记录】\n事件行回车：下一行自动挂在这件事下面\n空的子行再回车：回到顶层\n事件行尾「＋」：随时在这件事下补一笔；「▾3」点击折叠\n\n'
+    + '【今日页四档】\n要做的事 · 发生的事 · 想法 · 心情；没写的那档只剩浅色标题，点「＋」往那档写\n•  要做的事——点一下打勾，长按处理（处理面板顶上写来历）\n🍚 💼 🚗 🎡…  发生的事——按内容自动挑图标，点图标看细节、换图标\n—  想法 ·  ？疑问 ·  ！重点——都在想法这一档\n＝  心情——当下的情绪\n行下不挂小签：分组、花了多少、和谁、纠错、避雷都在点符号的小卡里\n\n'
+    + '【书写】\n「要做的事」默认 •，「发生的事」默认 ○，写着写着我会帮你换成合适的图标\n写「明天 / 下周四 / 8.15号」自动挂日期；写「下午三点 / 16:00」自动挂时间\n敲 # 弹出分组联想；带日期的默认事件会自动转成任务\n\n'
+    + '【因果记录】\n事件行回车：下一行自动挂在这件事下面\n空的子行再回车：回到顶层\n点事件的图标 →「在这件事下面补一条」；「▾3」点击折叠\n\n'
     + '【处理任务】\n点符号 = 完成；长按符号 = 推迟 / 不做了 / 转交 / 恢复\n推迟可选任意日期并填进度；转交要填给谁和跟进日，到期自动提醒\n处理面板里的备注会进日报周报\n\n'
-    + '【翻阅】\n今日页左右滑（或顶栏 ‹ ›）翻到前一天 / 后一天\n☰ 抽屉：总日历（点日子翻本）、分组集子、各类汇总、搜索\n汇总里点符号可直接勾掉，点文字跳回当天并高亮\n「◂ 8.6 转来」芯片点击跳回源头；历史页的「→8.12」跳去目标日\n\n'
+    + '【翻阅】\n今日页左右滑（或顶栏 ‹ ›）翻到前一天 / 后一天\n☰ 侧栏：上面四格（长按换）、分组标签（长按管理）、工具、按标记汇总、搜索\n汇总里点符号可直接勾掉，点文字跳回当天并高亮\n「◂ 8.6 转来」芯片点击跳回源头；历史页的「→8.12」跳去目标日\n\n'
     + '【🗣 说一段 · 我来分拣】\n点今日页右下角的「说一段」（复盘里是「说说今天」），按键盘右下角的 🎤 一口气说完，点「分拣」：今天发生、要做的、别的日子的分好组给你看，确认才放进去。听错的名字照你的词典改好（设置 → 我的词典），点 ↺ 改回\n\n'
     + '【🎲 今天吃什么】\n美食 → 吃什么：只从你说过好吃的店里抽，理由全是你自己写过的话；吃完点 ✓ 一键评价。只记喜欢的和避雷的，三餐打卡在设置里可以再打开\n\n'
-    + '【早安卡】\n每天第一次打开递上一张：日期农历节气、天气和昨天比冷暖、今天约好的事、翻到一页旧记录、一句话\n收起后今日页顶上留一行天气条，点开再看；城市在 设置 → 天气城市 里加，最多 3 个\n\n'
-    + '【复盘与报告】\n右上「复盘」直达今日快照和盖章；想逐件过没做完的，点「现在过一遍」\n没日子的事当天没做完，第二天自动收进「☾ 想做的事」，不催不计数（设置 → 任务风格 可切回「对账」）\n分组视图里一键生成日报 / 周报 / 月报，可选含心情\n\n'
+    + '【早安卡】\n每天第一次打开递上一张：大日期、农历节气、天气和昨天比冷暖、点点的一句话；有约好的事、去年今日 / 上个月的今天才出现在下面\n收起后日期旁留一个天气小签，点开再看；城市在 设置 → 天气城市 里加，最多 3 个\n\n'
+    + '【复盘与报告】\n右上「复盘」直达今日快照和盖章；想逐件过没做完的，点「现在过一遍」\n没日子的事当天没做完，第二天自动收进「☾ 想做的事」，不催不计数（设置 → 提醒力度 可切到「严格」）\n分组视图里一键生成日报 / 周报 / 月报，可选含心情\n\n'
     + '【数据安全】\n数据只存在本机；设置里定期「完整备份(.json)」\n⏰ 芯片不会响，点它「加入系统日历」才有真提醒'
     + '</div></div>';
   $('#mnClose').onclick = () => R.classList.remove('on');
@@ -3006,7 +2896,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.30（当前 · 2026.11.5）\n【🗣 说一段 · 我来分拣】\n· 右下角的话筒换成「说一段 · 我来分拣」：点开是整屏，键盘直接弹好，按键盘右下角的 🎤 一口气说完，点右上角「分拣」\n· 分拣结果按放到哪分组：今天发生 / 今天要做 / 后天 / 昨天…，每条能改字、⇄ 换地方、✕ 不要；没问题点「确认」才放进去\n· 放到别的日子的，会去掉「后天」「昨天」这类词，到了那天读着才对；今天这页留一行小字，点一下跳过去\n· 说到一半退出也不丢，下次打开接着说\n【📖 我的词典 · 从你的记录里长出来】\n· 认识的人、去过的店自动收进词典，越常写越靠前；英文名（orion）也认得了\n· 听写打错的名字自动改好并标出来（「布尔」→ 不二），点 ↺ 改回，以后就不这样改\n· 店名说简称也认得：「陈先进」就是陈先进小馆，算去过一次；「姐姐」「我姐」算同一个人\n· 你手动把名字改对一次，它就记住；设置 → 我的词典 里能看、能删、能手动加「A 就是 B」\n· 「和旭旭、不二、orion、姐夫」这种一长串名单，每个人都算上\n\n'
+    + 'v2.31（当前 · 2026.11.5）\n【今日页 · 分四档】\n· 要做的事 · 发生的事 · 想法 · 心情 四档固定；哪档还没写只剩一行浅色标题，点「＋」直接往那档写\n· 「？疑问」「！重点」归在想法里；挂在事件下面的子条目跟着事件走\n【发生的事用图标】\n· 行首按内容自动挑：🍚 吃喝（说了花多少、和谁也还是 🍚）· 💼 工作 · 🚗 出行 · 🎡 玩 · 🎬 看片 · 🏥 看病 · 🏃 运动 · 📚 学 · 🛍️ 买 · 🎁 人情 · 🏠 家里 · 👥 见人\n· 认错了点图标换，这一行就记住你选的\n【行下不再挂小签】\n· 分组、记账类别、和谁、从哪转来、听写纠错、拆条、避雷，全部收进点符号弹出的小卡；任务长按，处理面板顶上写来历\n· 时间写在字前面；避雷过的店，图标上一个小红点\n· 一行想换档（比如心情认成了事件），小卡里点「⇄」挪过去\n【早安卡】\n· 大日期、天气、点点的一句话放在上面；今天的事、去年今日 / 上个月的今天放下面，没有就不出现\n· 随便抽一条的「翻到一页」和饭点抽卡那行拿掉了\n· 今日页顶上的天气条缩成日期旁的小签，点一下看整张早安卡\n【侧栏】\n· 上面四格：默认 日历 · 想做的事 · 美食 · 记账，长按换；分组变成一排标签（长按管理）；其他工具一排图标；按标记汇总折起来\n【设置】\n· 分成 记录 / 提醒 / 工具箱 / 数据 / 其他；备份收进「数据与备份」；「任务风格 随缘 / 对账」改叫「提醒力度 温和 / 严格」\n\n'
+    + 'v2.30（2026.11.5）\n【🗣 说一段 · 我来分拣】\n· 右下角的话筒换成「说一段 · 我来分拣」：点开是整屏，键盘直接弹好，按键盘右下角的 🎤 一口气说完，点右上角「分拣」\n· 分拣结果按放到哪分组：今天发生 / 今天要做 / 后天 / 昨天…，每条能改字、⇄ 换地方、✕ 不要；没问题点「确认」才放进去\n· 放到别的日子的，会去掉「后天」「昨天」这类词，到了那天读着才对；今天这页留一行小字，点一下跳过去\n· 说到一半退出也不丢，下次打开接着说\n【📖 我的词典 · 从你的记录里长出来】\n· 认识的人、去过的店自动收进词典，越常写越靠前；英文名（orion）也认得了\n· 听写打错的名字自动改好并标出来（「布尔」→ 不二），点 ↺ 改回，以后就不这样改\n· 店名说简称也认得：「陈先进」就是陈先进小馆，算去过一次；「姐姐」「我姐」算同一个人\n· 你手动把名字改对一次，它就记住；设置 → 我的词典 里能看、能删、能手动加「A 就是 B」\n· 「和旭旭、不二、orion、姐夫」这种一长串名单，每个人都算上\n\n'
     + 'v2.29（2026.11.5）\n【🎲 今天吃什么 · 抽卡】\n· 美食板块第二个页签换成「吃什么」：只从你说过好吃的店里抽，避雷的永远不会出现；宝藏是金边卡\n· 理由全是你自己写过的话：原话、你给自己的提醒（几点去、几个人去）、必点和别点、上次和谁花了多少，再加上今天的天气\n· 城市跟早安卡走，可选堂食 / 外卖；降温的日子「想吃热乎的」自动亮；好久没去的店更容易出现\n· 点「就它了」进今天要做；吃完点 ✓，一键说「宝藏 / 还想去 / 一般 / 避雷」，就算去过一次\n· 早安卡在饭点多一行「中午 / 晚上吃什么？抽一张」\n【🍚 只记喜欢的和避雷的】\n· 三餐打卡退役：三餐页签和复盘里的三餐格子默认收起，以前的记录都在，设置里可以再打开\n· 新增「记一家店」：店名、宝藏 / 还想去 / 避雷、一句话，必点别点城市花费都可不填\n· 去过几次：任何一句话里提到这家店都算（同一天算一次）\n· 又写到避雷过的店，那行下面冒一枚红签，提醒你当时说过什么\n· 识别补强：「可复购」「不会再吃了」认得了；「天使面没那么好吃了」「避雷蓝龙虾」只算单品，不冤枉整家店\n【🎙 说一段，我来安排】\n· 今日页右下角常驻一颗 🎙，复盘里也有「说说今天」：用 iPhone 键盘的听写一口气说，点「整理一下」，每句自动放到该去的地方——后天要做的进后天，今天吃的进今天还认出店名和好不好吃，花的钱进记账（「打车花了45」没说元也认），昨天的事放回昨天\n· 放之前给你看一眼，哪句放哪点一下就能换，不要的划掉\n· 直接在某一行里说了一大段，行下会出现「✂ 拆成 N 条」\n\n'
     + 'v2.28（2026.11.5）\n【☀ 早安卡 · 每天第一次打开】\n· 今天几号、农历、节气节日，离下个假期还有几天\n· 天气：今天和昨天的温度画成两根条，冷了暖了一眼看出；跟着给穿衣建议（加外套 / 少穿一件 / 照昨天穿），几点开始下雨也说\n· 今天的事：谁过生日、约好今天的、转交该跟进的——只放有日子的\n· 翻到一页：从旧记录里抽一条（一个月前的今天优先），点一下跳回那天\n· 最后点点说一句话；点「开始全新的一天」进今日页\n· 收起后今日页顶上留一行天气条，点开再看整张卡\n· 天气城市在 设置 → 天气城市：最多存 3 个，卡片上点城市名来回切，也能一键定位；没网就不显示天气，别的照常\n【随缘：没做完的不再天天搬】\n· 没日子的任务当天没做完，第二天自动收进「☾ 想做的事」：不弹窗、不计次、不催；今日页一行小字能看到，想做哪件点「⤴ 今天做」\n· 推迟到某天、那天正好没打开的不会再丢：两天内补到今天（带「原定」小签），更久的收进想做的事\n· 晚间复盘直达快照和盖章；想逐件过，点「现在过一遍」\n· 今日页不再挂「>×5」这类拖延计数\n· 喜欢每天逐件表态的，设置 → 任务风格 切回「对账」，一切照旧\n· Someday 改叫「想做的事」\n【三餐不追“没吃”】\n· 打卡墙上没记的那顿只是一个小点，不再是等你填的虚圈\n· 「三餐齐全连击」退役，换成只增不减的「本月吃到新店」\n【其他】\n· App 在后台过了夜，回来自动翻到新的一天；切走前没存的内容先存好\n\n'
     + 'v2.27（2026.8.28）\n【⚙ 今日小事折叠条 · 正文归正文】\n· 模块生出来的行——三餐打卡（含没吃）、本子足迹（开了/写了）、「记一笔」的账——不再混在流水里，收进页尾一条：「⚙ 今日小事 · 5 条　🍚没吃×2 · 📓本子×2 · 💰记账×1」\n· 你亲手写的句子永远在正文，哪怕带着 🍚💰 小签；点条展开是完整的行，照旧能改能删能挂；手动挂到事件下面的小事跟着事件走，不折叠\n· 复盘快照和一日分享卡默认只算正文（任务不受影响）；从汇总/搜索/打卡墙跳到某条小事时会自动帮你展开\n\n'
@@ -6234,8 +6125,14 @@ function openHello(reopen){
   try{ dismissKB(); }catch(_){}
   const ta = TODAY.split('.').map(Number), L = solarToLunar(parseKey(TODAY));
   const sub = weekCN(TODAY) + (L ? ' · 农历' + (L.leap ? '闰' : '') + LM_NM[L.lm - 1] + '月' + lDayNm(L.ld) : '');
-  const items = helloItems(), mem = helloMemory(), cx = helloCtx(wxCached());
+  const items = helloItems(), mems = helloMemories(), cx = helloCtx(wxCached());
   const pooled = (!SET.duty && P().pooled) ? P().pooled : 0;
+  /* v2.31 上面：大日期、天气、一句话；下面：今天的事、去年今日 / 上个月的今天（没有就不出现） */
+  const lower = (items.length ? '<div class="hl-lab">今天的事</div>' + items.slice(0, 5).map(helloItemHTML).join('')
+        + (items.length > 5 ? '<div class="hl-none">还有 ' + (items.length - 5) + ' 件 · 在今日页</div>' : '') : '')
+    + (pooled ? '<div class="hl-pool" id="hlPool">之前没做完的 ' + pooled + ' 件，我收进了「想做的事」 ›</div>' : '')
+    + mems.map((m, i) => '<div class="hl-lab">' + m.label + '</div><div class="hl-mem" data-mi="' + i + '"' + (i === 0 ? ' id="hlMem"' : '') + '><b>'
+        + (m.label === '上个月的今天' ? fmtKey(m.k) : m.k.split('.')[0] + '年' + fmtKey(m.k)) + '</b> · ' + vEsc(clipT(m.e.text, 46)) + ' ›</div>').join('');
   H.innerHTML = '<div class="hl-body">'
     + '<div class="hl-top"><div style="min-width:0">'
     + '<div class="hl-hi">' + (cx.gap >= 7 ? '好久不见 · ' : '') + helloGreet() + '</div>'
@@ -6244,15 +6141,9 @@ function openHello(reopen){
     + '<div class="hl-tags">' + helloTags().map(t => '<span class="hl-tag' + (t.acc ? ' acc' : '') + '">' + vEsc(t.t) + '</span>').join('') + '</div>'
     + '</div><div class="hl-dot">' + dotSVG(64) + '</div></div>'
     + '<div id="hlWx"></div>'
-    + '<div class="hl-lab">今天的事</div>'
-    + (items.length ? items.slice(0, 5).map(helloItemHTML).join('')
-        + (items.length > 5 ? '<div class="hl-none">还有 ' + (items.length - 5) + ' 件 · 在今日页</div>' : '')
-      : '<div class="hl-none">今天没有约好的事，随心过。</div>')
-    + (pooled ? '<div class="hl-pool" id="hlPool">之前没做完的 ' + pooled + ' 件，我收进了「想做的事」 ›</div>' : '')
-    + helloPickLine()
-    + (mem ? '<div class="hl-lab">' + mem.label + '</div><div class="hl-mem" id="hlMem"><b>' + fmtKey(mem.k) + '</b> · ' + vEsc(clipT(mem.e.text, 46)) + ' ›</div>' : '')
-    + '<div class="hl-cheer" id="hlCheer">' + helloCheer(cx).map(vEsc).join('<br>') + '<span>—— 点点</span></div>'
-    + '<button class="hl-go" id="hlGo">' + (reopen ? '收起' : '开始全新的一天') + '</button>'
+    + '<div class="hl-cheer top" id="hlCheer">' + helloCheer(cx).map(vEsc).join('<br>') + '<span>—— 点点</span></div>'
+    + '<div class="hl-lower">' + lower
+    + '<button class="hl-go" id="hlGo">' + (reopen ? '收起' : '开始全新的一天') + '</button></div>'
     + '</div>';
   H.classList.add('on');
   $('#hlGo').onclick = closeHello;
@@ -6260,8 +6151,9 @@ function openHello(reopen){
     const id = +el.dataset.hid; closeHello(); if (id) jumpToEntry(TODAY, id);
   });
   if ($('#hlPool')) $('#hlPool').onclick = () => { closeHello(); cur = {name:'agg', key:'someday'}; render(); };
-  if ($('#hlPick')) $('#hlPick').onclick = () => { closeHello(); navStack = []; cur = {name:'food', tab:'pick'}; render(); };
-  if (mem) $('#hlMem').onclick = () => { closeHello(); jumpToEntry(mem.k, mem.e._id || (mem.e._id = ++uid)); };
+  H.querySelectorAll('.hl-mem[data-mi]').forEach(el => el.onclick = () => {
+    const m = mems[+el.dataset.mi]; closeHello(); jumpToEntry(m.k, m.e._id || (m.e._id = ++uid));
+  });
   helloWxRender();
 }
 function closeHello(){
@@ -6297,7 +6189,7 @@ function helloStripNode(){
   s.onclick = () => openHello(true);
   return s;
 }
-function helloStripRefresh(){ const s = view.querySelector('.hello-strip'); if (s) s.innerHTML = helloStripHTML(); }
+function helloStripRefresh(){ const s = document.getElementById('wxPill'); if (s) s.innerHTML = wxPillHTML(); }
 
 /* ---- 想做的事：捞回今天 ---- */
 function somedayPull(t, k){
@@ -7048,6 +6940,457 @@ function dictItemSheet(kind, n){
     if (kind === 'p'){ SET.pplNo = SET.pplNo || {}; SET.pplNo[n] = 1; } else DD().nost[n] = 1;
     dictChanged(); closeSheet(); render(); toast('好，不再把「' + n + '」当' + (kind === 'p' ? '人名' : '店名'));
   };
+  S.classList.add('on'); $('#mask').classList.add('on');
+}
+
+/* ============ v2.31 今日页四档 · 发生的事用图标 · 点符号看细节 ============ */
+var CLEAN_ROWS = false;   /* 页面视图里：行下不挂小签，细节点符号看 */
+/* 发生的事的图标：按顺序取第一个命中的（看片 > 吃喝 > 看病 > 工作 > …） */
+const EV_ICONS = [
+  ['film', '🎬', '看片'], ['eat', '🍚', '吃喝'], ['med', '🏥', '看病'], ['work', '💼', '工作'],
+  ['sport', '🏃', '运动'], ['fun', '🎡', '玩'], ['learn', '📚', '学'], ['buy', '🛍️', '买'],
+  ['gift', '🎁', '人情'], ['home', '🏠', '家里'], ['go', '🚗', '出行'], ['meet', '👥', '见人'],
+];
+const EV_RE = {
+  eat:/(吃|喝)(?![^，。,；;]{0,3}药|亏|惊|醋|瓜|苦|力)|饭|早餐|午餐|晚餐|夜宵|下午茶|外卖|咖啡|奶茶|火锅|烧烤|烤肉|聚餐|请客|甜品|小吃|面馆|餐厅|饭店|食堂|饮料|啤酒/,
+  med:/医院|看病|看牙|牙医|拔牙|智齿|体检|挂号|吃药|买药|药店|感冒|发烧|输液|复查|门诊|针灸|理疗|牙龈|牙疼|牙痛|头疼|头痛|胃疼|胃痛|肚子疼|嗓子疼|咳嗽|过敏|生病|不舒服|上火/,
+  work:/开会|会议|例会|客户|方案|汇报|对接|谈判|谈了|谈事|面试|上班|加班|出差|项目|签约|合同|提案|招商|甲方|乙方|老板|述职|工作|提报|入职|离职|公章|沟通|招聘|报价|比稿|改稿|交付|上线|周报|日报|聊.{0,10}(方向|方案|合作|项目|计划|业务)/,
+  sport:/跑步|健身|撸铁|游泳|瑜伽|普拉提|打球|篮球|足球|羽毛球|网球|乒乓|骑车|骑行|徒步|爬山|运动|拉伸|跳绳/,
+  fun:/玩(?!笑)|逛(?!超市|淘宝|京东)|KTV|ktv|唱歌|拼豆|展览|看展|演出|演唱会|音乐节|livehouse|密室|剧本杀|桌游|乐园|游乐|公园|旅行|旅游|露营|蹦迪|酒吧|按摩|泡澡|洗浴|看海|赏花|滑雪|头疗|采耳|搓澡|足疗|洗脚|spa|SPA|美甲|汗蒸|追剧|刷剧/,
+  learn:/上课|课程|学习|学了|看书|读书|读了|听课|培训|考试|练字|背单词|网课/,
+  buy:/买了|购物|下单|淘宝|京东|拼多多|超市|网购|快递|入手|剁手/,
+  gift:/红包|礼物|份子|随礼|送了|礼金/,
+  home:/打扫|收拾|搬家|房租|水电|物业|洗衣|家务|装修/,
+  go:/打车|滴滴|地铁|公交|开车|加油|停车|高铁|火车|动车|飞机|机场|航班|出租车|网约车|共享单车|的车|坐车|赶车|车站/,
+  meet:/见面|见了|聚会|拜访|碰面|聚了|约了/,
+};
+function evIconKey(e){
+  if (e.ico) return e.ico;   /* 你手动选过的，照你的 */
+  const t = String(e.text || ''); if (!t.trim()) return 'dot';
+  const tpls = (e.groups || []).map(tplOf), p = parseEntry(e);
+  const hit = k => {
+    if (k === 'film') return tpls.includes('movie') || (/《[^》]+》/.test(t) && /看|二刷|三刷|补|影院|电影|剧|综艺|片/.test(t));
+    if (k === 'eat') return tpls.includes('food') || EV_RE.eat.test(t) || (!!(p.store || p.delivery) && !(e.groups || []).length);   /* 挂了别的分组的店（比如 #休闲 的按摩店）不算吃 */
+    if (k === 'work') return tpls.includes('work') || EV_RE.work.test(t);
+    if (k === 'learn') return tpls.includes('book') || EV_RE.learn.test(t);
+    if (k === 'meet') return EV_RE.meet.test(t) || ((p.withs || []).length > 0 && p.withs[0] !== '独自');
+    return EV_RE[k] ? EV_RE[k].test(t) : false;
+  };
+  for (const [k] of EV_ICONS) if (hit(k)) return k;
+  return 'dot';
+}
+function evIcon(e){
+  const k = evIconKey(e), d = EV_ICONS.find(x => x[0] === k);
+  return d ? {k, i:d[1], n:d[2]} : {k:'dot', i:'', n:'普通'};
+}
+/* 四档的标题：没东西时变浅，右边一个＋直接往这档写 */
+function secHead(t, n, faint, onAdd){
+  const d = document.createElement('div'); d.className = 'section-label sec4' + (faint ? ' faint' : '');
+  d.innerHTML = '<span>' + t + '</span>' + (n ? '<span class="sec-n">' + n + '</span>' : '') + (onAdd ? '<button class="sec-add" aria-label="往这档写一条">＋</button>' : '');
+  if (onAdd){
+    d.querySelector('.sec-add').onclick = ev => { ev.stopPropagation(); onAdd(); };
+    if (faint) d.onclick = () => onAdd();
+  }
+  return d;
+}
+function addLineSym(list, sym){
+  const ne = {sym, userSet:true, text:'', _id:++uid};   /* 点了哪档就是哪档，自动识别不再改它 */
+  list.push(ne); focusRef = ne; render();
+}
+function tailZone(onTap){   /* 列表末尾一块看不见的地方：点一下接着写 */
+  const z = document.createElement('div'); z.className = 'tapzone tail'; z.addEventListener('click', onTap); return z;
+}
+/* 时间 / 日子写在字前面，点一下改 */
+function whenNode(e, editable){
+  if (!e.time && !(e.due && e.due !== curDayKey())) return null;
+  const w = document.createElement('span'); w.className = 'e-when';
+  if (e.due && e.due !== curDayKey()){
+    const d = document.createElement('span'); d.className = 'due'; d.textContent = '→' + fmtShort(e.due);
+    d.onclick = ev => { ev.stopPropagation(); if (editable) openDueSheet(e); else gotoDay(e.due); };
+    w.appendChild(d);
+  }
+  if (e.time){
+    const tm = document.createElement('span'); tm.className = 'tm'; tm.textContent = e.time;
+    tm.onclick = ev => { ev.stopPropagation(); if (editable) openTimeSheet(e); };
+    w.appendChild(tm);
+  }
+  return w;
+}
+/* ---- 点符号：这一行的细节小卡 ---- */
+function rowInfoRows(e, forTask){
+  const rows = [], p = parseEntry(e);
+  if (!forTask && e.sym === 'event' && !isMinor(e)){
+    const ic = evIcon(e);
+    rows.push({kind:'ico', i:ic.i || '○', t:ic.n + (e.ico ? '' : ' · 自动挑的'), acts:[{lab:'换图标', ico:1}]});
+  }
+  const gs = e.groups || [];
+  let gt = gs.length ? gs.map(g => (tplOf(g) === 'food' ? '美食' : g)).join('、') : '没分组';
+  if (p.store){ const o = storeIndex()[p.store]; gt += ' · ' + p.store + (o ? ' 去过 ' + o.cnt + ' 次' : ''); }
+  rows.push({i:'#', t:gt, acts:[{lab:'换分组', fn:() => { rowPopCloseAll(); sheetTarget = e; openSheet(); }}]});
+  if (modOn('ledger') && (p.prices || []).length){
+    const k = expKindOf(e, p), sum = p.prices.reduce((a, b) => a + b, 0);
+    rows.push({i:'¥', t:(k ? expLabel(k) : '不算花销') + ' ' + sum, acts:[{lab:'换类', fn:() => { rowPopCloseAll(); expSheet(e); }}]});
+  }
+  const ws = (p.withs || []).filter(w => w !== '独自');
+  if (ws.length) rows.push({i:'👥', t:'和 ' + ws.join('、')});
+  if (e.srcDay) rows.push({i:'◂', t:fmtKey(e.srcDay) + ' 转来', acts:[{lab:'看原条', fn:() => { rowPopCloseAll(); jumpToEntry(e.srcDay, e.srcId); }}]});
+  else if (e.src) rows.push({i:'◂', t:'来自：' + clipT(String(e.src), 20)});
+  if (e.lateFrom) rows.push({i:'⏱', t:'原定 ' + fmtKey(e.lateFrom) + '，那天没打开，补到了今天'});
+  if (e.delegate && e.delegate.to) rows.push({i:'→', t:'转交给 ' + e.delegate.to + (e.delegate.follow ? ' · ' + fmtKey(e.delegate.follow) + ' 跟进' : '')});
+  if (e.sym === 'task' && (e.mig || 0) >= 2) rows.push({i:'›', t:'已经推过 ' + e.mig + ' 次'});
+  if (e.badge && !e.lateFrom && !/^>×/.test(e.badge)) rows.push({i:'·', t:e.badge});
+  if (e.nbId){
+    const nb = noteById(e.nbId);
+    rows.push({i:'📓', t:'来自本子' + (nb ? '《' + (nb.title || '未命名') + '》' : '（已删除）'),
+      acts:nb ? [{lab:'翻开', fn:() => { rowPopCloseAll(); cur = {name:'note', id:e.nbId}; render(); }}] : []});
+  }
+  if (e.note) rows.push({i:'✎', t:'备注：' + e.note});
+  const warn = (modOn('meals') && e.text) ? foodWarn(e) : null;
+  if (warn) rows.push({i:'⚠', t:warn.txt, cls:'warn', acts:[{lab:'看原话', fn:() => { rowPopCloseAll(); const op = warn.o.op; jumpToEntry(op.k, op.e._id || (op.e._id = ++uid)); }}]});
+  entryFixes(e).forEach(f => rows.push({i:'↺', t:'听写把「' + f.from + '」改成了「' + f.to + '」', acts:[{lab:'改回', fn:() => { rowPopCloseAll(); voUndoFix(e, f); }}]}));
+  if (!e.noSplit && e.text && ['event','note','ask','bang'].includes(e.sym)
+      && /[。\n]/.test(e.text.trim().replace(/[。\s]+$/, '')) && splitSentences(e.text).length >= 2)
+    rows.push({i:'✂', t:'这行有 ' + splitSentences(e.text).length + ' 句', acts:[
+      {lab:'拆开', fn:() => { rowPopCloseAll(); splitEntry(e); }},
+      {lab:'不拆', g:1, fn:() => { e.noSplit = 1; scheduleSave(); rowPopCloseAll(); render(); }}]});
+  if (!forTask){
+    rows.push({kind:'to'});
+    const loc = findEntry(e);
+    if (e.sym === 'event' && loc && !loc.parent && !isMinor(e))
+      rows.push({i:'＋', t:'在这件事下面补一条', tap:() => {
+        rowPopCloseAll(); const ne = {sym:'task', state:'open', text:'', _id:++uid};
+        (e.children = e.children || []).push(ne); e.collapsed = false; focusRef = ne; render(); }});
+  }
+  return rows;
+}
+const ROW_TO = [['task', '要做的事'], ['event', '发生的事'], ['note', '想法'], ['mood', '心情']];
+function rowRowsHTML(e, rows){
+  return rows.map((r, ri) => {
+    if (r.kind === 'to') return '<div class="rp-r"><span class="i">⇄</span><span class="t rp-to">'
+      + ROW_TO.map(([s, n]) => '<button data-to="' + s + '"' + ((e.sym === s || (s === 'note' && (e.sym === 'ask' || e.sym === 'bang'))) ? ' class="on"' : '') + '>' + n + '</button>').join('') + '</span></div>';
+    return '<div class="rp-r' + (r.cls ? ' ' + r.cls : '') + (r.tap ? ' tapr' : '') + '" data-ri="' + ri + '"><span class="i">' + vEsc(r.i) + '</span><span class="t">' + vEsc(r.t) + '</span>'
+      + (r.acts || []).map((a, ai) => '<button class="a' + (a.g ? ' g' : '') + '" data-ri="' + ri + '" data-ai="' + ai + '">' + a.lab + '</button>').join('') + '</div>'
+      + (r.kind === 'ico' ? '<div class="rp-ico" id="rpIco"><button class="auto' + (e.ico ? '' : ' on') + '" data-ico="">自动</button>'
+          + EV_ICONS.map(([k, i]) => '<button data-ico="' + k + '"' + (e.ico === k ? ' class="on"' : '') + '>' + i + '</button>').join('')
+          + '<button data-ico="dot"' + (e.ico === 'dot' ? ' class="on"' : '') + ' style="font-size:13px">○</button></div>' : '');
+  }).join('');
+}
+function bindRowActs(root, e, rows){
+  root.querySelectorAll('button.a[data-ai]').forEach(b => b.onclick = ev => {
+    ev.stopPropagation();
+    const a = rows[+b.dataset.ri].acts[+b.dataset.ai];
+    if (a.ico){ const g = root.querySelector('#rpIco'); if (g) g.classList.toggle('on'); return; }
+    if (a.fn) a.fn();
+  });
+  root.querySelectorAll('.rp-r.tapr').forEach(el => el.onclick = ev => { ev.stopPropagation(); const r = rows[+el.dataset.ri]; if (r.tap) r.tap(); });
+  root.querySelectorAll('#rpIco [data-ico]').forEach(b => b.onclick = ev => {
+    ev.stopPropagation();
+    if (b.dataset.ico) e.ico = b.dataset.ico; else delete e.ico;
+    scheduleSave(); rowPopCloseAll(); render();
+    toast(b.dataset.ico ? '这一行就用这个图标了' : '改回自动挑图标');
+  });
+  root.querySelectorAll('.rp-to [data-to]').forEach(b => b.onclick = ev => {
+    ev.stopPropagation();
+    const to = b.dataset.to; if (to === e.sym) return;
+    snapshot('换档');
+    e.sym = to; e.userSet = true; delete e.defSym;
+    if (to === 'task'){ if (!e.state) e.state = 'open'; } else if (e.state === 'open') delete e.state;
+    scheduleSave(); rowPopCloseAll(); render();
+    toast('挪到「' + ROW_TO.find(x => x[0] === to)[1] + '」了');
+  });
+}
+function rowPopCloseAll(){
+  closeRowPop();
+  if ($('#qsheet') && $('#qsheet').classList.contains('on')) closeQSheet();
+}
+function closeRowPop(){
+  const p = $('#rowPop'); if (p) p.remove();
+  document.removeEventListener('pointerdown', rowPopOutside, true);
+}
+function rowPopOutside(ev){
+  const p = $('#rowPop'); if (!p) return;
+  if (p.contains(ev.target)) return;
+  if (ev.target.closest && ev.target.closest('.sym.tapme')) return;   /* 点另一个符号：交给它自己的 click */
+  closeRowPop();
+}
+function openRowPop(e, anchor){
+  const was = $('#rowPop'); const same = was && was.dataset.eid === String(e._id);
+  closeRowPop(); if (same) return;
+  try{ dismissKB(); }catch(_){ }
+  const rows = rowInfoRows(e, false);
+  const pop = document.createElement('div'); pop.className = 'rpop'; pop.id = 'rowPop'; pop.dataset.eid = e._id;
+  pop.innerHTML = rowRowsHTML(e, rows);
+  const ph = $('#phone'); ph.appendChild(pop);
+  bindRowActs(pop, e, rows);
+  const pr = ph.getBoundingClientRect(), rr = (anchor.closest('.entry') || anchor).getBoundingClientRect();
+  let top = rr.bottom - pr.top + 4;
+  const h = pop.offsetHeight;
+  if (top + h > pr.height - 16) top = Math.max(64, rr.top - pr.top - h - 4);
+  pop.style.top = top + 'px';
+  setTimeout(() => document.addEventListener('pointerdown', rowPopOutside, true), 0);
+}
+/* 任务长按的处理面板顶上：来历、提醒、纠错、分组 */
+function qsInfoHTML(t){
+  const rows = rowInfoRows(t, true);
+  return rows.length ? '<div class="qs-info" id="qsInfo">' + rowRowsHTML(t, rows) + '</div>' : '';
+}
+/* ---- 头部天气小签：点一下看整张早安卡 ---- */
+function wxPillHTML(){ const d = wxCached(); return d ? (wxIc(d.code) + ' ' + d.hi + '°') : '☀'; }
+function wxPillNode(){
+  const s = document.createElement('span'); s.className = 'wx-pill'; s.id = 'wxPill';
+  s.innerHTML = wxPillHTML();
+  s.onclick = ev => { ev.stopPropagation(); openHello(true); };
+  return s;
+}
+/* ---- 早安卡：只认「去年今日」「上个月的今天」 ---- */
+function helloMemories(day){
+  const D0 = day || TODAY, ta = D0.split('.').map(Number), out = [];
+  const pickDay = (k, label) => {
+    if (!PAGES[k]) return false;
+    const cands = [];
+    PAGES[k].plan.concat(PAGES[k].flow).forEach(e => {
+      if (!e.text || e.sym === 'task' || e.sym === 'mood' || e.cyc || isMinor(e) || e.text.trim().length < 4) return;
+      cands.push({k, e, w:(e.sym === 'event' ? 2 : 1) + ((e.groups || []).length ? 2 : 0)});
+    });
+    if (!cands.length) return false;
+    const r = seedRng(D0 + '|mem|' + k);
+    let v = r() * cands.reduce((s2, x) => s2 + x.w, 0), hit = cands[cands.length - 1];
+    for (const x of cands){ v -= x.w; if (v <= 0){ hit = x; break; } }
+    out.push(Object.assign({label}, hit)); return true;
+  };
+  for (let y = 1; y <= 5; y++){
+    const d = new Date(ta[0] - y, ta[1] - 1, ta[2]); if (d.getDate() !== ta[2]) continue;
+    if (pickDay(dkey(d), y === 1 ? '去年今日' : y + ' 年前的今天')) break;
+  }
+  const m1 = new Date(ta[0], ta[1] - 2, ta[2]);
+  if (m1.getDate() === ta[2]) pickDay(dkey(m1), '上个月的今天');
+  return out;
+}
+
+/* ============ v2.31 侧栏：四格 + 分组标签 + 工具 + 汇总折叠 ============ */
+const DTILE = {
+  cal:    {ic:'▦', n:'日历',     ok:() => true,             s:() => '按月翻', go:() => { const ta = TODAY.split('.').map(Number); cur = {name:'cal', y:ta[0], m:ta[1]}; }},
+  someday:{ic:'☾', n:'想做的事', ok:() => true,             s:c => (c.someday || 0) + ' 件 · 不催', go:() => { cur = {name:'agg', key:'someday'}; }},
+  food:   {ic:'🍚', n:'美食',     ok:() => modOn('meals'),  s:() => '吃什么 · 熟店', go:() => { cur = {name:'food'}; }},
+  ledger: {ic:'💰', n:'记账',     ok:() => modOn('ledger'), s:() => '本月 ¥' + drawerMonthSpend(), go:() => { cur = {name:'ledger'}; }},
+  cycles: {ic:'🔁', n:'循环提醒', ok:() => modOn('cycles'), s:() => '生日 · 还款 · 周期', go:() => { cur = {name:'cycles'}; }},
+  notes:  {ic:'📓', n:'笔记本',   ok:() => modOn('notes'),  s:() => ((typeof NOTES !== 'undefined' ? NOTES : []).length) + ' 本', go:() => { cur = {name:'notes'}; }},
+  people: {ic:'👥', n:'熟人',     ok:() => modOn('people'), s:() => '熟人册', go:() => { cur = {name:'people'}; }},
+  vault:  {ic:'🔐', n:'小本',     ok:() => modOn('vault'),  s:() => '账号小本', go:() => { cur = {name:'vault'}; }},
+};
+const DTILE_ORDER = ['cal', 'someday', 'food', 'ledger', 'cycles', 'notes', 'people', 'vault'];
+let drawerAggOpen = false;
+function drawerMonthSpend(){
+  const ta = TODAY.split('.').map(Number), pre = ta[0] + '.' + ta[1] + '.';
+  try{ return Math.round(expRows().filter(r => r.d.startsWith(pre)).reduce((s2, r) => s2 + r.sum, 0)).toLocaleString('en-US'); }catch(_){ return '0'; }
+}
+function drawerTiles(){
+  const pins = (SET.dtiles || ['cal', 'someday', 'food', 'ledger']).filter((k, i, a) => DTILE[k] && DTILE[k].ok() && a.indexOf(k) === i);
+  for (const k of DTILE_ORDER){ if (pins.length >= 4) break; if (!pins.includes(k) && DTILE[k].ok()) pins.push(k); }
+  return pins.slice(0, 4);
+}
+function longPress(el, onLong, onTap){
+  let t = null, fired = false, sx = 0, sy = 0;
+  el.addEventListener('pointerdown', ev => { fired = false; sx = ev.clientX; sy = ev.clientY; clearTimeout(t); t = setTimeout(() => { fired = true; onLong(); }, 480); });
+  el.addEventListener('pointermove', ev => { if (Math.abs(ev.clientX - sx) + Math.abs(ev.clientY - sy) > 10) clearTimeout(t); });
+  el.addEventListener('pointerup', () => clearTimeout(t));
+  el.addEventListener('pointerleave', () => clearTimeout(t));
+  el.addEventListener('contextmenu', ev => ev.preventDefault());
+  el.addEventListener('click', ev => { if (fired){ fired = false; ev.preventDefault(); return; } onTap(); });
+}
+function buildDrawer(){
+  if (SET.mods.meals !== true && !SET.mealsUserOff && foodGroupName()) SET.mods.meals = true;   /* v2.23 集子在哪门就在哪；但用户手动关过就不自作主张 */
+  const box = $('#drawerList'); box.innerHTML = '';
+  let mc = 0; const taSub = TODAY.split('.').map(Number);
+  const GCNT = {}, ACNT = {};
+  walk((d, e) => {
+    const a = d.split('.').map(Number); if (a[0] === taSub[0] && a[1] === taSub[1]) mc++;
+    (e.groups || []).forEach(g2 => GCNT[g2] = (GCNT[g2] || 0) + 1);
+    Object.keys(AGG).forEach(k2 => { if (AGG[k2].f(e)) ACNT[k2] = (ACNT[k2] || 0) + 1; });
+  });
+  $('#drawerSub').textContent = taSub[0] + ' 年 ' + taSub[1] + ' 月 · 本月已记 ' + mc + ' 条';
+  const go = fn => { fn(); closeDrawer(); render(); };
+  /* 四格：位置固定，长按换 */
+  const tiles = drawerTiles();
+  const tw = document.createElement('div'); tw.className = 'dtiles';
+  tiles.forEach((k, i) => {
+    const T = DTILE[k];
+    const el = document.createElement('div'); el.className = 'dtile'; el.dataset.tile = k;
+    el.innerHTML = '<span class="ic">' + T.ic + '</span><b>' + T.n + '</b><span class="s">' + vEsc(T.s(ACNT)) + '</span>';
+    longPress(el, () => drawerTileSheet(i, tiles), () => go(T.go));
+    tw.appendChild(el);
+  });
+  box.appendChild(tw);
+  const hint = document.createElement('div'); hint.className = 'dtile-hint'; hint.textContent = '长按格子，换成别的'; box.appendChild(hint);
+  /* 分组：一排标签 */
+  const glab = document.createElement('div'); glab.className = 'drawer-label'; glab.textContent = '分组 · 长按管理'; box.appendChild(glab);
+  const gw = document.createElement('div'); gw.className = 'dchips';
+  allGroupNames().forEach(g => {
+    if (tplOf(g) === 'food') return;   /* 美食是板块，不在分组里 */
+    const [, fg] = gStyle(g), n = GCNT[g] || 0;
+    const c = document.createElement('span'); c.className = 'dchip'; c.dataset.g = g;
+    c.innerHTML = '<b style="color:' + fg + '">#</b>' + vEsc(g) + (n ? '<i>' + n + '</i>' : '');
+    longPress(c, () => groupManageSheet(g), () => go(() => { cur = {name:'group', g}; }));
+    gw.appendChild(c);
+  });
+  const add = document.createElement('span'); add.className = 'dchip add'; add.id = 'dGroupAdd'; add.textContent = '＋';
+  add.onclick = () => groupNewSheet();
+  gw.appendChild(add);
+  box.appendChild(gw);
+  /* 工具：没放进四格的 */
+  const rest = DTILE_ORDER.filter(k => !['cal', 'someday'].includes(k) && !tiles.includes(k) && DTILE[k].ok());
+  if (rest.length){
+    const tl = document.createElement('div'); tl.className = 'drawer-label'; tl.textContent = '工具'; box.appendChild(tl);
+    const tg = document.createElement('div'); tg.className = 'dtools';
+    rest.forEach(k => {
+      const T = DTILE[k];
+      const el = document.createElement('div'); el.className = 'dtool'; el.dataset.tool = k;
+      el.innerHTML = '<span class="ic">' + T.ic + '</span>' + T.n;
+      el.onclick = () => go(T.go);
+      tg.appendChild(el);
+    });
+    box.appendChild(tg);
+  }
+  /* 按标记汇总：折起来 */
+  const fold = document.createElement('div'); fold.className = 'dfold'; fold.id = 'dAggFold';
+  fold.innerHTML = '<span class="ic">≡</span><div>按标记汇总<small>任务 · 事件 · 想法 · 心情 · 已完成 …</small></div><span class="ar">' + (drawerAggOpen ? '▾' : '▸') + '</span>';
+  fold.onclick = () => { drawerAggOpen = !drawerAggOpen; buildDrawer(); };
+  box.appendChild(fold);
+  if (drawerAggOpen){
+    const aw = document.createElement('div'); aw.className = 'dchips daggs';
+    Object.keys(AGG).forEach(key => {
+      const c = document.createElement('span'); c.className = 'dchip'; c.dataset.agg = key;
+      c.innerHTML = vEsc(AGG[key].title) + (ACNT[key] ? '<i>' + ACNT[key] + '</i>' : '');
+      c.onclick = () => go(() => { cur = {name:'agg', key}; });
+      aw.appendChild(c);
+    });
+    box.appendChild(aw);
+  }
+  const st = document.createElement('div'); st.className = 'dfold'; st.id = 'dSettings';
+  st.innerHTML = '<span class="ic">⚙</span><div>设置</div>';
+  st.onclick = () => go(() => { cur = {name:'settings'}; });
+  box.appendChild(st);
+}
+function drawerTileSheet(i, tiles){
+  const S = $('#gsheet');
+  const opts = DTILE_ORDER.filter(k => DTILE[k].ok());
+  S.innerHTML = '<div class="gs-title">第 ' + (i + 1) + ' 格换成</div><div class="gs-chips" id="dtOpts">'
+    + opts.map(k => '<button class="gs-chip' + (tiles[i] === k ? ' on' : '') + '" data-k="' + k + '">' + DTILE[k].ic + ' ' + DTILE[k].n + '</button>').join('') + '</div>'
+    + '<button class="gs-done" id="dtDone">好了</button>';
+  S.querySelectorAll('#dtOpts [data-k]').forEach(b => b.onclick = () => {
+    const k = b.dataset.k, nt = tiles.slice(), j = nt.indexOf(k);
+    if (j >= 0 && j !== i) nt[j] = nt[i];   /* 已经在别的格：两格对调 */
+    nt[i] = k; SET.dtiles = nt; scheduleSave();
+    S.classList.remove('on'); $('#mask').classList.add('on'); buildDrawer();
+    toast('第 ' + (i + 1) + ' 格换成「' + DTILE[k].n + '」');
+  });
+  $('#dtDone').onclick = () => { S.classList.remove('on'); $('#mask').classList.add('on'); };
+  S.classList.add('on');
+}
+function groupManageSheet(g){
+  const S = $('#gsheet');
+  let delArm = false;
+  const paint = () => {
+    S.innerHTML = '<div class="gs-title">#' + vEsc(g) + '</div>'
+      + '<label class="ss-f"><span>改名</span><input id="gmName" value="' + escAttr(g) + '"></label>'
+      + '<div class="gm-sec">颜色</div><div class="cdots" id="gmColors">' + GPAL.map((pal, ci) => '<span class="cdot' + (GCOLOR[g] === ci ? ' on' : '') + '" data-ci="' + ci + '" style="background:' + pal[1] + '"></span>').join('') + '</div>'
+      + '<div class="gm-sec">模板</div><div class="gs-chips" id="gmTpl">' + TPL_ORDER.map(k => '<button class="gs-chip' + (tplOf(g) === k ? ' on' : '') + '" data-tpl="' + (k || '') + '">' + (k ? TPLS[k].n : '无') + '</button>').join('') + '</div>'
+      + '<div class="gs-new" style="margin-top:12px"><button class="gm-btn danger" id="gmDel" style="flex:1;padding:10px">' + (delArm ? '确认删除（只摘标签，条目都在）' : '删除分组') + '</button>'
+      + '<button class="gm-btn" id="gmOk" style="flex:1;padding:10px;background:var(--ink);color:#fff;border-color:var(--ink)">好了</button></div>';
+    S.querySelectorAll('#gmColors [data-ci]').forEach(d => d.onclick = () => { GCOLOR[g] = +d.dataset.ci; scheduleSave(); paint(); });
+    S.querySelectorAll('#gmTpl [data-tpl]').forEach(b => b.onclick = () => {
+      const k = b.dataset.tpl || null; SET.gtpl[g] = k; scheduleSave(); paint();
+      toast(k ? ('#' + g + ' 用「' + TPLS[k].n + '」模板 · 历史记录已识别') : ('#' + g + ' 已取消模板'));
+    });
+    $('#gmDel').onclick = () => {
+      if (!delArm){ delArm = true; paint(); return; }
+      deleteGroup(g); S.classList.remove('on'); $('#mask').classList.add('on'); buildDrawer(); render(); toast('已删除分组 · 记录都还在');
+    };
+    $('#gmOk').onclick = () => {
+      const v = $('#gmName').value.trim().replace(/^#/, '');
+      if (v && v !== g){ renameGroup(g, v); toast('已改名 · 全局生效'); }
+      S.classList.remove('on'); $('#mask').classList.add('on'); buildDrawer(); render();
+    };
+  };
+  paint(); S.classList.add('on');
+}
+function groupNewSheet(){
+  const S = $('#gsheet'); let pick;
+  const paint = () => {
+    const v0 = $('#gnName') ? $('#gnName').value : '';
+    S.innerHTML = '<div class="gs-title">新建分组</div>'
+      + '<label class="ss-f"><span>名字</span><input id="gnName" placeholder="比如：健身"></label>'
+      + '<div class="gm-sec">套用模板（可不选，之后长按分组也能改）</div><div class="gs-chips" id="gnTpl">'
+      + TPL_ORDER.map(k => '<button class="gs-chip' + ((pick === undefined ? null : pick) === k ? ' on' : '') + '" data-tpl="' + (k || '') + '">' + (k ? TPLS[k].n : '无') + '</button>').join('') + '</div>'
+      + '<button class="gs-done" id="gnOk">建好</button>';
+    $('#gnName').value = v0;
+    S.querySelectorAll('#gnTpl [data-tpl]').forEach(b => b.onclick = () => { pick = b.dataset.tpl || null; paint(); });
+    $('#gnOk').onclick = () => {
+      const v = $('#gnName').value.trim().replace(/^#/, ''); if (!v){ toast('先写个名字'); return; }
+      if (!extraGroups.includes(v)) extraGroups.push(v);
+      const k = pick === undefined ? tplOf(v) : pick;
+      if (k !== tplOf(v) || k !== null) SET.gtpl[v] = k || null;
+      scheduleSave(); S.classList.remove('on'); $('#mask').classList.add('on'); buildDrawer();
+      toast('已新建 #' + v + (k ? ' · ' + TPLS[k].n + '模板' : ''));
+    };
+  };
+  paint(); S.classList.add('on');
+  setTimeout(() => { const i = $('#gnName'); if (i) i.focus(); }, 60);
+}
+
+/* ============ v2.31 设置：分段 + 数据与备份 + 实验室 ============ */
+function setSub(t){ const s = document.createElement('span'); s.className = 'sub'; s.textContent = t; return s; }
+function setRow(label, right, fn){
+  const r = document.createElement('div'); r.className = 'set-row';
+  const l = document.createElement('span'); l.textContent = label; r.appendChild(l);
+  if (right) r.appendChild(right);
+  if (fn) r.onclick = fn;
+  view.appendChild(r); return r;
+}
+function setToggle(on){
+  const sw = document.createElement('div'); sw.className = 'switch' + (on ? ' on' : ''); sw.innerHTML = '<i></i>'; return sw;
+}
+const TOOLBOX = [['meals', '🍚 美食'], ['notes', '📓 笔记本'], ['ledger', '💰 记账'], ['people', '👥 熟人册'], ['vault', '🔐 账号小本'], ['cycles', '🔁 循环提醒'], ['mealLog', '🍚 三餐打卡']];
+function toolboxNode(){
+  const tb = document.createElement('div'); tb.className = 'tbox';
+  TOOLBOX.forEach(([k, nm]) => {
+    const on = k === 'mealLog' ? SET.mods.mealLog === true : modOn(k);
+    const b = document.createElement('button'); b.className = 'tbox-c' + (on ? ' on' : ''); b.dataset.mod = k;
+    b.textContent = nm + (on ? ' ✓' : '');
+    b.onclick = () => {
+      if (k === 'mealLog'){
+        SET.mods.mealLog = !on; scheduleSave(); render();
+        toast(!on ? '三餐打卡已打开 · 在美食的「三餐」页签' : '已收起 · 以前的三餐记录都还在'); return;
+      }
+      SET.mods[k] = !on;
+      if (k === 'meals'){ if (on) SET.mealsUserOff = 1; else delete SET.mealsUserOff; }
+      if (k === 'meals' && !on){
+        if (!foodGroupName() && !extraGroups.includes('美食')) extraGroups.push('美食');
+        try{ mealAutoTagAll(); }catch(_){ }
+        toast('美食已打开 · 侧栏里有');
+      } else if (k === 'ledger' && !on) toast('记账已打开 · 写「打车 45元」这样带金额的句子就自动成账');
+      else toast((on ? '已关掉「' : '已打开「') + nm.slice(2) + '」' + (on ? ' · 数据都在' : ''));
+      scheduleSave(); render();
+    };
+    tb.appendChild(b);
+  });
+  return tb;
+}
+function labSheet(){
+  const S = $('#gsheet');
+  const on = modOn('smartbar');
+  S.innerHTML = '<div class="gs-title">功能手册 · 实验室</div>'
+    + '<button class="gm-btn" id="labMan" style="width:100%;padding:11px;margin-top:6px">📖 使用引导 · 功能手册</button>'
+    + '<div class="gm-sec">内测实验室</div>'
+    + '<div class="set-row" id="labSmart" style="border:1px solid var(--line);border-radius:12px;padding:10px 12px"><span>✨ 聪明工具条<small style="display:block;font-size:11.5px;color:var(--ink-faint);margin-top:2px">打字时认出日期 / 时间 / 分组，键盘上递一排小抓手</small></span>'
+    + '<div class="switch' + (on ? ' on' : '') + '"><i></i></div></div>'
+    + '<button class="gs-done" id="labDone">好了</button>';
+  $('#labMan').onclick = () => { closeSheet(); showManual(); };
+  $('#labSmart').onclick = () => {
+    SET.mods.smartbar = !on; scheduleSave(); labSheet();
+    toast(!on ? '已开启 · 写一行「明天下午三点交方案」试试' : '已关闭 · 随时回来再开');
+  };
+  $('#labDone').onclick = () => closeSheet();
   S.classList.add('on'); $('#mask').classList.add('on');
 }
 
