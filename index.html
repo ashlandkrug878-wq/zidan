@@ -162,7 +162,6 @@
   .sp-row .g{width:24px;text-align:center;font-weight:800;font-size:16px}
   .sp-row .d{margin-left:auto;font-size:11px;color:var(--ink-faint)}
   .tb-sep{width:1px;height:20px;background:var(--line)}
-  .tb-hint{margin-left:auto;font-size:11px;color:var(--ink-faint)}
   #smartBar{position:absolute;left:0;right:0;display:none;gap:7px;align-items:center;
     padding:8px 14px;background:rgba(250,246,236,.97);border-top:1px solid var(--line);z-index:6;overflow-x:auto}
   #smartBar.on{display:flex}
@@ -201,12 +200,6 @@
   .drawer-sub{font-size:12px;color:var(--ink-soft);margin-top:4px}
   .drawer-scroll{flex:1;overflow-y:auto;padding:0 12px 24px;scrollbar-width:none}
   .drawer-label{font-size:11px;color:var(--ink-faint);letter-spacing:2px;margin:16px 10px 6px}
-  .d-item{display:flex;align-items:center;gap:12px;padding:10px 10px;border-radius:12px;cursor:pointer;font-size:15px}
-  .d-item:active{background:var(--accent-soft)}
-  .d-item .sym{margin:0;cursor:inherit}
-  .d-item .count{margin-left:auto;font-size:12px;color:var(--ink-faint)}
-  .d-item.plain{font-weight:500}
-  .d-item .d-ico{width:22px;text-align:center;font-size:15px}
   .search-input{
     width:100%;margin-top:12px;border:1px solid var(--line-strong);background:var(--card);border-radius:10px;
     padding:8px 12px;font-size:16px;font-family:inherit;outline:none;color:var(--ink);
@@ -254,16 +247,8 @@
   .switch.on{background:var(--green)}
   .switch i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
   .switch.on i{left:21px}
-  .gm-row{display:flex;align-items:center;gap:10px;padding:12px 4px;border-bottom:1px solid var(--line)}
-  .gm-name{font-size:14.5px;flex:1;display:flex;align-items:center;gap:8px}
-  .gm-name .gdot{width:10px;height:10px;border-radius:50%;flex:none}
-  .gm-name input{flex:1;border:1px solid var(--line-strong);border-radius:8px;padding:6px 10px;font-family:inherit;font-size:13.5px;background:var(--bg);outline:none;color:var(--ink)}
   .gm-btn{font-size:12px;border:1px solid var(--line-strong);background:var(--card);border-radius:999px;padding:5px 12px;cursor:pointer;font-family:inherit;color:var(--ink-soft);flex:none}
   .gm-btn.danger{color:var(--red)}
-  .gm-inline{
-    flex:1;min-width:0;border:1px solid var(--line-strong);border-radius:8px;padding:6px 10px;
-    font-family:inherit;font-size:16px;background:var(--bg);outline:none;color:var(--ink);
-  }
   .mig-quick{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
   .qdate{
     width:100%;border:1px solid var(--line-strong);border-radius:10px;padding:8px 12px;margin-bottom:12px;
@@ -276,7 +261,6 @@
   .mood-cell{width:17px;height:17px;border-radius:5px;background:var(--badge-bg)}
   .mood-cell.has{background:#EAE7F5;position:relative}
   .mood-cell.has::after{content:'';position:absolute;inset:0;margin:auto;width:6px;height:6px;border-radius:50%;background:#7A6A8F}
-  .drawer-line{height:1px;background:var(--line);margin:14px 10px}
   /* ---------- 复盘 ---------- */
   #review{position:absolute;inset:0;background:var(--bg);z-index:12;display:none;flex-direction:column}
   #review.on{display:flex}
@@ -499,12 +483,6 @@
   .hl-cheer span{display:block;font-size:12px;color:var(--ink-faint);font-weight:400;margin-top:2px}
   .hl-go{display:block;width:100%;flex:none;border:none;border-radius:14px;background:var(--ink);color:#F6EFE3;font-size:16px;font-weight:700;padding:15px 0;font-family:inherit;letter-spacing:1px;cursor:pointer}
   .hl-go:active{opacity:.85}
-  .hello-strip{display:flex;align-items:center;gap:7px;margin:12px 0 0;padding:9px 13px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-size:13px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;cursor:pointer}
-  .hello-strip b{color:var(--ink);font-weight:700}
-  .hello-strip .cold{color:#4E7A9B;font-weight:700}
-  .hello-strip .warm{color:var(--accent);font-weight:700}
-  .hello-strip .hs-tx{overflow:hidden;text-overflow:ellipsis;min-width:0}
-  .hello-strip .op{margin-left:auto;color:var(--ink-faint);flex:none}
   .pool-line{font-size:12.5px;color:var(--ink-faint);padding:0 2px 6px 34px;cursor:pointer}
   /* ---------- v2.29 今天吃什么 ---------- */
   .pk-pool{font-size:12px;color:var(--ink-faint);margin:8px 2px 0}
@@ -667,6 +645,20 @@
   .tbox{display:flex;flex-wrap:wrap;gap:7px;padding:8px 2px 4px}
   .tbox-c{font-size:13.5px;border:1px solid var(--line-strong);border-radius:999px;padding:6px 12px;background:var(--card);color:var(--ink-soft);font-family:inherit;cursor:pointer}
   .tbox-c.on{border-color:#CFE0D0;background:#EEF5EE;color:var(--green)}
+  /* v2.32 手指好点：看起来一样大，能点中的范围放到 40px 上下 */
+  .sym:not(.static)::after{content:'';position:absolute;top:-9px;bottom:-9px;left:-12px;right:-6px}
+  .sec-add,.rp-r .a,.rp-to button,.daynav,.e-when .tm,.e-when .due,.dchip,.pool-line,.hl-city,.wx-pill{position:relative}
+  .sec-add::after{content:'';position:absolute;top:-10px;bottom:-10px;left:-4px;right:-10px}
+  .rp-r .a::after{content:'';position:absolute;top:-10px;bottom:-10px;left:-4px;right:-6px}
+  .rp-to button::after{content:'';position:absolute;top:-7px;bottom:-7px;left:-3px;right:-3px}
+  .daynav::after{content:'';position:absolute;top:-7px;bottom:-7px;left:-7px;right:-7px}
+  .e-when .tm::after,.e-when .due::after{content:'';position:absolute;top:-9px;bottom:-9px;left:-4px;right:-4px}
+  .dchip::after{content:'';position:absolute;top:-3px;bottom:-3px;left:-3px;right:-3px}
+  .pool-line::after{content:'';position:absolute;left:0;right:0;top:-8px;bottom:-8px}
+  .hl-city::after{content:'';position:absolute;top:-8px;bottom:-8px;left:-4px;right:-4px}
+  .wx-pill::after{content:'';position:absolute;top:-10px;bottom:-12px;left:-4px;right:-6px}
+  .more-btn{display:block;margin:16px auto 6px;min-height:40px;border:1px solid var(--line-strong);background:var(--card);color:var(--ink-soft);border-radius:999px;padding:9px 18px;font-size:13px;font-family:inherit;cursor:pointer}
+  .thumbs img.lost{background:#EAE0CC}
 </style>
 </head>
 <body>
@@ -734,6 +726,9 @@ function nextWeekWeekday(w){
 }
 /* ---- 本地存储 ---- */
 const LSKEY = 'bujo_local_v1';
+/* v2.32 照片单独放 IndexedDB：本地存档里只留「idb:编号」，文字那 5MB 不再被照片挤满 */
+var IMG_DB = {db:null, ok:false, ready:false, bootP:null, busy:false, nextJs:null, missing:0,
+  map:new Map() /* 图片 → 编号 */, data:new Map() /* 编号 → 图片 */, pending:new Map() /* 等着写进去的 */};
 let PAGES = {}, SEEN = {}, GCOLOR = {};
 let extraGroups = ['工作', '健康', '恋爱'];
 const SET = {recog:true, accent:0};
@@ -747,7 +742,23 @@ try{
 }catch(_){}
 let saveTm = null;
 let PARSE_GEN = 1;
-function jstrip(k, v){ return k === '_pc' ? undefined : v; }
+function jstrip(k, v){   /* 导出 / 云备份：编号换回图片本身，备份文件自带照片 */
+  if (k === '_pc') return undefined;
+  if (typeof v === 'string' && v.startsWith('idb:')){ const d = IMG_DB.data.get(v.slice(4)); return d || v; }
+  return v;
+}
+function jstripLocal(k, v){   /* 本地存档：图片换成编号，新图片排队写进 IndexedDB */
+  if (k === '_pc') return undefined;
+  if (typeof v === 'string' && v.length > 200 && v.startsWith('data:image/')){
+    let id = IMG_DB.map.get(v);
+    if (!id){
+      id = 'i' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+      IMG_DB.map.set(v, id); IMG_DB.data.set(id, v); IMG_DB.pending.set(id, v);
+    }
+    return 'idb:' + id;
+  }
+  return v;
+}
 function scheduleSave(){
   if (typeof KNOWN_PPL !== 'undefined') KNOWN_PPL = null;
   if (typeof KNOWN_STORE !== 'undefined') KNOWN_STORE = null;
@@ -755,11 +766,110 @@ function scheduleSave(){
   clearTimeout(saveTm);
   saveTm = setTimeout(() => { saveTm = null; saveNow(); }, 300);
 }
+function saveState(){ return {pages:PAGES, extraGroups, set:SET, seen:SEEN, gcolor:GCOLOR, notes:NOTES}; }
+function lsWrite(js){
+  try{ localStorage.setItem(LSKEY, js); return true; }
+  catch(_){ toast('存储已满：请先导出备份，再删掉一些旧记录'); return false; }
+}
 function saveNow(){
   try{ mealAutoTagAll(); }catch(_){}
-  try{ localStorage.setItem(LSKEY, JSON.stringify({pages:PAGES, extraGroups, set:SET, seen:SEEN, gcolor:GCOLOR, notes:NOTES}, jstrip)); }
-  catch(_){ toast('存储已满：请删除一些图片，或先导出备份'); }
+  if (IMG_DB.ok && IMG_DB.ready){
+    let js = null;
+    try{ js = JSON.stringify(saveState(), jstripLocal); }catch(_){ js = null; }
+    if (js !== null){
+      if (IMG_DB.pending.size || IMG_DB.busy) imgQueueWrite(js); else lsWrite(js);
+      try{ ghSchedule(); }catch(_){}
+      return;
+    }
+  }
+  lsWrite(JSON.stringify(saveState(), jstrip));   /* 没有 IndexedDB（或还没准备好）：照老办法 */
   try{ ghSchedule(); }catch(_){}
+}
+/* 先把新照片写进 IndexedDB，写成功了再存文字；写不进去就退回老办法（照片内联），什么都不丢 */
+function imgQueueWrite(js){
+  IMG_DB.nextJs = js;
+  if (IMG_DB.busy) return;
+  IMG_DB.busy = true;
+  const run = () => {
+    const batch = [...IMG_DB.pending]; IMG_DB.pending.clear();
+    const js2 = IMG_DB.nextJs; IMG_DB.nextJs = null;
+    imgPut(batch).then(ok => {
+      if (ok){ if (js2 !== null) lsWrite(js2); }
+      else { IMG_DB.ok = false; lsWrite(JSON.stringify(saveState(), jstrip)); }
+      if (IMG_DB.ok && (IMG_DB.nextJs !== null || IMG_DB.pending.size)) run();
+      else { IMG_DB.busy = false; IMG_DB.nextJs = null; }
+    });
+  };
+  run();
+}
+function imgDbOpen(){
+  return new Promise(res => {
+    try{
+      if (!window.indexedDB){ res(null); return; }
+      const rq = indexedDB.open('bujo_img', 1);
+      rq.onupgradeneeded = () => { try{ rq.result.createObjectStore('img'); }catch(_){ } };
+      rq.onsuccess = () => res(rq.result);
+      rq.onerror = rq.onblocked = () => res(null);
+    }catch(_){ res(null); }
+  });
+}
+function imgPut(batch){
+  return new Promise(res => {
+    if (!batch.length){ res(true); return; }
+    try{
+      const tx = IMG_DB.db.transaction('img', 'readwrite'), st = tx.objectStore('img');
+      batch.forEach(([id, v]) => st.put(v, id));
+      tx.oncomplete = () => res(true);
+      tx.onerror = tx.onabort = () => res(false);
+    }catch(_){ res(false); }
+  });
+}
+function imgDel(ids){
+  try{
+    const tx = IMG_DB.db.transaction('img', 'readwrite'), st = tx.objectStore('img');
+    ids.forEach(id => { st.delete(id); const v = IMG_DB.data.get(id); IMG_DB.data.delete(id); if (v) IMG_DB.map.delete(v); });
+  }catch(_){ }
+}
+/* 启动：读出照片、把编号换回图片；老的内联照片下一次存档时自动搬家；没人用的照片记录清掉 */
+function imgBoot(){
+  if (IMG_DB.bootP) return IMG_DB.bootP;
+  IMG_DB.bootP = imgDbOpen().then(db => new Promise(res => {
+    if (!db){ IMG_DB.ok = false; res(); return; }
+    IMG_DB.db = db;
+    try{
+      const tx = db.transaction('img', 'readonly'), st = tx.objectStore('img');
+      const kr = st.getAllKeys(), vr = st.getAll();
+      tx.oncomplete = () => {
+        const ks = kr.result || [], vs = vr.result || [];
+        ks.forEach((k, i) => { IMG_DB.data.set(k, vs[i]); IMG_DB.map.set(vs[i], k); });
+        IMG_DB.ok = true; res();
+      };
+      tx.onerror = tx.onabort = () => { IMG_DB.ok = false; res(); };
+    }catch(_){ IMG_DB.ok = false; res(); }
+  })).then(() => {
+    const used = new Set(); let swapped = 0, inline = 0, missing = 0;
+    const fix = arr => { if (!arr) return; for (let i = 0; i < arr.length; i++){ const v = arr[i]; if (typeof v !== 'string') continue;
+      if (v.startsWith('idb:')){ const id = v.slice(4), d = IMG_DB.data.get(id); used.add(id); if (d){ arr[i] = d; swapped++; } else missing++; }
+      else if (v.startsWith('data:image/')) inline++; } };
+    walk((k, e) => { fix(e.images); fix(e.imgt); });
+    IMG_DB.missing = missing; IMG_DB.ready = true;
+    if (IMG_DB.ok){
+      const dead = [...IMG_DB.data.keys()].filter(id => !used.has(id));
+      if (dead.length) imgDel(dead);
+      if (inline) scheduleSave();
+    }
+    if (swapped || missing) render();
+    try{ if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {}); }catch(_){ }
+  }).catch(() => { IMG_DB.ok = false; IMG_DB.ready = true; });
+  return IMG_DB.bootP;
+}
+const IMG_BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+function imgUrl(v){ return (typeof v === 'string' && v.startsWith('idb:')) ? (IMG_DB.data.get(v.slice(4)) || IMG_BLANK) : v; }
+function storageText(){
+  const kb = Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024));
+  let n = 0, len = 0;
+  walk((k, e) => (e.images || []).forEach(v => { n++; len += imgUrl(v).length; }));
+  return '文字 ' + kb + ' KB' + (n ? ' · 照片 ' + n + ' 张 ' + (len / 1048576).toFixed(1) + ' MB' : '');
 }
 const P = () => PAGES[TODAY];
 
@@ -768,7 +878,7 @@ const $ = s => document.querySelector(s);
 const escAttr = s => String(s || '').replace(/"/g, '&quot;');
 const view = $('#view'), topTitle = $('#topTitle'), reviewBtn = $('#reviewBtn'), toolbar = $('#toolbar');
 let cur = {name:'today'};
-let navStack = [], navPrevSnap = null, navFromBack = false;
+let navStack = [], navPrevSnap = null, navFromBack = false, navPrevLim = 0;   /* v2.32 navPrevLim：长列表展开到第几条，返回时还原 */
 function navSnap(){ return JSON.stringify({n:cur.name, g:cur.g, k:cur.key, p:cur.pid, i:cur.id, q:cur.q, d:cur.date, t:cur.tab}); }
 function navBack(){
   if (!navStack.length) return;
@@ -939,9 +1049,19 @@ function walkPage(date, cb){
   const rec = list => list.forEach(e => { cb(e); if (e.children) rec(e.children); });
   rec(PAGES[date].plan); rec(PAGES[date].flow);
 }
-function walk(cb){ Object.keys(PAGES).sort((a, b) => parseKey(b) - parseKey(a)).forEach(d => walkPage(d, e => cb(d, e))); }
+/* v2.32 日子从新到旧的顺序缓存起来：页数不变就不重排 */
+let WALK_SIG = '', WALK_KEYS = [];
+function pagesDesc(){
+  const ks = Object.keys(PAGES), sig = ks.join('|');
+  if (sig !== WALK_SIG){
+    WALK_SIG = sig;
+    WALK_KEYS = ks.map(k => { const a = k.split('.'); return [k, (+a[0]) * 10000 + (+a[1]) * 100 + (+a[2])]; }).sort((x, y) => y[1] - x[1]).map(x => x[0]);
+  }
+  return WALK_KEYS;
+}
+function walk(cb){ pagesDesc().forEach(d => walkPage(d, e => cb(d, e))); }
 function walkWithParent(cb){
-  Object.keys(PAGES).sort((a, b) => parseKey(b) - parseKey(a)).forEach(k => {
+  pagesDesc().forEach(k => {
     const rec = (list, parent) => list.forEach(e => { cb(k, e, parent); if (e.children) rec(e.children, e); });
     rec(PAGES[k].plan, null); rec(PAGES[k].flow, null);
   });
@@ -1300,7 +1420,8 @@ function entryNode(e, editable, isChild, flat, liveSym){
     const tw = document.createElement('div'); tw.className = 'thumbs';
     e.images.forEach((src, idx) => {
       const im = document.createElement('img');
-      im.src = (e.imgt && e.imgt[idx]) || src;
+      im.src = imgUrl((e.imgt && e.imgt[idx]) || src);
+      if (im.src === IMG_BLANK && IMG_DB.ready){ im.classList.add('lost'); im.title = '这张照片找不到了'; }
       im.loading = 'lazy'; im.decoding = 'async';
       im.onclick = ev => { ev.stopPropagation(); openLightbox(e, idx, editable); };
       tw.appendChild(im);
@@ -1373,6 +1494,28 @@ function jumpRow(date, e){
   }
   return w;
 }
+/* v2.32 长列表先画最近 120 条，底下「再往前」接着画（记在 cur.lim，返回时还在原处） */
+const LIST_STEP = 120;
+function pagedList(box, items, one){
+  let shown = 0, lastDate = null;
+  const more = document.createElement('button'); more.className = 'more-btn';
+  const step = n => {
+    const frag = document.createDocumentFragment(), end = Math.min(items.length, shown + n);
+    for (; shown < end; shown++){
+      const h = items[shown];
+      if (h.date !== lastDate){ lastDate = h.date;
+        const g = document.createElement('div'); g.className = 'date-group'; g.textContent = dayGroupTitle(h.date); frag.appendChild(g); }
+      frag.appendChild(one(h));
+    }
+    if (more.isConnected) box.insertBefore(frag, more); else box.appendChild(frag);
+    const left = items.length - shown;
+    if (left > 0){ more.textContent = left > LIST_STEP ? '再往前 ' + LIST_STEP + ' 条 · 还有 ' + left + ' 条' : '再往前 ' + left + ' 条'; if (!more.isConnected) box.appendChild(more); }
+    else if (more.isConnected) more.remove();
+  };
+  more.onclick = () => { step(LIST_STEP); cur.lim = shown; navPrevLim = shown; };
+  step(Math.max(LIST_STEP, cur.lim || 0));
+  return items.length;
+}
 function dateGroupList(box, filter){
   const hits = [];
   walk((date, e) => { if (filter(e)) hits.push({date, e}); });
@@ -1380,14 +1523,7 @@ function dateGroupList(box, filter){
   const superseded = new Set();
   hits.forEach(h => { if (h.e.srcId && ids.has(h.e.srcId)) superseded.add(h.e.srcId); });
   const shown = hits.filter(h => !(superseded.has(h.e._id) && h.e.state === 'migrated'));
-  let lastDate = null;
-  shown.forEach(h => {
-    if (h.date !== lastDate){ lastDate = h.date;
-      const g = document.createElement('div'); g.className = 'date-group';
-      g.textContent = dayGroupTitle(h.date); box.appendChild(g); }
-    box.appendChild(jumpRow(h.date, h.e));
-  });
-  return shown.length;
+  return pagedList(box, shown, h => jumpRow(h.date, h.e));
 }
 function tapZone(text, big, onTap, pen){
   const z = document.createElement('div'); z.className = 'tapzone' + (big ? ' big' : '');
@@ -1655,10 +1791,10 @@ function render(){
     if (cur.name === 'today'){ navStack = []; }
     else if (!navFromBack && navPrevSnap && ns2 !== navPrevSnap){
       const pv = JSON.parse(navPrevSnap);
-      navStack.push({name:pv.n, g:pv.g, key:pv.k, pid:pv.p, id:pv.i, q:pv.q, date:pv.d, tab:pv.t});
+      navStack.push({name:pv.n, g:pv.g, key:pv.k, pid:pv.p, id:pv.i, q:pv.q, date:pv.d, tab:pv.t, lim:navPrevLim || undefined});
       if (navStack.length > 20) navStack.shift();
     }
-    navFromBack = false; navPrevSnap = ns2;
+    navFromBack = false; navPrevSnap = ns2; navPrevLim = cur.lim || 0;
     const mb = $('#menuBtn');
     if (mb){
       const back = navStack.length && cur.name !== 'today';
@@ -1699,12 +1835,8 @@ function render(){
       }
       view.appendChild(strip);
     }
-    let n = 0, lastDate = null;
-    walk((date, e) => {
-      if (!a.f(e)) return; n++;
-      if (date !== lastDate){ lastDate = date;
-        const g = document.createElement('div'); g.className = 'date-group';
-        g.textContent = dayGroupTitle(date); view.appendChild(g); }
+    const items = []; walk((date, e) => { if (a.f(e)) items.push({date, e}); });
+    const n = pagedList(view, items, ({date, e}) => {
       const jr = jumpRow(date, e);
       if (cur.key === 'someday'){   /* v2.28 想做的事：一键捞回今天 */
         const body = jr.querySelector('.entry-body');
@@ -1721,7 +1853,7 @@ function render(){
           c2.appendChild(b2);
         }
       }
-      view.appendChild(jr);
+      return jr;
     });
     if (!n){ const d = document.createElement('div'); d.className = 'empty-hint'; d.textContent = '这里还是空的'; view.appendChild(d); }
   }
@@ -1824,7 +1956,7 @@ function render(){
     });
     setRow('主题色', accWrap, null);
     setRow('功能手册 · 实验室', setSub('›'), labSheet);
-    setRow('版本记录', setSub('v2.31 ›'), showChangelog);
+    setRow('版本记录', setSub('v2.32 ›'), showChangelog);
   }
   else if (cur.name === 'data'){
     topTitle.textContent = '数据与备份'; reviewBtn.textContent = '回今日';
@@ -1838,9 +1970,13 @@ function render(){
         setTimeout(() => pendingRestore = false, 5000); return; }
       pendingRestore = false; $('#jsonInput').click();
     });
-    setRow('存储占用', setSub(Math.max(1, Math.round((localStorage.getItem(LSKEY) || '').length / 1024)) + ' KB'), () => toast('数据保存在本机浏览器里 · 建议定期导出备份'));
+    setRow('存储占用', setSub(storageText()), () => toast(IMG_DB.ok ? '文字和照片分开存，照片不占文字的地方 · 建议定期导出备份' : '数据保存在本机浏览器里 · 建议定期导出备份'));
     setRow('清空全部数据', setSub('谨慎操作'), () => {
-      if (pendingWipe){ localStorage.removeItem(LSKEY); location.reload(); return; }
+      if (pendingWipe){
+        localStorage.removeItem(LSKEY);
+        try{ if (IMG_DB.db) IMG_DB.db.close(); const rq = indexedDB.deleteDatabase('bujo_img'); rq.onsuccess = rq.onerror = rq.onblocked = () => location.reload(); }catch(_){ }
+        setTimeout(() => location.reload(), 900); return;
+      }
       pendingWipe = true; toast('再点一次确认清空（建议先导出备份）');
       setTimeout(() => pendingWipe = false, 4000);
     });
@@ -2166,7 +2302,7 @@ function makeThumb(src, cb){
 /* 老数据后台补缩略图：一次几张、闲时进行 */
 function backfillThumbs(){
   const q = [];
-  walk((k, e) => { (e.images || []).forEach((src, i) => { if (!(e.imgt && e.imgt[i])) q.push({e, i, src}); }); });
+  walk((k, e) => { (e.images || []).forEach((src, i) => { if (!(e.imgt && e.imgt[i]) && !String(src).startsWith('idb:')) q.push({e, i, src}); }); });
   if (!q.length) return;
   let i2 = 0;
   const step = () => {
@@ -2203,7 +2339,7 @@ window.addEventListener('focus', () => setTimeout(() => {
 }, 800));
 function openLightbox(e, idx, canDel){
   const L = $('#lightbox');
-  L.innerHTML = '<img src="' + e.images[idx] + '">'
+  L.innerHTML = '<img src="' + imgUrl(e.images[idx]) + '">'
     + (canDel ? '<button class="rv-confirm" id="lbDel" style="position:absolute;left:24px;right:24px;width:auto;bottom:calc(28px + env(safe-area-inset-bottom));background:#C0604E">删除这张图片</button>' : '');
   L.classList.add('on');
   L.onclick = () => L.classList.remove('on');
@@ -2356,7 +2492,7 @@ function buildQSheet(){
   if ($('#qBack')) $('#qBack').onclick = () => {
     snapshot('处理任务');
     t.state = 'migrated'; t.badge = '→' + fmtShort(TODAY) + ' 捞回';
-    P().plan.push({sym:'task', state:'open', text:t.text,
+    P().plan.push({sym:'task', state:'open', text:t.text, time:t.time || undefined, pick:t.pick || undefined, nbId:t.nbId || undefined,
       groups:t.groups ? [...t.groups] : undefined, mig:t.mig,
       src:t.src || undefined, srcDay:curDayKey() || undefined, srcId:t._id || (t._id = ++uid),
       _id:++uid});
@@ -2762,6 +2898,7 @@ $('#mdInput').addEventListener('change', ev => {
 
 /* ============ 完整备份 / 恢复（JSON） ============ */
 function exportJSON(){
+  if (!IMG_DB.ready){ imgBoot().then(exportJSON); return; }
   const data = JSON.stringify({pages:PAGES, extraGroups, set:SET, seen:SEEN, gcolor:GCOLOR, notes:NOTES, exportedAt:TODAY}, jstrip);
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([data], {type:'application/json'}));
@@ -2799,6 +2936,7 @@ async function ghPush(manual){
   if (!c.repo || !c.token){ if (manual) toast('先填仓库和令牌'); return; }
   if (ghBusy) return; ghBusy = true;
   try{
+    await imgBoot();   /* v2.32 照片读出来了再备份，云端那份自带照片 */
     const url = 'https://api.github.com/repos/' + c.repo + '/contents/data.json';
     let sha;
     const r0 = await fetch(url, {headers:ghHeaders()});
@@ -2896,7 +3034,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v2.31（当前 · 2026.11.5）\n【今日页 · 分四档】\n· 要做的事 · 发生的事 · 想法 · 心情 四档固定；哪档还没写只剩一行浅色标题，点「＋」直接往那档写\n· 「？疑问」「！重点」归在想法里；挂在事件下面的子条目跟着事件走\n【发生的事用图标】\n· 行首按内容自动挑：🍚 吃喝（说了花多少、和谁也还是 🍚）· 💼 工作 · 🚗 出行 · 🎡 玩 · 🎬 看片 · 🏥 看病 · 🏃 运动 · 📚 学 · 🛍️ 买 · 🎁 人情 · 🏠 家里 · 👥 见人\n· 认错了点图标换，这一行就记住你选的\n【行下不再挂小签】\n· 分组、记账类别、和谁、从哪转来、听写纠错、拆条、避雷，全部收进点符号弹出的小卡；任务长按，处理面板顶上写来历\n· 时间写在字前面；避雷过的店，图标上一个小红点\n· 一行想换档（比如心情认成了事件），小卡里点「⇄」挪过去\n【早安卡】\n· 大日期、天气、点点的一句话放在上面；今天的事、去年今日 / 上个月的今天放下面，没有就不出现\n· 随便抽一条的「翻到一页」和饭点抽卡那行拿掉了\n· 今日页顶上的天气条缩成日期旁的小签，点一下看整张早安卡\n【侧栏】\n· 上面四格：默认 日历 · 想做的事 · 美食 · 记账，长按换；分组变成一排标签（长按管理）；其他工具一排图标；按标记汇总折起来\n【设置】\n· 分成 记录 / 提醒 / 工具箱 / 数据 / 其他；备份收进「数据与备份」；「任务风格 随缘 / 对账」改叫「提醒力度 温和 / 严格」\n\n'
+    + 'v2.32（当前 · 2026.11.6）\n【更稳 · 更好点】\n· 照片和文字分开存：照片挪到浏览器的另一个仓库，不再挤占文字那 5MB；以前的照片第一次打开时自动搬过去，导出和云备份照旧带图\n· 「数据与备份 → 存储占用」能看到文字和照片各占多少\n· 行首的符号、每档的 ＋、翻天的箭头、字前的时间、小卡里的按钮：看起来一样大，手指能点中的范围变大了\n· 按标记汇总、搜索结果很长时先显示最近 120 条，底下点「再往前」接着看\n· 早安卡「今天的事」里单独设了时间的任务，时间也显示出来了\n· 约到某天、推迟到明天的任务，到了那天时间还在（以前会丢）\n· 「晚饭后散步」这种算运动 🏃，不再认成吃饭\n\n'
+    + 'v2.31（2026.11.5）\n【今日页 · 分四档】\n· 要做的事 · 发生的事 · 想法 · 心情 四档固定；哪档还没写只剩一行浅色标题，点「＋」直接往那档写\n· 「？疑问」「！重点」归在想法里；挂在事件下面的子条目跟着事件走\n【发生的事用图标】\n· 行首按内容自动挑：🍚 吃喝（说了花多少、和谁也还是 🍚）· 💼 工作 · 🚗 出行 · 🎡 玩 · 🎬 看片 · 🏥 看病 · 🏃 运动 · 📚 学 · 🛍️ 买 · 🎁 人情 · 🏠 家里 · 👥 见人\n· 认错了点图标换，这一行就记住你选的\n【行下不再挂小签】\n· 分组、记账类别、和谁、从哪转来、听写纠错、拆条、避雷，全部收进点符号弹出的小卡；任务长按，处理面板顶上写来历\n· 时间写在字前面；避雷过的店，图标上一个小红点\n· 一行想换档（比如心情认成了事件），小卡里点「⇄」挪过去\n【早安卡】\n· 大日期、天气、点点的一句话放在上面；今天的事、去年今日 / 上个月的今天放下面，没有就不出现\n· 随便抽一条的「翻到一页」和饭点抽卡那行拿掉了\n· 今日页顶上的天气条缩成日期旁的小签，点一下看整张早安卡\n【侧栏】\n· 上面四格：默认 日历 · 想做的事 · 美食 · 记账，长按换；分组变成一排标签（长按管理）；其他工具一排图标；按标记汇总折起来\n【设置】\n· 分成 记录 / 提醒 / 工具箱 / 数据 / 其他；备份收进「数据与备份」；「任务风格 随缘 / 对账」改叫「提醒力度 温和 / 严格」\n\n'
     + 'v2.30（2026.11.5）\n【🗣 说一段 · 我来分拣】\n· 右下角的话筒换成「说一段 · 我来分拣」：点开是整屏，键盘直接弹好，按键盘右下角的 🎤 一口气说完，点右上角「分拣」\n· 分拣结果按放到哪分组：今天发生 / 今天要做 / 后天 / 昨天…，每条能改字、⇄ 换地方、✕ 不要；没问题点「确认」才放进去\n· 放到别的日子的，会去掉「后天」「昨天」这类词，到了那天读着才对；今天这页留一行小字，点一下跳过去\n· 说到一半退出也不丢，下次打开接着说\n【📖 我的词典 · 从你的记录里长出来】\n· 认识的人、去过的店自动收进词典，越常写越靠前；英文名（orion）也认得了\n· 听写打错的名字自动改好并标出来（「布尔」→ 不二），点 ↺ 改回，以后就不这样改\n· 店名说简称也认得：「陈先进」就是陈先进小馆，算去过一次；「姐姐」「我姐」算同一个人\n· 你手动把名字改对一次，它就记住；设置 → 我的词典 里能看、能删、能手动加「A 就是 B」\n· 「和旭旭、不二、orion、姐夫」这种一长串名单，每个人都算上\n\n'
     + 'v2.29（2026.11.5）\n【🎲 今天吃什么 · 抽卡】\n· 美食板块第二个页签换成「吃什么」：只从你说过好吃的店里抽，避雷的永远不会出现；宝藏是金边卡\n· 理由全是你自己写过的话：原话、你给自己的提醒（几点去、几个人去）、必点和别点、上次和谁花了多少，再加上今天的天气\n· 城市跟早安卡走，可选堂食 / 外卖；降温的日子「想吃热乎的」自动亮；好久没去的店更容易出现\n· 点「就它了」进今天要做；吃完点 ✓，一键说「宝藏 / 还想去 / 一般 / 避雷」，就算去过一次\n· 早安卡在饭点多一行「中午 / 晚上吃什么？抽一张」\n【🍚 只记喜欢的和避雷的】\n· 三餐打卡退役：三餐页签和复盘里的三餐格子默认收起，以前的记录都在，设置里可以再打开\n· 新增「记一家店」：店名、宝藏 / 还想去 / 避雷、一句话，必点别点城市花费都可不填\n· 去过几次：任何一句话里提到这家店都算（同一天算一次）\n· 又写到避雷过的店，那行下面冒一枚红签，提醒你当时说过什么\n· 识别补强：「可复购」「不会再吃了」认得了；「天使面没那么好吃了」「避雷蓝龙虾」只算单品，不冤枉整家店\n【🎙 说一段，我来安排】\n· 今日页右下角常驻一颗 🎙，复盘里也有「说说今天」：用 iPhone 键盘的听写一口气说，点「整理一下」，每句自动放到该去的地方——后天要做的进后天，今天吃的进今天还认出店名和好不好吃，花的钱进记账（「打车花了45」没说元也认），昨天的事放回昨天\n· 放之前给你看一眼，哪句放哪点一下就能换，不要的划掉\n· 直接在某一行里说了一大段，行下会出现「✂ 拆成 N 条」\n\n'
     + 'v2.28（2026.11.5）\n【☀ 早安卡 · 每天第一次打开】\n· 今天几号、农历、节气节日，离下个假期还有几天\n· 天气：今天和昨天的温度画成两根条，冷了暖了一眼看出；跟着给穿衣建议（加外套 / 少穿一件 / 照昨天穿），几点开始下雨也说\n· 今天的事：谁过生日、约好今天的、转交该跟进的——只放有日子的\n· 翻到一页：从旧记录里抽一条（一个月前的今天优先），点一下跳回那天\n· 最后点点说一句话；点「开始全新的一天」进今日页\n· 收起后今日页顶上留一行天气条，点开再看整张卡\n· 天气城市在 设置 → 天气城市：最多存 3 个，卡片上点城市名来回切，也能一键定位；没网就不显示天气，别的照常\n【随缘：没做完的不再天天搬】\n· 没日子的任务当天没做完，第二天自动收进「☾ 想做的事」：不弹窗、不计次、不催；今日页一行小字能看到，想做哪件点「⤴ 今天做」\n· 推迟到某天、那天正好没打开的不会再丢：两天内补到今天（带「原定」小签），更久的收进想做的事\n· 晚间复盘直达快照和盖章；想逐件过，点「现在过一遍」\n· 今日页不再挂「>×5」这类拖延计数\n· 喜欢每天逐件表态的，设置 → 任务风格 切回「对账」，一切照旧\n· Someday 改叫「想做的事」\n【三餐不追“没吃”】\n· 打卡墙上没记的那顿只是一个小点，不再是等你填的虚圈\n· 「三餐齐全连击」退役，换成只增不减的「本月吃到新店」\n【其他】\n· App 在后台过了夜，回来自动翻到新的一天；切走前没存的内容先存好\n\n'
@@ -5595,7 +5734,7 @@ function ensureToday(){
         e.arrived = true;
         e.mig = (e.mig || 0) + 1;
         if (e.state === 'open') e.state = 'migrated';
-        P().plan.push({sym:'task', state:'open', text:e.text,
+        P().plan.push({sym:'task', state:'open', text:e.text, time:e.time || undefined, pick:e.pick || undefined, nbId:e.nbId || undefined,
           groups:e.groups ? [...e.groups] : undefined, progress:e.progress, mig:e.mig,
           src:e.src || (parent && parent.text) || undefined,
           srcDay:k, srcId:e._id || (e._id = ++uid), lateFrom:from || undefined,
@@ -5696,7 +5835,7 @@ function morningCheck(){
       const e = x.e;
       e.state = 'migrated'; e.mig = (e.mig || 0) + 1;
       e.badge = '→' + fmtShort(TODAY) + (e.progress ? ' · 已完成' + e.progress + '%' : '');
-      P().plan.push({sym:'task', state:'open', text:e.text,
+      P().plan.push({sym:'task', state:'open', text:e.text, time:e.time || undefined, pick:e.pick || undefined, nbId:e.nbId || undefined,
         groups:e.groups ? [...e.groups] : undefined, progress:e.progress, mig:e.mig,
         src:e.src || (x.parent && x.parent.text) || undefined,
         srcDay:x.k || undefined, srcId:e._id || (e._id = ++uid),
@@ -5713,7 +5852,7 @@ function morningCheck(){
         const e = x.e;
         e.state = 'migrated'; e.mig = (e.mig || 0) + 1;
         e.badge = '→' + fmtShort(TODAY);
-        P().plan.push({sym:'task', state:'open', text:e.text,
+        P().plan.push({sym:'task', state:'open', text:e.text, time:e.time || undefined, pick:e.pick || undefined, nbId:e.nbId || undefined,
           groups:e.groups ? [...e.groups] : undefined, mig:e.mig,
           src:e.src || (x.parent && x.parent.text) || undefined,
           srcDay:x.k || undefined, srcId:e._id || (e._id = ++uid),
@@ -5930,32 +6069,10 @@ function helloItemHTML(e){
     if (hm){ when = hm; t = t.replace(/\s*([01]?\d|2[0-3])[:：][0-5]\d\s*/, ' ').trim() || t; }
     else { const cn = detectTimeCN(t); if (cn) when = cn; }
   }
+  if (!when && e.time) when = e.time;   /* v2.32 时间单独设的也显示 */
   if (!when && e.lateFrom) when = '原定 ' + fmtShort(e.lateFrom);
   return '<div class="hl-it" data-hid="' + (e._id || '') + '">' + ic + '<span class="tx">' + vEsc(t) + '</span>'
     + (when ? '<span class="when">' + vEsc(when) + '</span>' : '') + '</div>';
-}
-function helloMemory(){
-  const cut = parseKey(addDaysK(TODAY, -7)), cands = [];
-  Object.keys(PAGES).forEach(k => {
-    if (parseKey(k) > cut) return;
-    PAGES[k].plan.concat(PAGES[k].flow).forEach(e => {
-      if (!e.text || e.sym === 'task' || e.sym === 'mood' || e.cyc || isMinor(e)) return;
-      if (e.text.trim().length < 8) return;
-      cands.push({k, e, w:(e.sym === 'event' ? 2 : 1) + ((e.groups || []).length ? 3 : 0)});
-    });
-  });
-  cands.sort((x, y) => parseKey(y.k) - parseKey(x.k));   /* 固定顺序：同一天抽到的永远是同一条 */
-  if (!cands.length) return null;
-  const r = seedRng(TODAY + '|mem');
-  const pick = arr => { let v = r() * arr.reduce((s, x) => s + x.w, 0); for (const x of arr){ v -= x.w; if (v <= 0) return x; } return arr[arr.length - 1]; };
-  const ta = TODAY.split('.').map(Number);
-  for (const [m, label] of [[12, '一年前的今天'], [6, '半年前的今天'], [3, '三个月前的今天'], [2, '两个月前的今天'], [1, '一个月前的今天']]){
-    const d = new Date(ta[0], ta[1] - 1 - m, ta[2]);
-    if (d.getDate() !== ta[2]) continue;
-    const hit = cands.filter(x => x.k === dkey(d));
-    if (hit.length) return Object.assign({label}, pick(hit));
-  }
-  return Object.assign({label:'翻到一页'}, pick(cands));
 }
 const JQ_TIP = {'立春':'立春了，天要慢慢暖起来了。','春分':'春分，今天昼夜一样长。','清明':'清明，适合想一想想念的人。','立夏':'立夏了，夏天正式开始。',
   '夏至':'夏至，一年里白天最长的一天。','立秋':'立秋了，暑气要慢慢退了。','秋分':'秋分，昼夜又一样长了。','立冬':'立冬了，吃顿热乎的。',
@@ -6170,32 +6287,13 @@ function helloBoot(){
   if (wxCity() && wxStale()) wxFetch().then(() => helloStripRefresh());
 }
 /* ---- 收起后：今日页顶上一行 ---- */
-function helloStripHTML(){
-  const d = wxCached(), segs = [];
-  let head;
-  if (d){
-    const a = wxAdvice(d);
-    head = '<span>' + wxIc(d.code) + '</span><b>' + d.hi + '°</b>'
-      + (a.cmp.c !== 'same' ? '<span class="' + a.cmp.c + '">' + (a.dd > 0 ? '↑' : '↓') + Math.abs(a.dd) + '°</span>' : '');
-    segs.push(a.short); if (a.rainShort) segs.push(a.rainShort);
-  } else head = '<span>☀</span><b>早安卡</b>';
-  const tg = helloTags().filter(t => t.acc)[0]; if (tg) segs.push(tg.t);
-  const bd = helloItems().find(e => e.cyc && e.sym === 'task'); if (bd) segs.push((bd.text || '').trim());
-  return head + '<span class="hs-tx">' + (segs.length ? '· ' + vEsc(segs.join(' · ')) : '') + '</span><span class="op">▾</span>';
-}
-function helloStripNode(){
-  const s = document.createElement('div'); s.className = 'hello-strip';
-  s.innerHTML = helloStripHTML();
-  s.onclick = () => openHello(true);
-  return s;
-}
 function helloStripRefresh(){ const s = document.getElementById('wxPill'); if (s) s.innerHTML = wxPillHTML(); }
 
 /* ---- 想做的事：捞回今天 ---- */
 function somedayPull(t, k){
   snapshot('处理任务');
   t.state = 'migrated'; t.badge = '→' + fmtShort(TODAY) + ' 捞回';
-  P().plan.push({sym:'task', state:'open', text:t.text, groups:t.groups ? [...t.groups] : undefined, mig:t.mig,
+  P().plan.push({sym:'task', state:'open', text:t.text, time:t.time || undefined, pick:t.pick || undefined, nbId:t.nbId || undefined, groups:t.groups ? [...t.groups] : undefined, mig:t.mig,
     src:t.src || undefined, srcDay:k || undefined, srcId:t._id || (t._id = ++uid), _id:++uid});
   scheduleSave();
 }
@@ -6556,13 +6654,6 @@ function splitEntry(e){
 }
 
 /* ---- 早安卡饭点入口 ---- */
-function helloPickLine(){
-  if (!modOn('meals')) return '';
-  const nw = new Date(), h = nw.getHours() + nw.getMinutes() / 60;
-  if (!((h >= 10 && h <= 13.5) || (h >= 16 && h <= 19.5))) return '';
-  if (!pickPool(pickDefaults()).length) return '';
-  return '<div class="hl-pool" id="hlPick">🎲 ' + (h < 15 ? '中午' : '晚上') + '吃什么？抽一张 ›</div>';
-}
 
 /* ============ v2.30 说一段 · 我来分拣（整屏：说 → 分拣确认 → 放好） ============ */
 const VO_TASK_RE = /(要|得去|记得|别忘了|准备|打算|计划|约了|需要|该去|待会|回头)/;
@@ -6600,7 +6691,6 @@ function voGroupLabel(it){
   const r = voRelDay(it.day);
   return (r ? r + ' ' : '') + fmtKey(it.day) + (it.dest === 'past' ? ' · 发生' : ' · 要做');
 }
-function voDestLabel(it){ return voGroupLabel(it); }
 /* 放到别的日子时，去掉「后天 / 昨天」这类词：到了那天读着才对 */
 const VO_DAY_PATS = [/\d{1,2}\.\d{1,2}号?/, /大后天/, /后天/, /明天/, /下+周[一二三四五六日天]/, /(?:这周|本周|周)[一二三四五六日天]/, /下个?月\d{1,2}[号日]/, /\d{1,2}月\d{1,2}[号日]/, /下个?月/];
 function voStripDay(t, it){
@@ -6692,7 +6782,6 @@ function openVoice(opts){
   if (ta){ try{ ta.focus(); const n = ta.value.length; ta.setSelectionRange(n, n); }catch(_){ } }
 }
 function closeVoice(){ const V = $('#voice'); V.classList.remove('on'); V.innerHTML = ''; VO = null; }
-function voSheet(){ openVoice({}); }
 function voRepaint(){ const L = $('#voList'), st = L ? L.scrollTop : 0; voPaint(); const L2 = $('#voList'); if (L2) L2.scrollTop = st; }
 function voBindFix(root){
   root.querySelectorAll('.vo-fx').forEach(b => b.onclick = () => {
@@ -6952,10 +7041,10 @@ const EV_ICONS = [
   ['gift', '🎁', '人情'], ['home', '🏠', '家里'], ['go', '🚗', '出行'], ['meet', '👥', '见人'],
 ];
 const EV_RE = {
-  eat:/(吃|喝)(?![^，。,；;]{0,3}药|亏|惊|醋|瓜|苦|力)|饭|早餐|午餐|晚餐|夜宵|下午茶|外卖|咖啡|奶茶|火锅|烧烤|烤肉|聚餐|请客|甜品|小吃|面馆|餐厅|饭店|食堂|饮料|啤酒/,
+  eat:/(吃|喝)(?![^，。,；;]{0,3}药|亏|惊|醋|瓜|苦|力)|饭(?![前后])|(?:早餐|午餐|晚餐)(?![前后])|夜宵|下午茶|外卖|咖啡|奶茶|火锅|烧烤|烤肉|聚餐|请客|甜品|小吃|面馆|餐厅|饭店|食堂|饮料|啤酒/,
   med:/医院|看病|看牙|牙医|拔牙|智齿|体检|挂号|吃药|买药|药店|感冒|发烧|输液|复查|门诊|针灸|理疗|牙龈|牙疼|牙痛|头疼|头痛|胃疼|胃痛|肚子疼|嗓子疼|咳嗽|过敏|生病|不舒服|上火/,
   work:/开会|会议|例会|客户|方案|汇报|对接|谈判|谈了|谈事|面试|上班|加班|出差|项目|签约|合同|提案|招商|甲方|乙方|老板|述职|工作|提报|入职|离职|公章|沟通|招聘|报价|比稿|改稿|交付|上线|周报|日报|聊.{0,10}(方向|方案|合作|项目|计划|业务)/,
-  sport:/跑步|健身|撸铁|游泳|瑜伽|普拉提|打球|篮球|足球|羽毛球|网球|乒乓|骑车|骑行|徒步|爬山|运动|拉伸|跳绳/,
+  sport:/跑步|散步|遛弯|健身|撸铁|游泳|瑜伽|普拉提|打球|篮球|足球|羽毛球|网球|乒乓|骑车|骑行|徒步|爬山|运动|拉伸|跳绳/,
   fun:/玩(?!笑)|逛(?!超市|淘宝|京东)|KTV|ktv|唱歌|拼豆|展览|看展|演出|演唱会|音乐节|livehouse|密室|剧本杀|桌游|乐园|游乐|公园|旅行|旅游|露营|蹦迪|酒吧|按摩|泡澡|洗浴|看海|赏花|滑雪|头疗|采耳|搓澡|足疗|洗脚|spa|SPA|美甲|汗蒸|追剧|刷剧/,
   learn:/上课|课程|学习|学了|看书|读书|读了|听课|培训|考试|练字|背单词|网课/,
   buy:/买了|购物|下单|淘宝|京东|拼多多|超市|网购|快递|入手|剁手/,
@@ -7401,7 +7490,7 @@ if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0){
 applyAccent();
 ensureToday();
 cycMaterialize();
-backfillThumbs();
+imgBoot().then(() => backfillThumbs());
 buildToolbar(); render();
 $('#drawerDot').innerHTML = dotSVG(34);
 helloBoot(); showOnboard();
