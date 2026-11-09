@@ -668,6 +668,38 @@
   .gs-img{width:20px;height:20px;object-fit:contain;vertical-align:-5px}
   .house-head{display:flex;align-items:center;gap:14px;margin:14px 0 2px;padding:10px 14px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
   .house-head img{width:76px;height:76px;object-fit:contain;flex:none}
+  /* v3.1 手帐 / 小岛 */
+  .isle-line{margin:20px 0 4px;padding:10px 12px 11px;border-radius:14px;background:var(--card);border:1px solid var(--line);font-size:13px;color:var(--ink-soft);cursor:pointer}
+  .isle-line .r1{display:flex;align-items:center;gap:6px}
+  .isle-line b{color:var(--ink);font-size:13.5px;font-weight:600}
+  .isle-line .ar{margin-left:auto;color:var(--ink-faint)}
+  .isle-line .ihs{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:8px}
+  .isle-line .ih{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+  .isle-box{margin:4px 0 4px}
+  .isle-sub{display:flex;align-items:center;gap:6px;margin:14px 2px 2px;font-size:12.5px;color:var(--ink-soft);cursor:pointer}
+  .isle-sub .go{margin-left:auto;color:var(--ink-faint)}
+  .isle-flash{display:flex;align-items:center;gap:8px;margin:6px 2px 0;font-size:12.5px;color:var(--ink-soft)}
+  .isle-flash span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .isle-flash button,.isle-ask button{font:inherit;font-size:12.5px;border:1px solid var(--line-strong);background:var(--card);color:var(--ink);border-radius:10px;padding:4px 10px;cursor:pointer;flex:none}
+  .isle-ask{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:-2px 0 8px 34px;font-size:12.5px;color:var(--ink-faint)}
+  .isle-ask button.go{border-color:var(--accent);color:var(--accent)}
+  .ihx{display:inline-flex;align-items:center;justify-content:center;flex:none;border-radius:30%;background:var(--accent-soft)}
+  .dgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:4px 4px 2px}
+  .dgrid.g3{grid-template-columns:repeat(3,1fr)}
+  .dcell{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 7px;border-radius:12px;background:var(--card);border:1px solid var(--line);cursor:pointer;color:var(--ink);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+  .dcell .dimg{width:38px;height:38px;object-fit:contain}
+  .dcell .dcal{display:flex;align-items:center;justify-content:center}
+  .dcell b{font-size:13px;font-weight:600}
+  .dcell i{font-style:normal;font-size:11px;color:var(--ink-faint);white-space:nowrap}
+  .dcell.add{justify-content:center;color:var(--ink-faint);font-size:22px;border-style:dashed;min-height:64px}
+  .dsec-sub{font-size:11px;color:var(--ink-faint);letter-spacing:0;margin-left:8px}
+  .isle-set{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--line)}
+  .isle-set .nm{flex:1;min-width:0}
+  .isle-set .nm b{display:block;font-size:15px;font-weight:600}
+  .isle-set .nm small{display:block;font-size:12px;color:var(--ink-faint);margin-top:2px}
+  .isle-set .pin{font:inherit;font-size:12px;border:1px solid var(--line-strong);background:var(--card);color:var(--ink-soft);border-radius:10px;padding:5px 10px;cursor:pointer;flex:none}
+  .isle-set .pin.on{border-color:var(--accent);color:var(--accent)}
+  .isle-set.off .nm,.isle-set.off img,.isle-set.off .ihx{opacity:.55}
   .house-head b{display:block;font-size:17px;margin-bottom:2px}
   .house-head span{font-size:12.5px;color:var(--ink-soft)}
   .alldone{display:flex;align-items:center;gap:8px;padding:2px 0 4px 34px;font-size:13.5px;color:var(--green)}
@@ -756,11 +788,11 @@ function jjObj(k){   /* 分享图要在画布上画啾啾：先把图片对象�
   return im;
 }
 /* 集子 = 岛上的房子 */
-const HOUSE = {food:['h_food', '美食街'], movie:['h_movie', '小电影院'], book:['h_book', '书屋'], money:['h_money', '小账房'], work:['h_work', '工作坊']};
+const HOUSE = {food:['h_food', '海边饭馆', '阿饱'], movie:['h_movie', '小岛影院', '阿影'], book:['h_book', '小岛书屋', '酥酥'], money:['h_money', '账房', '小铜板'], work:['h_work', '工作坊', '大力'], fun:[null, '温泉汤屋', '小卡']};
 function houseHead(tpl, g){
   const h = HOUSE[tpl]; if (!h) return null;
   const d = document.createElement('div'); d.className = 'house-head';
-  d.innerHTML = '<img src="' + JJ[h[0]] + '" alt=""><div><b>' + h[1] + '</b><span>#' + vEsc(g) + '</span></div>';
+  d.innerHTML = (h[0] ? '<img src="' + JJ[h[0]] + '" alt="">' : '<span class="ihx" style="width:76px;height:76px">' + onsenSVG(46) + '</span>') + '<div><b>' + h[1] + '</b><span>#' + vEsc(g) + (h[2] ? ' · 住着' + h[2] : '') + '</span></div>';
   return d;
 }
 /* ============ 数据与本地存储 ============ */
@@ -826,6 +858,7 @@ function jstripLocal(k, v){   /* 本地存档：图片换成编号，新图片�
 }
 function scheduleSave(){
   if (typeof KNOWN_PPL !== 'undefined') KNOWN_PPL = null;
+  if (typeof ISLE_DEF !== 'undefined') ISLE_DEF = null;
   if (typeof KNOWN_STORE !== 'undefined') KNOWN_STORE = null;
   STORE_IDX = null; PPL_CNT = null; DICT_T = null; STORE_CORES = null;
   clearTimeout(saveTm);
@@ -1155,6 +1188,156 @@ function removeEntry(e){ const loc = findEntry(e); if (loc) loc.list.splice(loc.
 /* ===== v2.27 小事折叠：模块生出来的行（打卡/足迹/记一笔）不打扰正文 ===== */
 let minorOpen = new Set();
 function isMinor(e){ return !!(e.ledger || e.nbId || e.meal); }
+/* ============ v3.1 手帐和小岛：一条记录只有一个家 ============ */
+const ISLE = {
+  food:  {n:'美食', h:'海边饭馆', img:'h_food',   who:'阿饱',   g:'美食', tip:'吃了什么、店好不好、三餐'},
+  movie: {n:'电影', h:'小岛影院', img:'h_movie',  who:'阿影',   g:'电影', tip:'看过的电影和剧，打分、片单'},
+  book:  {n:'阅读', h:'小岛书屋', img:'h_book',   who:'酥酥',   g:'阅读', tip:'读过的书，打分、书单'},
+  fun:   {n:'娱乐', h:'温泉汤屋', img:null,       who:'小卡',   g:'娱乐', tip:'玩的、放松的：KTV、按摩、看展'},
+  money: {n:'记账', h:'账房',     img:'h_money',  who:'小铜板', tip:'花了多少、花在哪'},
+  people:{n:'亲友', h:'小岛茶屋', img:'h_people', who:'团团',   tip:'提到的人、生日和纪念日'},
+  notes: {n:'笔记', h:'记事亭',   img:'h_notes',  who:'阿鼠',   tip:'长一点的文字，慢慢写'},
+  vault: {n:'密码', h:'树洞',     img:'h_vault',  who:'松松',   tip:'账号密码，加密只存在这台手机'},
+};
+const ISLE_ORDER = ['food', 'movie', 'book', 'fun', 'money', 'people', 'notes', 'vault'];
+const ISLE_MOD = {food:'meals', money:'ledger', people:'people', notes:'notes', vault:'vault'};
+const ISLE_TPL = {food:1, movie:1, book:1, fun:1, money:1};   /* 用这些模板的分组算副线 */
+const TPL_PLAIN = {work:1, fun:1};   /* 没有盘点面板的模板 */
+let ISLE_DEF = null, ISLE_LAST = null;
+function tplGroupName(t){
+  let g = (extraGroups || []).find(x => tplOf(x) === t) || null;
+  if (!g) walk((d, e) => { (e.groups || []).forEach(x => { if (!g && tplOf(x) === t) g = x; }); });
+  return g;
+}
+function isleOn(k){
+  if (ISLE_MOD[k]) return modOn(ISLE_MOD[k]);
+  const o = SET.isle && SET.isle.on;
+  if (o && o[k] !== undefined) return !!o[k];
+  if (!ISLE_DEF){ ISLE_DEF = {}; ['movie', 'book', 'fun'].forEach(t => ISLE_DEF[t] = !!tplGroupName(t)); }   /* 没设过：有这类分组就开着 */
+  return !!ISLE_DEF[k];
+}
+function islePins(){
+  if (SET.isle && SET.isle.pin) return SET.isle.pin.filter(k => ISLE[k]);
+  const m = {food:'food', ledger:'money', people:'people', notes:'notes', vault:'vault'};   /* 从以前的四格接过来 */
+  return (SET.dtiles || ['cal', 'someday', 'food', 'ledger']).map(x => m[x]).filter(Boolean).slice(0, 4);
+}
+function houseGroup(k, create){
+  if (k === 'food'){ let fg = foodGroupName(); if (!fg && create){ fg = '美食'; if (!extraGroups.includes(fg)) extraGroups.push(fg); } return fg; }
+  if (!ISLE[k] || !ISLE[k].g) return null;
+  let g = tplGroupName(k);
+  if (!g && create){ g = ISLE[k].g; if (!extraGroups.includes(g)) extraGroups.push(g); if (tplOf(g) !== k) SET.gtpl[g] = k; ISLE_DEF = null; }
+  return g;
+}
+function sideHome(e){
+  if (!e || e.sym === 'task') return null;
+  let k = null;
+  if (e.meal) k = 'food';
+  else if (e.ledger) k = 'money';
+  else if (e.nbId) k = 'notes';
+  else for (const g of (e.groups || [])){ const t = tplOf(g); if (ISLE_TPL[t]){ k = t; break; } }
+  return k && isleOn(k) ? k : null;
+}
+function onsenSVG(sz){ return '<svg width="' + sz + '" height="' + sz + '" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3.5c-1.2 1.3 1.2 2.4 0 3.8M12 2.5c-1.2 1.3 1.2 2.4 0 3.8M16 3.5c-1.2 1.3 1.2 2.4 0 3.8"/><path d="M3.5 11.5h17c0 4.6-3.8 8.5-8.5 8.5s-8.5-3.9-8.5-8.5z"/></svg>'; }
+function isleIcon(k, px, cls){
+  const I = ISLE[k];
+  if (I && I.img && JJ[I.img]) return '<img' + (cls ? ' class="' + cls + '"' : '') + ' src="' + JJ[I.img] + '" alt="" style="width:' + px + 'px;height:' + px + 'px;object-fit:contain;flex:none">';
+  return '<span class="ihx" style="width:' + px + 'px;height:' + px + 'px">' + onsenSVG(Math.round(px * .66)) + '</span>';   /* 汤屋还在画，先用简笔 */
+}
+function isleCur(k){
+  if (k === 'food') cur = {name:'food'};
+  else if (k === 'money') cur = {name:'ledger'};
+  else if (k === 'people') cur = {name:'people'};
+  else if (k === 'notes') cur = {name:'notes'};
+  else if (k === 'vault') cur = {name:'vault'};
+  else cur = {name:'group', g:houseGroup(k, true)};
+}
+function isleGo(k){ isleCur(k); render(); }
+function isleSet(k, on){
+  if (ISLE_MOD[k]){
+    SET.mods[ISLE_MOD[k]] = on;
+    if (k === 'food'){
+      if (!on) SET.mealsUserOff = 1;
+      else { delete SET.mealsUserOff; if (!foodGroupName() && !extraGroups.includes('美食')) extraGroups.push('美食'); try{ mealAutoTagAll(); }catch(_){ } }
+    }
+  } else {
+    SET.isle = SET.isle || {}; SET.isle.on = SET.isle.on || {}; SET.isle.on[k] = on;
+    if (on) houseGroup(k, true);
+  }
+  if (!on){ SET.isle = SET.isle || {}; SET.isle.pin = islePins().filter(x => x !== k); }
+  ISLE_DEF = null; scheduleSave();
+  toast(on ? ('「' + ISLE[k].n + '」开了 · 在侧栏的小岛里') : ('「' + ISLE[k].n + '」关了 · 记过的都还在，回到手帐里'));
+}
+function islePin(k){
+  const pins = islePins().slice(), i = pins.indexOf(k);
+  if (i >= 0) pins.splice(i, 1);
+  else { if (pins.length >= 4){ toast('最多置顶 4 栋 · 先取消一栋'); return false; } pins.push(k); }
+  SET.isle = SET.isle || {}; SET.isle.pin = pins; scheduleSave(); return true;
+}
+/* ---- 写完一行：有把握直接收（能撤回），没把握问一句，什么都不像就留在手帐 ---- */
+const ISLE_VID = /抖音|视频|B站|b站|小红书|直播|快手/;
+function isleGuess(e){
+  const t = String(e.text || '').trim(); if (t.length < 2) return null;
+  const pr = parseEntry(e);
+  const ttl = pr.title ? canonTitle(pr.title) : null;
+  const titled = /《[^》]+》/.test(t) && !(ttl && (SET.isleNoT || {})[ttl]) && !ISLE_VID.test(t);
+  const outside = t.replace(/《[^》]*》/g, '');   /* 名字里的字不算证据 */
+  const bookish = /读|书|小说|翻完/.test(outside);
+  const sig = {
+    movie: isleOn('movie') && titled && !bookish && /看|二刷|三刷|补|影院|电影|剧|综艺|片/.test(outside),
+    book:  isleOn('book') && titled && bookish,
+    fun:   isleOn('fun') && EV_RE.fun.test(t),
+    food:  isleOn('food') && EV_RE.eat.test(t),
+  };
+  const prices = (pr.prices || []).length > 0;
+  const two = {
+    movie: pr.score != null,
+    book:  pr.score != null,
+    fun:   !!(pr.verdict || prices || ((pr.withs || []).length && pr.withs[0] !== '独自')),
+    food:  !!(pr.store || pr.verdict || prices),
+  };
+  const cand = ['movie', 'book', 'fun', 'food'].filter(k => sig[k]);
+  if (!cand.length) return (isleOn('money') && prices && t.length <= 20) ? {k:'money', sure:false} : null;   /* 只记了一笔钱 */
+  if (cand.length === 1 && two[cand[0]]) return {k:cand[0], sure:true};
+  return {k:cand[0], alt:cand[1] || null, sure:false};
+}
+function isleSend(e, k){
+  if (k === 'money') e.ledger = 1;
+  else { const g = houseGroup(k, true); if (!g) return false; e.groups = e.groups || []; if (!e.groups.includes(g)) e.groups.push(g); }
+  delete e.isleAsk; ISLE_LAST = {id:e._id, k, at:Date.now()};
+  scheduleSave(); return true;
+}
+function isleUndo(e){
+  const k = ISLE_LAST && ISLE_LAST.k; ISLE_LAST = null;
+  if (k === 'money') delete e.ledger;
+  else if (k){ const g = houseGroup(k, false); if (g && e.groups) e.groups = e.groups.filter(x => x !== g); }
+  e.isleNo = 1; scheduleSave(); render();
+}
+function isleRoute(e){
+  if (!e || !String(e.text || '').trim() || e.sym === 'task' || e.sym === 'mood' || e.userSet || e.isleNo || e.isleAsk) return false;
+  if (sideHome(e)) return false;
+  const loc = findEntry(e); if (!loc || loc.parent) return false;
+  const gs = isleGuess(e); if (!gs) return false;
+  if (gs.sure) return isleSend(e, gs.k);
+  e.isleAsk = gs.k + (gs.alt ? ',' + gs.alt : ''); scheduleSave(); return true;
+}
+function isleBack(e, k){   /* 放回手帐：摘掉房子的标记，以后也不再自动收 */
+  if (k === 'money') delete e.ledger;
+  else e.groups = (e.groups || []).filter(g => !ISLE_TPL[tplOf(g)]);
+  e.isleNo = 1; delete e.isleAsk; scheduleSave(); render();
+}
+function isleNoThanks(e){
+  const pr = parseEntry(e);
+  if (pr.title && /movie|book/.test(e.isleAsk || '')){ SET.isleNoT = SET.isleNoT || {}; SET.isleNoT[canonTitle(pr.title)] = 1; }   /* 这个名字不是电影 / 书，记住 */
+  delete e.isleAsk; e.isleNo = 1; scheduleSave(); render();
+}
+function isleAskNode(e){
+  const ks = String(e.isleAsk || '').split(',').filter(k => ISLE[k] && isleOn(k)); if (!ks.length) return null;
+  const d = document.createElement('div'); d.className = 'isle-ask'; d.dataset.eid = e._id;
+  d.innerHTML = '<span>像是' + ISLE[ks[0]].n + '</span>' + ks.map((k, i) => '<button class="' + (i ? '' : 'go') + '" data-k="' + k + '">送去' + ISLE[k].n + '</button>').join('') + '<button data-no="1">不用</button>';
+  d.querySelectorAll('button').forEach(b => b.onclick = ev => { ev.stopPropagation();
+    if (b.dataset.no) isleNoThanks(e); else { isleSend(e, b.dataset.k); render(); } });
+  return d;
+}
 /* ============ 符号 ============ */
 function symNode(e){
   const s = document.createElement('span'); s.className = 'sym';
@@ -1435,8 +1618,12 @@ function entryNode(e, editable, isChild, flat, liveSym){
           }
           return;
         }
+        const sent = !loc.parent && isleRoute(e) && !!sideHome(e);   /* v3.1 收进岛上的房子了：下一行在手帐里另起，不挂在它下面 */
         let ne;
-        if (!loc.parent && e.sym === 'event'){
+        if (sent){
+          ne = Object.assign({text:'', _id:++uid}, defFor(loc.list));
+          loc.list.splice(loc.idx + 1, 0, ne);
+        } else if (!loc.parent && e.sym === 'event'){
           ne = {sym:'task', state:'open', text:'', _id:++uid};
           (e.children = e.children || []).push(ne); e.collapsed = false;
         } else if (loc.parent){
@@ -1471,7 +1658,8 @@ function entryNode(e, editable, isChild, flat, liveSym){
         const keep = (e.images && e.images.length) || (e.children && e.children.length) || e._imgPending
           || (sheetTarget === e && $('#gsheet').classList.contains('on'));
         if (!e.text.trim() && !keep){ removeEntry(e); if (focusRef === e) focusRef = null; render(); return; }
-        if (changed) render();
+        const routed = isleRoute(e);   /* v3.1 */
+        if (changed || routed) render();
       }, 60);
     });
     const wn = CLEAN_ROWS ? whenNode(e, true) : null;   /* v2.31 时间 / 日子写在字前面 */
@@ -1537,7 +1725,7 @@ function jumpToEntry(date, id){
   if (PAGES[date]){
     let hit = null;
     walkPage(date, e => { if (e._id === id) hit = e; });
-    if (hit && isMinor(hit)) minorOpen.add(date);   /* 目标在小事折叠里 → 自动展开 */
+    if (hit && (isMinor(hit) || sideHome(hit))) minorOpen.add(date);   /* 目标在小事折叠 / 岛上那一行里 → 自动展开 */
   }
   gotoDay(date);
   setTimeout(() => {
@@ -1625,24 +1813,25 @@ function renderPageInto(box, date, editable){
     const tasks = p.plan.concat(flowTasks);
     const nOpen = tasks.filter(e => e.sym === 'task' && e.state === 'open').length;
     box.appendChild(secHead('要做的事', nOpen, !tasks.length, editable ? () => addLine(p.plan) : null));
-    tasks.forEach(e => box.appendChild(entryNode(e, editable)));
+    tasks.filter(e => !e.state || e.state === 'open').concat(tasks.filter(e => e.state && e.state !== 'open')).forEach(e => box.appendChild(entryNode(e, editable)));   /* v3.1 没做完的在前 */
     if (date === TODAY && tasks.some(e => e.sym === 'task' && e.state === 'done') && !tasks.some(e => e.sym === 'task' && e.state === 'open')){
       const ad = document.createElement('div'); ad.className = 'alldone';   /* v3.0 */
       ad.innerHTML = '<img src="' + JJ.happy + '" alt="">今天要做的都做完啦'; box.appendChild(ad);
     }
     if (editable && tasks.length) box.appendChild(tailZone(() => addLine(p.plan)));
-    if (editable && date === TODAY){   /* v2.28 想做的事：只是一行小字，想做时再捞 */
+    if (editable && date === TODAY){   /* v2.28 储备：只是一行小字，想做时再捞 */
       let sdN = 0; walk((k2, x) => { if (x.sym === 'task' && x.state === 'someday') sdN++; });
       if (sdN){
         const pl = document.createElement('div'); pl.className = 'pool-line';
-        pl.textContent = '☾ 想做的事 · ' + sdN + ' 件 · 想做哪件捞回来 ›';
+        pl.textContent = '☾ 储备 · ' + sdN + ' 件 · 想做哪件捞回来 ›';
         pl.onclick = () => { cur = {name:'agg', key:'someday'}; render(); };
         box.appendChild(pl);
       }
     }
-    const majors = [], minors = [], thoughts = [], moods = [];
+    const majors = [], minors = [], thoughts = [], moods = [], sides = [];
     p.flow.forEach(e => {
-      if (isMinor(e)) minors.push(e);
+      if (sideHome(e)) sides.push(e);   /* v3.1 副线住在岛上 */
+      else if (isMinor(e)) minors.push(e);
       else if (e.sym === 'task') return;
       else if (e.sym === 'mood') moods.push(e);
       else if (e.sym === 'note' || e.sym === 'ask' || e.sym === 'bang') thoughts.push(e);
@@ -1650,7 +1839,8 @@ function renderPageInto(box, date, editable){
     });
     /* ② 发生的事 */
     box.appendChild(secHead('发生的事', majors.length, !majors.length && !minors.length, editable ? () => addLine(p.flow) : null));
-    majors.forEach(e => box.appendChild(entryNode(e, editable)));
+    const withAsk = e => { box.appendChild(entryNode(e, editable)); if (editable && e.isleAsk){ const a = isleAskNode(e); if (a) box.appendChild(a); } };
+    majors.forEach(withAsk);
     if (minors.length){
       const meals2 = minors.filter(e => e.meal);
       const skips2 = meals2.filter(e => /^没(有)?吃$/.test((e.text || '').trim()));
@@ -1678,16 +1868,45 @@ function renderPageInto(box, date, editable){
     }
     if (p.voOut && p.voOut.length){ const vo = voOutNode(p.voOut); if (vo) box.appendChild(vo); }   /* v2.30 说一段时放到别的日子的 */
     if (editable){
-      const z = tapZone(majors.length ? '' : (date === TODAY ? '还没记 · 点这里写，或者右下角说一段' : '点这里补记这天发生的事'), true, () => addLine(p.flow), !majors.length);
-      z.classList.add(majors.length ? 'slim' : 'hint');
+      const z = tapZone((majors.length || sides.length) ? '' : (date === TODAY ? '还没记 · 点这里写，或者右下角说一段' : '点这里补记这天发生的事'), true, () => addLine(p.flow), !majors.length && !sides.length);
+      z.classList.add((majors.length || sides.length) ? 'slim' : 'hint');
       box.appendChild(z);
     } else if (!p.flow.length){ const d = document.createElement('div'); d.className = 'empty-hint'; d.textContent = '这天没有流水记录'; box.appendChild(d); }
     /* ③ 想法（含 ？疑问 ！重点） */
     box.appendChild(secHead('想法', thoughts.length, !thoughts.length, editable ? () => addLineSym(p.flow, 'note') : null));
-    thoughts.forEach(e => box.appendChild(entryNode(e, editable)));
+    thoughts.forEach(withAsk);
     /* ④ 心情 */
     box.appendChild(secHead('心情', moods.length, !moods.length, editable ? () => addLineSym(p.flow, 'mood') : null));
     moods.forEach(e => box.appendChild(entryNode(e, editable)));
+    /* ⑤ v3.1 这天在岛上：副线只占一行，点开能看能改 */
+    if (sides.length){
+      const cnt = {}; sides.forEach(e => { const k = sideHome(e); cnt[k] = (cnt[k] || 0) + 1; });
+      const ks = ISLE_ORDER.filter(k => cnt[k]);
+      const open = minorOpen.has(date);
+      const li = document.createElement('div'); li.className = 'isle-line'; li.id = 'isleLine';
+      li.innerHTML = '<div class="r1"><b>' + (date === TODAY ? '今天在岛上' : '这天在岛上') + '</b><span>· ' + sides.length + ' 条</span><span class="ar">' + (open ? '收起 ▴' : '展开 ▾') + '</span></div><div class="ihs">'
+        + ks.map(k => '<span class="ih" data-isle="' + k + '">' + isleIcon(k, 22) + ISLE[k].n + ' ' + cnt[k] + '</span>').join('') + '</div>';
+      li.onclick = () => { if (open) minorOpen.delete(date); else minorOpen.add(date); render(); };
+      box.appendChild(li);
+      const fl = (ISLE_LAST && Date.now() - ISLE_LAST.at < 20000) ? sides.find(e => e._id === ISLE_LAST.id) : null;
+      if (fl){
+        const f = document.createElement('div'); f.className = 'isle-flash'; f.id = 'isleFlash';
+        f.innerHTML = '<span>刚收进「' + ISLE[ISLE_LAST.k].n + '」：' + vEsc(String(fl.text)) + '</span><button>撤回</button>';
+        f.querySelector('button').onclick = ev => { ev.stopPropagation(); isleUndo(fl); };
+        box.appendChild(f);
+      }
+      if (open){
+        const bx = document.createElement('div'); bx.className = 'isle-box';
+        ks.forEach(k => {
+          const hd = document.createElement('div'); hd.className = 'isle-sub'; hd.dataset.isle = k;
+          hd.innerHTML = isleIcon(k, 20) + '<span>' + ISLE[k].n + ' · ' + cnt[k] + '</span><span class="go">去' + ISLE[k].h + ' ›</span>';
+          hd.onclick = () => isleGo(k);
+          bx.appendChild(hd);
+          sides.filter(e => sideHome(e) === k).forEach(e => bx.appendChild(entryNode(e, editable)));
+        });
+        box.appendChild(bx);
+      }
+    }
   } finally { CLEAN_ROWS = false; }
 }
 
@@ -1701,7 +1920,7 @@ const AGG = {
   bang:      {title:'！ 重点',  tip:'被你标了重点的句子',          f:e => e.sym === 'bang'},
   done:      {title:'✓ 已完成', tip:'成就流水',                   f:e => e.state === 'done'},
   delegated: {title:'→ 等待中', tip:'已转交，按跟进日提醒',        f:e => e.state === 'delegated'},
-  someday:   {title:'☾ 想做的事', tip:'没做完的、先放着的都在这 · 不催不计数 · 想做哪件点「⤴ 今天做」', f:e => e.sym === 'task' && e.state === 'someday'},
+  someday:   {title:'☾ 储备', tip:'没做完的、先放着的都在这 · 不催不计数 · 想做哪件点「⤴ 今天做」', f:e => e.sym === 'task' && e.state === 'someday'},
   dropped:   {title:'✕ 不做了', tip:'放弃归档',                   f:e => e.state === 'dropped'},
 };
 
@@ -1778,8 +1997,13 @@ function renderGroupBody(){
     const tpl = tplOf(cur.g);
     if (!cur.rngSel) cur.rngSel = 'year';
     const tabs = document.createElement('div'); tabs.className = 'rp-tabs'; tabs.style.marginTop = '16px';
-    if (tpl && tpl !== 'work'){
-      const rc = document.createElement('button'); rc.className = 'chip on'; rc.textContent = '盘点 · ' + rngLabel(cur.rngSel) + ' ▾';
+    const canRec = tpl === 'movie' || tpl === 'book' || tpl === 'fun' || tpl === 'food';
+    if (canRec){   /* v3.1 房子里记一条，哪天的事记哪天 */
+      const ad1 = document.createElement('button'); ad1.className = 'chip on'; ad1.id = 'rcAdd'; ad1.textContent = '＋ 记一条';
+      ad1.onclick = () => recordSheet(cur.g, tpl); tabs.appendChild(ad1);
+    }
+    if (tpl && !TPL_PLAIN[tpl]){
+      const rc = document.createElement('button'); rc.className = canRec ? 'chip' : 'chip on'; rc.textContent = '盘点 · ' + rngLabel(cur.rngSel) + ' ▾';
       rc.onclick = () => { cur.rngSel = RNG_CYCLE[(RNG_CYCLE.indexOf(cur.rngSel) + 1) % RNG_CYCLE.length]; render(); };
       tabs.appendChild(rc);
     }
@@ -1791,7 +2015,7 @@ function renderGroupBody(){
       mp.onclick = () => openFoodMap(cur.g); tabs.appendChild(mp);
       const ad = document.createElement('button'); ad.className = 'chip'; ad.textContent = '＋ 记一家店';
       ad.onclick = () => storeSheet(); tabs.appendChild(ad);
-    } else if (tpl){
+    } else if (tpl && !TPL_PLAIN[tpl]){
       const rp = document.createElement('button'); rp.className = 'chip'; rp.textContent = '生成月报';
       rp.onclick = () => {
         const rows = tplRows(cur.g, rngOf('month'));
@@ -1801,19 +2025,19 @@ function renderGroupBody(){
     }
     const shc = document.createElement('button'); shc.className = 'chip'; shc.textContent = '▣ 分享';
     shc.onclick = () => {
-      if (tpl && tpl !== 'work'){
+      if (tpl && !TPL_PLAIN[tpl]){
         const rows = tplRows(cur.g, rngOf(cur.rngSel));
         openShare(statsPayload(cur.g, tpl, tplStats(tpl, rows), cur.rngSel));
       } else openShare({type:'group', head:'啾啾岛 · 集子', cardTitle:'#' + cur.g + ' · 最近精选', g:cur.g});
     };
     tabs.appendChild(shc);
-    if (!tpl || tpl === 'work'){   /* 有盘点面板的模板页，「怎么写?」在面板标题行 */
+    if (!tpl || TPL_PLAIN[tpl]){   /* 有盘点面板的模板页，「怎么写?」在面板标题行 */
       const hw = document.createElement('button'); hw.className = 'chip'; hw.textContent = '怎么写?';
       hw.onclick = () => openHowSheet(tpl);
       tabs.appendChild(hw);
     }
     view.appendChild(tabs);
-    if (tpl && tpl !== 'work') renderTplPanel(cur.g, tpl);
+    if (tpl && !TPL_PLAIN[tpl]) renderTplPanel(cur.g, tpl);
     const rows2 = tplRows(cur.g, null);
     if (!rows2.length){ const d = document.createElement('div'); d.className = 'empty-hint';
       d.textContent = cur.name === 'food'
@@ -1910,7 +2134,7 @@ function render(){
     const items = []; walk((date, e) => { if (a.f(e)) items.push({date, e}); });
     const n = pagedList(view, items, ({date, e}) => {
       const jr = jumpRow(date, e);
-      if (cur.key === 'someday'){   /* v2.28 想做的事：一键捞回今天 */
+      if (cur.key === 'someday'){   /* v2.28 储备：一键捞回今天 */
         const body = jr.querySelector('.entry-body');
         if (body){
           let c2 = body.querySelector('.chips');
@@ -1930,7 +2154,7 @@ function render(){
     if (!n){ const d = document.createElement('div'); d.className = 'empty-hint'; d.textContent = '这里还是空的'; view.appendChild(d); }
   }
   else if (cur.name === 'group'){
-    topTitle.textContent = '#' + cur.g; reviewBtn.textContent = '回今日';
+    { const ht = tplOf(cur.g); topTitle.textContent = (ht && ht !== 'money' && ISLE_TPL[ht] && HOUSE[ht]) ? HOUSE[ht][1] : '#' + cur.g; } reviewBtn.textContent = '回今日';
     { const hh = houseHead(tplOf(cur.g), cur.g); if (hh) view.appendChild(hh); }   /* v3.0 */
     renderGroupBody();
   }
@@ -1938,7 +2162,7 @@ function render(){
     /* v2.23 美食板块（方案B双页签）：集子=资产 · 三餐=习惯，一个门两间房 */
     if (!cur.tab) cur.tab = 'ji';
     if (cur.tab === 'meal' && SET.mods.mealLog !== true) cur.tab = 'ji';   /* v2.29 三餐打卡退役 */
-    topTitle.textContent = '美食'; reviewBtn.textContent = '回今日';
+    topTitle.textContent = '海边饭馆'; reviewBtn.textContent = '回今日';
     if (!foodGroupName() && !extraGroups.includes('美食')) extraGroups.push('美食');
     cur.g = foodGroupName() || '美食';
     { const hh = houseHead('food', cur.g); if (hh) view.appendChild(hh); }   /* v3.0 */
@@ -1956,7 +2180,7 @@ function render(){
   else if (cur.name === 'ledger'){
     /* v2.24 记账板块（方案B双页签）：流水=账单页 · 盘点=月对比与去向 */
     if (!cur.tab) cur.tab = 'liu';
-    topTitle.textContent = '记账'; reviewBtn.textContent = '回今日';
+    topTitle.textContent = '账房'; reviewBtn.textContent = '回今日';
     const ltb = document.createElement('div'); ltb.className = 'ftabs';
     ltb.innerHTML = '<div class="ftab' + (cur.tab === 'liu' ? ' on' : '') + '" data-ft="liu">📒 流水</div>'
       + '<div class="ftab' + (cur.tab === 'pan' ? ' on' : '') + '" data-ft="pan">📊 盘点</div>';
@@ -2011,12 +2235,13 @@ function render(){
     })();
     setRow('提醒力度', setSub(SET.duty ? '严格 · 每天逐件表态 ›' : '温和 · 没做完的不催 ›'), () => {
       SET.duty = !SET.duty; scheduleSave(); render();
-      toast(SET.duty ? '已切到严格：早上逐件表态、复盘逐件过' : '已切到温和：没做完的第二天自动收进「想做的事」');
+      toast(SET.duty ? '已切到严格：早上逐件表态、复盘逐件过' : '已切到温和：没做完的第二天自动收进「储备」');
     });
-    if (modOn('cycles')) setRow('🔁 循环提醒', setSub('生日 · 还款 · 周期 ›'), () => { cur = {name:'cycles'}; render(); });
+    if (modOn('cycles')) setRow('🔁 提醒', setSub('生日 · 还款 · 周期 ›'), () => { cur = {name:'cycles'}; render(); });
+    else { const tgc = setToggle(false); setRow('🔁 提醒 · 生日、还款、周期', tgc, null); tgc.onclick = () => { SET.mods.cycles = true; scheduleSave(); render(); }; }
     setRow('天气城市', setSub((wxCfg().cities.map(c => c.n).join('、') || '还没设') + ' ›'), wxCitySheet);
-    view.appendChild(sectionLabel('工具箱 · 关掉的不出现在侧栏，数据都在'));
-    view.appendChild(toolboxNode());
+    view.appendChild(sectionLabel('小岛'));
+    setRow('🏝 岛上的房子', setSub(ISLE_ORDER.filter(k => isleOn(k)).length + ' 栋开着 · 开关、置顶 ›'), () => { cur = {name:'isle'}; render(); });
     view.appendChild(sectionLabel('数据'));
     setRow('数据与备份', setSub('导出 · 导入 · 云备份 · 恢复 ›'), () => { cur = {name:'data'}; render(); });
     view.appendChild(sectionLabel('其他'));
@@ -2030,7 +2255,32 @@ function render(){
     });
     setRow('主题色', accWrap, null);
     setRow('功能手册 · 实验室', setSub('›'), labSheet);
-    setRow('版本记录', setSub('v3.0 ›'), showChangelog);
+    setRow('版本记录', setSub('v3.1 ›'), showChangelog);
+  }
+  else if (cur.name === 'isle'){   /* v3.1 岛上的房子：开关、置顶 */
+    topTitle.textContent = '岛上的房子'; reviewBtn.textContent = '回今日';
+    const tip = document.createElement('div'); tip.className = 'hw-tip'; tip.style.padding = '14px 4px 6px';
+    tip.textContent = '一栋房子一个小本子，按自己的用法开。关掉的不出现在侧栏，也不再自动收记录；记过的都还在，回到手帐里。最多置顶 4 栋，排在侧栏最前面。';
+    view.appendChild(tip);
+    const pins = islePins();
+    ISLE_ORDER.forEach(k => {
+      const I = ISLE[k], on = isleOn(k), pd = pins.includes(k);
+      const r = document.createElement('div'); r.className = 'isle-set' + (on ? '' : ' off'); r.dataset.isle = k;
+      r.innerHTML = isleIcon(k, 36) + '<div class="nm"><b>' + I.n + ' · ' + I.h + '</b><small>' + I.tip + '</small></div>'
+        + (on ? '<button class="pin' + (pd ? ' on' : '') + '">' + (pd ? '已置顶' : '置顶') + '</button>' : '');
+      const sw = setToggle(on); r.appendChild(sw);
+      sw.onclick = ev => { ev.stopPropagation(); isleSet(k, !on); render(); };
+      const pb = r.querySelector('.pin'); if (pb) pb.onclick = ev => { ev.stopPropagation(); if (islePin(k)) render(); };
+      view.appendChild(r);
+      if (k === 'food' && on){   /* 三餐打卡：饭馆里的一个页签 */
+        const ml = SET.mods.mealLog === true;
+        const r2 = document.createElement('div'); r2.className = 'isle-set'; r2.dataset.isle = 'mealLog'; r2.style.paddingLeft = '50px';
+        r2.innerHTML = '<div class="nm"><b style="font-size:13.5px">三餐打卡</b><small>美食里的「三餐」页签</small></div>';
+        const sw2 = setToggle(ml); r2.appendChild(sw2);
+        sw2.onclick = ev => { ev.stopPropagation(); SET.mods.mealLog = !ml; scheduleSave(); render(); };
+        view.appendChild(r2);
+      }
+    });
   }
   else if (cur.name === 'data'){
     topTitle.textContent = '数据与备份'; reviewBtn.textContent = '回今日';
@@ -2060,16 +2310,16 @@ function render(){
     renderDict();
   }
   else if (cur.name === 'cycles'){
-    topTitle.textContent = '循环提醒'; reviewBtn.textContent = '回今日';
+    topTitle.textContent = '提醒'; reviewBtn.textContent = '回今日';
     renderCycles();
   }
   else if (cur.name === 'notes'){
-    topTitle.textContent = '笔记本'; reviewBtn.textContent = '回今日';
+    topTitle.textContent = '记事亭'; reviewBtn.textContent = '回今日';
     renderNotes();
   }
   else if (cur.name === 'note'){
     const nb0 = noteById(cur.id);
-    topTitle.textContent = nb0 ? (nb0.title || '未命名') : '笔记本'; reviewBtn.textContent = '回今日';
+    topTitle.textContent = nb0 ? (nb0.title || '未命名') : '记事亭'; reviewBtn.textContent = '回今日';
     if (nb0){ ensureNoteBorn(nb0); renderNote(nb0); } else renderNotes();
   }
   else if (cur.name === 'meals'){
@@ -2077,7 +2327,7 @@ function render(){
     renderMeals();
   }
   else if (cur.name === 'people'){
-    topTitle.textContent = '熟人册'; reviewBtn.textContent = '回今日';
+    topTitle.textContent = '小岛茶屋'; reviewBtn.textContent = '回今日';
     renderPeople();
   }
   else if (cur.name === 'me'){
@@ -2089,11 +2339,11 @@ function render(){
   }
   else if (cur.name === 'person'){
     const pp0 = personById(cur.pid);
-    topTitle.textContent = pp0 ? pp0.name : '熟人册'; reviewBtn.textContent = '回今日';
+    topTitle.textContent = pp0 ? pp0.name : '小岛茶屋'; reviewBtn.textContent = '回今日';
     if (pp0) renderPerson(pp0); else renderPeople();
   }
   else if (cur.name === 'vault'){
-    topTitle.textContent = '账号小本'; reviewBtn.textContent = '回今日';
+    topTitle.textContent = '树洞'; reviewBtn.textContent = '回今日';
     renderVault();
   }
   else if (cur.name === 'cal'){
@@ -2113,7 +2363,7 @@ function render(){
     view.appendChild(tapZone('＋ 提前安排一条', false, () => addLine(p.plan)));
     const cycHitsHere = (SET.cycles || []).filter(c => cycHits(c, cur.key));
     if (cycHitsHere.length){
-      view.appendChild(sectionLabel('这天有循环提醒'));
+      view.appendChild(sectionLabel('这天有提醒'));
       cycHitsHere.forEach(c => {
         const d2 = document.createElement('div'); d2.className = 'empty-hint'; d2.style.padding = '6px 2px';
         d2.textContent = '🔁 ' + c.name + ' · ' + cycDesc(c);
@@ -2541,7 +2791,7 @@ function buildQSheet(){
     + '<button class="rv-btn b-mig"  id="qMig"><span class="g">›</span>推迟</button>'
     + '<button class="rv-btn b-drop" id="qDrop"><span class="g">✕</span>不做了</button>'
     + '<button class="rv-btn b-del"  id="qDel"><span class="g">→</span>转交</button>'
-    + (isSd ? '' : '<button class="rv-btn" id="qSd" style="grid-column:1/-1"><span class="g" style="color:var(--ink-faint)">☾</span>想做的事 · 先放着，别催我</button>')
+    + (isSd ? '' : '<button class="rv-btn" id="qSd" style="grid-column:1/-1"><span class="g" style="color:var(--ink-faint)">☾</span>储备 · 先放着，别催我</button>')
     + '</div>'
     + '<div class="rv-mig-panel" id="qMigPanel">'
     + '<div class="mig-quick" id="qQuick"></div>'
@@ -2561,7 +2811,7 @@ function buildQSheet(){
   if ($('#qSd')) $('#qSd').onclick = () => {
     snapshot('处理任务');
     t.state = 'someday'; delete t.due; t.badge = '☾ 想做';
-    fin('☾ 收进「想做的事」· 不催你，想做时去侧栏捞');
+    fin('☾ 收进「储备」· 不催你，想做时去侧栏捞');
   };
   if ($('#qBack')) $('#qBack').onclick = () => {
     snapshot('处理任务');
@@ -2780,11 +3030,11 @@ function renderReview(){
       + '<button class="pill-btn" id="rvClose">收起</button></div>'
       + '<div class="rv-body"><div class="rv-finish" style="margin:14px auto 0">' + jjImg('night', 120) + '<br><b>今日快照</b><br>'
       + '记录 ' + recN + ' 条 · 完成 ' + doneN + ' 件 · 事件 ' + evN + ' 件<br>'
-      + '迁移 ' + stat.mig + ' · 放弃 ' + stat.drop + ' · 转交 ' + stat.del + (stat.sd ? ' · 想做的事 ' + stat.sd : '')
+      + '迁移 ' + stat.mig + ' · 放弃 ' + stat.drop + ' · 转交 ' + stat.del + (stat.sd ? ' · 储备 ' + stat.sd : '')
       + (oldDone ? ('<br>还清了 ' + oldDone + ' 件旧账 ✓') : '')
       + (moods.length ? ('<br>今天的心情：' + moods.slice(0, 3).join('、')) : '')
       + '<br>明天的页面啾啾已经铺好</div>'
-      + (rvLeft ? '<div class="rv-q" style="margin-top:14px;text-align:center">还有 ' + rvLeft + ' 件没做完 · 明天我替你收进「想做的事」'
+      + (rvLeft ? '<div class="rv-q" style="margin-top:14px;text-align:center">还有 ' + rvLeft + ' 件没做完 · 明天我替你收进「储备」'
           + '<br><button class="gm-btn" id="rvWalk" style="margin-top:8px;padding:8px 16px">现在过一遍 ›</button></div>' : '')
       + mealsHtml
       + '<div class="rv-q" style="margin-top:18px">🗣 说说今天</div><div id="rvVoice"><button class="gm-btn" id="rvVoGo" style="width:100%;padding:10px">说一段，我来分拣 ›</button></div>'
@@ -2831,9 +3081,9 @@ function renderReview(){
     + '<button class="rv-btn b-mig"  id="bMig"><span class="g">›</span>继续做</button>'
     + '<button class="rv-btn b-drop" id="bDrop"><span class="g">✕</span>不做了</button>'
     + '<button class="rv-btn b-del"  id="bDel"><span class="g">→</span>转交</button>'
-    + '<button class="rv-btn" id="bSd" style="grid-column:1/-1"><span class="g" style="color:var(--ink-faint)">☾</span>想做的事 · 先放着，不催</button>'
+    + '<button class="rv-btn" id="bSd" style="grid-column:1/-1"><span class="g" style="color:var(--ink-faint)">☾</span>储备 · 先放着，不催</button>'
     + '</div>'
-    + (SET.duty && (t.mig || 0) >= 3 ? '<div class="rv-q" style="margin:12px 0 0;color:var(--accent)">它已经跟了你 ' + t.mig + ' 天 · 不急的话，☾ 想做的事 是诚实的选择</div>' : '')
+    + (SET.duty && (t.mig || 0) >= 3 ? '<div class="rv-q" style="margin:12px 0 0;color:var(--accent)">它已经跟了你 ' + t.mig + ' 天 · 不急的话，☾ 储备 是诚实的选择</div>' : '')
     + '<div class="rv-mig-panel" id="migPanel">'
     + '<div class="mig-quick" id="migQuick"></div>'
     + '<input type="date" class="qdate" id="migDate">'
@@ -2864,7 +3114,7 @@ function renderReview(){
   };
   $('#bDone').onclick = () => { t.state = 'done'; t.doneDay = TODAY; cycOnDone(t); rvMemoStep(); };
   $('#bDrop').onclick = () => { t.state = 'dropped'; t.badge = '不做了'; stat.drop++; toast('✕ 已放弃 · 页面保留划痕'); next(); };
-  $('#bSd').onclick = () => { t.state = 'someday'; delete t.due; t.badge = '☾ 想做'; stat.sd = (stat.sd || 0) + 1; toast('☾ 收进「想做的事」· 不催不追'); next(); };
+  $('#bSd').onclick = () => { t.state = 'someday'; delete t.due; t.badge = '☾ 想做'; stat.sd = (stat.sd || 0) + 1; toast('☾ 收进「储备」· 不催不追'); next(); };
   $('#bDel').onclick  = () => { $('#migPanel').classList.remove('on'); $('#rvDelPanel').classList.toggle('on'); };
   $('#bMig').onclick  = () => { $('#rvDelPanel').classList.remove('on'); $('#migPanel').classList.toggle('on'); };
   setupDatePick('migQuick', 'migDate');
@@ -3088,14 +3338,15 @@ function showManual(){
     + '<button class="pill-btn" id="mnClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
     + '【今日页四档】\n要做的事 · 发生的事 · 想法 · 心情；没写的那档只剩浅色标题，点「＋」往那档写\n•  要做的事——点一下打勾，长按处理（处理面板顶上写来历）\n🍚 💼 🚗 🎡…  发生的事——按内容自动挑图标，点图标看细节、换图标\n—  想法 ·  ？疑问 ·  ！重点——都在想法这一档\n＝  心情——当下的情绪\n行下不挂小签：分组、花了多少、和谁、纠错、避雷都在点符号的小卡里\n\n'
+    + '【手帐和小岛】\n首页只放手帐；吃的、看的、读的、玩的、记的账住进岛上的房子，首页最下面一行「今天在岛上」，点开能看能改\n写完一行，我有把握就直接收进房子（旁边能撤回），没把握就问一句「送去哪」；说过「不用」的下次不再问\n每栋房子里都能「＋ 记一条」，哪天的事选哪天；设置 → 岛上的房子 里开关、置顶\n\n'
     + '【书写】\n「要做的事」默认 •，「发生的事」默认 ○，写着写着我会帮你换成合适的图标\n写「明天 / 下周四 / 8.15号」自动挂日期；写「下午三点 / 16:00」自动挂时间\n敲 # 弹出分组联想；带日期的默认事件会自动转成任务\n\n'
     + '【因果记录】\n事件行回车：下一行自动挂在这件事下面\n空的子行再回车：回到顶层\n点事件的图标 →「在这件事下面补一条」；「▾3」点击折叠\n\n'
     + '【处理任务】\n点符号 = 完成；长按符号 = 推迟 / 不做了 / 转交 / 恢复\n推迟可选任意日期并填进度；转交要填给谁和跟进日，到期自动提醒\n处理面板里的备注会进日报周报\n\n'
-    + '【翻阅】\n今日页左右滑（或顶栏 ‹ ›）翻到前一天 / 后一天\n☰ 侧栏：上面四格（长按换）、分组标签（长按管理）、工具、按标记汇总、搜索\n汇总里点符号可直接勾掉，点文字跳回当天并高亮\n「◂ 8.6 转来」芯片点击跳回源头；历史页的「→8.12」跳去目标日\n\n'
+    + '【翻阅】\n今日页左右滑（或顶栏 ‹ ›）翻到前一天 / 后一天\n☰ 侧栏：上面是手帐（日历、提醒、储备，和你的分组·长按管理），下面是小岛（开着的房子，长按置顶或关掉，「＋」里开别的），再往下按标记汇总、搜索\n汇总里点符号可直接勾掉，点文字跳回当天并高亮\n「◂ 8.6 转来」芯片点击跳回源头；历史页的「→8.12」跳去目标日\n\n'
     + '【🗣 说一段 · 我来分拣】\n点今日页右下角的「说一段」（复盘里是「说说今天」），按键盘右下角的 🎤 一口气说完，点「分拣」：今天发生、要做的、别的日子的分好组给你看，确认才放进去。听错的名字照你的词典改好（设置 → 我的词典），点 ↺ 改回\n\n'
     + '【🎲 今天吃什么】\n美食 → 吃什么：只从你说过好吃的店里抽，理由全是你自己写过的话；吃完点 ✓ 一键评价。只记喜欢的和避雷的，三餐打卡在设置里可以再打开\n\n'
     + '【早安卡】\n每天第一次打开递上一张：大日期、农历节气、天气和昨天比冷暖、啾啾的一句话；有约好的事、去年今日 / 上个月的今天才出现在下面\n收起后日期旁留一个天气小签，点开再看；城市在 设置 → 天气城市 里加，最多 3 个\n\n'
-    + '【复盘与报告】\n右上「复盘」直达今日快照和盖章；想逐件过没做完的，点「现在过一遍」\n没日子的事当天没做完，第二天自动收进「☾ 想做的事」，不催不计数（设置 → 提醒力度 可切到「严格」）\n分组视图里一键生成日报 / 周报 / 月报，可选含心情\n\n'
+    + '【复盘与报告】\n右上「复盘」直达今日快照和盖章；想逐件过没做完的，点「现在过一遍」\n没日子的事当天没做完，第二天自动收进「☾ 储备」，不催不计数（设置 → 提醒力度 可切到「严格」）\n分组视图里一键生成日报 / 周报 / 月报，可选含心情\n\n'
     + '【数据安全】\n数据只存在本机；设置里定期「完整备份(.json)」\n⏰ 芯片不会响，点它「加入系统日历」才有真提醒'
     + '</div></div>';
   $('#mnClose').onclick = () => R.classList.remove('on');
@@ -3108,7 +3359,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v3.0（当前 · 2026.11.6）\n【改名 · 啾啾岛 Jotbird】\n· 点点手帐改名「啾啾岛」，英文名 Jotbird。陪你记事的，从一颗小圆点换成了住在岛上的小鸟啾啾\n· 啾啾出现在引导页、侧栏、早安卡、复盘结束、各种空白页、账号小本、说一段分拣和出错提示里\n· 集子变成岛上的房子：美食街、小电影院、书屋、小账房、工作坊；侧栏的格子和工具也换上了小房子\n· 今天要做的都做完了，啾啾会出来说一声\n【换色】\n· 纸、墨、围巾红、海青，都从啾啾和岛上取色；6 套主题色也换成岛上的颜色，字比以前清楚\n· 分享图换了落款，多了「信纸」底图\n【更新提示】\n· 主屏幕上的名字和图标，要删掉旧图标、重新「添加到主屏幕」才会变成啾啾岛。删之前先在「设置 → 数据与备份」做一次完整备份；加好后要是记录没了，就用它恢复\n\n'
+    + 'v3.1（当前 · 2026.11.9）\n【手帐和小岛分开】\n· 首页只放手帐：要做的事、发生的事、想法、心情\n· 吃的、看的、读的、玩的、记的账住进岛上的房子；首页最下面一行「今天在岛上」，点开能看能改\n· 写完一行，有把握就直接收进房子，旁边能撤回；没把握就问一句「送去哪」；什么都不像的留在手帐。说过「不用」的下次不再问\n【侧栏】\n· 上面是手帐：日历、提醒、储备三格，和你自己的分组\n· 下面是小岛：开着的房子排在这，长按能置顶或关掉，「＋」里能开别的\n【房子】\n· 设置里新加「岛上的房子」：每栋都能开关、置顶；关掉的不出现在侧栏，记过的都还在，回到手帐里\n· 美食、电影、阅读、娱乐的房子里有「＋ 记一条」，哪天的事选哪天\n· 新模板「娱乐」：休闲、KTV、按摩这类，住温泉汤屋\n【改名】\n· 熟人改叫亲友，循环提醒改叫提醒，笔记本改叫笔记，账号小本改叫密码，想做的事改叫储备\n· 房子名：海边饭馆、小岛影院、小岛书屋、账房、小岛茶屋、温泉汤屋、记事亭、树洞\n· 日历的邮局、储备的灯塔、树洞、汤屋还在画，先用旧图顶着\n\n'
+    + 'v3.0（2026.11.6）\n【改名 · 啾啾岛 Jotbird】\n· 点点手帐改名「啾啾岛」，英文名 Jotbird。陪你记事的，从一颗小圆点换成了住在岛上的小鸟啾啾\n· 啾啾出现在引导页、侧栏、早安卡、复盘结束、各种空白页、账号小本、说一段分拣和出错提示里\n· 集子变成岛上的房子：美食街、小电影院、书屋、小账房、工作坊；侧栏的格子和工具也换上了小房子\n· 今天要做的都做完了，啾啾会出来说一声\n【换色】\n· 纸、墨、围巾红、海青，都从啾啾和岛上取色；6 套主题色也换成岛上的颜色，字比以前清楚\n· 分享图换了落款，多了「信纸」底图\n【更新提示】\n· 主屏幕上的名字和图标，要删掉旧图标、重新「添加到主屏幕」才会变成啾啾岛。删之前先在「设置 → 数据与备份」做一次完整备份；加好后要是记录没了，就用它恢复\n\n'
     + 'v2.32（2026.11.6）\n【更稳 · 更好点】\n· 照片和文字分开存：照片挪到浏览器的另一个仓库，不再挤占文字那 5MB；以前的照片第一次打开时自动搬过去，导出和云备份照旧带图\n· 「数据与备份 → 存储占用」能看到文字和照片各占多少\n· 行首的符号、每档的 ＋、翻天的箭头、字前的时间、小卡里的按钮：看起来一样大，手指能点中的范围变大了\n· 按标记汇总、搜索结果很长时先显示最近 120 条，底下点「再往前」接着看\n· 早安卡「今天的事」里单独设了时间的任务，时间也显示出来了\n· 约到某天、推迟到明天的任务，到了那天时间还在（以前会丢）\n· 「晚饭后散步」这种算运动 🏃，不再认成吃饭\n\n'
     + 'v2.31（2026.11.5）\n【今日页 · 分四档】\n· 要做的事 · 发生的事 · 想法 · 心情 四档固定；哪档还没写只剩一行浅色标题，点「＋」直接往那档写\n· 「？疑问」「！重点」归在想法里；挂在事件下面的子条目跟着事件走\n【发生的事用图标】\n· 行首按内容自动挑：🍚 吃喝（说了花多少、和谁也还是 🍚）· 💼 工作 · 🚗 出行 · 🎡 玩 · 🎬 看片 · 🏥 看病 · 🏃 运动 · 📚 学 · 🛍️ 买 · 🎁 人情 · 🏠 家里 · 👥 见人\n· 认错了点图标换，这一行就记住你选的\n【行下不再挂小签】\n· 分组、记账类别、和谁、从哪转来、听写纠错、拆条、避雷，全部收进点符号弹出的小卡；任务长按，处理面板顶上写来历\n· 时间写在字前面；避雷过的店，图标上一个小红点\n· 一行想换档（比如心情认成了事件），小卡里点「⇄」挪过去\n【早安卡】\n· 大日期、天气、点点的一句话放在上面；今天的事、去年今日 / 上个月的今天放下面，没有就不出现\n· 随便抽一条的「翻到一页」和饭点抽卡那行拿掉了\n· 今日页顶上的天气条缩成日期旁的小签，点一下看整张早安卡\n【侧栏】\n· 上面四格：默认 日历 · 想做的事 · 美食 · 记账，长按换；分组变成一排标签（长按管理）；其他工具一排图标；按标记汇总折起来\n【设置】\n· 分成 记录 / 提醒 / 工具箱 / 数据 / 其他；备份收进「数据与备份」；「任务风格 随缘 / 对账」改叫「提醒力度 温和 / 严格」\n\n'
     + 'v2.30（2026.11.5）\n【🗣 说一段 · 我来分拣】\n· 右下角的话筒换成「说一段 · 我来分拣」：点开是整屏，键盘直接弹好，按键盘右下角的 🎤 一口气说完，点右上角「分拣」\n· 分拣结果按放到哪分组：今天发生 / 今天要做 / 后天 / 昨天…，每条能改字、⇄ 换地方、✕ 不要；没问题点「确认」才放进去\n· 放到别的日子的，会去掉「后天」「昨天」这类词，到了那天读着才对；今天这页留一行小字，点一下跳过去\n· 说到一半退出也不丢，下次打开接着说\n【📖 我的词典 · 从你的记录里长出来】\n· 认识的人、去过的店自动收进词典，越常写越靠前；英文名（orion）也认得了\n· 听写打错的名字自动改好并标出来（「布尔」→ 不二），点 ↺ 改回，以后就不这样改\n· 店名说简称也认得：「陈先进」就是陈先进小馆，算去过一次；「姐姐」「我姐」算同一个人\n· 你手动把名字改对一次，它就记住；设置 → 我的词典 里能看、能删、能手动加「A 就是 B」\n· 「和旭旭、不二、orion、姐夫」这种一长串名单，每个人都算上\n\n'
@@ -3501,8 +3753,8 @@ function parseVerdict(t){
       || scan(masked, V_NEG2, V_POS2) || scan(t, V_NEG2, V_POS2)
       || (mid ? {i:mid.index + mid[1].length, w:'一般', neg:false} : null);
 }
-const TPLS = {work:{n:'工作', unit:'件'}, movie:{n:'电影', unit:'部'}, food:{n:'美食', unit:'家'}, book:{n:'读书', unit:'本'}, money:{n:'花钱', unit:'笔'}};
-const TPL_ORDER = [null, 'work', 'movie', 'food', 'book', 'money'];
+const TPLS = {work:{n:'工作', unit:'件'}, movie:{n:'电影', unit:'部'}, food:{n:'美食', unit:'家'}, book:{n:'读书', unit:'本'}, money:{n:'花钱', unit:'笔'}, fun:{n:'娱乐', unit:'次'}};
+const TPL_ORDER = [null, 'work', 'movie', 'food', 'book', 'money', 'fun'];
 function tplOf(g){
   const o = SET.gtpl[g];
   if (o !== undefined) return o || null;
@@ -3511,6 +3763,7 @@ function tplOf(g){
   if (/美食|餐|吃/.test(g)) return 'food';
   if (/读书|阅读|书/.test(g)) return 'book';
   if (/花钱|消费|记账|账单|开销/.test(g)) return 'money';
+  if (/休闲|娱乐|玩乐|好玩/.test(g)) return 'fun';   /* v3.1 */
   return null;
 }
 function rngOf(sel){
@@ -3678,7 +3931,7 @@ function ptagRow(r, tpl, scoredSet){
     (p.prices || []).slice(0, 2).forEach(v => add('sc', '¥' + v));
   }
   if (tpl === 'money') (p.prices || []).forEach(v => add('sc', '¥' + v));
-  if (tpl && tpl !== 'work' && !(p.prices || []).length)
+  if (tpl && !TPL_PLAIN[tpl] && !(p.prices || []).length)
     add('ask', '¥ 补一笔', ev => { ev.stopPropagation(); openAmtSheet(r.e); });
   if (p.verdict){
     if (tpl === 'food'){ const tr = foodTier(p) || 'jia';
@@ -3809,7 +4062,8 @@ function openHowSheet(tpl){
     movie: row('电影', '《沙丘2》9分，和赵赵二刷', '《》里是片名 · X分=评分 · 和X=同行人'),
     book: row('读书', '《毫无意义的工作》读完，8分', '《》里是书名 · X分=评分'),
     money: row('花销', '打车 23元，咖啡 ¥18', '写 元 / ¥ 就自动记账'),
-    work: row('工作', '完成周报初稿，明天给老板', '写「明天 / 8.25」自动挂日期')
+    work: row('工作', '完成周报初稿，明天给老板', '写「明天 / 8.25」自动挂日期'),
+    fun: row('娱乐', '和朋友去唱K，人均¥80，开心', '和X=同行人 · 写 元 就自动记账')
   };
   const order = [tpl].concat(Object.keys(per).filter(k => k !== tpl)).filter(k => k && per[k]);
   S.innerHTML = '<div class="gs-title">怎么写，啾啾才看得懂</div>'
@@ -4220,7 +4474,7 @@ function shExport(){
 }
 $('#shSheet').addEventListener('click', ev => { if (ev.target.id === 'shSheet') closeShare(); });
 
-/* ============ v2.7 循环提醒 ============ */
+/* ============ v2.7 提醒 ============ */
 /* ===== v2.15 板块开关 ===== */
 SET.mods = SET.mods || {};
 if (SET.mods.meals === undefined) SET.mods.meals = false;   /* 三餐默认关，设置里打开 */
@@ -4444,6 +4698,38 @@ function openAmtSheet(e){
 }
 function expMonthOf(rows, y, m){ return rows.filter(r => { const a = r.d.split('.').map(Number); return a[0] === y && a[1] === m; }); }
 function expSum(a){ return Math.round(a.reduce((s2, r) => s2 + r.sum, 0)); }
+function recordSheet(g, tpl){   /* v3.1 房子里记一条：哪天的事选哪天 */
+  const S = $('#gsheet'), I = ISLE[tpl] || {};
+  const PH = {movie:'和谁看了《片名》几分，说两句', book:'读完了《书名》几分，说两句', food:'在「店名」吃了什么，好吃吗、多少钱', fun:'去哪玩了、和谁、花了多少'};
+  const TIP = {movie:'写「《片名》+ 几分 + 和谁」，' + I.who + '会自动认出来', book:'写「《书名》+ 几分」，' + I.who + '会自动认出来',
+    food:'店名加「」，' + I.who + '会记进熟店簿；写「宝藏」「避雷」能上榜', fun:'写上和谁、花了多少，' + I.who + '帮你记着'};
+  const iso = k2 => { const a = k2.split('.').map(Number); return a[0] + '-' + String(a[1]).padStart(2, '0') + '-' + String(a[2]).padStart(2, '0'); };
+  const yd = (() => { const d = parseKey(TODAY); d.setDate(d.getDate() - 1); return dkey(d); })();
+  S.innerHTML = '<div class="gs-title">记一条 · ' + (I.h || ('#' + vEsc(g))) + '</div>'
+    + '<div style="display:flex;gap:8px;align-items:center"><input class="vt-in" id="rcDate" type="date" style="flex:1;margin-top:0">'
+    + '<button class="gs-chip on" id="rcT">今天</button><button class="gs-chip" id="rcY">昨天</button></div>'
+    + '<textarea class="vt-in" id="rcText" rows="3" placeholder="' + (PH[tpl] || '写一句') + '" style="resize:none;line-height:1.6"></textarea>'
+    + '<div class="hw-tip" style="padding:6px 2px 0">' + (TIP[tpl] || '') + '</div>'
+    + '<button class="rv-confirm" id="rcSave">记下这条</button>'
+    + '<div class="hw-tip" style="padding:6px 2px 0">哪天的事选哪天 · 这条住在' + (I.h || '这里') + '，那天的手帐只在「岛上」那一行多个数字</div>';
+  const di = $('#rcDate'); di.value = iso(TODAY); di.max = iso(TODAY);
+  const mark = () => { $('#rcT').classList.toggle('on', di.value === iso(TODAY)); $('#rcY').classList.toggle('on', di.value === iso(yd)); };
+  $('#rcT').onclick = () => { di.value = iso(TODAY); mark(); };
+  $('#rcY').onclick = () => { di.value = iso(yd); mark(); };
+  di.onchange = mark;
+  $('#rcSave').onclick = () => {
+    const t = $('#rcText').value.trim(); if (!t){ toast('先写一句'); return; }
+    if (!di.value){ toast('选一下哪天'); return; }
+    const key = di.value.split('-').map(Number).join('.');
+    if (!PAGES[key]) PAGES[key] = {plan:[], flow:[]};
+    const e = {sym:'event', text:t, groups:[g], _id:++uid};
+    PAGES[key].flow.push(e); commit(e);
+    scheduleSave(); closeSheet();
+    toast('记到' + (key === TODAY ? '今天' : ' ' + fmtKey(key)) + ' · ' + t.slice(0, 12));
+    render();
+  };
+  S.classList.add('on'); $('#mask').classList.add('on');
+}
 function ledgerSheet(){
   const S = $('#gsheet');
   const ta = TODAY.split('.').map(Number);
@@ -4819,7 +5105,7 @@ function cycIcs(c){
       + (i === 0 && c.kind !== 'lunar'
           ? '\r\nRRULE:' + (c.kind === 'year' ? 'FREQ=YEARLY' : c.kind === 'month' ? 'FREQ=MONTHLY' : ('FREQ=DAILY;INTERVAL=' + c.n))
           : '')
-      + '\r\nSUMMARY:' + cycIcon(c) + ' ' + (c.name || '循环提醒')
+      + '\r\nSUMMARY:' + cycIcon(c) + ' ' + (c.name || '提醒')
       + (c.kind === 'lunar' ? '（' + lunarLabel(c.lm, c.ld) + '）' : '')
       + '\r\nEND:VEVENT\r\n';
   };
@@ -4836,7 +5122,7 @@ function cycIcs(c){
   const ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//dot//CN\r\n' + evs + 'END:VCALENDAR\r\n';
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([ics], {type:'text/calendar'}));
-  a.download = (c.name || '循环提醒').slice(0, 12) + '.ics'; a.click();
+  a.download = (c.name || '提醒').slice(0, 12) + '.ics'; a.click();
   toast(c.kind === 'lunar' ? '农历日子已按未来 5 年算好写进日历文件' : '已生成日历文件 · 打开即可加入系统日历（会真的响）');
 }
 /* ===== v2.14 重要时间点：三档模糊精度 ===== */
@@ -4967,7 +5253,7 @@ function noteCreate(){
 }
 function renderNotes(){
   if (!modOn('notes')){
-    const d0 = document.createElement('div'); d0.className = 'empty-hint'; d0.textContent = '笔记本板块已关闭 · 到 设置 → 板块管理 打开';
+    const d0 = document.createElement('div'); d0.className = 'empty-hint'; d0.textContent = '笔记（记事亭）关着 · 到 设置 → 岛上的房子 打开';
     view.appendChild(d0); return;
   }
   NOTES = NOTES.filter(n => (n.title || '').trim() || (n.body || '').trim() || n.born);   /* 空壳自清 */
@@ -5117,7 +5403,7 @@ function mealQuickSheet(key, slot){
 }
 function renderMeals(){
   if (!modOn('meals')){
-    const d0 = document.createElement('div'); d0.className = 'empty-hint'; d0.textContent = '三餐板块已关闭 · 到 设置 → 板块管理 打开';
+    const d0 = document.createElement('div'); d0.className = 'empty-hint'; d0.textContent = '三餐打卡关着 · 到 设置 → 岛上的房子 打开';
     view.appendChild(d0); return;
   }
   const rowsAll = [];
@@ -5184,7 +5470,7 @@ function relChipHtml(sel){
 }
 function openPersonEdit(p, prefillName){
   const S = $('#gsheet');
-  S.innerHTML = '<div class="gs-title">' + (p ? '编辑资料' : '收进熟人册') + '</div>'
+  S.innerHTML = '<div class="gs-title">' + (p ? '编辑资料' : '收进亲友') + '</div>'
     + '<input class="vt-in" id="peName" placeholder="本名 / 常用称呼" value="' + escAttr(p ? p.name : (prefillName || '')) + '">'
     + '<input class="vt-in" id="peNick" placeholder="昵称 / 小名（多个用、隔开，写哪个都认）" value="' + escAttr(p && p.nick ? p.nick.join('、') : '') + '">'
     + '<div class="gs-chips" style="margin-top:10px" id="peRels">' + relChipHtml(p ? p.rel : '') + '</div>'
@@ -5522,7 +5808,7 @@ function renderCycles(){
   };
   if (!SET.cycles.length){
     const d = document.createElement('div'); d.className = 'empty-hint'; d.style.textAlign = 'center'; d.style.padding = '26px 2px 8px';
-    d.innerHTML = jjImg('nap', 72) + '<div style="margin-top:8px">还没有循环提醒 · 生日（阴历也认）、纪念日、生理期、还款日都交给我记</div>';
+    d.innerHTML = jjImg('nap', 72) + '<div style="margin-top:8px">还没有提醒 · 生日（阴历也认）、纪念日、生理期、还款日都交给我记</div>';
     view.appendChild(d);
   }
   SET.cycles.forEach(c => {
@@ -5624,32 +5910,32 @@ function vEsc(x){ return String(x || '').replace(/[<>&"]/g, c => ({'<':'&lt;', '
 function renderVault(){
   const wrap = document.createElement('div');
   if (!(window.crypto && crypto.subtle)){
-    wrap.innerHTML = '<div class="vt-tip" style="margin-top:26px">这台设备的浏览器环境不支持加密接口，账号小本无法使用。</div>';
+    wrap.innerHTML = '<div class="vt-tip" style="margin-top:26px">这台设备的浏览器环境不支持加密接口，树洞（密码）用不了。</div>';
     view.appendChild(wrap); return;
   }
   if (!SET.vault){
     wrap.innerHTML = '<div class="vt-card">'
       + '<div style="text-align:center;padding:6px 0 2px">' + jjImg('lock', 96) + '</div>'
-      + '<div style="font-size:15px;font-weight:700;margin-top:8px">给小本设一个主口令</div>'
+      + '<div style="font-size:15px;font-weight:700;margin-top:8px">给树洞设一个主口令</div>'
       + '<div class="vt-tip" style="margin-top:6px">所有内容用它加密后才保存，本机和云备份里都只有密文。'
       + '<b style="color:var(--red)">主口令忘了没有任何找回办法</b>，请记牢。<br>'
       + '适合存 wifi 密码、会员号、水电户号这类；银行级密码建议放系统钥匙串，原生版会配 FaceID。</div>'
       + '<input type="password" class="vt-in" id="vtP1" placeholder="主口令（至少 4 位）">'
       + '<input type="password" class="vt-in" id="vtP2" placeholder="再输一遍">'
-      + '<button class="rv-confirm" id="vtNew">创建小本</button></div>';
+      + '<button class="rv-confirm" id="vtNew">建好树洞</button></div>';
     view.appendChild(wrap);
     $('#vtNew').onclick = async () => {
       const a = $('#vtP1').value, b2 = $('#vtP2').value;
       if (a.length < 4){ toast('口令至少 4 位'); return; }
       if (a !== b2){ toast('两次输入不一致'); return; }
-      await vaultCreate(a); toast('小本已创建 · 记牢主口令'); render();
+      await vaultCreate(a); toast('树洞建好了 · 记牢主口令'); render();
     };
     return;
   }
   if (!vaultKey){
     wrap.innerHTML = '<div class="vt-card">'
       + '<div style="text-align:center;padding:6px 0 2px">' + jjImg('lock', 96) + '</div>'
-      + '<div style="font-size:15px;font-weight:700;margin-top:8px;text-align:center">小本已上锁</div>'
+      + '<div style="font-size:15px;font-weight:700;margin-top:8px;text-align:center">树洞已上锁</div>'
       + '<input type="password" class="vt-in" id="vtP" placeholder="输入主口令解锁">'
       + '<button class="rv-confirm" id="vtGo">解锁</button></div>';
     view.appendChild(wrap);
@@ -5698,7 +5984,7 @@ function renderVault(){
   };
   if (!vaultItems.length){
     const d = document.createElement('div'); d.className = 'empty-hint'; d.style.textAlign = 'center'; d.style.padding = '26px 2px 8px';
-    d.innerHTML = jjImg('nap', 72) + '<div style="margin-top:8px">小本还空着 · 点上面「＋ 添加」记第一条</div>';
+    d.innerHTML = jjImg('nap', 72) + '<div style="margin-top:8px">树洞还空着 · 点上面「＋ 添加」记第一条</div>';
     view.appendChild(d);
   }
   vaultItems.forEach(it => {
@@ -5759,7 +6045,7 @@ function ensureToday(){
     });
   };
   fixDup(SET.people); fixDup(SET.cycles); fixDup(typeof NOTES !== 'undefined' ? NOTES : []);
-  /* v2.28 到期接上；错过日期不再丢——两天内补到今天，更久的：随缘收进想做的事 / 对账回到待表态 */
+  /* v2.28 到期接上；错过日期不再丢——两天内补到今天，更久的：随缘收进储备 / 对账回到待表态 */
   const tk0 = parseKey(TODAY), lateOf = k2 => Math.round((tk0 - parseKey(k2)) / 86400000);
   const arrBadge = (e, from) => {
     const bits = [];
@@ -5799,7 +6085,7 @@ function ensureToday(){
       } else if (late2 > 2) e.followArrived = true;
     }
   });
-  /* v2.28 随缘：没日子的事当天没做完 → 第二天自动收进「想做的事」；过了日子的循环提醒悄悄翻篇 */
+  /* v2.28 随缘：没日子的事当天没做完 → 第二天自动收进「储备」；过了日子的提醒悄悄翻篇 */
   if (!SET.duty){
     walk((k, e) => {
       if (k === TODAY || parseKey(k) > tk0) return;
@@ -5857,7 +6143,7 @@ function morningCheck(){
     + '</div>'
     + '<button class="gs-done" id="mAll">带来选中的</button>'
     + '<div style="display:flex;gap:8px;margin-top:10px">'
-    + '<button class="gm-btn" id="mSd" style="flex:1;padding:10px">☾ 没勾的收进想做的事</button>'
+    + '<button class="gm-btn" id="mSd" style="flex:1;padding:10px">☾ 没勾的收进储备</button>'
     + '<button class="gm-btn" id="mSkip" style="flex:1;padding:10px">都不带 · 任务里有底</button></div>';
   const sel = new Set();
   const refresh = () => {
@@ -5903,7 +6189,7 @@ function morningCheck(){
           badge:'>×' + e.mig, _id:++uid});
       });
     }
-    toast('☾ ' + rest.length + ' 件收进想做的事' + (sel.size ? ' · 带来 ' + sel.size + ' 件' : '') + ' · 想做时去侧栏捞');
+    toast('☾ ' + rest.length + ' 件收进储备' + (sel.size ? ' · 带来 ' + sel.size + ' 件' : '') + ' · 想做时去侧栏捞');
     closeSheet(); scheduleSave(); render();
   };
   $('#mSkip').onclick = () => { toast('都留在原页 · 任务汇总随时能翻'); closeSheet(); };
@@ -5922,7 +6208,7 @@ function showOnboard(){
     + '—  笔记——想法与信息\n'
     + '＝  心情——此刻的情绪\n？ 疑问 · ！ 重点——这两枚也备着，侧栏汇总一处翻\n\n'
     + '写字敲 # 归分组；「明天」「8.15号」「16:00」这些我都认识。\n'
-    + '每天第一次打开，我递你一张早安卡：天气、今天的事、一句话。没做完的事不用天天搬，我替你收进「想做的事」。\n'
+    + '每天第一次打开，我递你一张早安卡：天气、今天的事、一句话。没做完的事不用天天搬，我替你收进「储备」。\n'
     + '左上 ☰ 是总日历、分组、搜索和设置；设置里可以开云备份，交给我盯着。'
     + '</div><button class="rv-confirm" id="obGo" style="margin-top:14px">开始记录</button></div>';
   $('#obGo').onclick = () => R.classList.remove('on');
@@ -6291,7 +6577,7 @@ function openHello(reopen){
   /* v2.31 上面：大日期、天气、一句话；下面：今天的事、去年今日 / 上个月的今天（没有就不出现） */
   const lower = (items.length ? '<div class="hl-lab">今天的事</div>' + items.slice(0, 5).map(helloItemHTML).join('')
         + (items.length > 5 ? '<div class="hl-none">还有 ' + (items.length - 5) + ' 件 · 在今日页</div>' : '') : '')
-    + (pooled ? '<div class="hl-pool" id="hlPool">之前没做完的 ' + pooled + ' 件，我收进了「想做的事」 ›</div>' : '')
+    + (pooled ? '<div class="hl-pool" id="hlPool">之前没做完的 ' + pooled + ' 件，我收进了「储备」 ›</div>' : '')
     + mems.map((m, i) => '<div class="hl-lab">' + m.label + '</div><div class="hl-mem" data-mi="' + i + '"' + (i === 0 ? ' id="hlMem"' : '') + '><b>'
         + (m.label === '上个月的今天' ? fmtKey(m.k) : m.k.split('.')[0] + '年' + fmtKey(m.k)) + '</b> · ' + vEsc(clipT(m.e.text, 46)) + ' ›</div>').join('');
   H.innerHTML = '<div class="hl-body">'
@@ -6333,7 +6619,7 @@ function helloBoot(){
 /* ---- 收起后：今日页顶上一行 ---- */
 function helloStripRefresh(){ const s = document.getElementById('wxPill'); if (s) s.innerHTML = wxPillHTML(); }
 
-/* ---- 想做的事：捞回今天 ---- */
+/* ---- 储备：捞回今天 ---- */
 function somedayPull(t, k){
   snapshot('处理任务');
   t.state = 'migrated'; t.badge = '→' + fmtShort(TODAY) + ' 捞回';
@@ -7152,6 +7438,12 @@ function whenNode(e, editable){
 /* ---- 点符号：这一行的细节小卡 ---- */
 function rowInfoRows(e, forTask){
   const rows = [], p = parseEntry(e);
+  const hk = forTask ? null : sideHome(e);   /* v3.1 住在岛上的哪栋房子 */
+  if (hk){
+    const acts = [{lab:'去看看', fn:() => { rowPopCloseAll(); isleGo(hk); }}];
+    if (!e.meal && !e.nbId) acts.push({lab:'放回手帐', g:1, fn:() => { rowPopCloseAll(); isleBack(e, hk); }});
+    rows.push({i:'🏝', t:'住在' + ISLE[hk].h, acts});
+  }
   if (!forTask && e.sym === 'event' && !isMinor(e)){
     const ic = evIcon(e);
     rows.push({kind:'ico', i:ic.i || '○', t:ic.n + (e.ico ? '' : ' · 自动挑的'), acts:[{lab:'换图标', ico:1}]});
@@ -7303,10 +7595,10 @@ function helloMemories(day){
 /* ============ v2.31 侧栏：四格 + 分组标签 + 工具 + 汇总折叠 ============ */
 const DTILE = {
   cal:    {ic:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><line x1="4" y1="10" x2="20" y2="10"/><line x1="9" y1="3" x2="9" y2="7"/><line x1="15" y1="3" x2="15" y2="7"/></svg>', n:'日历',     ok:() => true,             s:() => '按月翻', go:() => { const ta = TODAY.split('.').map(Number); cur = {name:'cal', y:ta[0], m:ta[1]}; }},
-  someday:{img:'h_someday', ic:'☾', n:'想做的事', ok:() => true,             s:c => (c.someday || 0) + ' 件 · 不催', go:() => { cur = {name:'agg', key:'someday'}; }},
+  someday:{img:'h_someday', ic:'☾', n:'储备', ok:() => true,             s:c => (c.someday || 0) + ' 件 · 不催', go:() => { cur = {name:'agg', key:'someday'}; }},
   food:   {img:'h_food', ic:'🍚', n:'美食',     ok:() => modOn('meals'),  s:() => '吃什么 · 熟店', go:() => { cur = {name:'food'}; }},
   ledger: {img:'h_money', ic:'💰', n:'记账',     ok:() => modOn('ledger'), s:() => '本月 ¥' + drawerMonthSpend(), go:() => { cur = {name:'ledger'}; }},
-  cycles: {img:'h_cycles', ic:'🔁', n:'循环提醒', ok:() => modOn('cycles'), s:() => '生日 · 还款 · 周期', go:() => { cur = {name:'cycles'}; }},
+  cycles: {img:'h_cycles', ic:'🔁', n:'提醒', ok:() => modOn('cycles'), s:() => '生日 · 还款 · 周期', go:() => { cur = {name:'cycles'}; }},
   notes:  {img:'h_notes', ic:'📓', n:'笔记本',   ok:() => modOn('notes'),  s:() => ((typeof NOTES !== 'undefined' ? NOTES : []).length) + ' 本', go:() => { cur = {name:'notes'}; }},
   people: {img:'h_people', ic:'👥', n:'熟人',     ok:() => modOn('people'), s:() => '熟人册', go:() => { cur = {name:'people'}; }},
   vault:  {img:'h_vault', ic:'🔐', n:'小本',     ok:() => modOn('vault'),  s:() => '账号小本', go:() => { cur = {name:'vault'}; }},
@@ -7343,23 +7635,27 @@ function buildDrawer(){
   });
   $('#drawerSub').textContent = taSub[0] + ' 年 ' + taSub[1] + ' 月 · 本月已记 ' + mc + ' 条';
   const go = fn => { fn(); closeDrawer(); render(); };
-  /* 四格：位置固定，长按换 */
-  const tiles = drawerTiles();
-  const tw = document.createElement('div'); tw.className = 'dtiles';
-  tiles.forEach((k, i) => {
-    const T = DTILE[k];
-    const el = document.createElement('div'); el.className = 'dtile'; el.dataset.tile = k;
-    el.innerHTML = (T.img ? '<img class="dimg" src="' + JJ[T.img] + '" alt="">' : '<span class="ic">' + T.ic + '</span>') + '<b>' + T.n + '</b><span class="s">' + vEsc(T.s(ACNT)) + '</span>';
-    longPress(el, () => drawerTileSheet(i, tiles), () => go(T.go));
-    tw.appendChild(el);
-  });
-  box.appendChild(tw);
-  const hint = document.createElement('div'); hint.className = 'dtile-hint'; hint.textContent = '长按格子，换成别的'; box.appendChild(hint);
-  /* 分组：一排标签 */
-  const glab = document.createElement('div'); glab.className = 'drawer-label'; glab.textContent = '分组 · 长按管理'; box.appendChild(glab);
-  const gw = document.createElement('div'); gw.className = 'dchips';
+  /* v3.1 上面手帐（按日子分三格），下面小岛（一栋房子一个小本子） */
+  const cellOf = T => {
+    const el = document.createElement('div'); el.className = 'dcell' + (T.add ? ' add' : '');
+    if (T.k) el.dataset.isle = T.k; if (T.tile) el.dataset.tile = T.tile;
+    el.innerHTML = T.add ? '＋' : (T.icon + '<b>' + T.n + '</b><i>' + vEsc(T.s) + '</i>');
+    if (T.k) longPress(el, () => houseSheet(T.k), () => go(T.go)); else el.onclick = () => go(T.go);
+    return el;
+  };
+  const lab1 = document.createElement('div'); lab1.className = 'drawer-label'; lab1.innerHTML = '手帐<span class="dsec-sub">翻日子 · 有日子的 · 没日子的</span>'; box.appendChild(lab1);
+  const nCyc = (SET.cycles || []).length;
+  const mg = document.createElement('div'); mg.className = 'dgrid g3';
+  [{tile:'cal', n:'日历', icon:'<span class="dimg dcal">' + DTILE.cal.ic + '</span>', s:'按月翻', go:DTILE.cal.go},
+   {tile:'cycles', n:'提醒', icon:'<img class="dimg" src="' + JJ.h_cycles + '" alt="">', s:nCyc ? nCyc + ' 个' : '生日 · 还款',
+    go:() => { if (SET.mods.cycles === false){ SET.mods.cycles = true; scheduleSave(); } cur = {name:'cycles'}; }},
+   {tile:'someday', n:'储备', icon:'<img class="dimg" src="' + JJ.h_someday + '" alt="">', s:(ACNT.someday || 0) + ' 件 · 不催', go:() => { cur = {name:'agg', key:'someday'}; }}]
+    .forEach(T => mg.appendChild(cellOf(T)));
+  box.appendChild(mg);
+  /* 你自己的分组（主线的标签；美食、电影这些住在岛上） */
+  const gw = document.createElement('div'); gw.className = 'dchips'; gw.style.marginTop = '8px';
   allGroupNames().forEach(g => {
-    if (tplOf(g) === 'food') return;   /* 美食是板块，不在分组里 */
+    const t = tplOf(g); if (ISLE_TPL[t] && isleOn(t)) return;
     const [, fg] = gStyle(g), n = GCNT[g] || 0;
     const c = document.createElement('span'); c.className = 'dchip'; c.dataset.g = g;
     c.innerHTML = '<b style="color:' + fg + '">#</b>' + vEsc(g) + (n ? '<i>' + n + '</i>' : '');
@@ -7370,20 +7666,22 @@ function buildDrawer(){
   add.onclick = () => groupNewSheet();
   gw.appendChild(add);
   box.appendChild(gw);
-  /* 工具：没放进四格的 */
-  const rest = DTILE_ORDER.filter(k => !['cal', 'someday'].includes(k) && !tiles.includes(k) && DTILE[k].ok());
-  if (rest.length){
-    const tl = document.createElement('div'); tl.className = 'drawer-label'; tl.textContent = '工具'; box.appendChild(tl);
-    const tg = document.createElement('div'); tg.className = 'dtools';
-    rest.forEach(k => {
-      const T = DTILE[k];
-      const el = document.createElement('div'); el.className = 'dtool'; el.dataset.tool = k;
-      el.innerHTML = (T.img ? '<img class="dimg" src="' + JJ[T.img] + '" alt="">' : '<span class="ic">' + T.ic + '</span>') + T.n;
-      el.onclick = () => go(T.go);
-      tg.appendChild(el);
-    });
-    box.appendChild(tg);
-  }
+  /* 小岛：开着的房子，置顶的在前 */
+  const lab2 = document.createElement('div'); lab2.className = 'drawer-label'; lab2.innerHTML = '小岛<span class="dsec-sub">一栋房子一个小本子 · 长按置顶</span>'; box.appendChild(lab2);
+  const HC = {}; walk((d, e) => { const k = sideHome(e); if (k) HC[k] = (HC[k] || 0) + 1; });
+  const pins = islePins(), ons = ISLE_ORDER.filter(k => isleOn(k));
+  const sub = k => {
+    if (k === 'money'){ const v = +String(drawerMonthSpend()).replace(/,/g, '') || 0; return '本月 ¥' + (v >= 10000 ? (Math.round(v / 1000) / 10) + '万' : v.toLocaleString('en-US')); }
+    if (k === 'people') return (SET.people || []).length + ' 人';
+    if (k === 'notes') return ((typeof NOTES !== 'undefined' ? NOTES : []).length) + ' 本';
+    if (k === 'vault') return '上锁';
+    return (HC[k] || 0) + ' 条';
+  };
+  const ig = document.createElement('div'); ig.className = 'dgrid'; ig.id = 'isleGrid';
+  pins.filter(k => ons.includes(k)).concat(ons.filter(k => !pins.includes(k)))
+    .forEach(k => ig.appendChild(cellOf({k, n:ISLE[k].n, icon:isleIcon(k, 38, 'dimg'), s:sub(k), go:() => isleCur(k)})));
+  ig.appendChild(cellOf({add:true, go:() => { cur = {name:'isle'}; }}));
+  box.appendChild(ig);
   /* 按标记汇总：折起来 */
   const fold = document.createElement('div'); fold.className = 'dfold'; fold.id = 'dAggFold';
   fold.innerHTML = '<span class="ic">≡</span><div>按标记汇总<small>任务 · 事件 · 想法 · 心情 · 已完成 …</small></div><span class="ar">' + (drawerAggOpen ? '▾' : '▸') + '</span>';
@@ -7403,6 +7701,19 @@ function buildDrawer(){
   st.innerHTML = '<span class="ic">⚙</span><div>设置</div>';
   st.onclick = () => go(() => { cur = {name:'settings'}; });
   box.appendChild(st);
+}
+function houseSheet(k){   /* v3.1 长按房子：置顶 / 关掉 */
+  const S = $('#gsheet'), I = ISLE[k], pinned = islePins().includes(k);
+  S.innerHTML = '<div class="gs-title">' + I.n + ' · ' + I.h + '</div>'
+    + '<div class="hw-tip" style="padding:0 2px 12px">' + I.tip + '</div>'
+    + '<button class="gm-btn" id="hsPin" style="width:100%;padding:11px">' + (pinned ? '取消置顶' : '置顶到最前面') + '</button>'
+    + '<button class="gm-btn" id="hsOff" style="width:100%;padding:11px;margin-top:8px;color:var(--ink-soft)">关掉这栋房子 · 记过的都还在</button>'
+    + '<button class="gs-done" id="hsDone">好了</button>';
+  const back = () => { S.classList.remove('on'); $('#mask').classList.add('on'); };
+  $('#hsPin').onclick = () => { islePin(k); back(); buildDrawer(); };
+  $('#hsOff').onclick = () => { isleSet(k, false); back(); buildDrawer(); render(); };
+  $('#hsDone').onclick = back;
+  S.classList.add('on');
 }
 function drawerTileSheet(i, tiles){
   const S = $('#gsheet');
@@ -7483,7 +7794,7 @@ function setRow(label, right, fn){
 function setToggle(on){
   const sw = document.createElement('div'); sw.className = 'switch' + (on ? ' on' : ''); sw.innerHTML = '<i></i>'; return sw;
 }
-const TOOLBOX = [['meals', '🍚 美食'], ['notes', '📓 笔记本'], ['ledger', '💰 记账'], ['people', '👥 熟人册'], ['vault', '🔐 账号小本'], ['cycles', '🔁 循环提醒'], ['mealLog', '🍚 三餐打卡']];
+const TOOLBOX = [['meals', '🍚 美食'], ['notes', '📓 笔记本'], ['ledger', '💰 记账'], ['people', '👥 熟人册'], ['vault', '🔐 账号小本'], ['cycles', '🔁 提醒'], ['mealLog', '🍚 三餐打卡']];
 function toolboxNode(){
   const tb = document.createElement('div'); tb.className = 'tbox';
   TOOLBOX.forEach(([k, nm]) => {
