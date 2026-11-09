@@ -547,6 +547,7 @@
   .vo-dest.d-plan{background:#E3EDF4;color:#4E7A9B}
   .vo-dest.d-day{background:var(--accent-soft);color:var(--accent)}
   .vo-dest.d-past{background:#ECE7F4;color:#8A6FB1}
+  .vo-dest.d-th{background:#F5EDD6;color:#9A7A32}
   .vo-gn{font-size:12px;color:var(--ink-faint)}
   .vo-it{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:9px 6px 10px 12px;margin-bottom:8px}
   .vo-it.off{opacity:.38}
@@ -707,6 +708,53 @@
   .vo-jj{height:24px;vertical-align:-6px;margin-right:6px}
   #toast.pose{display:flex;align-items:center;gap:8px;padding-left:8px}
   #toast.pose img{height:26px;width:auto}
+  /* ---------- v3.2 发给啾啾：底部输入栏 + 啾啾回话 ---------- */
+  #chatBar{position:absolute;left:0;right:0;bottom:0;z-index:6;display:none;align-items:flex-end;gap:8px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:#FBF6EC;border-top:1px solid var(--line)}
+  #chatBar.on{display:flex}
+  #phone.lnedit #chatBar,#phone.lnedit #chatReply{display:none}
+  #chatBar .cb-ic{width:40px;height:40px;border-radius:50%;border:1.5px solid #CDBEA6;background:none;display:flex;align-items:center;justify-content:center;flex:none;color:var(--ink-soft);cursor:pointer;padding:0}
+  #chatIn{flex:1;height:40px;min-height:40px;max-height:120px;border-radius:20px;background:var(--card);border:1px solid var(--line-strong);padding:9px 14px;font:inherit;font-size:16px;line-height:1.4;color:var(--ink);resize:none;outline:none;overflow-y:auto}
+  #chatIn::placeholder{color:#A8977F}
+  #chatSend{height:40px;padding:0 16px;border-radius:20px;border:none;background:var(--accent);color:#FFF8EE;font:inherit;font-size:15px;font-weight:700;flex:none;cursor:pointer;display:none}
+  #chatBar.has #chatSend{display:block}
+  #chatBar.has #chatPlus{display:none}
+  #chatReply{position:absolute;left:10px;right:10px;bottom:70px;z-index:7;display:none;gap:8px;align-items:flex-end}
+  #chatReply.on{display:flex}
+  #chatReply .cr-av{width:36px;height:36px;border-radius:50%;background:#FDE9C8;overflow:hidden;flex:none;display:flex;align-items:center;justify-content:center}
+  #chatReply .cr-av img{height:34px !important;margin-top:4px}
+  #chatReply .cr-bb{flex:1;min-width:0;background:var(--card);border:1px solid var(--line-strong);border-radius:16px 16px 16px 4px;padding:10px 13px;box-shadow:0 8px 22px rgba(46,36,28,.14);font-size:14.5px;line-height:1.55;color:var(--ink);max-height:52vh;overflow-y:auto}
+  #chatReply .cr-x{float:right;border:none;background:none;color:var(--ink-faint);font-size:14px;padding:0 0 4px 10px;cursor:pointer;font-family:inherit}
+  #chatReply .cr-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px}
+  #chatReply .cr-acts button{font:inherit;font-size:13px;padding:4px 12px;border-radius:13px;border:1px solid var(--line-strong);background:#FFFCF5;color:var(--ink-soft);cursor:pointer}
+  #chatReply .cr-acts button.pri{border-color:var(--accent);background:var(--accent);color:#FFF8EE;font-weight:700}
+  #chatReply .cr-list{margin-top:6px}
+  #chatReply .cr-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px dashed var(--line)}
+  #chatReply .cr-row:first-child{border-top:0}
+  #chatReply .cr-row.off .cr-t{text-decoration:line-through;color:var(--ink-faint)}
+  #chatReply .cr-k{font:inherit;font-size:11.5px;padding:2px 8px;border-radius:9px;border:none;background:#F1E7D5;color:var(--ink-soft);white-space:nowrap;display:flex;align-items:center;gap:4px;flex:none;cursor:pointer}
+  #chatReply .cr-k img{height:18px !important;width:18px !important}
+  #chatReply .cr-t{flex:1;min-width:0;font-size:14px}
+  #chatReply .cr-o{border:none;background:none;color:var(--ink-faint);font-size:13px;cursor:pointer;flex:none;padding:0 2px;font-family:inherit}
+  /* ---------- v3.2 记事亭 · 随想架 ---------- */
+  .th-tabs{margin:14px 0 8px}
+  .th-fl{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -2px 4px;padding-bottom:2px}
+  .th-fl button{flex:none;font:inherit;font-size:12.5px;padding:4px 10px;border-radius:999px;border:1px solid var(--line-strong);background:var(--card);color:var(--ink-soft);cursor:pointer}
+  .th-fl button.on{background:var(--ink);color:#F7F0E2;border-color:var(--ink)}
+  .th-hint{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--ink-soft);margin:8px 2px 0}
+  .th-hint button{font:inherit;font-size:12.5px;border:none;background:none;color:var(--accent);font-weight:700;cursor:pointer;padding:2px 0 2px 10px}
+  .th-row{display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:10px;cursor:pointer}
+  .th-row .evi{width:22px;text-align:center;flex:none}
+  .th-row .tx{flex:1;font-size:15.5px;line-height:1.5;color:var(--ink)}
+  .th-row .pk{width:20px;height:20px;border-radius:50%;border:1.5px solid #CDBEA6;flex:none;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:700}
+  .th-row.sel{background:rgba(255,214,140,.22)}
+  .th-row.sel .pk{background:var(--accent);border-color:var(--accent)}
+  .th-done{display:inline-block;font-size:11px;color:var(--accent);background:#FFF1DE;padding:0 7px;border-radius:9px;margin-left:6px;vertical-align:1px}
+  main.th-picking{padding-bottom:0}
+  .th-pickbar{position:sticky;bottom:0;display:flex;align-items:center;gap:12px;margin:14px -20px 0;padding:10px 20px calc(12px + env(safe-area-inset-bottom));background:#FBF6EC;border-top:1px solid var(--line);z-index:2}
+  .th-pickbar span{flex:1;font-size:14px;color:var(--ink-soft)}
+  .th-pickbar button{height:40px;padding:0 20px;border-radius:20px;border:none;background:var(--accent);color:#FFF8EE;font:inherit;font-size:15px;font-weight:700;cursor:pointer}
+  .th-pickbar button[disabled]{opacity:.45}
+  .entry.mood .entry-text,.entry.mood .line-input,.entry.ask .entry-text,.entry.ask .line-input{color:var(--ink-soft)}   /* v3.2 随想统一颜色，意思交给小图标 */
 </style>
 </head>
 <body>
@@ -722,7 +770,8 @@
   <div id="tagSug"></div>
   <div id="recall"></div>
   <div id="toolbar"></div>
-  <button id="voFab" aria-label="说一段，我来分拣"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 4v-4H6.5A2.5 2.5 0 0 1 4 13.5z"/><path d="M8 7.5h8M8 11h5"/></svg>说一段 <small>· 我来分拣</small></button>
+  <div id="chatReply"></div>
+  <div id="chatBar"><button class="cb-ic" id="chatMic" aria-label="说话"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg></button><textarea id="chatIn" rows="1" placeholder="发给啾啾…" enterkeyhint="send" autocomplete="off"></textarea><button class="cb-ic" id="chatPlus" aria-label="照片"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button><button id="chatSend">发送</button></div>
   <div id="mask"></div>
   <aside id="drawer">
     <div class="drawer-head">
@@ -1003,7 +1052,11 @@ function placeToolbar(){
   const sbH2 = (SB && SB.classList.contains('on')) ? (SB.offsetHeight || 44) : 0;
   const RC = $('#recall');
   if (RC) RC.style.bottom = (kb + tbH + sugH2 + sbH2) + 'px';
-  view.style.paddingBottom = (150 + kb) + 'px';
+  view.style.paddingBottom = ((view.classList.contains('th-picking') ? 0 : 150) + kb) + 'px';
+  const CB = document.getElementById('chatBar'), CR = document.getElementById('chatReply');   /* v3.2 输入栏和啾啾的回话跟着键盘 */
+  const cfoc = !!(document.activeElement && document.activeElement.id === 'chatIn');
+  if (CB) CB.style.bottom = (cfoc ? kb : 0) + 'px';
+  if (CR) CR.style.bottom = ((cfoc ? kb : 0) + ((CB && CB.classList.contains('on')) ? (CB.offsetHeight || 58) : 0) + 8) + 'px';
   ['gsheet', 'qsheet'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.bottom = (el.classList.contains('on') ? kb : 0) + 'px';
@@ -1043,6 +1096,7 @@ function updateToolbarVis(){
   const ae = document.activeElement;
   const editing = (cur.name === 'today' || cur.name === 'history' || cur.name === 'day') && ae && ae.classList && ae.classList.contains('line-input');
   toolbar.classList.toggle('on', editing);
+  { const ph0 = document.getElementById('phone'); if (ph0) ph0.classList.toggle('lnedit', !!editing); }   /* v3.2 改某一行时输入栏让开 */
   if (editing) refreshToolbarKeys();
   else { $('#tagSug').classList.remove('on'); const sp2 = $('#symPop'); if (sp2) sp2.classList.remove('on');
     const sb2 = $('#smartBar'); if (sb2){ sb2.classList.remove('on'); sb2.innerHTML = ''; } }
@@ -1139,7 +1193,9 @@ function allGroupNames(){
   walk((d, e) => { if (e.groups) e.groups.forEach(g => s.add(g)); });
   return [...s];
 }
+var TOAST_MUTE = 0;   /* v3.2 发给啾啾时，识别出的钟点由啾啾回话说，不另弹 */
 function toast(msg, pose){
+  if (TOAST_MUTE) return;
   const t = $('#toast');
   if (pose && JJ[pose]){ t.innerHTML = '<img src="' + JJ[pose] + '" alt="">' + vEsc(msg); t.classList.add('pose'); }   /* v3.0 出错时啾啾挠头 */
   else { t.textContent = msg; t.classList.remove('pose'); }
@@ -1351,6 +1407,7 @@ function symNode(e){
     else s.innerHTML = '<span class="dot"></span>';
   }
   else if (e.sym === 'event') s.innerHTML = '<span class="circle"></span>';
+  else if (isThought(e)){ const ic = thIcon(e); s.innerHTML = ic.i ? '<span class="evi">' + ic.i + '</span>' : '<span class="dash"></span>'; }   /* v3.2 随想按内容挑小图标 */
   else if (e.sym === 'note')  s.innerHTML = e.ledger ? '<span class="glyph moneyg">💰</span>'
     : (mealGlyphSlot(e) ? '<span class="glyph meal">🍚</span>' : '<span class="dash"></span>');
   else if (e.sym === 'mood')  s.innerHTML = '<span class="ddash"><i></i><i></i></span>';
@@ -1449,7 +1506,7 @@ function commit(e){
       delete e.defSym;
       if (e.sym !== g){
         e.sym = g; e.state = undefined; changed = true;
-        toast('识别为' + ({event:'事件 ○', mood:'心情 =', ask:'疑问 ？'})[g] + ' · 可在工具条改');
+        toast('识别为' + ({event:'日常', mood:'随想 · 🌤 心情', ask:'随想 · ❓ 疑问'})[g] + ' · 点行首图标能改');
       }
     }
   }
@@ -1808,17 +1865,16 @@ function renderPageInto(box, date, editable){
   }
   CLEAN_ROWS = true;   /* v2.31 页面里行下不挂小签，细节点符号看 */
   try{
-    /* ① 要做的事（流水里带日子转成的任务也算这一档） */
+    /* ① 待办（流水里带日子转成的任务也算这一档） */
     const flowTasks = p.flow.filter(e => e.sym === 'task' && !isMinor(e));
     const tasks = p.plan.concat(flowTasks);
     const nOpen = tasks.filter(e => e.sym === 'task' && e.state === 'open').length;
-    box.appendChild(secHead('要做的事', nOpen, !tasks.length, editable ? () => addLine(p.plan) : null));
+    box.appendChild(secHead('待办', nOpen, !tasks.length, null));   /* v3.2 新的都从底下发给啾啾 */
     tasks.filter(e => !e.state || e.state === 'open').concat(tasks.filter(e => e.state && e.state !== 'open')).forEach(e => box.appendChild(entryNode(e, editable)));   /* v3.1 没做完的在前 */
     if (date === TODAY && tasks.some(e => e.sym === 'task' && e.state === 'done') && !tasks.some(e => e.sym === 'task' && e.state === 'open')){
       const ad = document.createElement('div'); ad.className = 'alldone';   /* v3.0 */
-      ad.innerHTML = '<img src="' + JJ.happy + '" alt="">今天要做的都做完啦'; box.appendChild(ad);
+      ad.innerHTML = '<img src="' + JJ.happy + '" alt="">今天的待办都做完啦'; box.appendChild(ad);
     }
-    if (editable && tasks.length) box.appendChild(tailZone(() => addLine(p.plan)));
     if (editable && date === TODAY){   /* v2.28 储备：只是一行小字，想做时再捞 */
       let sdN = 0; walk((k2, x) => { if (x.sym === 'task' && x.state === 'someday') sdN++; });
       if (sdN){
@@ -1828,17 +1884,17 @@ function renderPageInto(box, date, editable){
         box.appendChild(pl);
       }
     }
-    const majors = [], minors = [], thoughts = [], moods = [], sides = [];
+    if (p.voOut && p.voOut.length){ const vo = voOutNode(p.voOut); if (vo) box.appendChild(vo); }   /* v2.30 放到别的日子的（v3.2 挪到待办下面） */
+    const majors = [], minors = [], thoughts = [], sides = [];
     p.flow.forEach(e => {
       if (sideHome(e)) sides.push(e);   /* v3.1 副线住在岛上 */
       else if (isMinor(e)) minors.push(e);
       else if (e.sym === 'task') return;
-      else if (e.sym === 'mood') moods.push(e);
-      else if (e.sym === 'note' || e.sym === 'ask' || e.sym === 'bang') thoughts.push(e);
+      else if (isThought(e)) thoughts.push(e);   /* v3.2 心情并进随想；手写的饭句留在日常 */
       else majors.push(e);
     });
-    /* ② 发生的事 */
-    box.appendChild(secHead('发生的事', majors.length, !majors.length && !minors.length, editable ? () => addLine(p.flow) : null));
+    /* ② 日常 */
+    box.appendChild(secHead('日常', majors.length, !majors.length && !minors.length, null));
     const withAsk = e => { box.appendChild(entryNode(e, editable)); if (editable && e.isleAsk){ const a = isleAskNode(e); if (a) box.appendChild(a); } };
     majors.forEach(withAsk);
     if (minors.length){
@@ -1866,18 +1922,13 @@ function renderPageInto(box, date, editable){
         box.appendChild(mb2);
       }
     }
-    if (p.voOut && p.voOut.length){ const vo = voOutNode(p.voOut); if (vo) box.appendChild(vo); }   /* v2.30 说一段时放到别的日子的 */
-    if (editable){
-      const z = tapZone((majors.length || sides.length) ? '' : (date === TODAY ? '还没记 · 点这里写，或者右下角说一段' : '点这里补记这天发生的事'), true, () => addLine(p.flow), !majors.length && !sides.length);
-      z.classList.add((majors.length || sides.length) ? 'slim' : 'hint');
-      box.appendChild(z);
+    if (editable && !majors.length && !sides.length && !minors.length){   /* v3.2 空着时一句提示，点一下去底下的输入栏 */
+      const z = tapZone(date === TODAY ? '还没记 · 在下面发给啾啾就行' : '这天还没记 · 在下面补记', true, () => chatFocus(), true);
+      z.classList.add('hint'); box.appendChild(z);
     } else if (!p.flow.length){ const d = document.createElement('div'); d.className = 'empty-hint'; d.textContent = '这天没有流水记录'; box.appendChild(d); }
-    /* ③ 想法（含 ？疑问 ！重点） */
-    box.appendChild(secHead('想法', thoughts.length, !thoughts.length, editable ? () => addLineSym(p.flow, 'note') : null));
+    /* ③ 随想（灵感、学到、疑问、重点、心情） */
+    box.appendChild(secHead('随想', thoughts.length, !thoughts.length, null));
     thoughts.forEach(withAsk);
-    /* ④ 心情 */
-    box.appendChild(secHead('心情', moods.length, !moods.length, editable ? () => addLineSym(p.flow, 'mood') : null));
-    moods.forEach(e => box.appendChild(entryNode(e, editable)));
     /* ⑤ v3.1 这天在岛上：副线只占一行，点开能看能改 */
     if (sides.length){
       const cnt = {}; sides.forEach(e => { const k = sideHome(e); cnt[k] = (cnt[k] || 0) + 1; });
@@ -1912,12 +1963,12 @@ function renderPageInto(box, date, editable){
 
 /* ============ 汇总 ============ */
 const AGG = {
-  task:      {title:'• 任务',   tip:'所有未完成的任务（跨日期）', f:e => e.sym === 'task' && e.state === 'open'},
-  event:     {title:'○ 事件',   tip:'发生过的事',                 f:e => e.sym === 'event'},
-  note:      {title:'— 笔记',   tip:'想法与备注',                 f:e => e.sym === 'note'},
-  mood:      {title:'= 心情',   tip:'情绪轨迹',                   f:e => e.sym === 'mood'},
-  ask:       {title:'？ 疑问',  tip:'还没弄清的事 · 想明白了点这行改符号', f:e => e.sym === 'ask'},
-  bang:      {title:'！ 重点',  tip:'被你标了重点的句子',          f:e => e.sym === 'bang'},
+  task:      {title:'• 待办',   tip:'所有没做完的待办（跨日期）', f:e => e.sym === 'task' && e.state === 'open'},
+  event:     {title:'○ 日常',   tip:'发生过的事',                 f:e => e.sym === 'event'},
+  note:      {title:'— 随想',   tip:'灵感、学到的和备注 · 记事亭的「随想」页签能按图标翻', f:e => e.sym === 'note' && isThought(e)},
+  mood:      {title:'🌤 心情',   tip:'情绪轨迹',                   f:e => e.sym === 'mood'},
+  ask:       {title:'❓ 疑问',  tip:'还没弄清的事 · 想明白了点这行改符号', f:e => e.sym === 'ask'},
+  bang:      {title:'❗ 重点',  tip:'被你标了重点的句子',          f:e => e.sym === 'bang'},
   done:      {title:'✓ 已完成', tip:'成就流水',                   f:e => e.state === 'done'},
   delegated: {title:'→ 等待中', tip:'已转交，按跟进日提醒',        f:e => e.state === 'delegated'},
   someday:   {title:'☾ 储备', tip:'没做完的、先放着的都在这 · 不催不计数 · 想做哪件点「⤴ 今天做」', f:e => e.sym === 'task' && e.state === 'someday'},
@@ -2106,7 +2157,7 @@ function render(){
   })();
   if (cur.name !== 'vault' && vaultKey) vaultLock();
   view.innerHTML = '';
-  { const vf = $('#voFab'); if (vf) vf.classList.toggle('on', cur.name === 'today'); }
+  chatBarSync();   /* v3.2 发给啾啾的输入栏：今天和过去的日子 */
   if (cur.name === 'today'){
     topTitle.textContent = dayGroupTitle(TODAY); reviewBtn.textContent = '复盘';
     if (modOn('hello')){ topTitle.appendChild(wxPillNode()); topTitle.classList.add('has-wx'); }   /* v2.31 天气缩成日期旁的小签 */
@@ -2255,7 +2306,7 @@ function render(){
     });
     setRow('主题色', accWrap, null);
     setRow('功能手册 · 实验室', setSub('›'), labSheet);
-    setRow('版本记录', setSub('v3.1 ›'), showChangelog);
+    setRow('版本记录', setSub('v3.2 ›'), showChangelog);
   }
   else if (cur.name === 'isle'){   /* v3.1 岛上的房子：开关、置顶 */
     topTitle.textContent = '岛上的房子'; reviewBtn.textContent = '回今日';
@@ -2358,7 +2409,7 @@ function render(){
     view.appendChild(g);
     if (!PAGES[cur.key]) PAGES[cur.key] = {plan:[], flow:[]};
     const p = PAGES[cur.key];
-    view.appendChild(sectionLabel('这天要做'));
+    view.appendChild(sectionLabel('这天的待办'));
     p.plan.forEach(e => view.appendChild(entryNode(e, true)));
     view.appendChild(tapZone('＋ 提前安排一条', false, () => addLine(p.plan)));
     const cycHitsHere = (SET.cycles || []).filter(c => cycHits(c, cur.key));
@@ -2416,7 +2467,7 @@ function render(){
 }
 
 /* ============ 编辑工具条（v2.19 方案A：符号一格 · 按频率分组 · 聪明挂入 · 删/撤成对） ============ */
-const TB_GLYPH = {task:'●', event:'○', note:'—', mood:'＝', ask:'？', bang:'！'};
+const TB_GLYPH = {task:'●', event:'○', note:'—', mood:'🌤', ask:'❓', bang:'❗'};
 function buildToolbar(){
   toolbar.addEventListener('pointerdown', ev => ev.preventDefault());
   const sb0 = document.createElement('div'); sb0.id = 'smartBar';
@@ -2431,12 +2482,12 @@ function buildToolbar(){
   const need = fn => () => { if (!focusRef){ toast('先点选一行'); return; } fn(focusRef); };
   /* 符号弹层 */
   const pop = document.createElement('div'); pop.id = 'symPop';
-  pop.innerHTML = [['task','●','任务 · 要做的事','点符号打勾'],
-    ['event','○','事件 · 发生的事','能挂子弹'],
-    ['note','—','笔记 · 想法与信息',''],
-    ['mood','＝','心情 · 当下的情绪',''],
-    ['ask','？','疑问 · 还没弄清的事','侧栏汇总能翻'],
-    ['bang','！','重点 · 值得记住的一句','侧栏汇总能翻']]
+  pop.innerHTML = [['task','●','待办','点符号打勾'],
+    ['event','○','日常 · 发生的事','能挂子弹'],
+    ['note','—','随想 · 灵感、学到的','图标自动挑'],
+    ['mood','🌤','随想 · 心情',''],
+    ['ask','❓','随想 · 疑问','侧栏汇总能翻'],
+    ['bang','❗','随想 · 重点','侧栏汇总能翻']]
     .map(([k, g, t, d]) => '<div class="sp-row" data-sym="' + k + '"><span class="g">' + g + '</span><span>' + t + '</span>'
       + (d ? '<span class="d">' + d + '</span>' : '') + '</div>').join('');
   pop.addEventListener('pointerdown', ev => ev.preventDefault());
@@ -3151,8 +3202,8 @@ function exportMD(){
         + (e.images && e.images.length ? '（图片×' + e.images.length + '）' : '') + '\n';
       (e.children || []).forEach(c => line(c, ind + '    '));
     };
-    if (PAGES[k].plan.length){ out += '### 今天要做\n'; PAGES[k].plan.forEach(e => line(e, '')); }
-    if (PAGES[k].flow.length){ out += '### 今天发生\n'; PAGES[k].flow.forEach(e => line(e, '')); }
+    if (PAGES[k].plan.length){ out += '### 待办\n'; PAGES[k].plan.forEach(e => line(e, '')); }
+    if (PAGES[k].flow.length){ out += '### 日常与随想\n'; PAGES[k].flow.forEach(e => line(e, '')); }
   });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([out], {type:'text/markdown'}));
@@ -3174,7 +3225,7 @@ function importMD(text){
       if (!PAGES[curKey]){ PAGES[curKey] = {plan:[], flow:[], morningAsked:true}; added.days++; }
       section = null; lastTop = null; continue;
     }
-    if (/^###/.test(raw)){ section = raw.indexOf('要做') >= 0 ? 'plan' : 'flow'; lastTop = null; continue; }
+    if (/^###/.test(raw)){ section = /要做|待办/.test(raw) ? 'plan' : 'flow'; lastTop = null; continue; }   /* v3.2 导出写的是「### 待办」 */
     if (!curKey) continue;
     const m = raw.match(/^(\s*)([•○—=✓›✕→？！?!])\s+(.*)$/);
     if (!m) continue;
@@ -3337,13 +3388,13 @@ function showManual(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">功能手册</div>'
     + '<button class="pill-btn" id="mnClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + '【今日页四档】\n要做的事 · 发生的事 · 想法 · 心情；没写的那档只剩浅色标题，点「＋」往那档写\n•  要做的事——点一下打勾，长按处理（处理面板顶上写来历）\n🍚 💼 🚗 🎡…  发生的事——按内容自动挑图标，点图标看细节、换图标\n—  想法 ·  ？疑问 ·  ！重点——都在想法这一档\n＝  心情——当下的情绪\n行下不挂小签：分组、花了多少、和谁、纠错、避雷都在点符号的小卡里\n\n'
-    + '【手帐和小岛】\n首页只放手帐；吃的、看的、读的、玩的、记的账住进岛上的房子，首页最下面一行「今天在岛上」，点开能看能改\n写完一行，我有把握就直接收进房子（旁边能撤回），没把握就问一句「送去哪」；说过「不用」的下次不再问\n每栋房子里都能「＋ 记一条」，哪天的事选哪天；设置 → 岛上的房子 里开关、置顶\n\n'
-    + '【书写】\n「要做的事」默认 •，「发生的事」默认 ○，写着写着我会帮你换成合适的图标\n写「明天 / 下周四 / 8.15号」自动挂日期；写「下午三点 / 16:00」自动挂时间\n敲 # 弹出分组联想；带日期的默认事件会自动转成任务\n\n'
+    + '【今日页三档 · 发给啾啾】\n待办 · 日常 · 随想；新的一条都从最下面的输入栏发给啾啾，像发消息一样，档不用选，我来认\n•  待办——点一下打勾，长按处理（处理面板顶上写来历）\n🍚 💼 🚗 🎡…  日常——发生的事，按内容自动挑图标，点图标看细节、换图标\n💡 📖 ❓ ❗ 🌤  随想——灵感、学到的、疑问、重点、心情，也按内容自动挑；点图标能换，或者「写成一篇」放进记事亭\n发出去我回一句：放在哪、能撤回、能改；一句话说了好几件事，我拆好给你看，点「都放好」才放进去\n行下不挂小签：分组、花了多少、和谁、纠错、避雷都在点符号的小卡里\n\n'
+    + '【手帐和小岛】\n首页只放手帐；吃的、看的、读的、玩的、记的账住进岛上的房子，首页最下面一行「今天在岛上」，点开能看能改\n发给我的话，我有把握就直接收进房子（能撤回），没把握就问一句「送去哪」；说过「不用」的下次不再问\n每栋房子里都能「＋ 记一条」，哪天的事选哪天；设置 → 岛上的房子 里开关、置顶\n\n'
+    + '【书写】\n写「明天 / 下周四 / 8.15号」自动放到那天的待办；写「下午三点 / 16:00」自动挂时间\n敲 # 归分组；已经记下的那条，点字就能改，回车在下面接着写\n\n'
     + '【因果记录】\n事件行回车：下一行自动挂在这件事下面\n空的子行再回车：回到顶层\n点事件的图标 →「在这件事下面补一条」；「▾3」点击折叠\n\n'
     + '【处理任务】\n点符号 = 完成；长按符号 = 推迟 / 不做了 / 转交 / 恢复\n推迟可选任意日期并填进度；转交要填给谁和跟进日，到期自动提醒\n处理面板里的备注会进日报周报\n\n'
     + '【翻阅】\n今日页左右滑（或顶栏 ‹ ›）翻到前一天 / 后一天\n☰ 侧栏：上面是手帐（日历、提醒、储备，和你的分组·长按管理），下面是小岛（开着的房子，长按置顶或关掉，「＋」里开别的），再往下按标记汇总、搜索\n汇总里点符号可直接勾掉，点文字跳回当天并高亮\n「◂ 8.6 转来」芯片点击跳回源头；历史页的「→8.12」跳去目标日\n\n'
-    + '【🗣 说一段 · 我来分拣】\n点今日页右下角的「说一段」（复盘里是「说说今天」），按键盘右下角的 🎤 一口气说完，点「分拣」：今天发生、要做的、别的日子的分好组给你看，确认才放进去。听错的名字照你的词典改好（设置 → 我的词典），点 ↺ 改回\n\n'
+    + '【🎤 说话】\n点输入栏左边的话筒，再按键盘右下角的 🎤 一口气说完，点「发送」：说了好几件事我拆开给你看，确认才放进去；想细改点「细改」，进整屏的分拣页（复盘里的「说说今天」也是它）。听错的名字照你的词典改好（设置 → 我的词典），点 ↺ 改回\n\n'
     + '【🎲 今天吃什么】\n美食 → 吃什么：只从你说过好吃的店里抽，理由全是你自己写过的话；吃完点 ✓ 一键评价。只记喜欢的和避雷的，三餐打卡在设置里可以再打开\n\n'
     + '【早安卡】\n每天第一次打开递上一张：大日期、农历节气、天气和昨天比冷暖、啾啾的一句话；有约好的事、去年今日 / 上个月的今天才出现在下面\n收起后日期旁留一个天气小签，点开再看；城市在 设置 → 天气城市 里加，最多 3 个\n\n'
     + '【复盘与报告】\n右上「复盘」直达今日快照和盖章；想逐件过没做完的，点「现在过一遍」\n没日子的事当天没做完，第二天自动收进「☾ 储备」，不催不计数（设置 → 提醒力度 可切到「严格」）\n分组视图里一键生成日报 / 周报 / 月报，可选含心情\n\n'
@@ -3359,7 +3410,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v3.1（当前 · 2026.11.9）\n【手帐和小岛分开】\n· 首页只放手帐：要做的事、发生的事、想法、心情\n· 吃的、看的、读的、玩的、记的账住进岛上的房子；首页最下面一行「今天在岛上」，点开能看能改\n· 写完一行，有把握就直接收进房子，旁边能撤回；没把握就问一句「送去哪」；什么都不像的留在手帐。说过「不用」的下次不再问\n【侧栏】\n· 上面是手帐：日历、提醒、储备三格，和你自己的分组\n· 下面是小岛：开着的房子排在这，长按能置顶或关掉，「＋」里能开别的\n【房子】\n· 设置里新加「岛上的房子」：每栋都能开关、置顶；关掉的不出现在侧栏，记过的都还在，回到手帐里\n· 美食、电影、阅读、娱乐的房子里有「＋ 记一条」，哪天的事选哪天\n· 新模板「娱乐」：休闲、KTV、按摩这类，住温泉汤屋\n【改名】\n· 熟人改叫亲友，循环提醒改叫提醒，笔记本改叫笔记，账号小本改叫密码，想做的事改叫储备\n· 房子名：海边饭馆、小岛影院、小岛书屋、账房、小岛茶屋、温泉汤屋、记事亭、树洞\n· 日历的邮局、储备的灯塔、树洞、汤屋还在画，先用旧图顶着\n\n'
+    + 'v3.2（当前 · 2026.11.9）\n【发给啾啾】\n· 首页最下面多了一条输入栏：像发消息一样，打字或按键盘上的 🎤 说，点「发送」就记下了；档不用选，我来认\n· 发出去我回一句：放在哪、能撤回、能改；吃的、看的这类，有把握就直接收进房子，没把握就问一句\n· 一句话说了好几件事，我拆好给你看，点「都放好」才放进去；想细改就进整屏的分拣页\n· 每档的「＋」、点空白处写、右下角的「说一段」都收进了这条输入栏\n【三档】\n· 要做的事改叫待办，发生的事改叫日常，想法改叫随想；心情不再单独一档，并进随想\n· 随想也按内容挑小图标：💡 灵感、📖 学到、❓ 疑问、❗ 重点、🌤 心情，点图标能换\n【记事亭 · 随想架】\n· 记事亭多了「随想」页签：所有随想按日子收在一起，能按图标筛，点一条跳回那天\n· 挑几条「写成一篇」，变成一个新本子接着写；原来那几条还在当天，标上「已写成」\n\n'
+    + 'v3.1（2026.11.9）\n【手帐和小岛分开】\n· 首页只放手帐：要做的事、发生的事、想法、心情\n· 吃的、看的、读的、玩的、记的账住进岛上的房子；首页最下面一行「今天在岛上」，点开能看能改\n· 写完一行，有把握就直接收进房子，旁边能撤回；没把握就问一句「送去哪」；什么都不像的留在手帐。说过「不用」的下次不再问\n【侧栏】\n· 上面是手帐：日历、提醒、储备三格，和你自己的分组\n· 下面是小岛：开着的房子排在这，长按能置顶或关掉，「＋」里能开别的\n【房子】\n· 设置里新加「岛上的房子」：每栋都能开关、置顶；关掉的不出现在侧栏，记过的都还在，回到手帐里\n· 美食、电影、阅读、娱乐的房子里有「＋ 记一条」，哪天的事选哪天\n· 新模板「娱乐」：休闲、KTV、按摩这类，住温泉汤屋\n【改名】\n· 熟人改叫亲友，循环提醒改叫提醒，笔记本改叫笔记，账号小本改叫密码，想做的事改叫储备\n· 房子名：海边饭馆、小岛影院、小岛书屋、账房、小岛茶屋、温泉汤屋、记事亭、树洞\n· 日历的邮局、储备的灯塔、树洞、汤屋还在画，先用旧图顶着\n\n'
     + 'v3.0（2026.11.6）\n【改名 · 啾啾岛 Jotbird】\n· 点点手帐改名「啾啾岛」，英文名 Jotbird。陪你记事的，从一颗小圆点换成了住在岛上的小鸟啾啾\n· 啾啾出现在引导页、侧栏、早安卡、复盘结束、各种空白页、账号小本、说一段分拣和出错提示里\n· 集子变成岛上的房子：美食街、小电影院、书屋、小账房、工作坊；侧栏的格子和工具也换上了小房子\n· 今天要做的都做完了，啾啾会出来说一声\n【换色】\n· 纸、墨、围巾红、海青，都从啾啾和岛上取色；6 套主题色也换成岛上的颜色，字比以前清楚\n· 分享图换了落款，多了「信纸」底图\n【更新提示】\n· 主屏幕上的名字和图标，要删掉旧图标、重新「添加到主屏幕」才会变成啾啾岛。删之前先在「设置 → 数据与备份」做一次完整备份；加好后要是记录没了，就用它恢复\n\n'
     + 'v2.32（2026.11.6）\n【更稳 · 更好点】\n· 照片和文字分开存：照片挪到浏览器的另一个仓库，不再挤占文字那 5MB；以前的照片第一次打开时自动搬过去，导出和云备份照旧带图\n· 「数据与备份 → 存储占用」能看到文字和照片各占多少\n· 行首的符号、每档的 ＋、翻天的箭头、字前的时间、小卡里的按钮：看起来一样大，手指能点中的范围变大了\n· 按标记汇总、搜索结果很长时先显示最近 120 条，底下点「再往前」接着看\n· 早安卡「今天的事」里单独设了时间的任务，时间也显示出来了\n· 约到某天、推迟到明天的任务，到了那天时间还在（以前会丢）\n· 「晚饭后散步」这种算运动 🏃，不再认成吃饭\n\n'
     + 'v2.31（2026.11.5）\n【今日页 · 分四档】\n· 要做的事 · 发生的事 · 想法 · 心情 四档固定；哪档还没写只剩一行浅色标题，点「＋」直接往那档写\n· 「？疑问」「！重点」归在想法里；挂在事件下面的子条目跟着事件走\n【发生的事用图标】\n· 行首按内容自动挑：🍚 吃喝（说了花多少、和谁也还是 🍚）· 💼 工作 · 🚗 出行 · 🎡 玩 · 🎬 看片 · 🏥 看病 · 🏃 运动 · 📚 学 · 🛍️ 买 · 🎁 人情 · 🏠 家里 · 👥 见人\n· 认错了点图标换，这一行就记住你选的\n【行下不再挂小签】\n· 分组、记账类别、和谁、从哪转来、听写纠错、拆条、避雷，全部收进点符号弹出的小卡；任务长按，处理面板顶上写来历\n· 时间写在字前面；避雷过的店，图标上一个小红点\n· 一行想换档（比如心情认成了事件），小卡里点「⇄」挪过去\n【早安卡】\n· 大日期、天气、点点的一句话放在上面；今天的事、去年今日 / 上个月的今天放下面，没有就不出现\n· 随便抽一条的「翻到一页」和饭点抽卡那行拿掉了\n· 今日页顶上的天气条缩成日期旁的小签，点一下看整张早安卡\n【侧栏】\n· 上面四格：默认 日历 · 想做的事 · 美食 · 记账，长按换；分组变成一排标签（长按管理）；其他工具一排图标；按标记汇总折起来\n【设置】\n· 分成 记录 / 提醒 / 工具箱 / 数据 / 其他；备份收进「数据与备份」；「任务风格 随缘 / 对账」改叫「提醒力度 温和 / 严格」\n\n'
@@ -5258,7 +5310,8 @@ function renderNotes(){
   }
   NOTES = NOTES.filter(n => (n.title || '').trim() || (n.body || '').trim() || n.born);   /* 空壳自清 */
   NOTES.forEach(ensureNoteBorn);
-  const bar = document.createElement('div'); bar.className = 'rp-tabs'; bar.style.marginTop = '16px';
+  if (thShelf()) return;   /* v3.2 顶上：房子 + 「随想 / 本子」页签；在「随想」页签就画随想架 */
+  const bar = document.createElement('div'); bar.className = 'rp-tabs'; bar.style.marginTop = '4px';
   const addB = document.createElement('button'); addB.className = 'chip on'; addB.textContent = '＋ 新建本子';
   addB.onclick = noteCreate;
   bar.appendChild(addB); view.appendChild(bar);
@@ -5803,7 +5856,7 @@ function renderCycles(){
       toast('已保存修改'); render();
     } else {
       SET.cycles.push(c); cycUiOpen = false; cycDraft = null; scheduleSave();
-      toast('已添加 · 到那天会自动出现在「今天要做」'); render();
+      toast('已添加 · 到那天会自动出现在「待办」'); render();
     }
   };
   if (!SET.cycles.length){
@@ -5854,7 +5907,7 @@ function renderCycles(){
     view.appendChild(card);
   });
   const tip = document.createElement('div'); tip.className = 'vt-tip';
-  tip.textContent = '到那天打开 App，提醒会出现在「今天要做」；网页版没有系统推送，想让手机真的响就点「入系统日历」。';
+  tip.textContent = '到那天打开 App，提醒会出现在「待办」；网页版没有系统推送，想让手机真的响就点「入系统日历」。';
   view.appendChild(tip);
 }
 
@@ -6202,14 +6255,13 @@ function showOnboard(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">你好，我是啾啾</div></div>'
     + '<div class="rp-body"><div style="text-align:center;padding:18px 0 4px">' + jjImg('check', 124) + '</div>'
     + '<div class="rp-text">'
-    + '我住在岛上，是帮你记事的小鸟。这一页像备忘录，点哪写哪，归档交给我。\n\n'
-    + '•  任务——点符号打勾，长按推迟 / 放弃 / 转交\n'
-    + '○  事件——发生的事；回车能在下面挂子条目，因果自动串成线\n'
-    + '—  笔记——想法与信息\n'
-    + '＝  心情——此刻的情绪\n？ 疑问 · ！ 重点——这两枚也备着，侧栏汇总一处翻\n\n'
-    + '写字敲 # 归分组；「明天」「8.15号」「16:00」这些我都认识。\n'
+    + '我住在岛上，是帮你记事的小鸟。有事就在最下面发给我，像发消息一样，档不用选，我来放。\n\n'
+    + '•  待办——点一下打勾，长按推迟 / 不做了 / 转交\n'
+    + '🍚 💼 🚗  日常——发生的事，按内容挑小图标\n'
+    + '💡 📖 ❓  随想——灵感、学到的、疑问、心情\n\n'
+    + '「明天」「8.15号」「16:00」这些我都认识；一句话说了好几件事，我拆好给你看。\n'
     + '每天第一次打开，我递你一张早安卡：天气、今天的事、一句话。没做完的事不用天天搬，我替你收进「储备」。\n'
-    + '左上 ☰ 是总日历、分组、搜索和设置；设置里可以开云备份，交给我盯着。'
+    + '左上 ☰ 是总日历、小岛上的房子、搜索和设置；设置里可以开云备份，交给我盯着。'
     + '</div><button class="rv-confirm" id="obGo" style="margin-top:14px">开始记录</button></div>';
   $('#obGo').onclick = () => R.classList.remove('on');
   R.classList.add('on');
@@ -6861,7 +6913,7 @@ function renderPick(){
   if (!o){ deck.onclick = () => { pickDraw(); render(); }; }
   const acts = document.createElement('div'); acts.className = 'pk-acts';
   if (o){
-    acts.innerHTML = '<button class="pk-go" id="pkGo"' + (f.went === o.name ? ' disabled' : '') + '>' + (f.went === o.name ? '✓ 已放进今天要做' : '就它了') + '</button>'
+    acts.innerHTML = '<button class="pk-go" id="pkGo"' + (f.went === o.name ? ' disabled' : '') + '>' + (f.went === o.name ? '✓ 已放进今天的待办' : '就它了') + '</button>'
       + '<button class="pk-re" id="pkRe">↻ 换一张</button>';
   } else acts.innerHTML = '<button class="pk-go" id="pkDraw" style="flex:1">🎲 抽一张</button>';
   view.appendChild(acts);
@@ -6872,7 +6924,7 @@ function renderPick(){
   nt.textContent = !o ? '只出你说过好吃的店 · 理由全是你自己写过的话'
     : f.went === o.name ? '吃完点 ✓，啾啾问一句怎么样，点一下就记好了'
     : (f.n >= 3 && f.first && f.first !== o.name) ? ('抽了 ' + f.n + ' 张了 · 第一张「' + f.first + '」其实也不错？')
-    : '点「就它了」，今天要做里多一条，吃完点 ✓ 顺手说句好不好吃';
+    : '点「就它了」，今天的待办里多一条，吃完点 ✓ 顺手说句好不好吃';
   view.appendChild(nt);
 }
 function pickGo(o){
@@ -6880,7 +6932,7 @@ function pickGo(o){
   const slot = h < 10 ? '早饭' : h < 15 ? '午饭' : h < 21 ? '晚饭' : '夜宵';
   P().plan.push({sym:'task', state:'open', text:slot + '：「' + o.name + '」', pick:o.name, _id:++uid});
   pickDefaults().went = o.name;
-  scheduleSave(); toast('就它了！在今天要做里 · 吃完点 ✓'); render();
+  scheduleSave(); toast('就它了！在今天的待办里 · 吃完点 ✓'); render();
 }
 /* 吃完点 ✓ → 一键评价，记成一条美食记录（也就算去过一次） */
 function pickDone(t){
@@ -7016,10 +7068,10 @@ function voRelDay(k){
     : k === addDaysK(TODAY, -1) ? '昨天' : k === addDaysK(TODAY, -2) ? '前天' : '';
 }
 function voGroupLabel(it){
-  if (it.dest === 'flow') return '今天发生';
-  if (it.dest === 'plan') return '今天要做';
+  if (it.dest === 'flow') return it.th ? '今天的随想' : '今天的日常';
+  if (it.dest === 'plan') return '今天的待办';
   const r = voRelDay(it.day);
-  return (r ? r + ' ' : '') + fmtKey(it.day) + (it.dest === 'past' ? ' · 发生' : ' · 要做');
+  return (r ? r + ' ' : '') + fmtKey(it.day) + (it.dest === 'past' ? (it.th ? ' · 随想' : ' · 日常') : ' · 待办');
 }
 /* 放到别的日子时，去掉「后天 / 昨天」这类词：到了那天读着才对 */
 const VO_DAY_PATS = [/\d{1,2}\.\d{1,2}号?/, /大后天/, /后天/, /明天/, /下+周[一二三四五六日天]/, /(?:这周|本周|周)[一二三四五六日天]/, /下个?月\d{1,2}[号日]/, /\d{1,2}月\d{1,2}[号日]/, /下个?月/];
@@ -7040,17 +7092,11 @@ function voStripDay(t, it){
   }
   return {text:t, cut:null};
 }
-function voBuild(draft, prev){
-  return voSplit(draft).map(src => {
-    const old = (prev || []).find(x => x.src === src);
-    if (old) return old;
-    const fx = dictFix(src);
-    const it = Object.assign({src, fixed:fx.text, fixes:fx.fixes}, voRoute(fx.text));
-    const sd = voStripDay(fx.text, it); it.text = sd.text; it.cut = sd.cut;
-    return it;
-  });
+function voBuild(draft, prev){   /* v3.2 跟「发给啾啾」用同一套认法：待办 / 日常 / 随想 */
+  return chatItems(draft, true).map(ci => (prev || []).find(x => x.src === ci.src) || chatToVo(ci));
 }
-function voSetDest(it, dest, day){
+function voSetDest(it, dest, day, asTh){   /* asTh：放成随想（只对今天 / 别的日子的日常有效） */
+  if (asTh && (dest === 'flow' || dest === 'past')) it.th = it.th || thGuess(it.fixed || it.text) || 'dash'; else delete it.th;
   it.dest = dest; if (day) it.day = day; else delete it.day;
   if (!it.edited){ const sd = voStripDay(it.fixed, it); it.text = sd.text; it.cut = sd.cut; }
 }
@@ -7091,9 +7137,10 @@ function voMetaHTML(it, i){
     + (m.notes.length ? '<div class="vo-note">' + m.notes.map(vEsc).join(' · ') + '</div>' : '');
 }
 function voPickerHTML(it, i){
-  const opts = [['flow', '', '今天发生'], ['plan', '', '今天要做'], ['day', TOMORROW, '明天要做'], ['day', addDaysK(TODAY, 2), '后天要做'], ['past', addDaysK(TODAY, -1), '昨天发生']];
-  if (it.day && !opts.some(o => o[1] === it.day)) opts.push([it.dest, it.day, fmtKey(it.day) + (it.dest === 'past' ? ' 发生' : ' 要做')]);
-  return '<div class="vo-pick">' + opts.map(o => '<button class="gs-chip' + (it.dest === o[0] && (it.day || '') === o[1] ? ' on' : '') + '" data-d="' + o[0] + '" data-k="' + o[1] + '">' + o[2] + '</button>').join('')
+  const opts = [['flow', '', '今天的日常'], ['flow', '', '今天的随想', 1], ['plan', '', '今天的待办'], ['day', TOMORROW, '明天的待办'], ['day', addDaysK(TODAY, 2), '后天的待办'], ['past', addDaysK(TODAY, -1), '昨天的日常']];   /* v3.2 多一个「今天的随想」 */
+  if (it.day && !opts.some(o => o[1] === it.day)) opts.push([it.dest, it.day, fmtKey(it.day) + (it.dest === 'past' ? (it.th ? ' 随想' : ' 日常') : ' 待办'), it.th ? 1 : 0]);
+  const on = o => it.dest === o[0] && (it.day || '') === o[1] && !!o[3] === !!it.th;
+  return '<div class="vo-pick">' + opts.map(o => '<button class="gs-chip' + (on(o) ? ' on' : '') + '" data-d="' + o[0] + '" data-k="' + o[1] + '"' + (o[3] ? ' data-th="1"' : '') + '>' + o[2] + '</button>').join('')
     + '<label class="gs-chip vo-date">📅 选日子<input type="date" data-i="' + i + '"></label></div>';
 }
 function voItemHTML(it, i){
@@ -7147,13 +7194,13 @@ function voPaint(){
     return;
   }
   const items = VO.items, groups = [], gmap = {};
-  items.forEach((it, i) => { const key = it.dest + ':' + (it.day || '');
+  items.forEach((it, i) => { const key = it.dest + ':' + (it.day || '') + (it.th ? ':th' : '');
     if (!gmap[key]){ gmap[key] = {it0:it, list:[]}; groups.push(gmap[key]); } gmap[key].list.push(i); });
-  const ord = g => { const it = g.it0; return it.dest === 'flow' ? 0 : it.dest === 'plan' ? 1 : it.dest === 'day' ? 2 + parseKey(it.day) / 1e14 : 5 - parseKey(it.day) / 1e14; };
+  const ord = g => { const it = g.it0; return it.dest === 'flow' ? (it.th ? 0.5 : 0) : it.dest === 'plan' ? 1 : it.dest === 'day' ? 2 + parseKey(it.day) / 1e14 : 5 - parseKey(it.day) / 1e14 + (it.th ? 1e-6 : 0); };
   groups.sort((a, b) => ord(a) - ord(b));
   const live = items.filter(x => !x.off && x.text.trim()).length;
   V.innerHTML = '<div class="vo-hd"><button class="vo-hl" id="voCancel">取消</button><div class="vo-ht"><img class="vo-jj" src="' + JJ.sort + '" alt="">我这样分，你看看<div class="vo-hs">点字能改 · ⇄ 换地方 · ✕ 不要</div></div><div class="vo-hr"></div></div>'
-    + '<div class="vo-body vo-list" id="voList">' + groups.map(g => '<div class="vo-gh"><span class="vo-dest d-' + g.it0.dest + '">' + vEsc(voGroupLabel(g.it0)) + '</span>'
+    + '<div class="vo-body vo-list" id="voList">' + groups.map(g => '<div class="vo-gh"><span class="vo-dest d-' + (g.it0.th ? 'th' : g.it0.dest) + '">' + vEsc(voGroupLabel(g.it0)) + '</span>'
       + '<span class="vo-gn">' + g.list.length + ' 条</span></div>' + g.list.map(i => voItemHTML(items[i], i)).join('')).join('') + '</div>'
     + '<div class="vo-bot"><button class="vo-b1" id="voBack">‹ 接着说</button><button class="vo-b2" id="voSave">确认，放进去（' + live + ' 条）</button></div>';
   V.querySelectorAll('.vo-t').forEach(ta => {
@@ -7174,12 +7221,12 @@ function voPaint(){
   V.querySelectorAll('.vo-mv').forEach(b => b.onclick = () => { const i = +b.dataset.i; VO.open = VO.open === i ? null : i; voRepaint(); });
   V.querySelectorAll('.vo-x').forEach(b => b.onclick = () => { const it = items[+b.dataset.i]; it.off = !it.off; voRepaint(); });
   V.querySelectorAll('.vo-pick [data-d]').forEach(b => b.onclick = () => {
-    voSetDest(items[VO.open], b.dataset.d, b.dataset.k || null); VO.open = null; voRepaint(); });
+    voSetDest(items[VO.open], b.dataset.d, b.dataset.k || null, b.dataset.th === '1'); VO.open = null; voRepaint(); });
   V.querySelectorAll('.vo-pick input[type=date]').forEach(inp => inp.onchange = () => {
     if (!inp.value) return;
     const a = inp.value.split('-').map(Number), k = a[0] + '.' + a[1] + '.' + a[2], it = items[+inp.dataset.i];
-    if (k === TODAY) voSetDest(it, (it.dest === 'past' || it.dest === 'flow') ? 'flow' : 'plan', null);
-    else voSetDest(it, parseKey(k) < parseKey(TODAY) ? 'past' : 'day', k);
+    if (k === TODAY) voSetDest(it, (it.dest === 'past' || it.dest === 'flow') ? 'flow' : 'plan', null, !!it.th);
+    else voSetDest(it, (parseKey(k) < parseKey(TODAY) || it.th) ? 'past' : 'day', k, !!it.th);   /* 随想换日子还是随想 */
     VO.open = null; voRepaint();
   });
   voBindFix(V);
@@ -7199,35 +7246,10 @@ function movieGroupName(){
   if (!mg) walk((d, e) => { (e.groups || []).forEach(g => { if (!mg && tplOf(g) === 'movie') mg = g; }); });
   return mg;
 }
-function voPlace(items){
-  const cnt = {}, order = [], d = DD();
-  items.filter(it => !it.off && it.text.trim()).forEach(it => {
-    const t = it.text.trim();
-    let list, ne, k;
-    if (it.dest === 'flow' || it.dest === 'past'){
-      k = it.dest === 'past' ? it.day : TODAY;
-      if (!PAGES[k]) PAGES[k] = {plan:[], flow:[]};
-      ne = {sym:'event', defSym:true, text:t, _id:++uid}; list = PAGES[k].flow;
-    } else {
-      k = it.dest === 'day' ? it.day : TODAY;
-      if (!PAGES[k]) PAGES[k] = {plan:[], flow:[]};
-      ne = {sym:'task', state:'open', text:t, _id:++uid}; list = PAGES[k].plan;
-    }
-    const fx = (it.fixes || []).filter(f => t.includes(f.to));
-    if (fx.length){
-      ne.fix = fx.map(f => ({from:f.from, to:f.to})); ne.fixAt = TODAY;
-      fx.forEach(f => { if (!d.fix[f.from] && !d.no[f.from + '>' + f.to]) d.fix[f.from] = f.to; });   /* 你确认过的纠正，以后照这样改 */
-      PARSE_GEN++;
-    }
-    const p = parseLine(t);
-    if (p.store && modOn('meals')){ const fg = foodGroupName() || '美食'; if (!foodGroupName() && !extraGroups.includes(fg)) extraGroups.push(fg); ne.groups = [fg]; }
-    else if (p.title && /看了|电影|二刷|补看|影院|观影/.test(t)){ const mg = movieGroupName(); if (mg) ne.groups = [mg]; }
-    list.push(ne); commit(ne);
-    if (k !== TODAY){ const pg = P(); (pg.voOut = pg.voOut || []).push({d:k, id:ne._id}); }
-    const lab = (it.dest === 'flow' || it.dest === 'plan') ? '今天' : (voRelDay(k) || fmtKey(k));
-    if (!cnt[lab]){ cnt[lab] = 0; order.push(lab); } cnt[lab]++;
-  });
-  scheduleSave();
+function voPlace(items){   /* v3.2 跟发给啾啾放同一套：挂房子、钟点、听写纠正、放到别的日子留痕都一样 */
+  const outs = chatPlace(items.map(voToChat), TODAY, '说一段');
+  const cnt = {}, order = [];
+  outs.forEach(o => { const lab = o.day === TODAY ? '今天' : (voRelDay(o.day) || fmtKey(o.day)); if (!cnt[lab]){ cnt[lab] = 0; order.push(lab); } cnt[lab]++; });
   return order.map(l => l + ' ' + cnt[l]).join(' · ');
 }
 /* 说一段时放到别的日子的：今天这页留一行小字，点一下跳过去 */
@@ -7236,7 +7258,7 @@ function voOutNode(list){
   (list || []).forEach(o => { let hit = null; walkPage(o.d, e => { if (e._id === o.id) hit = e; }); if (hit && hit.text) rows.push({o, e:hit}); });
   if (!rows.length) return null;
   const box = document.createElement('div'); box.className = 'vo-out';
-  box.innerHTML = '<div class="vo-oh">↗ 说一段时放到别的日子的</div>';
+  box.innerHTML = '<div class="vo-oh">↗ 放到别的日子的</div>';
   rows.forEach(({o, e}) => {
     const r = document.createElement('div'); r.className = 'vo-oi';
     r.innerHTML = '<b>' + fmtKey(o.d) + '</b> · ' + vEsc(e.text) + ' ›';
@@ -7260,6 +7282,391 @@ function voUndoFix(e, f){
   dictChanged(); render();
   toast('已改回「' + f.from + '」· 以后不这样改');
 }
+/* ============ v3.2 发给啾啾：底部输入栏 · 啾啾回话 · 一句拆成几条；随想的小图标；记事亭的随想架 ============ */
+const TH_ICONS = [['idea', '💡', '灵感'], ['learn', '📖', '学到'], ['ask', '❓', '疑问'], ['bang', '❗', '重点'], ['mood', '🌤', '心情']];
+const TH_RE = {
+  ask:/[？?]\s*$|^(为什么|为啥|怎么办|怎么才能|怎么会|怎么能|凭什么|难道|要不要|是不是|能不能|该不该|到底)|(吗|呢)\s*$/,
+  learn:/原来|学到|学会了|才知道|涨知识|今天明白/,
+  idea:/可以试试|可以去|可以做|也许可以|不如去|要是能|如果能|想(去|学|做|试|买|养|写|搞|换|找|报|开|辞|搬)|点子|灵感|主意|突然想到|有个想法|有个念头/,
+  mood:/心累|好累|有点累|太累|累了|累死|好烦|有点烦|烦死|开心|难过|焦虑|郁闷|委屈|生气|高兴|快乐|伤心|失落|无聊|紧张|压力好?大|崩溃|emo|低落|平静|期待|兴奋|心情/,
+  bang:/划重点|切记|重要的是|一定要记住|千万别|千万要/,
+};
+function isThought(e){ return !!e && (e.sym === 'note' || e.sym === 'ask' || e.sym === 'bang' || e.sym === 'mood') && !e.ledger && !e.meal && !e.nbId
+  && !(e.sym === 'note' && !e.userSet && !e.ico && mealGlyphSlot(e)); }   /* 手写的「午饭吃了面」是日常，照旧 🍚；自己挪进随想的算随想 */
+function thGuess(t){   /* 一句话像不像随想：疑问 / 学到 / 灵感 / 心情；都不像 → null */
+  t = String(t || '').trim(); if (t.length < 2) return null;
+  if (TH_RE.ask.test(t)) return 'ask';
+  if (TH_RE.learn.test(t)) return 'learn';
+  if (TH_RE.idea.test(t)) return 'idea';
+  if (t.length <= 20 && TH_RE.mood.test(t) && !Object.keys(EV_RE).some(k => EV_RE[k].test(t)) && thMoodOnly(t)) return 'mood';   /* 「跑完步好累」「和小林去爬了山，累但开心」是日常，「有点累」才是心情 */
+  return null;
+}
+const TH_FILL = /今天|今晚|今早|此刻|现在|最近|有点儿?|有些|一点|挺|好|很|太|超级?|非常|特别|比较|真的?|但是?|可是|不过|还是?|又|就|也|都|了|啊|呀|吧|哈|啦|呢|的|感觉|觉得|心里|整个人/g;
+function thMoodOnly(t){   /* 去掉心情词和语气词，剩下的没几个字，才是在说心情 */
+  return t.replace(new RegExp(TH_RE.mood.source, 'g'), '').replace(TH_FILL, '').replace(/[，,。.！!～~、…\s]/g, '').length <= 3;
+}
+function thIconKey(e){
+  if (e.ico === 'dash') return 'dash';
+  if (e.ico && TH_ICONS.some(x => x[0] === e.ico)) return e.ico;
+  if (e.sym === 'ask' || e.sym === 'bang' || e.sym === 'mood') return e.sym;
+  const t = String(e.text || '');
+  if (TH_RE.bang.test(t)) return 'bang';
+  return thGuess(t) || 'dash';
+}
+function thIcon(e){ const k = thIconKey(e), d = TH_ICONS.find(x => x[0] === k); return d ? {k, i:d[1], n:d[2]} : {k:'dash', i:'', n:'随想'}; }
+function dayOfEntry(e){ let hit = null; walk((k, x) => { if (!hit && x === e) hit = k; }); return hit; }
+
+/* ---- 底部输入栏 ---- */
+let CHAT = null;   /* 啾啾正在回的那一句：{mode:'one'|'many'|'done'|'tip', base, ...} */
+function chatBase(){ return (cur.name === 'today' || cur.name === 'history') ? curDayKey() : null; }
+function chatBarSync(){
+  const B = $('#chatBar'); if (!B) return;
+  const base = chatBase();
+  B.classList.toggle('on', !!base);
+  const inp = $('#chatIn');
+  if (inp && base) inp.placeholder = base === TODAY ? '发给啾啾…' : '补记 ' + fmtKey(base) + '…';
+  if (CHAT && CHAT.base !== base) chatReplyHide();
+  const V = $('#view'); if (V) V.classList.toggle('th-picking', cur.name === 'notes' && TH_TAB === 'th' && !!TH_PICK);   /* 挑几条时底栏贴底 */
+}
+function chatFocus(){ const i = $('#chatIn'); if (i){ try{ i.focus(); }catch(_){ } } }
+function chatGrow(){
+  const i = $('#chatIn'); if (!i) return;
+  i.style.height = '40px'; i.style.height = Math.min(120, Math.max(40, i.scrollHeight)) + 'px';
+  $('#chatBar').classList.toggle('has', !!i.value.trim());
+  placeToolbar();
+}
+/* 一句话 → 待办 / 日常 / 随想；rel：在今天的页，认「明天、昨天」放到那天
+   用 Ar 11.5 导出的 141 条手帐（待办 78、日常 60、随想 3）定的规矩：手帐里一句短话多半是要做的事；
+   打了分、说了好坏、花了钱、做完了（「了」）的是日常；像疑问、学到、灵感、心情的是随想 */
+const CHAT_TASK_LEAD = /^(交|买|取|寄|还|订|约|预约|提交|发|打电话|去|找|准备|整理|写|改|问|联系|预定|续费|缴|报名|记得|别忘|完成|做|弄|搞|给\S{1,6}(打电话|发|买|寄|回|送))/;
+const CHAT_DONE_RE = /入职|离职|定下来了|搞定|成功|失败|不顺利|顺利|不错|很差|一般般?|好吃|难吃|好看|难看|没意思|太棒/;
+function chatKind(t, rel){
+  const r = rel ? voRoute(t) : {dest:(VO_TASK_RE.test(t) && !/了(?:[，,。！!？?]|$)/.test(t)) ? 'plan' : 'flow'};
+  const past = r.dest === 'past' ? r.day : null;
+  const p = parseLine(t), lead = CHAT_TASK_LEAD.test(t);
+  const rec = p.score != null || !!p.store || (p.prices || []).length > 0 || CHAT_DONE_RE.test(t)
+    || (/《[^》]+》/.test(t) && /看|二刷|三刷|补|影院|电影|剧|读|翻完/.test(t.replace(/《[^》]*》/g, '')));
+  const th = thGuess(t);
+  if (th === 'mood') return {kind:'thought', ic:th, day:past};   /* 只在说心情：「心情不错」 */
+  if (rec && !lead) return {kind:'event', day:past};   /* 打了分、说了好坏、花了钱、看了哪部片：是记下的事 */
+  if (th) return {kind:'thought', ic:th, day:past};   /* 「为什么周报总拖到周一」是随想，不是周一的待办 */
+  if (TH_RE.mood.test(t) && !lead) return {kind:'event', day:past};   /* 带着心情说的事，是已经发生的：「跑完步好累」「考试没过，好难过」 */
+  if (/交给|\bto\s?\S|To[A-Z一-龥]/.test(t)) return {kind:'task', day:r.dest === 'day' ? r.day : null};   /* 转交出去的 */
+  const done = /了/.test(t.replace(/为了|了解|除了|罢了|了不起/g, '')) && !VO_TASK_RE.test(t);   /* 做完的事：「周会定了下个月的排期」 */
+  if (!done && r.dest === 'day') return {kind:'task', day:r.day};
+  if (!done && r.dest === 'plan') return {kind:'task', day:null};
+  if (done || past) return {kind:'event', day:past};
+  if (/痛|疼|不舒服|发烧|感冒|咳嗽|过敏|上火/.test(t) || /^(和|跟|与).{1,14}一起/.test(t)) return {kind:'event', day:null};
+  if (t.length > 28 && !lead && !(detectTimeHM(t) || detectTimeCN(t))) return {kind:'event', day:null};   /* 一长段，多半是在记事 */
+  return {kind:'task', day:null};   /* 手帐里一句短话，多半是要做的事 */
+}
+function chatItems(text, rel){
+  return voSplit(String(text || '').replace(/[；;]/g, '。')).map(src => {   /* 分号也当一句 */
+    const fx = dictFix(src), it = {src, fixed:fx.text, fixes:fx.fixes};
+    it.kind = chatKind(fx.text, rel);
+    it.text = fx.text;
+    if (rel && it.kind.day){ const sd = voStripDay(fx.text, {dest:it.kind.kind === 'task' ? 'day' : 'past', day:it.kind.day}); it.text = sd.text; }
+    return it;
+  });
+}
+function chatToVo(ci){   /* 拆分卡的一条 → 整屏分拣页的一条（换过的档、划掉的都带过去） */
+  const k = ci.kind || {}, it = {src:ci.src, fixed:ci.fixed || ci.text, fixes:ci.fixes || []};
+  if (ci.off) it.off = true;
+  if (k.kind === 'task'){ if (k.day && k.day !== TODAY){ it.dest = 'day'; it.day = k.day; } else it.dest = 'plan'; }
+  else { if (k.day && k.day !== TODAY){ it.dest = 'past'; it.day = k.day; } else it.dest = 'flow'; if (k.kind === 'thought') it.th = k.ic || 'dash'; }
+  const sd = voStripDay(it.fixed, it); it.text = sd.text; it.cut = sd.cut;
+  return it;
+}
+function voToChat(it){   /* 整屏分拣页的一条 → 用 chatPlace 放 */
+  const task = it.dest === 'plan' || it.dest === 'day';
+  return {src:it.src, fixed:it.fixed, fixes:it.fixes || [], text:it.text || '', off:!!it.off,
+    kind:{kind:task ? 'task' : it.th ? 'thought' : 'event', day:(it.dest === 'day' || it.dest === 'past') ? it.day : null, ic:it.th || null}};
+}
+function chatStripTime(t){   /* 钟点已经挂到时间上了，字里就不重复 */
+  const res = [/([01]?\d|2[0-3])[:：][0-5]\d/, /(上午|早上|中午|下午|晚上)([一二三四五六七八九十两\d]{1,3})点(半|一刻|三刻|(\d{1,2})分)?/];
+  for (const re of res){
+    const m = t.match(re); if (!m) continue;
+    const r = (t.slice(0, m.index) + t.slice(m.index + m[0].length)).replace(/^[，,、\s]+|[，,、\s]+$/g, '').trim();
+    if (r.length >= 2) return r;
+  }
+  return t;
+}
+function chatPlace(items, base, why){
+  const out = [], d = DD();
+  snapshot(why || '发给啾啾');
+  items.filter(it => !it.off && String(it.text || '').trim()).forEach(it => {
+    const t = it.text.trim(), k0 = it.kind, day = k0.day || base;
+    if (!PAGES[day]) PAGES[day] = {plan:[], flow:[]};
+    let ne, list;
+    if (k0.kind === 'task'){ ne = {sym:'task', state:'open', text:t, _id:++uid}; list = PAGES[day].plan; }
+    else if (k0.kind === 'thought'){
+      ne = {sym:({ask:'ask', mood:'mood', bang:'bang'})[k0.ic] || 'note', userSet:true, noDue:1, text:t, _id:++uid}; list = PAGES[day].flow;
+      if ((k0.ic === 'idea' || k0.ic === 'learn') && thIconKey(ne) !== k0.ic) ne.ico = k0.ic;   /* 卡上给你看的是哪个图标，放进去就是哪个 */
+    }
+    else {
+      ne = {sym:'event', noDue:1, text:t, _id:++uid}; list = PAGES[day].flow;   /* 已经认过是日常：不再因为字里有日子改成待办 */
+      const p = parseLine(t);
+      if (p.store && modOn('meals')){ const fg = foodGroupName() || '美食'; if (!foodGroupName() && !extraGroups.includes(fg)) extraGroups.push(fg); ne.groups = [fg]; }
+      else if (p.title && /看了|电影|二刷|补看|影院|观影/.test(t)){ const mg = movieGroupName(); if (mg) ne.groups = [mg]; }
+    }
+    const fx = (it.fixes || []).filter(f => t.includes(f.to));
+    if (fx.length){
+      ne.fix = fx.map(f => ({from:f.from, to:f.to})); ne.fixAt = TODAY;
+      fx.forEach(f => { if (!d.fix[f.from] && !d.no[f.from + '>' + f.to]) d.fix[f.from] = f.to; });   /* 你发出去的就算确认过 */
+      PARSE_GEN++;
+    }
+    ne.userSet = true; list.push(ne);
+    TOAST_MUTE++; try{ commit(ne); } finally { TOAST_MUTE--; }   /* 档是啾啾认好的（或你在拆分卡里点过的），逐行识别别再改它；认出的钟点由啾啾的回话来说 */
+    if (k0.kind !== 'thought') delete ne.userSet;   /* 日常还要走小岛分拣 */
+    if (ne.sym === 'task' && ne.time) ne.text = chatStripTime(ne.text);
+    if (day !== base){ const pg = PAGES[base]; (pg.voOut = pg.voOut || []).push({d:day, id:ne._id}); }
+    out.push({e:ne, day, base});
+  });
+  ISLE_DEF = null;
+  out.forEach(o => { if (o.day === base && base === editKey() && o.e.sym !== 'task') isleRoute(o.e); });   /* 跟手帐里写的一样：有把握收进房子，没把握问一句 */
+  scheduleSave();
+  return out;
+}
+/* ---- 啾啾的回话 ---- */
+function chatReplyHide(){ const R = $('#chatReply'); if (R){ R.classList.remove('on'); R.innerHTML = ''; } CHAT = null; }
+function chatShow(pose, html, acts, onAct){
+  const R = $('#chatReply'); if (!R) return;
+  R.innerHTML = '<div class="cr-av">' + jjImg(pose, 34) + '</div><div class="cr-bb"><button class="cr-x" aria-label="收起">✕</button>' + html
+    + (acts && acts.length ? '<div class="cr-acts">' + acts.map(([k, lab, pri]) => '<button data-a="' + k + '"' + (pri ? ' class="pri"' : '') + '>' + lab + '</button>').join('') + '</div>' : '') + '</div>';
+  R.classList.add('on');
+  R.querySelector('.cr-x').onclick = ev => { ev.stopPropagation(); chatReplyHide(); };
+  R.querySelectorAll('.cr-acts [data-a]').forEach(b => b.onclick = ev => { ev.stopPropagation(); onAct(b.dataset.a); });
+  placeToolbar();
+}
+function chatDrop(o){
+  const pg = PAGES[o.day];
+  if (pg) ['plan', 'flow'].forEach(l => { const i = pg[l].indexOf(o.e); if (i >= 0) pg[l].splice(i, 1); });
+  if (o.day !== o.base && PAGES[o.base] && PAGES[o.base].voOut) PAGES[o.base].voOut = PAGES[o.base].voOut.filter(v => v.id !== o.e._id);
+}
+function chatUndo(outs, text){
+  outs.forEach(chatDrop); scheduleSave(); chatReplyHide(); render();
+  const i = $('#chatIn'); if (i && !i.value.trim() && text){ i.value = text; chatGrow(); }
+  toast('撤回了 · 话放回输入框里');
+}
+function chatFix(o){
+  chatReplyHide();
+  if (o.day !== editKey()) gotoDay(o.day);
+  setTimeout(() => {
+    const w = view.querySelector('[data-eid="' + o.e._id + '"]'); if (!w) return;
+    try{ w.scrollIntoView({block:'center'}); }catch(_){ }
+    const sy = w.querySelector('.sym');
+    if (sy) openRowPop(o.e, sy);
+  }, 80);
+}
+function chatSayOne(o, text){
+  const e = o.e, hk = sideHome(e), acts = [];
+  let say = '', pose = 'check';
+  if (o.day !== o.base){
+    say = '记下了：' + (e.time ? e.time + ' ' : '') + vEsc(clipT(e.text, 16)) + '，放到' + (voRelDay(o.day) || fmtKey(o.day)) + '的' + (e.sym === 'task' ? '待办' : isThought(e) ? '随想' : '日常') + '。';
+    acts.push(['go', '去看看'], ['undo', '撤回']);
+  } else if (hk){
+    say = '收进' + ISLE[hk].h + '了：' + vEsc(clipT(e.text, 18));
+    acts.push(['house', '去看看'], ['back', '放回手帐'], ['undo', '撤回']);
+  } else if (e.isleAsk){
+    const ks = String(e.isleAsk).split(',').filter(k => ISLE[k] && isleOn(k));
+    say = '记下了。这条像是' + ISLE[ks[0]].n + '，要送去' + ISLE[ks[0]].h + '吗？'; pose = 'ask';
+    ks.forEach((k, i) => acts.push(['send:' + k, '送去' + ISLE[k].n, i === 0]));
+    acts.push(['no', '不用']);
+  } else if (e.sym === 'task'){
+    say = '记下了：' + (e.time ? e.time + ' ' : '') + vEsc(clipT(e.text, 18)) + '，放在待办。';
+    acts.push(['undo', '撤回'], ['fix', '改一下']);
+  } else if (isThought(e)){
+    const ic = thIcon(e);
+    say = '记下了，放进随想' + (ic.i ? ' · ' + ic.i + ' ' + ic.n : '') + '。';
+    acts.push(['undo', '撤回'], ['fix', '改一下']);
+  } else {
+    const ic = evIcon(e);
+    say = '记下了，放进' + (o.base === TODAY ? '今天' : '这天') + '的日常' + (ic.i ? ' · ' + ic.i : '') + '。';
+    acts.push(['undo', '撤回'], ['fix', '改一下']);
+  }
+  CHAT = {mode:'one', base:o.base, outs:[o], text};
+  chatShow(pose, say, acts, a => {
+    if (a === 'undo') chatUndo([o], text);
+    else if (a === 'fix') chatFix(o);
+    else if (a === 'go'){ chatReplyHide(); jumpToEntry(o.day, e._id); }
+    else if (a === 'house'){ chatReplyHide(); isleGo(hk); }
+    else if (a === 'back'){ isleBack(e, hk); chatSayOne(o, text); }
+    else if (a.indexOf('send:') === 0){ isleSend(e, a.slice(5)); render(); chatSayOne(o, text); }
+    else if (a === 'no'){ isleNoThanks(e); chatReplyHide(); }
+  });
+}
+function chatHouse(t){   /* 拆开的这条会不会直接收进房子（只是预告，放的时候再分拣一次） */
+  const p = parseLine(t);
+  if (p.store && modOn('meals') && isleOn('food')) return 'food';
+  const g = isleGuess({sym:'event', text:t}); return (g && g.sure) ? g.k : null;
+}
+function chatDestHTML(it){
+  const k = it.kind, rl = k.day ? (voRelDay(k.day) || fmtShort(k.day)) + ' · ' : '';
+  if (k.kind === 'task') return rl + '待办';
+  if (k.kind === 'thought'){ const d = TH_ICONS.find(x => x[0] === k.ic); return rl + '随想' + (d ? ' ' + d[1] : ''); }
+  if (!k.day){ const hk = chatHouse(it.text); if (hk) return isleIcon(hk, 18) + ISLE[hk].h; }
+  return rl + '日常';
+}
+function chatShowMany(){
+  const C = CHAT; if (!C) return;
+  const live = C.items.filter(x => !x.off).length;
+  const html = '这段我拆成了 ' + C.items.length + ' 条，点前面的小签能换档：<div class="cr-list">' + C.items.map((it, i) => '<div class="cr-row' + (it.off ? ' off' : '') + '"><button class="cr-k" data-k="' + i + '">' + chatDestHTML(it) + '</button><span class="cr-t">' + vEsc(it.text) + '</span><button class="cr-o" data-o="' + i + '">' + (it.off ? '↺' : '✕') + '</button></div>').join('') + '</div>';
+  chatShow('sort', html, [['all', '都放好（' + live + '）', true]].concat(C.base === TODAY ? [['fine', '细改 ›']] : [], [['back', '撤回']]), a => {   /* 细改的整屏页按今天排，补记别的日子时不给 */
+    if (a === 'all'){
+      if (!live){ toast('一条都没留 · 点 ↺ 恢复'); return; }
+      const outs = chatPlace(C.items, C.base); focusRef = null; render(); chatSayMany(outs, C.text); chatFlash(outs);
+    } else if (a === 'fine'){
+      const t = C.text; chatReplyHide(); SET.voDraft = t; scheduleSave();
+      openVoice({}); VO.items = C.items.map(chatToVo); VO.open = null; voPaint();
+    } else if (a === 'back'){
+      const t = C.text; chatReplyHide();
+      const i = $('#chatIn'); if (i && !i.value.trim()){ i.value = t; chatGrow(); }
+    }
+  });
+  const R = $('#chatReply');
+  R.querySelectorAll('[data-o]').forEach(b => b.onclick = ev => { ev.stopPropagation(); const it = C.items[+b.dataset.o]; it.off = !it.off; chatShowMany(); });
+  R.querySelectorAll('[data-k]').forEach(b => b.onclick = ev => {   /* 点一下换档：待办 → 日常 → 随想 → 待办 */
+    ev.stopPropagation(); const it = C.items[+b.dataset.k], was = it.kind;
+    const nx = {task:'event', event:'thought', thought:'task'}[was.kind];
+    if (nx === 'thought') it.kind = {kind:'thought', ic:thGuess(it.text) || 'dash', day:was.day};
+    else if (nx === 'task') it.kind = {kind:'task', day:null};
+    else it.kind = {kind:'event', day:was.kind === 'task' ? null : was.day};
+    chatShowMany();
+  });
+}
+function chatSayMany(outs, text){
+  const cnt = {}, ord = [];
+  outs.forEach(o => {
+    const hk = sideHome(o.e);
+    const lab = (o.day !== o.base ? (voRelDay(o.day) || fmtShort(o.day)) + '的' : '') + (hk ? ISLE[hk].h : o.e.sym === 'task' ? '待办' : isThought(o.e) ? '随想' : '日常');
+    if (!cnt[lab]){ cnt[lab] = 0; ord.push(lab); } cnt[lab]++;
+  });
+  CHAT = {mode:'done', base:outs.length ? outs[0].base : editKey(), outs, text};
+  chatShow('happy', '放好了：' + ord.map(l => l + ' ' + cnt[l]).join(' · ') + '。', [['undo', '撤回']], a => { if (a === 'undo') chatUndo(outs, text); });
+}
+function chatFlash(outs){   /* 刚记下的那几条亮一下；被回话或输入栏挡住就滚到能看见 */
+  setTimeout(() => {
+    const vr = view.getBoundingClientRect(), R = $('#chatReply'), B = $('#chatBar');
+    const lim = (R && R.classList.contains('on')) ? R.getBoundingClientRect().top : (B && B.classList.contains('on')) ? B.getBoundingClientRect().top : vr.bottom;
+    let first = true;
+    outs.forEach(o => {
+      if (o.day !== o.base) return;
+      const el = view.querySelector('[data-eid="' + o.e._id + '"]'); if (!el) return;
+      if (first){
+        first = false;
+        const r = el.getBoundingClientRect(), top = vr.top + 8, bot = lim - 8;
+        if (r.top < top || r.bottom > bot) view.scrollTop += r.top - top - Math.max(0, (bot - top - r.height) / 2);
+      }
+      el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1700);
+    });
+  }, 80);
+}
+function chatSend(){
+  const inp = $('#chatIn'); if (!inp) return;
+  const text = inp.value.trim(); if (!text) return;
+  const base = chatBase(); if (!base) return;
+  const items = chatItems(text, base === TODAY);
+  if (!items.length){ toast('再多说两个字吧'); return; }
+  inp.value = ''; chatGrow(); focusRef = null;
+  if (items.length === 1){ const outs = chatPlace(items, base); render(); if (outs[0]) chatSayOne(outs[0], text); chatFlash(outs); }
+  else { CHAT = {mode:'many', base, items, text}; chatShowMany(); }
+}
+(() => {   /* 输入栏的按钮 */
+  const inp = $('#chatIn'); if (!inp) return;
+  inp.addEventListener('input', () => { chatGrow(); if (CHAT && CHAT.mode !== 'many') chatReplyHide(); });
+  inp.addEventListener('keydown', ev => {
+    if (ev.isComposing || ev.keyCode === 229) return;
+    if (ev.key === 'Enter' && !ev.shiftKey){ ev.preventDefault(); chatSend(); }
+  });
+  inp.addEventListener('focus', () => setTimeout(placeToolbar, 60));
+  inp.addEventListener('blur', () => setTimeout(placeToolbar, 60));
+  $('#chatBar').addEventListener('click', ev => { if (ev.target === ev.currentTarget) chatFocus(); });   /* 点输入栏边上的空白也是要打字 */
+  const sb = $('#chatSend');
+  sb.addEventListener('pointerdown', ev => ev.preventDefault());   /* 点发送不收键盘，跟发消息一样接着说 */
+  sb.onclick = chatSend;
+  $('#chatMic').onclick = () => {
+    chatFocus(); CHAT = {mode:'tip', base:chatBase()};
+    chatShow('ask', '按键盘右下角的 🎤 说就行，说完点「发送」。一口气说好几件事也没关系，我来拆。', [['ok', '知道了']], () => chatReplyHide());
+  };
+  $('#chatPlus').onclick = () => {
+    if (!chatBase()) return;
+    imgTarget = {sym:'event', defSym:true, text:'', _id:++uid, _imgPending:true};
+    const fi = $('#imgInput'); fi.value = ''; fi.click();
+  };
+})();
+
+/* ---- 记事亭 · 随想架 ---- */
+let TH_TAB = null, TH_FILTER = '', TH_PICK = null, TH_LIM = 60;
+function thAll(){ const out = []; walk((k, e) => { if (isThought(e) && String(e.text || '').trim()) out.push({k, e}); }); return out; }
+function thShelf(){   /* 记事亭页顶上：房子 + 「随想 / 本子」页签；在「随想」页签就画随想架，返回 true */
+  const all = thAll();
+  if (!TH_TAB) TH_TAB = all.length ? 'th' : 'nb';
+  const hd = document.createElement('div'); hd.className = 'house-head';
+  hd.innerHTML = '<img src="' + JJ.h_notes + '" alt=""><div><b>' + ISLE.notes.h + '</b><span>' + ISLE.notes.who + '：今天记两句、明天补两句，慢慢就成一篇啦。</span></div>';
+  view.appendChild(hd);
+  const tabs = document.createElement('div'); tabs.className = 'rp-tabs th-tabs';
+  tabs.innerHTML = '<button class="chip' + (TH_TAB === 'th' ? ' on' : '') + '" data-t="th">随想 · ' + all.length + '</button>'
+    + '<button class="chip' + (TH_TAB === 'nb' ? ' on' : '') + '" data-t="nb">本子 · ' + NOTES.length + '</button>';
+  tabs.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { TH_TAB = b.dataset.t; TH_PICK = null; render(); });
+  view.appendChild(tabs);
+  if (TH_TAB !== 'th') return false;
+  const cnt = {}; all.forEach(x => { const k = thIconKey(x.e); cnt[k] = (cnt[k] || 0) + 1; });
+  const fl = document.createElement('div'); fl.className = 'th-fl';
+  fl.innerHTML = '<button class="' + (!TH_FILTER ? 'on' : '') + '" data-f="">全部</button>'
+    + TH_ICONS.filter(([k]) => cnt[k]).map(([k, i, n]) => '<button class="' + (TH_FILTER === k ? 'on' : '') + '" data-f="' + k + '">' + i + ' ' + n + ' ' + cnt[k] + '</button>').join('');
+  fl.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { TH_FILTER = b.dataset.f; TH_LIM = 60; render(); });
+  view.appendChild(fl);
+  const hint = document.createElement('div'); hint.className = 'th-hint';
+  hint.innerHTML = '<span>' + (TH_PICK ? '挑好了点下面「写成一篇」' : '每天的随想都收在这里，家还在那一天') + '</span><button id="thPickT">' + (TH_PICK ? '取消' : '挑几条') + '</button>';
+  hint.querySelector('#thPickT').onclick = () => { TH_PICK = TH_PICK ? null : new Set(); render(); };
+  view.appendChild(hint);
+  const list = all.filter(x => !TH_FILTER || thIconKey(x.e) === TH_FILTER);
+  if (!list.length){
+    const d2 = document.createElement('div'); d2.className = 'empty-hint'; d2.style.textAlign = 'center'; d2.style.padding = '24px 2px 8px';
+    d2.innerHTML = jjImg('ask', 72) + '<div style="margin-top:8px">还没有随想 · 在今天的页面底下发给啾啾<br>像「原来……」「要不要……」「有点累」这样的话，会放进随想</div>';
+    view.appendChild(d2);
+  }
+  let lastK = null;
+  list.slice(0, TH_LIM).forEach(({k, e}) => {
+    if (k !== lastK){ lastK = k; view.appendChild(secHead(fmtKey(k) + ' · ' + weekCN(k), list.filter(x => x.k === k).length, false, null)); }
+    const r = document.createElement('div'); r.className = 'th-row' + (TH_PICK && TH_PICK.has(e._id) ? ' sel' : ''); r.dataset.id = e._id;
+    const ic = thIcon(e), wb = e.wrote ? noteById(e.wrote) : null;
+    r.innerHTML = '<span class="evi">' + (ic.i || '—') + '</span><span class="tx">' + vEsc(e.text)
+      + (wb ? '<span class="th-done">已写成《' + vEsc(wb.title || '未命名') + '》</span>' : '') + '</span>'
+      + (TH_PICK ? '<span class="pk">' + (TH_PICK.has(e._id) ? '✓' : '') + '</span>' : '');
+    r.onclick = () => {
+      if (TH_PICK){ if (TH_PICK.has(e._id)) TH_PICK.delete(e._id); else TH_PICK.add(e._id); render(); }
+      else jumpToEntry(k, e._id);
+    };
+    view.appendChild(r);
+  });
+  if (list.length > TH_LIM){
+    const more = document.createElement('div'); more.className = 'tapzone'; more.style.textAlign = 'center';
+    more.textContent = '再看 ' + Math.min(60, list.length - TH_LIM) + ' 条 ›'; more.onclick = () => { TH_LIM += 60; render(); };
+    view.appendChild(more);
+  }
+  if (TH_PICK){
+    const bar = document.createElement('div'); bar.className = 'th-pickbar';
+    bar.innerHTML = '<span>已挑 ' + TH_PICK.size + ' 条</span><button id="thWrite"' + (TH_PICK.size ? '' : ' disabled') + '>写成一篇</button>';
+    bar.querySelector('#thWrite').onclick = () => { const sel = all.filter(x => TH_PICK.has(x.e._id)); if (!sel.length){ toast('先挑几条'); return; } thWrite(sel); };
+    view.appendChild(bar);
+  }
+  return true;
+}
+function thWrite(arr){   /* 挑的几条带着日子放进一个新本子；原来那几条留在当天，标上「已写成」 */
+  if (!modOn('notes')){ toast(ISLE.notes.h + '关着 · 到 设置 → 岛上的房子 打开'); return; }
+  arr = arr.slice().sort((a, b) => parseKey(a.k) - parseKey(b.k));
+  const n = {id:++uid, title:clipT(String(arr[0].e.text || '').trim(), 12), body:'', created:TODAY, updated:TODAY, days:{}};
+  n.days[TODAY] = 1;
+  n.body = arr.map(x => '「' + String(x.e.text || '').trim() + '」—— ' + fmtKey(x.k) + '的随想').join('\n') + '\n\n';
+  NOTES.push(n);
+  arr.forEach(x => { x.e.wrote = n.id; });
+  ensureNoteBorn(n);
+  TH_PICK = null; scheduleSave();
+  cur = {name:'note', id:n.id}; render();
+  toast('写成一篇了 · 原来那几条还在当天');
+}
+
 (() => {   /* 右下角「说一段」：点开整屏；正在打字时让开 */
   const vf = document.getElementById('voFab'); if (vf) vf.onclick = () => openVoice({});
   const ph = document.getElementById('phone');
@@ -7295,7 +7702,7 @@ function dictFixCount(){ const d = DD(); return Object.keys(d.fix).length + Obje
 function renderDict(){
   const d = DD();
   const tip = document.createElement('div'); tip.className = 'vt-tip'; tip.style.marginTop = '14px';
-  tip.textContent = '从你写过的记录里自动长出来，不用维护。「说一段」时听错的名字照这里改；点 ↺ 改回过的，它记住以后别这样改。';
+  tip.textContent = '从你写过的记录里自动长出来，不用维护。发给啾啾、「说一段」时听错的名字照这里改；点 ↺ 改回过的，它记住以后别这样改。';
   view.appendChild(tip);
   const rows = [];
   Object.entries(d.fix).forEach(([v, c]) => rows.push({t:'「' + v + '」→ ' + c, s:'听错的字 · 自动改', del:() => { delete d.fix[v]; }}));
@@ -7373,8 +7780,8 @@ const EV_ICONS = [
 const EV_RE = {
   eat:/(吃|喝)(?![^，。,；;]{0,3}药|亏|惊|醋|瓜|苦|力)|饭(?![前后])|(?:早餐|午餐|晚餐)(?![前后])|夜宵|下午茶|外卖|咖啡|奶茶|火锅|烧烤|烤肉|聚餐|请客|甜品|小吃|面馆|餐厅|饭店|食堂|饮料|啤酒/,
   med:/医院|看病|看牙|牙医|拔牙|智齿|体检|挂号|吃药|买药|药店|感冒|发烧|输液|复查|门诊|针灸|理疗|牙龈|牙疼|牙痛|头疼|头痛|胃疼|胃痛|肚子疼|嗓子疼|咳嗽|过敏|生病|不舒服|上火/,
-  work:/开会|会议|例会|客户|方案|汇报|对接|谈判|谈了|谈事|面试|上班|加班|出差|项目|签约|合同|提案|招商|甲方|乙方|老板|述职|工作|提报|入职|离职|公章|沟通|招聘|报价|比稿|改稿|交付|上线|周报|日报|聊.{0,10}(方向|方案|合作|项目|计划|业务)/,
-  sport:/跑步|散步|遛弯|健身|撸铁|游泳|瑜伽|普拉提|打球|篮球|足球|羽毛球|网球|乒乓|骑车|骑行|徒步|爬山|运动|拉伸|跳绳/,
+  work:/开会|开[了完].{0,5}会|会议|例会|客户|方案|汇报|对接|谈判|谈了|谈事|面试|上班|加班|出差|项目|签约|合同|提案|招商|甲方|乙方|老板|述职|工作|提报|入职|离职|公章|沟通|招聘|报价|比稿|改稿|交付|上线|周报|日报|聊.{0,10}(方向|方案|合作|项目|计划|业务)/,
+  sport:/跑步|跑[完了]|散步|遛弯|健身|撸铁|游泳|瑜伽|普拉提|打球|篮球|足球|羽毛球|网球|乒乓|骑车|骑行|徒步|爬山|运动|拉伸|跳绳/,
   fun:/玩(?!笑)|逛(?!超市|淘宝|京东)|KTV|ktv|唱歌|拼豆|展览|看展|演出|演唱会|音乐节|livehouse|密室|剧本杀|桌游|乐园|游乐|公园|旅行|旅游|露营|蹦迪|酒吧|按摩|泡澡|洗浴|看海|赏花|滑雪|头疗|采耳|搓澡|足疗|洗脚|spa|SPA|美甲|汗蒸|追剧|刷剧/,
   learn:/上课|课程|学习|学了|看书|读书|读了|听课|培训|考试|练字|背单词|网课/,
   buy:/买了|购物|下单|淘宝|京东|拼多多|超市|网购|快递|入手|剁手/,
@@ -7448,6 +7855,10 @@ function rowInfoRows(e, forTask){
     const ic = evIcon(e);
     rows.push({kind:'ico', i:ic.i || '○', t:ic.n + (e.ico ? '' : ' · 自动挑的'), acts:[{lab:'换图标', ico:1}]});
   }
+  if (!forTask && isThought(e)){   /* v3.2 随想的小图标 */
+    const ic = thIcon(e);
+    rows.push({kind:'tico', i:ic.i || '—', t:ic.n + ((e.sym === 'note' && !e.ico) ? ' · 自动挑的' : ''), acts:[{lab:'换图标', ico:1}]});
+  }
   const gs = e.groups || [];
   let gt = gs.length ? gs.map(g => (tplOf(g) === 'food' ? '美食' : g)).join('、') : '没分组';
   if (p.store){ const o = storeIndex()[p.store]; gt += ' · ' + p.store + (o ? ' 去过 ' + o.cnt + ' 次' : ''); }
@@ -7469,6 +7880,11 @@ function rowInfoRows(e, forTask){
     rows.push({i:'📓', t:'来自本子' + (nb ? '《' + (nb.title || '未命名') + '》' : '（已删除）'),
       acts:nb ? [{lab:'翻开', fn:() => { rowPopCloseAll(); cur = {name:'note', id:e.nbId}; render(); }}] : []});
   }
+  if (!forTask && isThought(e) && modOn('notes') && String(e.text || '').trim()){   /* v3.2 随想写成一篇 */
+    const wb = e.wrote ? noteById(e.wrote) : null;
+    if (wb) rows.push({i:'📓', t:'已写成《' + (wb.title || '未命名') + '》', acts:[{lab:'翻开', fn:() => { rowPopCloseAll(); cur = {name:'note', id:wb.id}; render(); }}]});
+    else rows.push({i:'📓', t:'展开写成一篇，放进' + ISLE.notes.h, acts:[{lab:'写成一篇', fn:() => { rowPopCloseAll(); thWrite([{k:dayOfEntry(e) || editKey(), e}]); }}]});
+  }
   if (e.note) rows.push({i:'✎', t:'备注：' + e.note});
   const warn = (modOn('meals') && e.text) ? foodWarn(e) : null;
   if (warn) rows.push({i:'⚠', t:warn.txt, cls:'warn', acts:[{lab:'看原话', fn:() => { rowPopCloseAll(); const op = warn.o.op; jumpToEntry(op.k, op.e._id || (op.e._id = ++uid)); }}]});
@@ -7488,16 +7904,19 @@ function rowInfoRows(e, forTask){
   }
   return rows;
 }
-const ROW_TO = [['task', '要做的事'], ['event', '发生的事'], ['note', '想法'], ['mood', '心情']];
+const ROW_TO = [['task', '待办'], ['event', '日常'], ['note', '随想']];
 function rowRowsHTML(e, rows){
   return rows.map((r, ri) => {
     if (r.kind === 'to') return '<div class="rp-r"><span class="i">⇄</span><span class="t rp-to">'
-      + ROW_TO.map(([s, n]) => '<button data-to="' + s + '"' + ((e.sym === s || (s === 'note' && (e.sym === 'ask' || e.sym === 'bang'))) ? ' class="on"' : '') + '>' + n + '</button>').join('') + '</span></div>';
+      + ROW_TO.map(([s, n]) => '<button data-to="' + s + '"' + ((s === 'note' ? isThought(e) : s === 'event' ? (e.sym === 'event' || (e.sym === 'note' && !isThought(e))) : e.sym === s) ? ' class="on"' : '') + '>' + n + '</button>').join('') + '</span></div>';
     return '<div class="rp-r' + (r.cls ? ' ' + r.cls : '') + (r.tap ? ' tapr' : '') + '" data-ri="' + ri + '"><span class="i">' + vEsc(r.i) + '</span><span class="t">' + vEsc(r.t) + '</span>'
       + (r.acts || []).map((a, ai) => '<button class="a' + (a.g ? ' g' : '') + '" data-ri="' + ri + '" data-ai="' + ai + '">' + a.lab + '</button>').join('') + '</div>'
       + (r.kind === 'ico' ? '<div class="rp-ico" id="rpIco"><button class="auto' + (e.ico ? '' : ' on') + '" data-ico="">自动</button>'
           + EV_ICONS.map(([k, i]) => '<button data-ico="' + k + '"' + (e.ico === k ? ' class="on"' : '') + '>' + i + '</button>').join('')
-          + '<button data-ico="dot"' + (e.ico === 'dot' ? ' class="on"' : '') + ' style="font-size:13px">○</button></div>' : '');
+          + '<button data-ico="dot"' + (e.ico === 'dot' ? ' class="on"' : '') + ' style="font-size:13px">○</button></div>' : '')
+      + (r.kind === 'tico' ? '<div class="rp-ico" id="rpIco"><button class="auto' + ((e.sym === 'note' && !e.ico) ? ' on' : '') + '" data-tico="">自动</button>'
+          + TH_ICONS.map(([k, i]) => '<button data-tico="' + k + '"' + ((!(e.sym === 'note' && !e.ico) && thIconKey(e) === k) ? ' class="on"' : '') + '>' + i + '</button>').join('')
+          + '<button data-tico="dash"' + (e.ico === 'dash' ? ' class="on"' : '') + ' style="font-size:13px">—</button></div>' : '');
   }).join('');
 }
 function bindRowActs(root, e, rows){
@@ -7514,9 +7933,19 @@ function bindRowActs(root, e, rows){
     scheduleSave(); rowPopCloseAll(); render();
     toast(b.dataset.ico ? '这一行就用这个图标了' : '改回自动挑图标');
   });
+  root.querySelectorAll('#rpIco [data-tico]').forEach(b => b.onclick = ev => {   /* v3.2 随想换图标：疑问 / 重点 / 心情跟着换符号 */
+    ev.stopPropagation(); const k = b.dataset.tico;
+    snapshot('换图标');
+    if (!k){ e.sym = 'note'; delete e.ico; }
+    else if (k === 'ask' || k === 'bang' || k === 'mood'){ e.sym = k; delete e.ico; }
+    else { e.sym = 'note'; e.ico = k; }
+    e.userSet = true; delete e.defSym; delete e.state;
+    scheduleSave(); rowPopCloseAll(); render();
+    toast(k ? '这一行就用这个图标了' : '改回自动挑图标');
+  });
   root.querySelectorAll('.rp-to [data-to]').forEach(b => b.onclick = ev => {
     ev.stopPropagation();
-    const to = b.dataset.to; if (to === e.sym) return;
+    const to = b.dataset.to; if (to === 'note' ? isThought(e) : to === 'event' ? (e.sym === 'event' || (e.sym === 'note' && !isThought(e))) : to === e.sym) return;
     snapshot('换档');
     e.sym = to; e.userSet = true; delete e.defSym;
     if (to === 'task'){ if (!e.state) e.state = 'open'; } else if (e.state === 'open') delete e.state;
@@ -7684,7 +8113,7 @@ function buildDrawer(){
   box.appendChild(ig);
   /* 按标记汇总：折起来 */
   const fold = document.createElement('div'); fold.className = 'dfold'; fold.id = 'dAggFold';
-  fold.innerHTML = '<span class="ic">≡</span><div>按标记汇总<small>任务 · 事件 · 想法 · 心情 · 已完成 …</small></div><span class="ar">' + (drawerAggOpen ? '▾' : '▸') + '</span>';
+  fold.innerHTML = '<span class="ic">≡</span><div>按标记汇总<small>待办 · 日常 · 随想 · 已完成 …</small></div><span class="ar">' + (drawerAggOpen ? '▾' : '▸') + '</span>';
   fold.onclick = () => { drawerAggOpen = !drawerAggOpen; buildDrawer(); };
   box.appendChild(fold);
   if (drawerAggOpen){
