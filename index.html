@@ -923,6 +923,10 @@
   .line-input.inplace{background:var(--card);border-radius:6px;box-shadow:0 0 0 5px var(--card),0 0 0 6.5px var(--line-strong)}
   .date-group[data-day]{cursor:pointer}
   .date-group[data-day]::after{content:' ›';color:var(--ink-faint);font-weight:400}
+  /* v3.3.5 想吃 */
+  .ptg.want{background:#E4EFEC;color:#2F6B64;font-weight:600}
+  .tp-rk .sc.want{color:#2F6B64;font-size:12.5px;font-weight:600}
+  .pk-card.want .pk-rare{color:#2F6B64;background:#E4EFEC}
 </style>
 </head>
 <body>
@@ -1106,7 +1110,7 @@ function scheduleSave(){
   if (typeof KNOWN_PPL !== 'undefined') KNOWN_PPL = null;
   if (typeof ISLE_DEF !== 'undefined') ISLE_DEF = null;
   if (typeof KNOWN_STORE !== 'undefined') KNOWN_STORE = null;
-  STORE_IDX = null; PPL_CNT = null; DICT_T = null; STORE_CORES = null;
+  STORE_IDX = null; WANT_IDX = null; PPL_CNT = null; DICT_T = null; STORE_CORES = null;
   clearTimeout(saveTm);
   saveTm = setTimeout(() => { saveTm = null; saveNow(); }, 300);
 }
@@ -2556,7 +2560,7 @@ function render(){
     });
     setRow('主题色', accWrap, null);
     setRow('功能手册 · 实验室', setSub('›'), labSheet);
-    setRow('版本记录', setSub('v3.3.4 ›'), showChangelog);
+    setRow('版本记录', setSub('v3.3.5 ›'), showChangelog);
   }
   else if (cur.name === 'isle'){   /* v3.1 岛上的房子：开关、置顶 */
     topTitle.textContent = '岛上的房子'; reviewBtn.textContent = '回今日';
@@ -3645,7 +3649,7 @@ function showManual(){
     + '【处理任务】\n点符号 = 完成；长按符号 = 推迟 / 不做了 / 转交 / 恢复\n推迟可选任意日期并填进度；转交要填给谁和跟进日，到期自动提醒\n处理面板里的备注会进日报周报\n\n'
     + '【翻阅】\n今日页左右滑（或顶栏 ‹ ›）翻到前一天 / 后一天\n☰ 侧栏：上面是手帐（日历、提醒、储备，和你的分组·长按管理），下面是小岛（开着的房子，长按置顶或关掉，「＋」里开别的），再往下按标记汇总、搜索\n汇总、房子、搜索里点符号可直接勾掉，点字直接改（改完留在原处），点日子去那天\n「◂ 8.6 转来」芯片点击跳回源头；历史页的「→8.12」跳去目标日\n\n'
     + '【🎤 说话】\n点输入栏左边的话筒，再按键盘右下角的 🎤 一口气说完，点「发送」：说了好几件事我拆开给你看，确认才放进去；想细改点「细改」，进整屏的分拣页（复盘里的「说说今天」也是它）。听错的名字照你的词典改好（设置 → 我的词典），点 ↺ 改回\n\n'
-    + '【🎲 今天吃什么】\n美食 → 吃什么：只从你的宝藏店里抽（写过「宝藏 / 会再来 / 回购 / 必吃」或 8 分以上的），理由全是你自己写过的话；吃完点 ✓ 一键评价。美食只分吃过、宝藏、避雷，三餐打卡在设置里可以再打开\n\n'
+    + '【🎲 今天吃什么】\n美食 → 吃什么：从你的宝藏店（写过「宝藏 / 会再来 / 回购 / 必吃」或 8 分以上的）和想吃的店里抽，理由全是你自己写过的话；吃完点 ✓ 一键评价。美食分去过、宝藏、避雷、想吃：写「想去吃「店名」」「种草了「店名」」记成想吃，不算去过。三餐打卡在设置里可以再打开\n\n'
     + '【早安卡】\n每天第一次打开递上一张：大日期、农历节气、天气和昨天比冷暖、啾啾的一句话；有约好的事、去年今日 / 上个月的今天才出现在下面\n收起后日期旁留一个天气小签，点开再看；城市在 设置 → 天气城市 里加，最多 3 个\n\n'
     + '【复盘与报告】\n右上「复盘」直达今日快照和盖章；想逐件过没做完的，点「现在过一遍」\n没日子的事当天没做完，第二天自动收进「☾ 储备」，不催不计数（设置 → 提醒力度 可切到「规律」）\n分组视图里一键生成日报 / 周报 / 月报，可选含心情\n\n'
     + '【上岛】\n设置 → 功能手册 · 实验室 →「重新走一遍上岛」：改称呼、城市、生日，重新盖房子、换提醒搭档\n\n'
@@ -3661,7 +3665,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v3.3.4（当前 · 2026.11.11）\n【侧栏】\n· 小岛的房子一行放 3 个，跟上面手帐那排一样大，不挤了\n【首页】\n· 待办里有东西时，不再提示「储备 · 几件 · 想做哪件捞回来」；待办空着才出来\n【记账】\n· 一句里连加的钱自动算总数：「今天旅游一共花了100+30+40」记 170 元，回话里说一声「100+30+40 一共 170 元」\n· 写了等号的按你写的总数：「251.9+16.9+5=273.8元」记 273.8，不再把 251.9 也算进去；加起来对不上，回话里提一句\n· 一句里两笔一样的钱都算（早饭10元，午饭10元 = 20 元）；「花了300，……300元」这样同一笔说了两遍的，还是算一笔\n· 一句里最多认 8 笔（原来 3 笔）\n\n'
+    + 'v3.3.5（当前 · 2026.11.12）\n【美食 · 想吃】\n· 写「想去吃「店名」」「种草了「店名」」「收藏一家「店名」」「下次去吃「店名」」，记成想吃，不再算成去过一次\n· 集子里四格并排：去过 · 宝藏 · 避雷 · 想吃；「记一家店」也能选想吃\n· 吃什么：宝藏和想吃都会抽到；想吃的卡写着「还没去过 · 哪天收的」，吃完点 ✓ 评价，就从想吃挪到去过\n· 美食地图里也有想吃的店，后面标一个「想吃」\n\n'
+    + 'v3.3.4（2026.11.11）\n【侧栏】\n· 小岛的房子一行放 3 个，跟上面手帐那排一样大，不挤了\n【首页】\n· 待办里有东西时，不再提示「储备 · 几件 · 想做哪件捞回来」；待办空着才出来\n【记账】\n· 一句里连加的钱自动算总数：「今天旅游一共花了100+30+40」记 170 元，回话里说一声「100+30+40 一共 170 元」\n· 写了等号的按你写的总数：「251.9+16.9+5=273.8元」记 273.8，不再把 251.9 也算进去；加起来对不上，回话里提一句\n· 一句里两笔一样的钱都算（早饭10元，午饭10元 = 20 元）；「花了300，……300元」这样同一笔说了两遍的，还是算一笔\n· 一句里最多认 8 笔（原来 3 笔）\n\n'
     + 'v3.3.3（2026.11.11）\n【小岛】\n· 住户的圆头像换成新画的：上岛引导里的三封信、身份四选一、住户说话，头像都是整张放进圆框，不再切掉一块\n· 发消息后啾啾回话，左边那个小圆也换成啾啾的圆头像\n\n'
     + 'v3.3.2（2026.11.11）\n【首页】\n· 哪一栏空着，就有一行浅色字（写一件要做的事 / 记一件今天的事 / 冒出来的念头），点一下直接在那一栏写；那支显眼的笔去掉了\n· 「一个经验：…」「心得：…」「冷知识：…」「一个想法：…」放进随想\n· 小卡里把待办换成日常 / 随想，真的挪过去，不再留在待办\n· 屏幕最下面那条深色的米色去掉了，整页一个颜色铺到底\n【房子和汇总】\n· 从侧栏房子进去的记录（还有账房、茶屋、汇总、搜索）：点字直接改，改完留在原处；点行首图标看这一行；点日子才去那天\n【美食】\n· 只分 吃过 · 宝藏 · 避雷，不再有「家常」\n· 吃什么只从宝藏里抽；吃完的评价是 宝藏 / 一般 / 避雷，「记一家店」是 宝藏 / 吃过 / 避雷\n\n'
     + 'v3.3.1（2026.11.11）\n【小岛】\n· 全家福里有翘翘了\n· 小岛茶屋门口挂上茶杯招牌，两栋中间摆了一张茶桌\n· 上岛时：三封信那行和落地那天的纸条，换成从信封里探头的啾啾；办岛民证那屏，啾啾在盖章；空地上插的是画好的小木牌\n\n'
@@ -3778,6 +3783,15 @@ function moneyOf(t, r){   /* v3.3.4 从一句话里找钱，最多 8 笔 */
   if (prices.length) r.prices = prices.slice(0, 8);
 }
 function amtSum(a){ return Math.round((a || []).reduce((s, v) => s + v, 0) * 100) / 100; }   /* v3.3.4 几笔加起来，去掉 0.1+0.2 那种尾巴 */
+/* v3.3.5 想吃：说了想吃 / 想去 / 种草 / 收藏 / 下次去…，又没说吃了、去了、好不好吃、几分、花了多少 → 还没去过 */
+const WANT_RE = /想吃|想去|种草|收藏|下次去|下回去|有空去|改天去|回头去|找时间去|想试试|想尝尝|去试试|要去试|想打卡/;
+const WANT_VISIT_RE = /吃了|吃过|吃到|喝了|去了|来了|拔草|打卡了|终于|还想|再去|再来|还要去|回购|二刷|又去|第[一二两三四五六七八九十\d]+次/;
+const WANT_TASTE_RE = /好吃|难吃|太香|很香|一般般|踩雷|味道|惊艳|绝了|大满足/;
+const WANT_HEAR_RE = /听说|据说|看着|看起来|网上|说是|推荐|种草/;
+function isWantLine(t, r){
+  return !!(r.store && WANT_RE.test(t) && !WANT_VISIT_RE.test(t) && r.score == null && !(r.prices && r.prices.length)
+    && !(WANT_TASTE_RE.test(t) && !WANT_HEAR_RE.test(t)));
+}
 function parseLine(text){
   const t = String(text || ''), r = {};
   const tm = t.match(/《([^》]{1,25})》/); if (tm) r.title = tm[1];
@@ -3801,6 +3815,7 @@ function parseLine(text){
   if (ws.length){ r.withs = ws; r.with = ws[0]; }
   const vd = parseVerdict(t);
   if (vd){ r.verdict = vd.w; if (vd.neg) r.vNeg = true; }
+  if (isWantLine(t, r)) r.want = true;   /* v3.3.5 想吃 */
   return r;
 }
 function parseEntry(e){
@@ -4164,7 +4179,9 @@ function tplStats(tpl, rows){
   }
   if (tpl === 'food'){
     const map = {};
+    const wm = {};   /* v3.3.5 想吃：不算去过，单独一格 */
     rows.forEach(r => { if (!r.p.store) return;
+      if (r.p.want){ if (!wm[r.p.store]) wm[r.p.store] = r; return; }
       const o = map[r.p.store] || (map[r.p.store] = {name:r.p.store, cnt:0, v:null, vNeg:false, tier:null, tv:null, tsc:null, city:null, price:null, delivery:false, d:r.d, id:r.e._id});
       o.cnt++;
       if (!o.v && r.p.verdict){ o.v = r.p.verdict; o.vNeg = !!r.p.vNeg; }
@@ -4183,10 +4200,16 @@ function tplStats(tpl, rows){
     const jia = stores.filter(x => x.tier === 'jia').sort((a, b) => b.cnt - a.cnt);
     const lei = stores.filter(x => x.tier === 'lei');
     const mute = stores.filter(x => !x.tier).sort((a, b) => b.cnt - a.cnt);
-    S.tiles = [
-      [stores.length, '家', '吃过', sli(stores.slice().sort((a, b) => b.cnt - a.cnt))],
+    const SI = storeIndex();
+    const want = Object.values(wm).filter(r => !map[r.p.store] && !SI[r.p.store]).map(r => {
+      const c = r.p.delivery ? '外卖' : (r.p.city || dayCity(r.d) || null);
+      return {nm:r.p.store, sub:[c || '', fmtKey(r.d) + ' 收的'].filter(Boolean).join(' · '), sc:'想吃', scCls:'want', d:r.d, id:r.e._id, city:c};
+    });
+    S.tiles = [   /* v3.3.5 去过 · 宝藏 · 避雷 · 想吃 */
+      [stores.length, '家', '去过', sli(stores.slice().sort((a, b) => b.cnt - a.cnt))],
       [bao.length, '家', '宝藏', sli(bao)],
-      [lei.length, '家', '避雷', sli(lei)]
+      [lei.length, '家', '避雷', sli(lei)],
+      [want.length, '家', '想吃', want]
     ];
     if (mute.length) S.noteLink = {txt:'还有 ' + mute.length + ' 家没表态 · 补个分数或一句话就归档', items:sli(mute)};
     S.ranksTitle = '宝藏榜';
@@ -4201,6 +4224,7 @@ function tplStats(tpl, rows){
       if (!bucket) return;
       ccnt[bucket] = (ccnt[bucket] || 0) + 1;
       (S.cityMap[bucket] = S.cityMap[bucket] || []).push(sli([x])[0]); });
+    want.forEach(x => { if (!x.city) return; ccnt[x.city] = (ccnt[x.city] || 0) + 1; (S.cityMap[x.city] = S.cityMap[x.city] || []).push(x); });   /* v3.3.5 美食地图里也有想吃，后面标一下 */
     S.bars = Object.entries(ccnt).sort((a, b) => b[1] - a[1]).slice(0, 6);
   }
   if (tpl === 'money'){
@@ -4269,7 +4293,8 @@ function ptagRow(r, tpl, scoredSet){
   if (tpl === 'money') (p.prices || []).forEach(v => add('sc', '¥' + v));
   if (tpl && !TPL_PLAIN[tpl] && !(p.prices || []).length)
     add('ask', '¥ 补一笔', ev => { ev.stopPropagation(); openAmtSheet(r.e); });
-  if (p.verdict){
+  if (tpl === 'food' && p.want) add('want', '📌 想吃');   /* v3.3.5 */
+  else if (p.verdict){
     if (tpl === 'food'){ const tr = foodTier(p) || 'jia';
       add(tr === 'lei' ? 'neg' : tr, p.verdict); }
     else add(p.vNeg ? 'neg' : 'ok', p.verdict);
@@ -4404,7 +4429,7 @@ function openHowSheet(tpl){
   const order = [tpl].concat(Object.keys(per).filter(k => k !== tpl)).filter(k => k && per[k]);
   S.innerHTML = '<div class="gs-title">怎么写，啾啾才看得懂</div>'
     + order.map(k => per[k]).join('')
-    + '<div class="hw-tier"><b>美食只分三种</b>　宝藏＝8分以上，或写「宝藏 / 会再来 / 回购 / 必吃」；避雷＝6分以下，或写「避雷 / 难吃 / 非必要不去」；其余都算吃过。吃什么只从宝藏里抽。</div>'
+    + '<div class="hw-tier"><b>美食分四种</b>　宝藏＝8分以上，或写「宝藏 / 会再来 / 回购 / 必吃」；避雷＝6分以下，或写「避雷 / 难吃 / 非必要不去」；其余都算吃过（去过的都在「去过」里）；还没去的写「想去吃「店名」」「种草了「店名」」，是想吃。吃什么从宝藏和想吃里抽。</div>'
     + '<div class="hw-tip">都是普通中文，不用死记——写 #分组名 归进集子，「明天下午三点」自动挂时间。</div>';
   S.classList.add('on'); $('#mask').classList.add('on');
 }
@@ -4418,7 +4443,7 @@ function statsPayload(g, tpl, st, sel){
     : ('我的' + noun + '全记录');
   return {type:'stats', head:'啾啾岛 · 盘点',
     cardTitle:title,
-    tiles:(tpl === 'food' && st.tiles.length === 4) ? [st.tiles[0], st.tiles[1], st.tiles[3]] : st.tiles.slice(0, 3),
+    tiles:st.tiles.slice(0, 3),   /* v3.3.5 美食第 4 格是想吃；分享图还是 去过 · 宝藏 · 避雷 */
     list:(tpl === 'food')
       ? st.ranks.slice(0, 3).concat((st.ranksB || []).slice(0, 2).map(x => Object.assign({}, x, {no:'↓'})))
       : st.ranks.slice(0, 5),
@@ -6968,6 +6993,7 @@ const MEH_WORDS = ['还行','凑合','很一般','一般般','味道一般','中
 const GOLD_WORDS = ['宝藏','必吃','绝了','神作','yyds'];
 const TIP_RE = /(\d+|[一二三四五六七八九十两])点(去|到|前|以前|之前)|排队|预约|订位|适合.{0,6}人|(\d|[一二三四五六两俩])人.{0,6}适合|分着吃|吃不完|打卡送|人均|早点去|早去|要等位|等位/;
 var STORE_IDX = null;   /* var：scheduleSave 可能在声明前被调用，避开 TDZ */
+var WANT_IDX = null;   /* v3.3.5 想吃 */
 function storeClauses(t){
   return String(t || '').replace(/（[^）]*）|\([^)]*\)/g, '').split(/[，,。！!；;？?\n]/).map(s => s.trim()).filter(Boolean);
 }
@@ -6998,6 +7024,7 @@ function storeIndex(){
     if (!e.text) return;
     if (e.sym === 'task' && e.state !== 'done') return;   /* 还没去的「就它了」不算一次 */
     const p = parseEntry(e); if (!p.store) return;
+    if (p.want) return;   /* v3.3.5 想吃不算去过 */
     const o = map[p.store] || (map[p.store] = {name:p.store, days:new Set(), recs:[]});
     o.days.add(k); o.recs.push({k, e, p});
   });
@@ -7022,6 +7049,25 @@ function storeIndex(){
     o.cat = foodCatOf(o);
   });
   STORE_IDX = map; return map;
+}
+function wantIndex(){   /* v3.3.5 想吃：写过想吃 / 想去 / 种草…、还一次没去过的店 */
+  if (WANT_IDX) return WANT_IDX;
+  const idx = storeIndex(), map = {};
+  walk((k, e) => {
+    if (!e.text || e.state === 'migrated') return;
+    const p = parseEntry(e); if (!p.want || !p.store || idx[p.store]) return;
+    const o = map[p.store] || (map[p.store] = {name:p.store, want:true, tier:'want', recs:[], cnt:0});
+    o.recs.push({k, e, p});
+  });
+  Object.values(map).forEach(o => {
+    o.recs.sort((a, b) => parseKey(b.k) - parseKey(a.k));
+    o.last = o.recs[0].k; o.since = o.recs[o.recs.length - 1].k;
+    o.delivery = o.recs.some(r => r.p.delivery);
+    const cr = o.recs.find(r => r.p.city);
+    o.city = o.delivery ? null : (cr ? cr.p.city : (dayCity(o.since) || null));
+    o.cat = foodCatOf(o);
+  });
+  WANT_IDX = map; return map;
 }
 function storeQuote(o){
   for (const r of o.recs){
@@ -7091,6 +7137,9 @@ function pickContext(o, f){
   if (n >= 30) return {i:'🕰', t:agoCN(n).replace('没去了', '没去，想它了吧')};
   return null;
 }
+function wantReasons(o){   /* v3.3.5 想吃卡的理由：你自己写的那句 */
+  return o.recs.slice(0, 2).map(r => ({i:'💬', h:'<q>' + vEsc(clipT(r.e.text || '', 30)) + '</q><small>—— 你 ' + fmtKey(r.k) + ' 写的</small>'}));
+}
 function pickReasons(o){
   const R = [];
   const q = storeQuote(o);
@@ -7116,14 +7165,13 @@ function pickDefaults(){
   if (pickSt.hot === null){ const d = wxCached(); pickSt.hot = !!(d && (wxAdvice(d).dd <= -3 || d.hi <= 15)); }
   return pickSt;
 }
-function pickPool(f){
-  return Object.values(storeIndex()).filter(o => o.tier === 'bao'   /* v3.3.2 只从宝藏里抽 */
-    && (f.mode === 'all' || (f.mode === 'take' ? o.delivery : !o.delivery))
-    && (!f.city || !o.city || o.city === f.city));
+function pickPool(f){   /* v3.3.2 宝藏；v3.3.5 想吃（还没去过的）也能抽 */
+  const ok = o => (f.mode === 'all' || (f.mode === 'take' ? o.delivery : !o.delivery)) && (!f.city || !o.city || o.city === f.city);
+  return Object.values(storeIndex()).filter(o => o.tier === 'bao' && ok(o)).concat(Object.values(wantIndex()).filter(ok));
 }
 function pickWeight(o, f){
   let w = 2;
-  const n = daysAgo(o.last);
+  const n = o.want ? 10 : daysAgo(o.last);   /* v3.3.5 想吃的还没去过，不按上次去的远近减 */
   w *= n < 3 ? 0.3 : n < 7 ? 0.7 : n > 30 ? 1.5 : 1;
   if (f.hot && HOT_CATS.includes(o.cat)) w *= 2.2;
   return w;
@@ -7139,16 +7187,16 @@ function pickDraw(){
   return hit;
 }
 function pickCardHTML(o){
-  const lab = '★ 宝藏';
+  const lab = o.want ? '📌 想吃' : '★ 宝藏';   /* v3.3.5 */
   const meta = [o.delivery ? '外卖' : (o.cat || ''), o.city || ''].filter(Boolean).join(' · ');
   const anim = pickSt && pickSt.anim; if (pickSt) pickSt.anim = false;
   const n = daysAgo(o.last);
-  return '<div class="pk-card' + (o.gold ? ' gold' : '') + (anim ? ' flip' : '') + '">'
+  return '<div class="pk-card' + (o.gold ? ' gold' : '') + (o.want ? ' want' : '') + (anim ? ' flip' : '') + '">'
     + '<div class="pk-top"><span class="pk-rare">' + vEsc(lab) + '</span><span class="pk-meta">' + vEsc(meta || '城市没记') + '</span></div>'
     + '<div class="pk-name">' + vEsc(o.name) + '</div>'
-    + '<div class="pk-sub">去过 ' + o.cnt + ' 次 · 上次 ' + fmtKey(o.last) + (n >= 14 ? '，' + agoCN(n) : '') + '</div>'
-    + '<div class="pk-lab">吃的理由</div>'
-    + pickReasons(o).map(x => '<div class="pk-r"><span class="i">' + x.i + '</span><div>' + x.h + '</div></div>').join('')
+    + (o.want ? '<div class="pk-sub">还没去过 · ' + fmtKey(o.since) + ' 收的</div><div class="pk-lab">想吃的理由</div>'
+      : '<div class="pk-sub">去过 ' + o.cnt + ' 次 · 上次 ' + fmtKey(o.last) + (n >= 14 ? '，' + agoCN(n) : '') + '</div><div class="pk-lab">吃的理由</div>')
+    + (o.want ? wantReasons(o) : pickReasons(o)).map(x => '<div class="pk-r"><span class="i">' + x.i + '</span><div>' + x.h + '</div></div>').join('')
     + '</div>';
 }
 function renderPick(){
@@ -7168,16 +7216,17 @@ function renderPick(){
   chip('＋ 记一家店', false, () => storeSheet());
   view.appendChild(bar);
   const pl = document.createElement('div'); pl.className = 'pk-pool';
-  pl.textContent = pool.length ? ('只从你的 ' + pool.length + ' 家宝藏里抽' + (avoidN ? ' · 避雷的 ' + avoidN + ' 家永远不会出现' : ''))
-    : '这里还没有宝藏店';
+  const nW = pool.filter(o => o.want).length, nB = pool.length - nW;   /* v3.3.5 */
+  pl.textContent = pool.length ? ('从你的 ' + [nB ? nB + ' 家宝藏' : '', nW ? nW + ' 家想吃' : ''].filter(Boolean).join('、') + '里抽' + (avoidN ? ' · 避雷的 ' + avoidN + ' 家永远不会出现' : ''))
+    : '这里还没有宝藏店，也没有想吃的';
   view.appendChild(pl);
   if (!pool.length){
     const em = document.createElement('div'); em.className = 'empty-hint'; em.style.textAlign = 'center'; em.style.padding = '26px 6px';
-    em.innerHTML = jjImg('ask', 72) + '<div style="margin-top:10px;line-height:1.8">吃到宝藏店，写一句「在「店名」吃了…宝藏 / 会回购」<br>或者点上面「＋ 记一家店」<br>只有宝藏店进卡池，避雷的永远不会出现'
+    em.innerHTML = jjImg('ask', 72) + '<div style="margin-top:10px;line-height:1.8">吃到宝藏店，写一句「在「店名」吃了…宝藏 / 会回购」<br>想去的写「想去吃「店名」」<br>或者点上面「＋ 记一家店」<br>宝藏和想吃进卡池，避雷的永远不会出现'
       + (f.city ? '<br><span style="color:var(--ink-faint)">（现在只看' + vEsc(f.city) + '，点 📍 可以换成不限城市）</span>' : '') + '</div>';
     view.appendChild(em); return;
   }
-  const o = f.cur && idx[f.cur] && pool.includes(idx[f.cur]) ? idx[f.cur] : null;
+  const o = f.cur ? (pool.find(x => x.name === f.cur) || null) : null;   /* v3.3.5 想吃的店不在熟店簿里 */
   const deck = document.createElement('div'); deck.className = 'pk-deck';
   deck.innerHTML = '<div class="pk-back b1"></div><div class="pk-back b2"></div>'
     + (o ? pickCardHTML(o) : '<div class="pk-cover">' + jjImg('ask', 88) + '<div class="pk-q">今天吃什么？</div><div class="pk-hint">' + pool.length + ' 张店卡 · 点一下翻一张</div></div>');
@@ -7193,7 +7242,7 @@ function renderPick(){
   if ($('#pkRe')) $('#pkRe').onclick = () => { pickDraw(); render(); };
   if ($('#pkGo') && f.went !== o.name) $('#pkGo').onclick = () => pickGo(o);
   const nt = document.createElement('div'); nt.className = 'pk-note';
-  nt.textContent = !o ? '只出你的宝藏店 · 理由全是你自己写过的话'
+  nt.textContent = !o ? '宝藏和想吃都会出 · 理由全是你自己写过的话'
     : f.went === o.name ? '吃完点 ✓，啾啾问一句怎么样，点一下就记好了'
     : (f.n >= 3 && f.first && f.first !== o.name) ? ('抽了 ' + f.n + ' 张了 · 第一张「' + f.first + '」其实也不错？')
     : '点「就它了」，今天的待办里多一条，吃完点 ✓ 顺手说句好不好吃';
@@ -7210,8 +7259,10 @@ function pickGo(o){
 function pickDone(t){
   dismissKB();
   const S = $('#qsheet');
-  const nm = t.pick;
-  S.innerHTML = '<div class="gs-title">✓ 吃完了 ·「' + vEsc(nm) + '」怎么样？</div>'
+  const nm = t.pick, o0 = storeIndex()[nm];   /* v3.3.5 想吃的第一次去：除了这条「就它了」，以前没去过，又写过想吃 */
+  let wasWant = !o0 || o0.recs.every(r => r.e === t);
+  if (wasWant){ wasWant = false; walk((k, e) => { if (!wasWant && e.text && e !== t){ const q = parseEntry(e); if (q.want && q.store === nm) wasWant = true; } }); }
+  S.innerHTML = '<div class="gs-title">✓ ' + (wasWant ? '第一次吃' : '吃完了') + ' ·「' + vEsc(nm) + '」怎么样？</div>'
     + '<div class="gs-chips" id="pdChips">'
     + [['宝藏', '★ 宝藏'], ['一般般', '😐 一般'], ['避雷', '👎 避雷']].map(([w, lab]) => '<button class="gs-chip" data-w="' + w + '">' + lab + '</button>').join('')
     + '</div>'
@@ -7227,7 +7278,7 @@ function pickDone(t){
     const fg = foodGroupName() || '美食';
     if (!extraGroups.includes(fg) && !foodGroupName()) extraGroups.push(fg);
     P().flow.push({sym:'event', text:'「' + nm + '」' + (sel ? ' ' + sel : '') + (line ? '：' + line : ''), groups:[fg], _id:++uid});
-    scheduleSave(); closeQSheet(); toast(sel === '避雷' ? '记下了 · 以后不会再抽到它' : '记下了 · 去过次数 +1');
+    scheduleSave(); closeQSheet(); toast(sel === '避雷' ? '记下了 · 以后不会再抽到它' : wasWant ? '记下了 · 从想吃挪到去过了' : '记下了 · 去过次数 +1');
   };
   S.classList.add('on'); $('#mask').classList.add('on'); placeToolbar();
 }
@@ -7240,7 +7291,7 @@ function storeSheet(prefill){
   S.innerHTML = '<div class="gs-title">记一家店</div>'
     + '<input class="vt-in" id="ssName" placeholder="店名" value="' + escAttr(prefill || '') + '">'
     + '<div class="gs-chips" id="ssV" style="margin:10px 0 2px">'
-    + [['宝藏', '★ 宝藏'], ['吃过', '😐 吃过'], ['避雷', '👎 避雷']].map(([w, lab]) => '<button class="gs-chip" data-w="' + w + '">' + lab + '</button>').join('') + '</div>'
+    + [['宝藏', '★ 宝藏'], ['吃过', '😐 吃过'], ['避雷', '👎 避雷'], ['想吃', '📌 想吃']].map(([w, lab]) => '<button class="gs-chip" data-w="' + w + '">' + lab + '</button>').join('') + '</div>'
     + '<label class="ss-f"><span>一句话</span><input id="ssLine" placeholder="好在哪 / 坑在哪（可不填）"></label>'
     + '<div style="display:flex;gap:8px"><label class="ss-f" style="flex:1"><span>必点</span><input id="ssMust" placeholder="可不填"></label><label class="ss-f" style="flex:1"><span>别点</span><input id="ssAvoid" placeholder="可不填"></label></div>'
     + '<div class="gs-chips" id="ssCity" style="margin:10px 0 0">'
@@ -7255,16 +7306,16 @@ function storeSheet(prefill){
   $('#ssSave').onclick = () => {
     const nm = $('#ssName').value.trim().replace(/[「」“”"『』]/g, '');
     if (!nm){ toast('先写店名'); return; }
-    if (!vsel){ toast('选一下：宝藏 / 吃过 / 避雷'); return; }
+    if (!vsel){ toast('选一下：宝藏 / 吃过 / 避雷 / 想吃'); return; }
     const line = $('#ssLine').value.trim(), mu = $('#ssMust').value.trim(), av = $('#ssAvoid').value.trim();
     const amt = parseFloat($('#ssAmt').value);
     const text = '「' + nm + '」 ' + vsel + (line ? '：' + line : '') + (mu ? ' · 必点' + mu : '') + (av ? ' · 别点' + av : '')
-      + (csel ? ' · ' + csel : '') + (deliv ? ' · 外卖' : '') + (isFinite(amt) && amt > 0 ? ' ' + amt + '元' : '');
+      + (csel ? ' · ' + csel : '') + (deliv ? ' · 外卖' : '') + (vsel !== '想吃' && isFinite(amt) && amt > 0 ? ' ' + amt + '元' : '');   /* v3.3.5 想吃的还没花钱 */
     const fg = foodGroupName() || '美食';
     if (!foodGroupName() && !extraGroups.includes(fg)) extraGroups.push(fg);
     P().flow.push({sym:'event', text, groups:[fg], _id:++uid});
     scheduleSave(); closeSheet(); render();
-    toast(vsel === '避雷' ? '记下了 · 这家不会再被抽到，写到它时我会提醒你' : vsel === '宝藏' ? '记下了 · 已进卡池' : '记下了');
+    toast(vsel === '避雷' ? '记下了 · 这家不会再被抽到，写到它时我会提醒你' : vsel === '宝藏' ? '记下了 · 已进卡池' : vsel === '想吃' ? '记下了 · 收进想吃，吃什么里能抽到它' : '记下了');
   };
   S.classList.add('on'); $('#mask').classList.add('on');
   setTimeout(() => { const i = $('#ssName'); if (i && !prefill) i.focus(); }, 60);
@@ -7763,6 +7814,7 @@ function chatSayOne(o, text){
     const amt = hk !== 'money' ? chatAmt(e) : 0, aw = amtWords(e, true);
     say = amt ? '收进' + ISLE[hk].h + '了，' + amtWords(e) + '也记进了' + ISLE.money.h + '。'
       : '收进' + ISLE[hk].h + '了' + (hk === 'money' && aw ? '，' + aw.replace(/，$/, '。') : '：' + vEsc(clipT(e.text, 18)));   /* v3.3.4 */
+    if (hk === 'food' && parseEntry(e).want) say = '收进' + ISLE.food.h + '的想吃了：' + vEsc(parseEntry(e).store) + '。还没去过，不算进去过的；吃什么里能抽到它。';   /* v3.3.5 */
     acts.push(['house', '去看看'], ['back', '放回手帐'], ['undo', '撤回']);
   } else if (e.isleAsk){
     const ks = String(e.isleAsk).split(',').filter(k => ISLE[k] && isleOn(k));
