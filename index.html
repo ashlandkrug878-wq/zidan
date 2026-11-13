@@ -946,6 +946,13 @@
 .postcard-detail{border:1px solid #dfd1b9;background:#fffcf5;border-radius:16px;padding:16px;box-shadow:0 7px 20px #5d40200a;margin:8px 0 20px}.postcard-from{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--ink-soft);padding:3px 0 16px}.postcard-from small{font-size:11px}.postcard-letter{padding:20px 1px 22px}.postcard-letter>small{font-size:11px;color:var(--ink-faint)}.postcard-letter h2{font:600 22px/1.6 'Songti SC',serif;margin:6px 0 12px}.postcard-letter p{font-size:15px;line-height:2;margin:0}.postcard-sign{text-align:right;font:16px 'Songti SC',serif;margin-top:22px}.postcard-detail .island-actions{padding-top:16px;border-top:1px dashed var(--line-strong)}.postcard-tile .postcard-media{pointer-events:none}.postcard-tile .postcard-image-error button{display:none}
 .island-page button:focus-visible,.postoffice button:focus-visible,.postcard-detail button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}@media(min-width:600px){.island-viewport{max-height:720px}.postcard-grid{grid-template-columns:repeat(3,1fr)}}@media(prefers-reduced-motion:reduce){.island-viewport{scroll-behavior:auto}}
 
+.hl-postcard{margin:14px 0 22px;padding:15px;border:1px solid var(--line-strong);border-radius:14px;background:var(--card);text-align:left}.hl-postcard .hl-lab{margin:0 0 12px}.hl-postcard h3{font:600 19px/1.6 'Songti SC',serif;margin:12px 0 7px}.hl-postcard p{font-size:13px;line-height:1.9;margin:0 0 8px}.hl-postcard>small{display:block;text-align:right;font-size:11px;color:var(--ink-soft);margin:8px 0 14px}.hl-postcard>.chip{min-height:40px;width:100%}.hl-postcard button:disabled{opacity:.55}
+
+/* Inbox: read status is separate from collecting a postcard. */
+#reviewBtn{position:relative}#reviewBtn.mailbox-unread::after{content:'';position:absolute;right:4px;top:3px;width:7px;height:7px;border-radius:50%;background:var(--accent);border:2px solid var(--paper,#fffaf1)}
+.mail-filters{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0}.mail-filters .chip{min-height:40px;font-size:12px}.mail-heading{align-items:flex-start;flex-wrap:wrap}.mail-heading>.island-actions{flex:1;justify-content:flex-end}.mail-heading>.island-actions .chip{font-size:11px}
+.mail-system-envelope{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:18px 15px;margin:12px 0;border:1px solid var(--line-strong);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;position:relative;cursor:pointer}.mail-system-icon{width:50px;flex:none;text-align:center;font-size:28px;color:var(--ink-soft)}.mail-envelope-text{min-width:0;flex:1;padding-right:12px}.mail-envelope-text b{overflow-wrap:anywhere}.mail-system-envelope small{display:block;font-size:10px;color:var(--ink-soft)}.mail-system-envelope b{display:block;font:600 17px/1.6 'Songti SC',serif;margin:5px 0}.mail-system-envelope em{font-size:11px;color:var(--accent);font-style:normal}.mail-envelope .mail-unread-dot{position:absolute;right:13px;top:14px;bottom:auto;width:7px;height:7px;border:0;border-radius:50%;background:var(--accent);transform:none}.mail-system-body{white-space:pre-wrap;overflow-wrap:anywhere}.drawer-more{margin:10px 0}.drawer-more summary{padding:12px 5px;color:var(--ink-soft);font-size:13px;cursor:pointer}.drawer-more button{width:100%;font:inherit;background:transparent;border:0;color:var(--ink);text-align:left;min-height:44px}
+
 </style>
 </head>
 <body>
@@ -955,7 +962,7 @@
     <button class="daynav" id="prevDay">‹</button>
     <div id="topTitle" style="text-align:center">今天</div>
     <button class="daynav" id="nextDay">›</button>
-    <button class="pill-btn" id="reviewBtn">复盘</button>
+    <button class="pill-btn" id="reviewBtn">✉ 信箱</button>
   </header>
   <main id="view"></main>
   <div id="tagSug"></div>
@@ -1211,57 +1218,74 @@ var IMG_DB = {db:null, ok:false, ready:false, bootP:null, busy:false, nextJs:nul
 let PAGES = {}, SEEN = {}, GCOLOR = {};
 let extraGroups = ['工作', '健康', '恋爱'];
 const SET = {recog:true, accent:0};
-/* Local postcard progress. Dates are integer civil days; no background jobs or health data. */
-function islandDefaults(){return {version:1,enabled:true,seed:0,lastDay:null,nextDay:null,welcomed:[],inbox:[],album:[]};}
+/* A postcard is granted only when today's greeting is opened. No elapsed-time delivery. */
+function islandDefaults(){return {version:3,enabled:true,seed:0,daily:null,inbox:[],album:[],messages:[]};}
 function islandNormalize(raw){
  if(raw==null)return islandDefaults();
- if(!raw||typeof raw!=='object'||raw.version!==1)throw Error('Unsupported island backup');
+ if(!raw||typeof raw!=='object'||![1,2,3].includes(raw.version))throw Error('Unsupported island backup');
  const s=islandDefaults(),validDay=n=>Number.isInteger(n)&&n>=0&&n<200000;
- if(typeof raw.enabled!=='boolean'||!Number.isInteger(raw.seed)||raw.seed<0||raw.seed>4294967295||!Array.isArray(raw.welcomed)||!Array.isArray(raw.inbox)||!Array.isArray(raw.album))throw Error('Invalid island backup');
- if((raw.lastDay!==null&&!validDay(raw.lastDay))||(raw.nextDay!==null&&!validDay(raw.nextDay)))throw Error('Invalid island date');
- if(raw.inbox.length>5||raw.album.length>2000||raw.welcomed.length>100)throw Error('Invalid island size');
- s.enabled=raw.enabled;s.seed=raw.seed;s.lastDay=raw.lastDay;s.nextDay=raw.nextDay;
- s.welcomed=[...new Set(raw.welcomed.map(x=>{if(typeof x!=='string'||!(/^[a-z]+$/).test(x))throw Error('Invalid resident');return x;}))];
- const seen=new Set();
+ if(typeof raw.enabled!=='boolean'||!Number.isInteger(raw.seed)||raw.seed<0||raw.seed>4294967295||!Array.isArray(raw.inbox)||!Array.isArray(raw.album))throw Error('Invalid island backup');
+ if(raw.inbox.length>2000||raw.album.length>2000)throw Error('Invalid island size');
+ s.enabled=raw.enabled;s.seed=raw.seed;
+ const validId=x=>typeof x==='string'&&(/^[a-z]+-[a-z0-9]+$/).test(x),seen=new Set();
  for(const kind of ['album','inbox'])s[kind]=raw[kind].map(r=>{
-  if(!r||typeof r.id!=='string'||!(/^[a-z]+-[a-z0-9]+$/).test(r.id)||!validDay(r.day)||seen.has(r.id))throw Error('Invalid postcard');
+  if(!r||!validId(r.id)||!validDay(r.day)||seen.has(r.id))throw Error('Invalid postcard');
   if(kind==='album'&&!validDay(r.collectedDay))throw Error('Invalid collected date');
   seen.add(r.id);return kind==='album'?{id:r.id,day:r.day,collectedDay:r.collectedDay}:{id:r.id,day:r.day};
  });
+ if(raw.version>=2&&raw.daily!=null){
+  if(!validId(raw.daily.id)||!validDay(raw.daily.day)||!seen.has(raw.daily.id))throw Error('Invalid daily postcard');
+  s.daily={day:raw.daily.day,id:raw.daily.id};
+ }
+ if(raw.version===3){
+  if(!Array.isArray(raw.messages)||raw.messages.length>6000)throw Error('Invalid messages');
+  const ids=new Set();
+  s.messages=raw.messages.map(m=>{
+   if(!m||typeof m.id!=='string'||m.id.length>100||ids.has(m.id)||!validDay(m.day)||typeof m.read!=='boolean')throw Error('Invalid message');
+   ids.add(m.id);
+   if(m.kind==='card'){
+    if(!validId(m.cardId)||m.id!=='card:'+m.cardId||!seen.has(m.cardId))throw Error('Invalid card message');
+    return {id:m.id,kind:'card',cardId:m.cardId,day:m.day,read:m.read};
+   }
+   if(m.kind!=='system'||!/^system:[a-z0-9-]+$/.test(m.id)||typeof m.title!=='string'||!m.title.trim()||m.title.length>150||typeof m.body!=='string'||!m.body.trim()||m.body.length>6000)throw Error('Invalid system message');
+   return {id:m.id,kind:'system',day:m.day,read:m.read,title:m.title,body:m.body};
+  });
+ }
+ islandSyncMessages(s); // Migrate old collected cards as read; pending cards remain unread.
  return s;
 }
-function islandHash(str){let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
-function islandAdvance(s,day,roster,catalog,seed){
- if(!Number.isInteger(day)||day<0)return false;
- const before=JSON.stringify(s),known=new Set([...s.album,...s.inbox].map(r=>r.id));
- if(s.lastDay!==null&&day<s.lastDay)return false; // A backward clock never grants mail twice.
- if(!s.seed)s.seed=(seed>>>0)||1;
- const delay=d=>1+islandHash(s.seed+'|delay|'+d)%2;
- if(s.lastDay===null){s.lastDay=day;s.nextDay=day+delay(day);}
- if(!s.enabled){s.lastDay=day;s.nextDay=day+delay(day);return before!==JSON.stringify(s);}
- const owners=[...new Set(roster)];
- for(const owner of owners){
-  if(s.inbox.length>=5)break;
-  const c=catalog.find(x=>x.id===owner+'-welcome');
-  if(c&&!s.welcomed.includes(owner)){
-   s.welcomed.push(owner);
-   if(!known.has(c.id)){s.inbox.push({id:c.id,day});known.add(c.id);}
+function islandSyncMessages(s){
+ let changed=false;
+ for(const [rows,read] of [[s.inbox,false],[s.album,true]])for(const r of rows){
+  if(!s.messages.some(m=>m.id==='card:'+r.id)){
+   s.messages.push({id:'card:'+r.id,kind:'card',cardId:r.id,day:r.day,read});changed=true;
   }
  }
- let next=s.nextDay==null?day+delay(day):s.nextDay;
- // At most 5 deliveries can be added, even after years away.
- while(next<=day&&s.inbox.length<5){
-  const pool=catalog.filter(c=>c.kind!=='welcome'&&!known.has(c.id)&&c.requires.every(k=>owners.includes(k)));
-  if(!pool.length){next=day+delay(day);break;}
-  const c=pool[islandHash(s.seed+'|mail|'+next)%pool.length];
-  s.inbox.push({id:c.id,day:next});known.add(c.id);next+=delay(next);
- }
- if(next<=day)next=day+delay(day); // Full inbox does not create an unlimited backlog.
- s.nextDay=next;s.lastDay=day;
- return before!==JSON.stringify(s);
+ return changed;
+}
+function islandSystemMessage(s,id,day,title,body){
+ if(s.messages.some(m=>m.id===id))return false;
+ s.messages.push({id,kind:'system',day,read:false,title,body});return true;
+}
+function islandReadMessage(s,id){const m=s.messages.find(m=>m.id===id);if(!m||m.read)return false;m.read=true;return true;}
+function islandUnread(s){return s.messages.filter(m=>!m.read).length;}
+function islandHash(str){let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+function islandGrantDaily(s,day,roster,catalog,seed){
+ if(!Number.isInteger(day)||day<0||day>=200000)return false;
+ if(s.daily&&day<=s.daily.day)return false; // Reopening and a backward clock cannot grant twice.
+ if(!s.enabled)return false;
+ const pool=catalog.filter(c=>c.requires.every(k=>roster.includes(k)));if(!pool.length)return false;
+ if(!s.seed)s.seed=(seed>>>0)||1;
+ const known=new Set([...s.album,...s.inbox].map(r=>r.id));
+ const fresh=pool.filter(c=>!known.has(c.id));
+ const choices=fresh.length?fresh:pool; // After collecting the eligible set, revisit a card without duplicating it.
+ const card=choices[islandHash(s.seed+'|morning|'+day)%choices.length];
+ if(!known.has(card.id)){s.inbox.push({id:card.id,day});islandSyncMessages(s);}
+ s.daily={day,id:card.id};return true;
 }
 function islandCollect(s,id,day){
  const i=s.inbox.findIndex(r=>r.id===id);if(i<0)return false;
+ islandSyncMessages(s);islandReadMessage(s,'card:'+id);
  if(!s.album.some(r=>r.id===id))s.album.push({...s.inbox[i],collectedDay:Math.max(day,s.inbox[i].day)});
  s.inbox.splice(i,1);return true;
 }
@@ -2577,8 +2601,8 @@ function renderGroupBody(){
     }
   }
 function render(){
+  islandMailboxPrepare();
   closeRowPop(); topTitle.classList.remove('has-wx');
-  islandTick();
   if (cur.name === 'health'){ const tabs = HEALTH.order.filter(k => !HEALTH.hidden.includes(k)); if (!tabs.includes(cur.tab)) cur.tab = tabs[0] || null; }
   if (cur.name === 'meals'){ cur.name = 'food'; if (!cur.tab) cur.tab = 'meal'; }   /* v2.23 三餐并入美食板块 */
   (() => {   /* v2.18 导航栈：自动记来路，二级页左上角变「‹ 返回」 */
@@ -2607,7 +2631,7 @@ function render(){
   view.innerHTML = '';
   chatBarSync();   /* v3.2 发给啾啾的输入栏：今天和过去的日子 */
   if (cur.name === 'today'){
-    topTitle.textContent = dayGroupTitle(TODAY); reviewBtn.textContent = '复盘';
+    topTitle.textContent = dayGroupTitle(TODAY); islandMailboxBadge();
     if (modOn('hello')){ topTitle.appendChild(wxPillNode()); topTitle.classList.add('has-wx'); }   /* v2.31 天气缩成日期旁的小签 */
     renderPageInto(view, TODAY, true);
   }
@@ -2743,7 +2767,7 @@ function render(){
     setRow('天气城市', setSub((wxCfg().cities.map(c => c.n).join('、') || '还没设') + ' ›'), wxCitySheet);
     view.appendChild(sectionLabel('小岛'));
     setRow('🏝 全景岛', setSub('逛岛 · 看住户 ›'), () => islandGo('panorama'));
-    setRow('✉ 信箱与明信片册', setSub(ISLAND.inbox.length+' 封来信 · '+ISLAND.album.length+' 张收藏 ›'), () => islandGo('postoffice','inbox'));
+    setRow('✉ 信箱与明信片册', setSub(islandUnread(ISLAND)+' 条未读 · '+ISLAND.album.length+' 张收藏 ›'), () => islandGo('postoffice','inbox'));
     setRow('岛民来信', setSub(ISLAND.enabled?'已开启 ›':'已暂停 ›'), islandMailSettings);
     setRow('🏝 岛上的房子', setSub(ISLE_ORDER.filter(k => isleOn(k)).length + ' 栋开着 · 开关、置顶 ›'), () => { cur = {name:'isle'}; render(); });
     view.appendChild(sectionLabel('数据'));
@@ -2759,7 +2783,7 @@ function render(){
     });
     setRow('主题色', accWrap, null);
     setRow('功能手册 · 实验室', setSub('›'), labSheet);
-    setRow('版本记录', setSub('v3.5.0 ›'), showChangelog);
+    setRow('版本记录', setSub('v3.5.1 ›'), showChangelog);
   }
   else if (cur.name === 'isle'){   /* v3.1 岛上的房子：开关、置顶 */
     topTitle.textContent = '岛上的房子'; reviewBtn.textContent = '回今日';
@@ -2816,6 +2840,7 @@ function render(){
   else if (cur.name === 'panorama'){ renderPanorama(); }
   else if (cur.name === 'postoffice'){ renderPostoffice(); }
   else if (cur.name === 'postcard'){ renderPostcard(); }
+  else if (cur.name === 'mailmessage'){ renderMailMessage(); }
   else if (cur.name === 'health'){
     topTitle.textContent = '健康'; reviewBtn.textContent = '回今日';
     renderHealth();
@@ -3505,7 +3530,7 @@ function openReport(g, kind, incMood){
   };
   R.classList.add('on');
 }
-reviewBtn.onclick = () => { if (cur.name === 'today') openReview(); else { cur = {name:'today'}; render(); } };
+reviewBtn.onclick = () => { if (cur.name === 'today') islandGo('postoffice','inbox'); else { cur = {name:'today'}; render(); } };
 
 /* ============ 晚间复盘 ============ */
 let queue = [], qi = 0, stat = null;
@@ -3866,7 +3891,7 @@ function showManual(){
     + '【🎤 说话】\n点输入栏左边的话筒，再按键盘右下角的 🎤 一口气说完，点「发送」：说了好几件事我拆开给你看，确认才放进去；想细改点「细改」，进整屏的分拣页（复盘里的「说说今天」也是它）。听错的名字照你的词典改好（设置 → 我的词典），点 ↺ 改回\n\n'
     + '【🎲 今天吃什么】\n美食 → 吃什么：从你的宝藏店（写过「宝藏 / 会再来 / 回购 / 必吃」或 8 分以上的）和想吃的店里抽，理由全是你自己写过的话；吃完点 ✓ 一键评价。美食分去过、宝藏、避雷、想吃：写「想去吃「店名」」「种草了「店名」」记成想吃，不算去过。三餐打卡在设置里可以再打开\n\n'
     + '【早安卡】\n每天第一次打开递上一张：大日期、农历节气、天气和昨天比冷暖、啾啾的一句话；有约好的事、去年今日 / 上个月的今天才出现在下面\n收起后日期旁留一个天气小签，点开再看；城市在 设置 → 天气城市 里加，最多 3 个\n\n'
-    + '【复盘与报告】\n右上「复盘」直达今日快照和盖章；想逐件过没做完的，点「现在过一遍」\n没日子的事当天没做完，第二天自动收进「☾ 储备」，不催不计数（设置 → 提醒力度 可切到「规律」）\n分组视图里一键生成日报 / 周报 / 月报，可选含心情\n\n'
+    + '【复盘与报告】\n首页右上「信箱」查看岛民来信与系统消息；侧栏「更多 → 晚间复盘」查看今日快照和盖章，点「现在过一遍」可整理未完成事项\n没日子的事当天没做完，第二天自动收进「☾ 储备」，不催不计数（设置 → 提醒力度 可切到「规律」）\n分组视图里一键生成日报 / 周报 / 月报，可选含心情\n\n'
     + '【上岛】\n设置 → 功能手册 · 实验室 →「重新走一遍上岛」：改称呼、城市、生日，重新盖房子、换提醒搭档\n\n'
     + '【数据安全】\n数据只存在本机；设置里定期「完整备份(.json)」\n⏰ 芯片不会响，点它「加入系统日历」才有真提醒'
     + '</div></div>';
@@ -3880,7 +3905,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v3.5.0（当前 · 2026.11.13）\n【全景岛与明信片】\n· 14栋建筑可点选进入，支持地图放大和拖动，加入晨露小站与呦呦\n· 简约版可直接打开信箱和明信片册，收信、收藏、筛选与分享\n· 14张入住问候、42张岛民生活与故事、4张呦呦场景，共60张\n· 未读最多5封，不重复寄已收到的卡片，支持暂停和完整备份恢复\n\n'
+    + 'v3.5.1（当前 · 2026.11.13）\n【首页信箱】\n· 首页右上改为信箱，未读消息显示圆点；复盘移到侧栏更多\n· 全部、岛民来信、系统消息分类，已读与收藏分别保存\n· 早安照片看到后不重复提示，旧收藏与来信保留\n\n'
+    + 'v3.5.0（2026.11.13）\n【全景岛与明信片】\n· 14栋建筑可点选进入，支持地图放大和拖动，加入晨露小站与呦呦\n· 简约版可直接打开信箱和明信片册，收信、收藏、筛选与分享\n· 14张入住问候、42张岛民生活与故事、4张呦呦场景，共60张\n· 当天打开早安卡附一张明信片，每日一次；没打开不发、不补发，已收卡片保留\n\n'
     + 'v3.4.0（2026.11.12）\n【晨露小站】\n· 体重、围度、经期、饮水记录与变化图，支持修改、删除、补记\n· 身体指标估算、个人周期预计、水杯进度，计算说明收在页底\n· 四个板块可排序、移除和恢复，健康记录纳入完整备份\n【小岛页头】\n· 14栋建筑统一信纸式门楣，换上住户与建筑的新组合图\n【文案修订 · 11.13】\n· 上岛引导、岛民台词、消息回复与早晚提示改为具体简短的说法\n\n'
     + 'v3.3.5（2026.11.12）\n【美食 · 想吃】\n· 写「想去吃「店名」」「种草了「店名」」「收藏一家「店名」」「下次去吃「店名」」，记成想吃，不再算成去过一次\n· 集子里四格并排：去过 · 宝藏 · 避雷 · 想吃；「记一家店」也能选想吃\n· 吃什么：宝藏和想吃都会抽到；想吃的卡写着「还没去过 · 哪天收的」，吃完点 ✓ 评价，就从想吃挪到去过\n· 美食地图里也有想吃的店，后面标一个「想吃」\n\n'
     + 'v3.3.4（2026.11.11）\n【侧栏】\n· 小岛的房子一行放 3 个，跟上面手帐那排一样大，不挤了\n【首页】\n· 待办里有东西时，不再提示「储备 · 几件 · 想做哪件捞回来」；待办空着才出来\n【记账】\n· 一句里连加的钱自动算总数：「今天旅游一共花了100+30+40」记 170 元，回话里说一声「100+30+40 一共 170 元」\n· 写了等号的按你写的总数：「251.9+16.9+5=273.8元」记 273.8，不再把 251.9 也算进去；加起来对不上，回话里提一句\n· 一句里两笔一样的钱都算（早饭10元，午饭10元 = 20 元）；「花了300，……300元」这样同一笔说了两遍的，还是算一笔\n· 一句里最多认 8 笔（原来 3 笔）\n\n'
@@ -7165,9 +7191,12 @@ function openHello(reopen){
   H.querySelectorAll('.hl-mem[data-mi]').forEach(el => el.onclick = () => {
     const m = mems[+el.dataset.mi]; closeHello(); jumpToEntry(m.k, m.e._id || (m.e._id = ++uid));
   });
+  islandHelloGift();
   helloWxRender();
 }
 function closeHello(){
+  islandHelloObserverStop();
+  if(cur.name==='postoffice'&&cur.tab!=='album'){navFromBack=true;render();}
   const H = $('#hello'); if (!H || !H.classList.contains('on')) return;
   H.classList.remove('on');
   const first = !helloReopen; helloReopen = false;
@@ -8720,6 +8749,9 @@ function buildDrawer(){
     });
     box.appendChild(aw);
   }
+  const more = document.createElement('details'); more.className='drawer-more'; more.id='drawerMore';
+  more.innerHTML='<summary>更多</summary><button class="dfold" id="drawerReview">晚间复盘</button>';
+  more.querySelector('button').onclick=()=>{closeDrawer();openReview();};box.appendChild(more);
   const st = document.createElement('div'); st.className = 'dfold'; st.id = 'dSettings';
   st.innerHTML = '<span class="ic">⚙</span><div>设置</div>';
   st.onclick = () => go(() => { cur = {name:'settings'}; });
@@ -9288,6 +9320,7 @@ function obFinish(){
   obApply(); obClose();
   navStack = []; cur = {name:'today'}; render();
   if (again) toast('岛上改好了');
+  else if (modOn('hello')) openHello(false);
 }
 /* ---- 落地：待办下面一张纸条；第一天三栏下的浅色小字 ---- */
 function obExample(){ const r = (SET.obLand || {}).role; return r === 'student' ? '周五下午三点 交实验报告' : r === 'worker' ? '明天下午三点 交周报' : '明天上午十点 去取快递'; }
@@ -10012,33 +10045,67 @@ const POSTCARD_SCENES = [
 /* Full island and the same mailbox/album accessible directly from the simple notebook. */
 const ISLAND_OWNERS=['post','health','food','movie','book','people','money','cycles','notes','vault','work','study','someday','fun'];
 const POSTCARDS=ISLAND_OWNERS.map(k=>({id:k+'-welcome',owner:k,requires:[k],kind:'welcome',title:HOUSE_INFO[k].name+'的第一封信',line:k==='health'?'我是呦呦，住在晨露小站。桌上有手帐，窗边有水杯，有空过来坐坐。':k==='post'?'我是啾啾。大家寄来的信放在这里，拆开后还可以收进册子。':'我是'+HOUSE_INFO[k].who+'，住在'+HOUSE_INFO[k].name+'。'+HOUSE_INFO[k].line,image:HEAD_ART[k],thumb:HEAD_ART[k]})).concat(POSTCARD_SCENES);
-let ISLAND_ZOOM=1,ISLAND_SELECTED='health';
+let ISLAND_ZOOM=1,ISLAND_SELECTED='health',ISLAND_HELLO_OBSERVER=null;
 function islandToday(){const a=TODAY.split('.').map(Number);return Math.floor(Date.UTC(a[0],a[1]-1,a[2])/86400000);}
 function islandDate(n){const d=new Date(n*86400000);return d.getUTCFullYear()+'.'+(d.getUTCMonth()+1)+'.'+d.getUTCDate();}
 function islandOpen(k){return ['post','cycles','someday'].includes(k)||(['work','study'].includes(k)?!!tplGroupName(k):isleOn(k));}
 function islandRoster(){return ISLAND_OWNERS.filter(islandOpen);}
-function islandTick(){if(!SEEN.onboard)return;if(islandAdvance(ISLAND,islandToday(),islandRoster(),POSTCARDS,Math.floor(Math.random()*4294967295)))scheduleSave();}
+
 function islandGo(name,tab){cur={name,tab};render();}
 function islandCard(id){return POSTCARDS.find(c=>c.id===id);}
 function islandArrived(id){return ISLAND.inbox.find(r=>r.id===id)||ISLAND.album.find(r=>r.id===id);}
-function islandCommit(){scheduleSave();saveNow();}
+function islandCommit(){scheduleSave();saveNow();islandMailboxBadge();}
+function islandMailboxBadge(){
+ if(cur.name!=='today'){reviewBtn.classList.remove('mailbox-unread');reviewBtn.removeAttribute('aria-label');return;}
+ const n=islandUnread(ISLAND);reviewBtn.textContent='✉ 信箱';reviewBtn.classList.toggle('mailbox-unread',n>0);
+ reviewBtn.setAttribute('aria-label',n?'信箱，'+n+' 条未读消息':'信箱，无未读消息');
+}
+function islandMailboxPrepare(){
+ let changed=islandSyncMessages(ISLAND);
+ if(SEEN.onboard)changed=islandSystemMessage(ISLAND,'system:mailbox-351',islandToday(),'信箱搬到首页了','首页右上角现在可以打开信箱。岛民来信和系统消息都放在这里，点开一封才会标记为已读。\n\n明信片看过以后仍可以收藏；已收藏的卡片也保留来信记录。早安卡依然是当天打开才有，错过的日子不补发。\n\n晚间复盘移到了侧栏的「更多」里。')||changed;
+ if(changed)islandCommit();
+ islandMailboxBadge();
+}
+function islandReadCard(id){if(islandReadMessage(ISLAND,'card:'+id))islandCommit();}
+function islandHelloObserverStop(){if(ISLAND_HELLO_OBSERVER){ISLAND_HELLO_OBSERVER.disconnect();ISLAND_HELLO_OBSERVER=null;}}
+function islandHelloSeen(block,id){
+ islandHelloObserverStop();
+ if(!('IntersectionObserver' in window))return;
+ ISLAND_HELLO_OBSERVER=new IntersectionObserver(entries=>{
+  if(entries.some(e=>e.isIntersecting)&&$('#hello').classList.contains('on')&&block.isConnected){
+   islandReadCard(id);islandHelloObserverStop();
+   // Keep a mailbox behind the greeting in sync without moving the greeting.
+   if(cur.name==='postoffice'&&cur.tab!=='album'){navFromBack=true;render();}
+  }
+ },{threshold:1});
+ ISLAND_HELLO_OBSERVER.observe(block.querySelector('h3'));
+}
+function renderMailMessage(){
+ topTitle.textContent='系统消息';reviewBtn.textContent='回今日';
+ const m=ISLAND.messages.find(m=>m.id===cur.id&&m.kind==='system');
+ const d=document.createElement('article');d.className='postcard-detail';
+ if(!m){d.textContent='这条消息没有找到。';view.appendChild(d);return;}
+ if(islandReadMessage(ISLAND,m.id))islandCommit();
+ d.innerHTML='<div class="postcard-from"><span>啾啾岛 · 系统消息</span><small>'+islandDate(m.day)+'</small></div><div class="postcard-letter"><h2>'+vEsc(m.title)+'</h2><p class="mail-system-body">'+vEsc(m.body)+'</p></div><button class="chip" id="mailMessageBack">回信箱</button>';
+ view.appendChild(d);$('#mailMessageBack').onclick=()=>{cur={name:'postoffice',tab:'inbox',key:'system'};render();};
+}
 function islandNav(active){
  const d=document.createElement('div');d.className='island-nav';
- [['island','逛岛'],['inbox','信箱'+(ISLAND.inbox.length?' · '+ISLAND.inbox.length:'')],['album','明信片册'],['cal','日历']].forEach(([key,label])=>{
+ [['island','逛岛'],['inbox','信箱'+(islandUnread(ISLAND)?' · '+islandUnread(ISLAND):'')],['album','明信片册'],['cal','日历']].forEach(([key,label])=>{
   const b=document.createElement('button');b.className='chip'+(key===active?' on':'');b.textContent=label;b.setAttribute('aria-current',key===active?'page':'false');
   b.onclick=()=>key==='cal'?islandGo('cal'):key==='island'?islandGo('panorama'):islandGo('postoffice',key);d.appendChild(b);
  });return d;
 }
 function islandDrawer(){
  const d=document.createElement('div');d.className='island-drawer';
- d.innerHTML='<button id="openPanorama"><span>🏝</span><b>逛逛全景岛</b><small>去住户门前看看</small></button><button id="openMailbox"><span>✉</span><b>信箱与明信片</b><small>'+ (ISLAND.inbox.length?ISLAND.inbox.length+' 封等你拆开':'收藏 '+ISLAND.album.length+' 张')+'</small></button>';
+ d.innerHTML='<button id="openPanorama"><span>🏝</span><b>逛逛全景岛</b><small>去住户门前看看</small></button><button id="openMailbox"><span>✉</span><b>信箱与明信片</b><small>'+ (islandUnread(ISLAND)?islandUnread(ISLAND)+' 条未读':'收藏 '+ISLAND.album.length+' 张')+'</small></button>';
  d.querySelector('#openPanorama').onclick=()=>{closeDrawer();islandGo('panorama');};d.querySelector('#openMailbox').onclick=()=>{closeDrawer();islandGo('postoffice','inbox');};return d;
 }
 function islandDoor(k){
  if(!islandOpen(k)){
   if(['work','study'].includes(k)){const g=k==='work'?'工作':'学习';if(!extraGroups.includes(g))extraGroups.push(g);SET.gtpl=SET.gtpl||{};SET.gtpl[g]=k;}
   else isleSet(k,true);
-  islandCommit();islandTick();
+  islandCommit();
  }
  if(k==='post')islandGo('postoffice','inbox');
  else if(k==='cycles')islandGo('cycles');
@@ -10058,7 +10125,7 @@ function renderPanorama(){
  const plots={...OB_PLOT,health:OB_PLOT.e1,post:[OB_PLAZA[0],OB_PLAZA[1],290]};delete plots.e1;delete plots.e2;
  const buttons=Object.keys(plots).sort((a,b)=>plots[a][1]-plots[b][1]).map(k=>{
   const [x,y,w]=plots[k],on=islandOpen(k),h=HOUSE_INFO[k];
-  return '<button class="island-house '+(on?'built':'unbuilt')+(ISLAND_SELECTED===k?' selected':'')+'" data-island-house="'+k+'" aria-label="'+h.name+'，'+h.who+(on?'':'，未开启')+'" aria-pressed="'+(ISLAND_SELECTED===k)+'" style="left:'+x/1086*100+'%;top:'+y/1448*100+'%;width:'+w/1086*100+'%"><img draggable="false" src="'+(on?HEAD_ART[k]:OBIMG.sign)+'" alt=""><span>'+h.name+'</span>'+(ISLAND.inbox.some(r=>islandCard(r.id)?.owner===k)?'<i class="island-mail-dot" aria-label="有来信">✉</i>':'')+'</button>';
+  return '<button class="island-house '+(on?'built':'unbuilt')+(ISLAND_SELECTED===k?' selected':'')+'" data-island-house="'+k+'" aria-label="'+h.name+'，'+h.who+(on?'':'，未开启')+'" aria-pressed="'+(ISLAND_SELECTED===k)+'" style="left:'+x/1086*100+'%;top:'+y/1448*100+'%;width:'+w/1086*100+'%"><img draggable="false" src="'+(on?HEAD_ART[k]:OBIMG.sign)+'" alt=""><span>'+h.name+'</span>'+(ISLAND.messages.some(m=>m.kind==='card'&&!m.read&&islandCard(m.cardId)?.owner===k)?'<i class="island-mail-dot" aria-label="有来信">✉</i>':'')+'</button>';
  }).join('');
  d.innerHTML='<div class="island-heading"><div><b>岛上的'+(night?'夜晚':'今天')+'</b><small>点建筑选住户，放大后可以拖动地图</small></div><div class="island-zoom"><button id="islandZoomOut" aria-label="缩小地图">−</button><output id="islandZoomValue">'+Math.round(ISLAND_ZOOM*100)+'%</output><button id="islandZoomIn" aria-label="放大地图">＋</button></div></div><div class="island-viewport" id="islandViewport" tabindex="0" aria-label="全景岛地图，可滚动"><div class="island-world '+(night?'night':'')+'" style="width:'+ISLAND_ZOOM*100+'%"><img class="island-ground" src="'+OBIMG.ob_isle+'" alt="岛上的道路、草地和码头" draggable="false">'+buttons+'</div></div><div id="islandVisitor" aria-live="polite"></div><details class="island-house-list"><summary>按建筑查看</summary><div>'+ISLAND_OWNERS.map(k=>'<button class="chip" data-island-list="'+k+'">'+HOUSE_INFO[k].name+'</button>').join('')+'</div></details>';
  view.appendChild(d);
@@ -10082,15 +10149,28 @@ function islandVisitor(){
 function postcardMedia(c,thumb){return '<div class="postcard-media '+(c.kind==='welcome'?'welcome':'')+'"><img '+(thumb?'loading="lazy"':'')+' src="'+(thumb?c.thumb:c.image)+'" alt="'+vEsc(c.title)+'"><div class="postcard-image-error" hidden><span>图片还没加载，来信和收藏都在。</span>'+(thumb?'':'<button class="chip" data-image-retry>重新加载图片</button>')+'</div></div>';}
 function postcardBindImages(root){root.querySelectorAll('.postcard-media').forEach(box=>{const im=box.querySelector('img'),msg=box.querySelector('.postcard-image-error');const fail=()=>{im.hidden=true;msg.hidden=false;};im.onerror=fail;im.onload=()=>{im.hidden=false;msg.hidden=true;};if(im.complete&&!im.naturalWidth)fail();const retry=box.querySelector('[data-image-retry]');if(retry)retry.onclick=()=>{msg.hidden=true;im.hidden=false;im.src=im.getAttribute('src');};});}
 function renderPostoffice(){
- topTitle.textContent='信风邮局';reviewBtn.textContent='回今日';const header=letterHouseHead('post');header.querySelector('p').textContent='啾啾：来信都在这里，拆开后可以收进册子。';view.appendChild(header);
+ topTitle.textContent='信风邮局';reviewBtn.textContent='回今日';const header=letterHouseHead('post');header.querySelector('p').textContent='啾啾：新来的信放在上面，看过的也替你留着。';view.appendChild(header);
  const tab=cur.tab==='album'?'album':'inbox';view.appendChild(islandNav(tab));
  const section=document.createElement('section');section.className='postoffice';
  if(tab==='inbox'){
-  section.innerHTML='<div class="island-heading"><div><b>'+ISLAND.inbox.length+' 封来信</b><small>收进册子后，随时可以再翻</small></div><button class="chip" id="mailSettings">来信设置</button></div>';
-  if(!ISLAND.enabled)section.innerHTML+='<p class="postcard-note">已暂停新来信，已有的信和收藏保留。</p>';
-  if(!ISLAND.inbox.length)section.innerHTML+='<div class="postcard-empty">'+jjImg('nest',72)+'<p>信箱里暂时没有新信。</p><small>岛民隔一两天寄一张，回来时再看看。<br>当前可寄的都收齐后，会等有新卡片再寄。</small><button class="chip" id="mailToAlbum">翻翻明信片册</button></div>';
-  for(const r of ISLAND.inbox){const c=islandCard(r.id);if(!c)continue;const b=document.createElement('button');b.className='postcard-envelope';b.dataset.openCard=c.id;
-   b.innerHTML='<img src="'+HEAD_ART[c.owner]+'" alt=""><span><small>'+HOUSE_INFO[c.owner].who+'寄来 · '+islandDate(r.day)+'</small><b>'+vEsc(c.title)+'</b><em>拆开看看 →</em></span><i aria-hidden="true">啾</i>';section.appendChild(b);}
+  const filter=['all','card','system'].includes(cur.key)?cur.key:'all';
+  section.innerHTML='<div class="island-heading mail-heading"><div><b>信箱</b><small>'+islandUnread(ISLAND)+' 条未读 · '+ISLAND.messages.length+' 条消息</small></div><div class="island-actions"><button class="chip" id="mailToday">今天的早安卡</button><button class="chip" id="mailSettings">来信设置</button></div></div><div class="mail-filters" role="group" aria-label="消息分类">'+[['all','全部'],['card','岛民来信'],['system','系统消息']].map(([k,label])=>'<button class="chip'+(filter===k?' on':'')+'" data-mail-filter="'+k+'" aria-pressed="'+(filter===k)+'">'+label+'</button>').join('')+'</div>';
+  if(!ISLAND.enabled)section.innerHTML+='<p class="postcard-note">已暂停早安明信片，系统消息仍可接收，已有的信和收藏保留。</p>';
+  const messages=ISLAND.messages.map((m,i)=>({...m,order:i})).filter(m=>filter==='all'||m.kind===filter).sort((a,b)=>b.day-a.day||b.order-a.order);
+  if(!messages.length)section.innerHTML+='<div class="postcard-empty">'+jjImg('nest',72)+'<p>'+(filter==='system'?'暂时没有系统消息。':filter==='card'?'暂时没有岛民来信。':'信箱里暂时没有消息。')+'</p><small>当天打开早安卡，会收到一张明信片。</small><button class="chip" id="mailToAlbum">翻翻明信片册</button></div>';
+  for(const m of messages){
+   const c=m.kind==='card'?islandCard(m.cardId):null,b=document.createElement('button');
+   b.className=(m.kind==='card'?'postcard-envelope':'mail-system-envelope')+' mail-envelope'+(m.read?'':' unread');
+   if(m.kind==='card')b.dataset.openCard=m.cardId;else b.dataset.openMessage=m.id;
+   const title=m.kind==='system'?m.title:c?c.title:'一张明信片';
+   const from=m.kind==='system'?'系统消息':c?HOUSE_INFO[c.owner].who+'寄来':'岛民来信';
+   const state=m.kind==='system'?(m.read?'已读':'查看消息 →'):ISLAND.album.some(r=>r.id===m.cardId)?'已收藏':m.read?'已读 · 待收藏':'拆开看看 →';
+   b.setAttribute('aria-label',(m.read?'':'未读，')+title+'，'+state);
+   b.innerHTML=(c?'<img src="'+HEAD_ART[c.owner]+'" alt="">':'<span class="mail-system-icon" aria-hidden="true">✉</span>')+'<span class="mail-envelope-text"><small>'+vEsc(from)+' · '+islandDate(m.day)+'</small><b>'+vEsc(title)+'</b><em>'+state+'</em></span>'+(!m.read?'<i class="mail-unread-dot" aria-hidden="true"></i>':'');
+   section.appendChild(b);
+  }
+  section.querySelectorAll('[data-mail-filter]').forEach(b=>b.onclick=()=>{cur.key=b.dataset.mailFilter;navFromBack=true;render();});
+  section.querySelectorAll('[data-open-message]').forEach(b=>b.onclick=()=>{cur={name:'mailmessage',id:b.dataset.openMessage};render();});
  }else{
   const known=ISLAND.album.filter(r=>islandCard(r.id)).length;
   section.innerHTML='<div class="island-heading"><div><b>明信片册</b><small>已收藏 '+known+' / '+POSTCARDS.length+' 张</small></div></div><label class="postcard-filter">翻谁的来信 <select id="postcardOwner"><option value="all">全部岛民</option>'+ISLAND_OWNERS.map(k=>'<option value="'+k+'">'+HOUSE_INFO[k].who+'</option>').join('')+'<option value="story">岛上的小故事</option></select></label>';
@@ -10098,18 +10178,19 @@ function renderPostoffice(){
   const cards=POSTCARDS.filter(c=>owner==='all'||(owner==='story'?c.kind==='story':c.owner===owner));
   const grid=document.createElement('div');grid.className='postcard-grid';
   for(const c of cards){const received=ISLAND.album.find(r=>r.id===c.id),waiting=ISLAND.inbox.some(r=>r.id===c.id),b=document.createElement('button');b.className='postcard-tile'+(received?'':' locked');b.dataset.openCard=c.id;
-   b.innerHTML=received?postcardMedia(c,true)+'<b>'+vEsc(c.title)+'</b><small>'+HOUSE_INFO[c.owner].who+' · '+islandDate(received.day)+'</small>':'<div class="postcard-unknown">'+(waiting?'✉':'?')+'</div><b>'+vEsc(c.title)+'</b><small>'+(waiting?'已到信箱，待收藏':c.requires.every(islandOpen)?'等一封来信':'住户搬进来后可寄来')+'</small>';
+   b.innerHTML=received?postcardMedia(c,true)+'<b>'+vEsc(c.title)+'</b><small>'+HOUSE_INFO[c.owner].who+' · '+islandDate(received.day)+'</small>':'<div class="postcard-unknown">'+(waiting?'✉':'?')+'</div><b>'+vEsc(c.title)+'</b><small>'+(waiting?'已到信箱，待收藏':c.requires.every(islandOpen)?'等一封来信':'住户开启后可随早安卡寄来')+'</small>';
    grid.appendChild(b);
   }section.appendChild(grid);
   section.querySelector('#postcardOwner').value=owner;section.querySelector('#postcardOwner').onchange=e=>{cur.key=e.target.value;navFromBack=true;render();};
  }
  view.appendChild(section);postcardBindImages(section);
- section.querySelectorAll('[data-open-card]').forEach(b=>b.onclick=()=>{const id=b.dataset.openCard;if(islandArrived(id)){cur={name:'postcard',id};render();}else{const c=islandCard(id);toast(c.requires.every(islandOpen)?'这张还没寄来，先看看其他来信':c.requires.filter(k=>!islandOpen(k)).map(k=>HOUSE_INFO[k].who).join('、')+'搬进来后可寄来');}});
- if($('#mailSettings'))$('#mailSettings').onclick=islandMailSettings;if($('#mailToAlbum'))$('#mailToAlbum').onclick=()=>islandGo('postoffice','album');
+ section.querySelectorAll('[data-open-card]').forEach(b=>b.onclick=()=>{const id=b.dataset.openCard;if(islandArrived(id)){cur={name:'postcard',id};render();}else{const c=islandCard(id);toast(c.requires.every(islandOpen)?'这张还没收到，每天打开早安卡看看':c.requires.filter(k=>!islandOpen(k)).map(k=>HOUSE_INFO[k].who).join('、')+'开启后可随早安卡寄来');}});
+ if($('#mailToday'))$('#mailToday').onclick=()=>openHello(true);if($('#mailSettings'))$('#mailSettings').onclick=islandMailSettings;if($('#mailToAlbum'))$('#mailToAlbum').onclick=()=>islandGo('postoffice','album');
 }
 function renderPostcard(){
  const c=islandCard(cur.id),r=islandArrived(cur.id);topTitle.textContent='一封来信';reviewBtn.textContent='回今日';
  if(!c||!r){const p=document.createElement('p');p.className='postcard-note';p.textContent='这封信还没收到，回信箱看看吧。';view.appendChild(p);return;}
+ islandReadCard(c.id);
  const pending=ISLAND.inbox.some(x=>x.id===c.id),d=document.createElement('article');d.className='postcard-detail';
  d.innerHTML='<div class="postcard-from"><span>FROM · '+HOUSE_INFO[c.owner].who+'</span><small>'+islandDate(r.day)+'</small></div>'+postcardMedia(c,false)+'<div class="postcard-letter"><small>'+({welcome:'搬来岛上的第一封信',story:'岛上的小故事',travel:'岛外的小旅行',daily:'岛上的日子'}[c.kind])+'</small><h2>'+vEsc(c.title)+'</h2><p>'+vEsc(c.line)+'</p><div class="postcard-sign">—— '+HOUSE_INFO[c.owner].who+'</div></div><div class="island-actions"><button class="rv-confirm" id="postcardCollect" '+(pending?'':'disabled')+'>'+(pending?'收进明信片册':'已收藏')+'</button><button class="chip" id="postcardShare">保存分享图</button><button class="chip" id="postcardBack">'+(pending?'回信箱':'回明信片册')+'</button></div><p id="postcardShareStatus" class="postcard-note" role="status"></p><div id="postcardShareResult"></div>';
  view.appendChild(d);postcardBindImages(d);
@@ -10132,8 +10213,24 @@ async function postcardShare(c,r){
  finally{button.disabled=false;}
 }
 function islandMailSettings(){
- const s=healthSheet('来信设置','<p>住户搬进来时寄一封问候。平时每隔一两天一封，信箱最多留 5 封；先寄没收到过的。</p><p>暂停时不补积来信，重新开启后从当天继续。收藏不会删除。</p><button class="rv-confirm" id="islandMailToggle">'+(ISLAND.enabled?'暂停新来信':'开启新来信')+'</button>');
- s.querySelector('#islandMailToggle').onclick=()=>{ISLAND.enabled=!ISLAND.enabled;ISLAND.lastDay=Math.max(ISLAND.lastDay||0,islandToday());ISLAND.nextDay=ISLAND.lastDay+1;islandCommit();closeSheet();navFromBack=true;render();};
+ const s=healthSheet('来信设置','<p>当天首次打开早安卡，附一张明信片；再次打开还是当天那张。没打开的日期不发，也不补发。</p><p>先送未收到过的卡，当前可送的都收齐后会重逢旧卡，收藏不重复增加。暂停或关闭早安卡时不自动发；手动打开当天早安卡也适用每日一次。</p><button class="rv-confirm" id="islandMailToggle">'+(ISLAND.enabled?'暂停新来信':'开启新来信')+'</button>');
+ s.querySelector('#islandMailToggle').onclick=()=>{ISLAND.enabled=!ISLAND.enabled;islandCommit();closeSheet();navFromBack=true;render();};
+}
+
+/* Added to the actual daily greeting; browsing the island/mailbox alone never issues mail. */
+function islandHelloGift(){
+ islandHelloObserverStop();
+ const host=$('#hello .hl-lower');if(!host||!SEEN.onboard)return;
+ if(islandGrantDaily(ISLAND,islandToday(),islandRoster(),POSTCARDS,Math.floor(Math.random()*4294967295)))islandCommit();
+ const daily=ISLAND.daily,card=daily&&daily.day===islandToday()?islandCard(daily.id):null;
+ const block=document.createElement('section');block.className='hl-postcard';block.id='hlPostcard';
+ if(!card){block.innerHTML='<p class="postcard-note">'+(ISLAND.enabled?'今天没有新的明信片。':'已暂停早安明信片，原来的收藏都在。')+'</p>';host.prepend(block);return;}
+ const collected=ISLAND.album.some(r=>r.id===card.id);
+ block.innerHTML=postcardMedia(card,true)+'<h3>'+vEsc(card.title)+'</h3><p>'+vEsc(card.line)+'</p><small>—— '+HOUSE_INFO[card.owner].who+' · 今天这一张</small><button class="chip" id="hlPostcardCollect" '+(collected?'disabled':'')+'>'+(collected?'已在明信片册中':'收进明信片册')+'</button>';
+ host.prepend(block);postcardBindImages(block);islandHelloSeen(block,card.id);
+ $('#hlPostcardCollect').onclick=()=>{
+  if(islandCollect(ISLAND,card.id,islandToday())){islandCommit();const btn=$('#hlPostcardCollect');btn.textContent='已收进明信片册';btn.disabled=true;if(cur.name==='postoffice'&&cur.tab!=='album'){navFromBack=true;render();}}
+ };
 }
 
 /* ============ 启动 ============ */
