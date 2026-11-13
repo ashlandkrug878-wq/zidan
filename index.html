@@ -935,6 +935,17 @@
 .ob-id .ob-rstamp{right:14px}
 .ob-rstamp:not(.on){transform:rotate(-14deg) scale(.8)}
 
+/* Shared notebook palette: full island, letters and collection. */
+.island-nav{display:flex;flex-wrap:wrap;gap:7px;margin:4px 0 18px}.island-nav .chip{min-height:40px;font-size:12px}
+.island-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:8px 0 14px}.island-heading b{font:600 18px 'Songti SC',serif}.island-heading small{display:block;font-size:11px;color:var(--ink-soft);line-height:1.7;margin-top:4px}.island-zoom{display:flex;align-items:center;flex:none;gap:3px}.island-zoom button{width:36px;height:40px;border:1px solid var(--line-strong);border-radius:12px;background:var(--card);color:var(--ink);font-size:17px}.island-zoom output{font-size:11px;min-width:30px;text-align:center}.island-zoom button:disabled{opacity:.35}
+.island-viewport{max-height:64vh;overflow:auto;overscroll-behavior:contain;border-radius:20px;background:#eaf0e4;border:1px solid var(--line-strong);scrollbar-width:thin;cursor:grab}.island-viewport:active{cursor:grabbing}.island-world{position:relative;aspect-ratio:1086/1448;min-width:100%;isolation:isolate;background:linear-gradient(#e5f1ed,#edf2d9 55%,#daece6)}.island-world.night{background:linear-gradient(#344c66,#8da8a5)}.island-ground{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none}.island-house{position:absolute;transform:translate(-50%,-70%);padding:0;border:0;background:transparent;color:#40392f;cursor:pointer;min-height:44px;line-height:1.2}.island-house img{width:100%;aspect-ratio:1/1;object-fit:contain;display:block;pointer-events:none;user-select:none;filter:drop-shadow(0 3px 2px #443c2822)}.island-house span{display:inline-block;max-width:125%;white-space:nowrap;font-size:clamp(8px,2.4vw,11px);padding:3px 4px;background:#fff8e7ee;border-radius:5px;box-shadow:0 1px 2px #654c2520}.island-house.selected img{filter:drop-shadow(0 0 3px #d29442)}.island-house.selected span{background:#f9db9c}.island-house.unbuilt img{opacity:.75;padding:12%}.island-house.unbuilt span{font-size:9px}.island-mail-dot{position:absolute;right:0;top:22%;width:22px;height:22px;border-radius:50%;background:var(--accent);color:white;font:14px sans-serif;display:grid;place-items:center}
+.island-visitor{display:flex;gap:12px;border:1px solid var(--line-strong);border-radius:16px;padding:14px;margin:15px 0;background:var(--card)}.island-visitor>img{width:68px;height:82px;object-fit:contain;flex:none}.island-visitor>div{min-width:0}.island-visitor small{font-size:11px;color:var(--ink-faint)}.island-visitor h3{font:600 19px 'Songti SC',serif;margin:3px 0 9px}.island-visitor p{font-size:13px;line-height:1.8;margin:0 0 12px}.island-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.island-actions .chip{min-height:40px;font-size:12px;white-space:normal}.island-actions .rv-confirm{width:auto;flex:1;margin:0;min-height:44px;padding:10px 16px;font-size:14px}.island-actions button:disabled{opacity:.5}.island-house-list{font-size:13px;margin:18px 0}.island-house-list summary{cursor:pointer;color:var(--ink-soft);padding:10px 0}.island-house-list>div{display:flex;gap:8px;flex-wrap:wrap}.island-house-list button{min-height:40px}
+.island-drawer{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 14px}.island-drawer button{font:inherit;border:1px solid var(--line-strong);border-radius:12px;padding:12px 8px;color:var(--ink);background:var(--card);text-align:left}.island-drawer span{display:block;font-size:23px;margin-bottom:6px}.island-drawer b{display:block;font-size:13px;font-weight:500}.island-drawer small{display:block;font-size:10px;color:var(--ink-soft);margin-top:5px}
+.postoffice{padding-bottom:20px}.postcard-note{font-size:12px;color:var(--ink-soft);line-height:1.8;margin:12px 0}.postcard-empty{text-align:center;padding:30px 14px}.postcard-empty p{font-size:15px;margin:15px 0 8px}.postcard-empty small{font-size:12px;line-height:1.9;color:var(--ink-soft);display:block;margin-bottom:18px}.postcard-envelope{position:relative;display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:18px 15px;margin:12px 0;border:1px solid #dacbb3;border-bottom:6px solid #d3b798;border-radius:12px;background:linear-gradient(150deg,#fffaf1,#f4e8d3);color:var(--ink);font:inherit;cursor:pointer;box-shadow:0 5px 12px #58402c09}.postcard-envelope>img{width:65px;height:70px;object-fit:contain;flex:none}.postcard-envelope>span{min-width:0;flex:1;padding-right:16px}.postcard-envelope small{display:block;font-size:10px;color:var(--ink-soft)}.postcard-envelope b{display:block;font:600 17px/1.6 'Songti SC',serif;margin:5px 0}.postcard-envelope em{font-size:11px;color:var(--accent);font-style:normal}.postcard-envelope>i{position:absolute;right:10px;bottom:14px;border:1px solid #b56555;color:#b56555;border-radius:50%;width:28px;height:28px;font:14px/26px serif;text-align:center;transform:rotate(-12deg)}
+.postcard-filter{font-size:12px;display:flex;align-items:center;gap:10px;margin:14px 0 18px;color:var(--ink-soft)}.postcard-filter select{min-height:44px;flex:1;min-width:0;background:var(--card);border:1px solid var(--line-strong);border-radius:10px;font:inherit;font-size:16px;padding:8px;color:var(--ink)}.postcard-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 10px}.postcard-tile{padding:6px 6px 10px;text-align:left;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line-strong);border-radius:10px;min-width:0;cursor:pointer}.postcard-tile>b{display:block;font:600 14px/1.6 'Songti SC',serif;margin:9px 4px 4px}.postcard-tile>small{display:block;font-size:10px;color:var(--ink-soft);line-height:1.5;margin:0 4px}.postcard-unknown{aspect-ratio:3/2;display:grid;place-items:center;background:#eee7d9;border-radius:5px;font:32px serif;color:#aa9b85}.postcard-tile.locked{background:transparent;border-style:dashed}.postcard-media{position:relative;aspect-ratio:3/2;background:#f1e7d5;overflow:hidden;border-radius:6px}.postcard-media>img{display:block;width:100%;height:100%;object-fit:contain}.postcard-media>img[hidden]{display:none}.postcard-media.welcome{background:radial-gradient(ellipse,#fffaf0 30%,#f1e5cc)}.postcard-media.welcome>img{padding:12px}.postcard-image-error{position:absolute;inset:0;padding:12px;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;font-size:11px;color:var(--ink-soft);gap:8px}.postcard-image-error[hidden]{display:none}.postcard-image-error .chip{font-size:11px;white-space:normal;min-height:32px}
+.postcard-detail{border:1px solid #dfd1b9;background:#fffcf5;border-radius:16px;padding:16px;box-shadow:0 7px 20px #5d40200a;margin:8px 0 20px}.postcard-from{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--ink-soft);padding:3px 0 16px}.postcard-from small{font-size:11px}.postcard-letter{padding:20px 1px 22px}.postcard-letter>small{font-size:11px;color:var(--ink-faint)}.postcard-letter h2{font:600 22px/1.6 'Songti SC',serif;margin:6px 0 12px}.postcard-letter p{font-size:15px;line-height:2;margin:0}.postcard-sign{text-align:right;font:16px 'Songti SC',serif;margin-top:22px}.postcard-detail .island-actions{padding-top:16px;border-top:1px dashed var(--line-strong)}.postcard-tile .postcard-media{pointer-events:none}.postcard-tile .postcard-image-error button{display:none}
+.island-page button:focus-visible,.postoffice button:focus-visible,.postcard-detail button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}@media(min-width:600px){.island-viewport{max-height:720px}.postcard-grid{grid-template-columns:repeat(3,1fr)}}@media(prefers-reduced-motion:reduce){.island-viewport{scroll-behavior:auto}}
+
 </style>
 </head>
 <body>
@@ -1200,14 +1211,70 @@ var IMG_DB = {db:null, ok:false, ready:false, bootP:null, busy:false, nextJs:nul
 let PAGES = {}, SEEN = {}, GCOLOR = {};
 let extraGroups = ['工作', '健康', '恋爱'];
 const SET = {recog:true, accent:0};
+/* Local postcard progress. Dates are integer civil days; no background jobs or health data. */
+function islandDefaults(){return {version:1,enabled:true,seed:0,lastDay:null,nextDay:null,welcomed:[],inbox:[],album:[]};}
+function islandNormalize(raw){
+ if(raw==null)return islandDefaults();
+ if(!raw||typeof raw!=='object'||raw.version!==1)throw Error('Unsupported island backup');
+ const s=islandDefaults(),validDay=n=>Number.isInteger(n)&&n>=0&&n<200000;
+ if(typeof raw.enabled!=='boolean'||!Number.isInteger(raw.seed)||raw.seed<0||raw.seed>4294967295||!Array.isArray(raw.welcomed)||!Array.isArray(raw.inbox)||!Array.isArray(raw.album))throw Error('Invalid island backup');
+ if((raw.lastDay!==null&&!validDay(raw.lastDay))||(raw.nextDay!==null&&!validDay(raw.nextDay)))throw Error('Invalid island date');
+ if(raw.inbox.length>5||raw.album.length>2000||raw.welcomed.length>100)throw Error('Invalid island size');
+ s.enabled=raw.enabled;s.seed=raw.seed;s.lastDay=raw.lastDay;s.nextDay=raw.nextDay;
+ s.welcomed=[...new Set(raw.welcomed.map(x=>{if(typeof x!=='string'||!(/^[a-z]+$/).test(x))throw Error('Invalid resident');return x;}))];
+ const seen=new Set();
+ for(const kind of ['album','inbox'])s[kind]=raw[kind].map(r=>{
+  if(!r||typeof r.id!=='string'||!(/^[a-z]+-[a-z0-9]+$/).test(r.id)||!validDay(r.day)||seen.has(r.id))throw Error('Invalid postcard');
+  if(kind==='album'&&!validDay(r.collectedDay))throw Error('Invalid collected date');
+  seen.add(r.id);return kind==='album'?{id:r.id,day:r.day,collectedDay:r.collectedDay}:{id:r.id,day:r.day};
+ });
+ return s;
+}
+function islandHash(str){let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+function islandAdvance(s,day,roster,catalog,seed){
+ if(!Number.isInteger(day)||day<0)return false;
+ const before=JSON.stringify(s),known=new Set([...s.album,...s.inbox].map(r=>r.id));
+ if(s.lastDay!==null&&day<s.lastDay)return false; // A backward clock never grants mail twice.
+ if(!s.seed)s.seed=(seed>>>0)||1;
+ const delay=d=>1+islandHash(s.seed+'|delay|'+d)%2;
+ if(s.lastDay===null){s.lastDay=day;s.nextDay=day+delay(day);}
+ if(!s.enabled){s.lastDay=day;s.nextDay=day+delay(day);return before!==JSON.stringify(s);}
+ const owners=[...new Set(roster)];
+ for(const owner of owners){
+  if(s.inbox.length>=5)break;
+  const c=catalog.find(x=>x.id===owner+'-welcome');
+  if(c&&!s.welcomed.includes(owner)){
+   s.welcomed.push(owner);
+   if(!known.has(c.id)){s.inbox.push({id:c.id,day});known.add(c.id);}
+  }
+ }
+ let next=s.nextDay==null?day+delay(day):s.nextDay;
+ // At most 5 deliveries can be added, even after years away.
+ while(next<=day&&s.inbox.length<5){
+  const pool=catalog.filter(c=>c.kind!=='welcome'&&!known.has(c.id)&&c.requires.every(k=>owners.includes(k)));
+  if(!pool.length){next=day+delay(day);break;}
+  const c=pool[islandHash(s.seed+'|mail|'+next)%pool.length];
+  s.inbox.push({id:c.id,day:next});known.add(c.id);next+=delay(next);
+ }
+ if(next<=day)next=day+delay(day); // Full inbox does not create an unlimited backlog.
+ s.nextDay=next;s.lastDay=day;
+ return before!==JSON.stringify(s);
+}
+function islandCollect(s,id,day){
+ const i=s.inbox.findIndex(r=>r.id===id);if(i<0)return false;
+ if(!s.album.some(r=>r.id===id))s.album.push({...s.inbox[i],collectedDay:Math.max(day,s.inbox[i].day)});
+ s.inbox.splice(i,1);return true;
+}
+
 let HEALTH = healthDefaults();
+let ISLAND = islandDefaults();
 try{
   var NOTES = [];
   const raw = localStorage.getItem(LSKEY);
   if (raw){ const s = JSON.parse(raw);
     PAGES = s.pages || {}; extraGroups = s.extraGroups || extraGroups;
     Object.assign(SET, s.set || {}); SEEN = s.seen || {}; GCOLOR = s.gcolor || {};
-    NOTES = s.notes || []; HEALTH = healthNormalize(s.health); }
+    NOTES = s.notes || []; HEALTH = healthNormalize(s.health); ISLAND = islandNormalize(s.island); }
 }catch(_){}
 let saveTm = null;
 let PARSE_GEN = 1;
@@ -1236,7 +1303,7 @@ function scheduleSave(){
   clearTimeout(saveTm);
   saveTm = setTimeout(() => { saveTm = null; saveNow(); }, 300);
 }
-function saveState(){ return {pages:PAGES, extraGroups, set:SET, seen:SEEN, gcolor:GCOLOR, notes:NOTES, health:HEALTH}; }
+function saveState(){ return {pages:PAGES, extraGroups, set:SET, seen:SEEN, gcolor:GCOLOR, notes:NOTES, health:HEALTH, island:ISLAND}; }
 function lsWrite(js){
   try{ localStorage.setItem(LSKEY, js); return true; }
   catch(_){ toast('存储已满：请先导出备份，再删掉一些旧记录', 'oops'); return false; }
@@ -2511,6 +2578,7 @@ function renderGroupBody(){
   }
 function render(){
   closeRowPop(); topTitle.classList.remove('has-wx');
+  islandTick();
   if (cur.name === 'health'){ const tabs = HEALTH.order.filter(k => !HEALTH.hidden.includes(k)); if (!tabs.includes(cur.tab)) cur.tab = tabs[0] || null; }
   if (cur.name === 'meals'){ cur.name = 'food'; if (!cur.tab) cur.tab = 'meal'; }   /* v2.23 三餐并入美食板块 */
   (() => {   /* v2.18 导航栈：自动记来路，二级页左上角变「‹ 返回」 */
@@ -2674,6 +2742,9 @@ function render(){
     else { const tgc = setToggle(false); setRow('🔁 提醒 · 生日、还款、周期', tgc, null); tgc.onclick = () => { SET.mods.cycles = true; scheduleSave(); render(); }; }
     setRow('天气城市', setSub((wxCfg().cities.map(c => c.n).join('、') || '还没设') + ' ›'), wxCitySheet);
     view.appendChild(sectionLabel('小岛'));
+    setRow('🏝 全景岛', setSub('逛岛 · 看住户 ›'), () => islandGo('panorama'));
+    setRow('✉ 信箱与明信片册', setSub(ISLAND.inbox.length+' 封来信 · '+ISLAND.album.length+' 张收藏 ›'), () => islandGo('postoffice','inbox'));
+    setRow('岛民来信', setSub(ISLAND.enabled?'已开启 ›':'已暂停 ›'), islandMailSettings);
     setRow('🏝 岛上的房子', setSub(ISLE_ORDER.filter(k => isleOn(k)).length + ' 栋开着 · 开关、置顶 ›'), () => { cur = {name:'isle'}; render(); });
     view.appendChild(sectionLabel('数据'));
     setRow('数据与备份', setSub('导出 · 导入 · 云备份 · 恢复 ›'), () => { cur = {name:'data'}; render(); });
@@ -2688,7 +2759,7 @@ function render(){
     });
     setRow('主题色', accWrap, null);
     setRow('功能手册 · 实验室', setSub('›'), labSheet);
-    setRow('版本记录', setSub('v3.4.0 ›'), showChangelog);
+    setRow('版本记录', setSub('v3.5.0 ›'), showChangelog);
   }
   else if (cur.name === 'isle'){   /* v3.1 岛上的房子：开关、置顶 */
     topTitle.textContent = '岛上的房子'; reviewBtn.textContent = '回今日';
@@ -2742,6 +2813,9 @@ function render(){
     topTitle.textContent = '📖 我的词典'; reviewBtn.textContent = '回今日';
     renderDict();
   }
+  else if (cur.name === 'panorama'){ renderPanorama(); }
+  else if (cur.name === 'postoffice'){ renderPostoffice(); }
+  else if (cur.name === 'postcard'){ renderPostcard(); }
   else if (cur.name === 'health'){
     topTitle.textContent = '健康'; reviewBtn.textContent = '回今日';
     renderHealth();
@@ -2789,6 +2863,7 @@ function render(){
   else if (cur.name === 'cal'){
     topTitle.textContent = '总日历'; reviewBtn.textContent = '回今日';
     view.appendChild(letterHouseHead('post'));
+    view.appendChild(islandNav('cal'));
     renderCal();
   }
   else if (cur.name === 'day'){
@@ -3664,7 +3739,7 @@ $('#mdInput').addEventListener('change', ev => {
 /* ============ 完整备份 / 恢复（JSON） ============ */
 function exportJSON(){
   if (!IMG_DB.ready){ imgBoot().then(exportJSON); return; }
-  const data = JSON.stringify({pages:PAGES, extraGroups, set:SET, seen:SEEN, gcolor:GCOLOR, notes:NOTES, health:HEALTH, exportedAt:TODAY}, jstrip);
+  const data = JSON.stringify({pages:PAGES, extraGroups, set:SET, seen:SEEN, gcolor:GCOLOR, notes:NOTES, health:HEALTH, island:ISLAND, exportedAt:TODAY}, jstrip);
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([data], {type:'application/json'}));
   a.download = '啾啾岛全量备份.json'; a.click();
@@ -3678,8 +3753,9 @@ $('#jsonInput').addEventListener('change', ev => {
       const s = JSON.parse(String(r.result));
       if (!s.pages) throw 0;
       const restoredHealth = healthNormalize(s.health);
+      const restoredIsland = islandNormalize(s.island);
       PAGES = s.pages; extraGroups = s.extraGroups || extraGroups;
-      Object.assign(SET, s.set || {}); SEEN = s.seen || SEEN; GCOLOR = s.gcolor || {}; NOTES = s.notes || []; HEALTH = restoredHealth; HEALTH_UNDO_WATER = null;
+      Object.assign(SET, s.set || {}); SEEN = s.seen || SEEN; GCOLOR = s.gcolor || {}; NOTES = s.notes || []; HEALTH = restoredHealth; HEALTH_UNDO_WATER = null; ISLAND = restoredIsland;
       applyAccent(); undoStack = []; focusRef = null;
       ensureToday(); scheduleSave();
       toast('已恢复备份'); cur = {name:'today'}; render();
@@ -3695,7 +3771,7 @@ function ghCfg(){ SET.gh = SET.gh || {repo:'', token:'', on:false, last:''}; ret
 function ghHeaders(){ return {Authorization:'Bearer ' + ghCfg().token, Accept:'application/vnd.github+json'}; }
 function ghPayload(){
   const setCopy = Object.assign({}, SET); delete setCopy.gh;
-  return JSON.stringify({pages:PAGES, extraGroups, set:setCopy, seen:SEEN, gcolor:GCOLOR, notes:NOTES, health:HEALTH, savedAt:new Date().toISOString()}, jstrip);
+  return JSON.stringify({pages:PAGES, extraGroups, set:setCopy, seen:SEEN, gcolor:GCOLOR, notes:NOTES, health:HEALTH, island:ISLAND, savedAt:new Date().toISOString()}, jstrip);
 }
 async function ghPush(manual){
   const c = ghCfg();
@@ -3734,10 +3810,11 @@ async function ghRestore(){
     const s = JSON.parse(decodeURIComponent(escape(atob(String(j.content).replace(/\n/g, '')))));
     if (!s.pages) throw 0;
       const restoredHealth = healthNormalize(s.health);
+      const restoredIsland = islandNormalize(s.island);
     const keep = ghCfg();
     PAGES = s.pages; extraGroups = s.extraGroups || extraGroups;
     Object.assign(SET, s.set || {}); SET.gh = keep;
-    SEEN = s.seen || SEEN; GCOLOR = s.gcolor || {}; NOTES = s.notes || []; HEALTH = restoredHealth; HEALTH_UNDO_WATER = null;
+    SEEN = s.seen || SEEN; GCOLOR = s.gcolor || {}; NOTES = s.notes || []; HEALTH = restoredHealth; HEALTH_UNDO_WATER = null; ISLAND = restoredIsland;
     applyAccent(); undoStack = []; focusRef = null;
     ensureToday(); scheduleSave();
     toast('已从云端恢复'); cur = {name:'today'}; render();
@@ -3803,7 +3880,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v3.4.0（当前 · 2026.11.12）\n【晨露小站】\n· 体重、围度、经期、饮水记录与变化图，支持修改、删除、补记\n· 身体指标估算、个人周期预计、水杯进度，计算说明收在页底\n· 四个板块可排序、移除和恢复，健康记录纳入完整备份\n【小岛页头】\n· 14栋建筑统一信纸式门楣，换上住户与建筑的新组合图\n【文案修订 · 11.13】\n· 上岛引导、岛民台词、消息回复与早晚提示改为具体简短的说法\n\n'
+    + 'v3.5.0（当前 · 2026.11.13）\n【全景岛与明信片】\n· 14栋建筑可点选进入，支持地图放大和拖动，加入晨露小站与呦呦\n· 简约版可直接打开信箱和明信片册，收信、收藏、筛选与分享\n· 14张入住问候、42张岛民生活与故事、4张呦呦场景，共60张\n· 未读最多5封，不重复寄已收到的卡片，支持暂停和完整备份恢复\n\n'
+    + 'v3.4.0（2026.11.12）\n【晨露小站】\n· 体重、围度、经期、饮水记录与变化图，支持修改、删除、补记\n· 身体指标估算、个人周期预计、水杯进度，计算说明收在页底\n· 四个板块可排序、移除和恢复，健康记录纳入完整备份\n【小岛页头】\n· 14栋建筑统一信纸式门楣，换上住户与建筑的新组合图\n【文案修订 · 11.13】\n· 上岛引导、岛民台词、消息回复与早晚提示改为具体简短的说法\n\n'
     + 'v3.3.5（2026.11.12）\n【美食 · 想吃】\n· 写「想去吃「店名」」「种草了「店名」」「收藏一家「店名」」「下次去吃「店名」」，记成想吃，不再算成去过一次\n· 集子里四格并排：去过 · 宝藏 · 避雷 · 想吃；「记一家店」也能选想吃\n· 吃什么：宝藏和想吃都会抽到；想吃的卡写着「还没去过 · 哪天收的」，吃完点 ✓ 评价，就从想吃挪到去过\n· 美食地图里也有想吃的店，后面标一个「想吃」\n\n'
     + 'v3.3.4（2026.11.11）\n【侧栏】\n· 小岛的房子一行放 3 个，跟上面手帐那排一样大，不挤了\n【首页】\n· 待办里有东西时，不再提示「储备 · 几件 · 想做哪件捞回来」；待办空着才出来\n【记账】\n· 一句里连加的钱自动算总数：「今天旅游一共花了100+30+40」记 170 元，回话里说一声「100+30+40 一共 170 元」\n· 写了等号的按你写的总数：「251.9+16.9+5=273.8元」记 273.8，不再把 251.9 也算进去；加起来对不上，回话里提一句\n· 一句里两笔一样的钱都算（早饭10元，午饭10元 = 20 元）；「花了300，……300元」这样同一笔说了两遍的，还是算一笔\n· 一句里最多认 8 笔（原来 3 笔）\n\n'
     + 'v3.3.3（2026.11.11）\n【小岛】\n· 住户的圆头像换成新画的：上岛引导里的三封信、身份四选一、住户说话，头像都是整张放进圆框，不再切掉一块\n· 发消息后啾啾回话，左边那个小圆也换成啾啾的圆头像\n\n'
@@ -8611,6 +8689,7 @@ function buildDrawer(){
   box.appendChild(gw);
   /* 小岛：开着的房子，置顶的在前 */
   const lab2 = document.createElement('div'); lab2.className = 'drawer-label'; lab2.innerHTML = '小岛<span class="dsec-sub">一栋房子一个小本子 · 长按置顶</span>'; box.appendChild(lab2);
+  box.appendChild(islandDrawer());
   const HC = {}; walk((d, e) => { const k = sideHome(e); if (k) HC[k] = (HC[k] || 0) + 1; });
   const pins = islePins(), ons = ISLE_ORDER.filter(k => isleOn(k));
   const sub = k => {
@@ -9368,6 +9447,693 @@ function healthManage(){
 function healthAbout(){
  const p=HEALTH.profile,range=healthAdult(p)&&p.height?'<p>按已填身高，一般成人体重参考约 '+(18.5*(p.height/100)**2).toFixed(1)+' 至 '+(24*(p.height/100)**2).toFixed(1)+' kg（上界不含，显示已四舍五入）。参考范围不是减重目标。</p>':'';
  healthSheet('关于这些数字','<h4>体重与BMI</h4><p>BMI＝体重kg÷身高m²。中国一般成人参考区间为18.5≤BMI＜24；不依性别改变，也不能单凭BMI判断个人健康。<a href="https://www.nhc.gov.cn/jkj/s10045/200907/943149b60565497bb3e25783a0e3de68.shtml" target="_blank" rel="noopener noreferrer">计算依据</a></p>'+range+'<h4>预计代谢</h4><p>这里是静息能量消耗估算，不是实测基础代谢、全天总消耗或建议摄入热量。Mifflin公式：10×体重kg＋6.25×身高cm－5×年龄，男性再加5，女性减161。结果按10kcal/天取整。<a href="https://pubmed.ncbi.nlm.nih.gov/2305711/" target="_blank" rel="noopener noreferrer">研究来源</a></p><p>当前一般估算限定18—64岁、非孕哺期且无特殊体重管理要求的成人；资料不全或不适用时显示“—”，仍能记录。体脂率仅凭身高体重推算误差较大，本页不提供估计值。</p><h4>经期预计日期</h4><p>上次实际开始日＋你填写的周期天数。周期可能变化，日期仅作参考，不用于判断排卵或避孕。预计日期不会自动生成实际经期记录。<a href="https://www.nhs.uk/symptoms/irregular-periods/" target="_blank" rel="noopener noreferrer">周期说明</a></p><h4>饮水建议</h4><p>温和气候、低身体活动水平的一般成年男性1700ml、女性1500ml，为直接饮水量，不含食物中的水。气候和活动等会影响需要量；有特殊限水要求时按医嘱自定。杯子只统计已记录量，达到目标后按需饮水。<a href="https://www.ndcpa.gov.cn/jbkzzx/c100040/common/content/content_2104761364364300288.html" target="_blank" rel="noopener noreferrer">建议来源</a></p><h4>记录与备份</h4><p>记录保存在本机，随完整JSON备份一起导出；启用GitHub云备份时也会包含健康记录。Markdown导出仅包含手帐正文，不含这里的结构化记录。移除板块保留数据；修改记录里可以单独删除。</p>');
+}
+
+const POSTCARD_SCENES = [
+  {
+    "id": "food-1",
+    "owner": "food",
+    "requires": [
+      "food"
+    ],
+    "title": "码头早市",
+    "line": "天刚亮就来挑鱼，今天的最新鲜。晚上给你留碗鱼汤。",
+    "kind": "daily",
+    "image": "assets/postcards/food-1.webp",
+    "thumb": "assets/postcards/food-1-thumb.webp"
+  },
+  {
+    "id": "food-2",
+    "owner": "food",
+    "requires": [
+      "food"
+    ],
+    "title": "打烊后的汤面",
+    "line": "打烊啦，给自己也煮一大碗。忙了一天，你吃饭了没？",
+    "kind": "daily",
+    "image": "assets/postcards/food-2.webp",
+    "thumb": "assets/postcards/food-2-thumb.webp"
+  },
+  {
+    "id": "food-3",
+    "owner": "food",
+    "requires": [
+      "food"
+    ],
+    "title": "对岸夜市",
+    "line": "坐小船去对岸逛夜市，一手烤串一手糖葫芦，下回带你。",
+    "kind": "travel",
+    "image": "assets/postcards/food-3.webp",
+    "thumb": "assets/postcards/food-3-thumb.webp"
+  },
+  {
+    "id": "movie-1",
+    "owner": "movie",
+    "requires": [
+      "movie"
+    ],
+    "title": "深夜看老电影",
+    "line": "最后一排没人看见……我才没哭，是银幕的光太亮了。",
+    "kind": "daily",
+    "image": "assets/postcards/movie-1.webp",
+    "thumb": "assets/postcards/movie-1-thumb.webp"
+  },
+  {
+    "id": "movie-2",
+    "owner": "movie",
+    "requires": [
+      "movie"
+    ],
+    "title": "放映室午睡",
+    "line": "白天是我的晚上。胶片都理好了，天黑再放给你看。",
+    "kind": "daily",
+    "image": "assets/postcards/movie-2.webp",
+    "thumb": "assets/postcards/movie-2-thumb.webp"
+  },
+  {
+    "id": "movie-3",
+    "owner": "movie",
+    "requires": [
+      "movie"
+    ],
+    "title": "山顶露天电影",
+    "line": "山顶看电影，银幕外面还有一整片星星。散场了别急着走。",
+    "kind": "travel",
+    "image": "assets/postcards/movie-3.webp",
+    "thumb": "assets/postcards/movie-3-thumb.webp"
+  },
+  {
+    "id": "book-1",
+    "owner": "book",
+    "requires": [
+      "book"
+    ],
+    "title": "晒书",
+    "line": "天晴，把书一本本摊开晒太阳，翻起来暖烘烘的。",
+    "kind": "daily",
+    "image": "assets/postcards/book-1.webp",
+    "thumb": "assets/postcards/book-1-thumb.webp"
+  },
+  {
+    "id": "book-2",
+    "owner": "book",
+    "requires": [
+      "book"
+    ],
+    "title": "树下读入迷",
+    "line": "读入迷了，饼干只吃了一半。嘴角有渣？等这章读完再说。",
+    "kind": "daily",
+    "image": "assets/postcards/book-2.webp",
+    "thumb": "assets/postcards/book-2-thumb.webp"
+  },
+  {
+    "id": "book-3",
+    "owner": "book",
+    "requires": [
+      "book"
+    ],
+    "title": "旧书市",
+    "line": "旧书市淘到一大摞，抱得快走不动了，还想再逛一摊。",
+    "kind": "travel",
+    "image": "assets/postcards/book-3.webp",
+    "thumb": "assets/postcards/book-3-thumb.webp"
+  },
+  {
+    "id": "people-1",
+    "owner": "people",
+    "requires": [
+      "people"
+    ],
+    "title": "给老朋友留座",
+    "line": "茶温着，杯子也摆好了。你常念叨的那个人，今天会来吗？",
+    "kind": "daily",
+    "image": "assets/postcards/people-1.webp",
+    "thumb": "assets/postcards/people-1-thumb.webp"
+  },
+  {
+    "id": "people-2",
+    "owner": "people",
+    "requires": [
+      "people"
+    ],
+    "title": "雨天缩在壳里",
+    "line": "下雨天，我缩在壳里听雨。茶壶还热着，想来就敲门。",
+    "kind": "daily",
+    "image": "assets/postcards/people-2.webp",
+    "thumb": "assets/postcards/people-2-thumb.webp"
+  },
+  {
+    "id": "people-3",
+    "owner": "people",
+    "requires": [
+      "people"
+    ],
+    "title": "山里采新茶",
+    "line": "去山里采了今年的新茶，回去泡给想念的人喝。",
+    "kind": "travel",
+    "image": "assets/postcards/people-3.webp",
+    "thumb": "assets/postcards/people-3-thumb.webp"
+  },
+  {
+    "id": "money-1",
+    "owner": "money",
+    "requires": [
+      "money"
+    ],
+    "title": "月底对账",
+    "line": "账本摊了一桌，最后一笔也对上了。",
+    "kind": "daily",
+    "image": "assets/postcards/money-1.webp",
+    "thumb": "assets/postcards/money-1-thumb.webp"
+  },
+  {
+    "id": "money-2",
+    "owner": "money",
+    "requires": [
+      "money"
+    ],
+    "title": "砍价成功",
+    "line": "砍价成功！一袋橘子省了两个铜板，今天也很划算。",
+    "kind": "daily",
+    "image": "assets/postcards/money-2.webp",
+    "thumb": "assets/postcards/money-2-thumb.webp"
+  },
+  {
+    "id": "money-3",
+    "owner": "money",
+    "requires": [
+      "money"
+    ],
+    "title": "跳蚤市场的怀表",
+    "line": "在旧货摊挑到一只怀表，擦干净还会走。",
+    "kind": "travel",
+    "image": "assets/postcards/money-3.webp",
+    "thumb": "assets/postcards/money-3-thumb.webp"
+  },
+  {
+    "id": "cycles-1",
+    "owner": "cycles",
+    "requires": [
+      "cycles"
+    ],
+    "title": "给齿轮上油",
+    "line": "给大齿轮上点油，明天的钟声会更准一点。",
+    "kind": "daily",
+    "image": "assets/postcards/cycles-1.webp",
+    "thumb": "assets/postcards/cycles-1-thumb.webp"
+  },
+  {
+    "id": "cycles-2",
+    "owner": "cycles",
+    "requires": [
+      "cycles"
+    ],
+    "title": "傍晚敲钟",
+    "line": "当——敲完这一声，我也下楼吃晚饭了。",
+    "kind": "daily",
+    "image": "assets/postcards/cycles-2.webp",
+    "thumb": "assets/postcards/cycles-2-thumb.webp"
+  },
+  {
+    "id": "cycles-3",
+    "owner": "cycles",
+    "requires": [
+      "cycles"
+    ],
+    "title": "钟表博物馆",
+    "line": "看到一座比钟楼还高的落地钟，仰着头听了好久它的滴答。",
+    "kind": "travel",
+    "image": "assets/postcards/cycles-3.webp",
+    "thumb": "assets/postcards/cycles-3-thumb.webp"
+  },
+  {
+    "id": "notes-1",
+    "owner": "notes",
+    "requires": [
+      "notes"
+    ],
+    "title": "灯下写稿",
+    "line": "稿纸又堆高了。今天记两句，明天补两句，慢慢就成一篇。",
+    "kind": "daily",
+    "image": "assets/postcards/notes-1.webp",
+    "thumb": "assets/postcards/notes-1-thumb.webp"
+  },
+  {
+    "id": "notes-2",
+    "owner": "notes",
+    "requires": [
+      "notes"
+    ],
+    "title": "发光的小石头",
+    "line": "今天挖到一颗小石头，灯一照还会发亮。",
+    "kind": "daily",
+    "image": "assets/postcards/notes-2.webp",
+    "thumb": "assets/postcards/notes-2-thumb.webp"
+  },
+  {
+    "id": "notes-3",
+    "owner": "notes",
+    "requires": [
+      "notes"
+    ],
+    "title": "慢火车采风",
+    "line": "坐慢火车出门采风，窗外的风景，我一句句都记下了。",
+    "kind": "travel",
+    "image": "assets/postcards/notes-3.webp",
+    "thumb": "assets/postcards/notes-3-thumb.webp"
+  },
+  {
+    "id": "vault-1",
+    "owner": "vault",
+    "requires": [
+      "vault"
+    ],
+    "title": "清点橡子",
+    "line": "橡子一颗颗排好，一颗也没少。你放进树洞的，也一样。",
+    "kind": "daily",
+    "image": "assets/postcards/vault-1.webp",
+    "thumb": "assets/postcards/vault-1-thumb.webp"
+  },
+  {
+    "id": "vault-2",
+    "owner": "vault",
+    "requires": [
+      "vault"
+    ],
+    "title": "亮晶晶的玻璃珠",
+    "line": "捡到一颗玻璃珠，太阳底下亮晶晶的。嘘，这是我的新宝贝。",
+    "kind": "daily",
+    "image": "assets/postcards/vault-2.webp",
+    "thumb": "assets/postcards/vault-2-thumb.webp"
+  },
+  {
+    "id": "vault-3",
+    "owner": "vault",
+    "requires": [
+      "vault"
+    ],
+    "title": "秋天的森林",
+    "line": "秋天的森林里，最漂亮的叶子和橡子，都被我先挑走啦。",
+    "kind": "travel",
+    "image": "assets/postcards/vault-3.webp",
+    "thumb": "assets/postcards/vault-3-thumb.webp"
+  },
+  {
+    "id": "work-1",
+    "owner": "work",
+    "requires": [
+      "work"
+    ],
+    "title": "开一块菜地",
+    "line": "工坊边上开了块菜地，种子埋下去了，咱们慢慢等它长。",
+    "kind": "daily",
+    "image": "assets/postcards/work-1.webp",
+    "thumb": "assets/postcards/work-1-thumb.webp"
+  },
+  {
+    "id": "work-2",
+    "owner": "work",
+    "requires": [
+      "work"
+    ],
+    "title": "修岛上的小路",
+    "line": "坑洼的那段小路补好了，下雨也不用绕着走。",
+    "kind": "daily",
+    "image": "assets/postcards/work-2.webp",
+    "thumb": "assets/postcards/work-2-thumb.webp"
+  },
+  {
+    "id": "work-3",
+    "owner": "work",
+    "requires": [
+      "work"
+    ],
+    "title": "扛回一根大木头",
+    "line": "在山里挑到一根好木头，扛回去给工坊打张新桌子。",
+    "kind": "travel",
+    "image": "assets/postcards/work-3.webp",
+    "thumb": "assets/postcards/work-3-thumb.webp"
+  },
+  {
+    "id": "study-1",
+    "owner": "study",
+    "requires": [
+      "study"
+    ],
+    "title": "呆毛翘起来了",
+    "line": "背了一上午单词卡，刚刚想通了——呆毛「啪」地翘起来！",
+    "kind": "daily",
+    "image": "assets/postcards/study-1.webp",
+    "thumb": "assets/postcards/study-1-thumb.webp"
+  },
+  {
+    "id": "study-2",
+    "owner": "study",
+    "requires": [
+      "study"
+    ],
+    "title": "外语小课",
+    "line": "今天上外语课：贝壳、叶子、小帆船，大家跟我念一遍！",
+    "kind": "daily",
+    "image": "assets/postcards/study-2.webp",
+    "thumb": "assets/postcards/study-2-thumb.webp"
+  },
+  {
+    "id": "study-3",
+    "owner": "study",
+    "requires": [
+      "study"
+    ],
+    "title": "城里的图书馆",
+    "line": "城里的图书馆好大，抱到一本比我还大的书！",
+    "kind": "travel",
+    "image": "assets/postcards/study-3.webp",
+    "thumb": "assets/postcards/study-3-thumb.webp"
+  },
+  {
+    "id": "someday-1",
+    "owner": "someday",
+    "requires": [
+      "someday"
+    ],
+    "title": "捞起漂流瓶",
+    "line": "傍晚捞起一只漂流瓶。没空做的事也这样，先揣我兜里。",
+    "kind": "daily",
+    "image": "assets/postcards/someday-1.webp",
+    "thumb": "assets/postcards/someday-1-thumb.webp"
+  },
+  {
+    "id": "someday-2",
+    "owner": "someday",
+    "requires": [
+      "someday"
+    ],
+    "title": "灯塔顶上看星星",
+    "line": "瓶子排成一排陪我看星星。里面的心愿，我都替你收着。",
+    "kind": "daily",
+    "image": "assets/postcards/someday-2.webp",
+    "thumb": "assets/postcards/someday-2-thumb.webp"
+  },
+  {
+    "id": "someday-3",
+    "owner": "someday",
+    "requires": [
+      "someday"
+    ],
+    "title": "礁石看日出",
+    "line": "飞了好一阵才到这块礁石，刚好赶上日出。",
+    "kind": "travel",
+    "image": "assets/postcards/someday-3.webp",
+    "thumb": "assets/postcards/someday-3-thumb.webp"
+  },
+  {
+    "id": "fun-1",
+    "owner": "fun",
+    "requires": [
+      "fun"
+    ],
+    "title": "雨天泡汤",
+    "line": "下雨天，就多泡一会儿。头顶的橘子都泡暖了。",
+    "kind": "daily",
+    "image": "assets/postcards/fun-1.webp",
+    "thumb": "assets/postcards/fun-1-thumb.webp"
+  },
+  {
+    "id": "fun-2",
+    "owner": "fun",
+    "requires": [
+      "fun"
+    ],
+    "title": "躺椅发呆",
+    "line": "今天在躺椅上数海鸥，数着数着睡着了。",
+    "kind": "daily",
+    "image": "assets/postcards/fun-2.webp",
+    "thumb": "assets/postcards/fun-2-thumb.webp"
+  },
+  {
+    "id": "fun-3",
+    "owner": "fun",
+    "requires": [
+      "fun"
+    ],
+    "title": "雪地温泉",
+    "line": "去山里泡雪地温泉，雪花落在毛巾上，一点也不冷。",
+    "kind": "travel",
+    "image": "assets/postcards/fun-3.webp",
+    "thumb": "assets/postcards/fun-3-thumb.webp"
+  },
+  {
+    "id": "story-1",
+    "owner": "food",
+    "requires": [
+      "food",
+      "book",
+      "money"
+    ],
+    "title": "黄油曲奇悬案",
+    "line": "嘘，这盘曲奇别告诉小铜板……啊，他已经在门口了。（阿饱寄）",
+    "kind": "story",
+    "image": "assets/postcards/story-1.webp",
+    "thumb": "assets/postcards/story-1-thumb.webp"
+  },
+  {
+    "id": "story-2",
+    "owner": "work",
+    "requires": [
+      "work",
+      "someday"
+    ],
+    "title": "卸压好搭档",
+    "line": "箱子太多抱不过来，阿兜张开大嘴，一下接走了一半。（大力寄）",
+    "kind": "story",
+    "image": "assets/postcards/story-2.webp",
+    "thumb": "assets/postcards/story-2-thumb.webp"
+  },
+  {
+    "id": "story-3",
+    "owner": "fun",
+    "requires": [
+      "cycles",
+      "fun"
+    ],
+    "title": "快慢反差萌",
+    "line": "笃笃说站一会儿就走，结果陪我看完了整场晚霞。（小卡寄）",
+    "kind": "story",
+    "image": "assets/postcards/story-3.webp",
+    "thumb": "assets/postcards/story-3-thumb.webp"
+  },
+  {
+    "id": "story-4",
+    "owner": "notes",
+    "requires": [
+      "movie",
+      "notes"
+    ],
+    "title": "深夜亮灯同盟",
+    "line": "阿影讲老电影讲到哭，非说是海风太大。我都记下来了。（阿鼠寄）",
+    "kind": "story",
+    "image": "assets/postcards/story-4.webp",
+    "thumb": "assets/postcards/story-4-thumb.webp"
+  },
+  {
+    "id": "story-5",
+    "owner": "post",
+    "requires": [
+      "post",
+      "vault"
+    ],
+    "title": "迷路小冤家",
+    "line": "又在树洞口撞上松松！信和橡子撒了一地，捡了好半天。（啾啾寄）",
+    "kind": "story",
+    "image": "assets/postcards/story-5.webp",
+    "thumb": "assets/postcards/story-5-thumb.webp"
+  },
+  {
+    "id": "story-6",
+    "owner": "people",
+    "requires": [
+      "people"
+    ],
+    "title": "千日茶话会",
+    "line": "茶泡好了，大家带着点心过来，坐满了一桌。",
+    "kind": "story",
+    "image": "assets/postcards/story-6.webp",
+    "thumb": "assets/postcards/story-6-thumb.webp"
+  },
+  {
+    "id": "health-1",
+    "owner": "health",
+    "requires": [
+      "health"
+    ],
+    "title": "门前的早晨",
+    "line": "称完了，把秤收好。门口的花今天开了。",
+    "kind": "daily",
+    "image": "assets/postcards/health-1.webp",
+    "thumb": "assets/postcards/health-1-thumb.webp"
+  },
+  {
+    "id": "health-2",
+    "owner": "health",
+    "requires": [
+      "health"
+    ],
+    "title": "窗边量一量",
+    "line": "软尺用完卷起来，放回抽屉里。",
+    "kind": "daily",
+    "image": "assets/postcards/health-2.webp",
+    "thumb": "assets/postcards/health-2-thumb.webp"
+  },
+  {
+    "id": "health-3",
+    "owner": "health",
+    "requires": [
+      "health"
+    ],
+    "title": "雨天翻手帐",
+    "line": "外面下着雨，刚好坐下来翻翻这几页。",
+    "kind": "daily",
+    "image": "assets/postcards/health-3.webp",
+    "thumb": "assets/postcards/health-3-thumb.webp"
+  },
+  {
+    "id": "health-4",
+    "owner": "health",
+    "requires": [
+      "health"
+    ],
+    "title": "被窝里的晚安",
+    "line": "水杯放床头，手帐也合上了。今晚先到这里。",
+    "kind": "daily",
+    "image": "assets/postcards/health-4.webp",
+    "thumb": "assets/postcards/health-4-thumb.webp"
+  }
+];
+/* Full island and the same mailbox/album accessible directly from the simple notebook. */
+const ISLAND_OWNERS=['post','health','food','movie','book','people','money','cycles','notes','vault','work','study','someday','fun'];
+const POSTCARDS=ISLAND_OWNERS.map(k=>({id:k+'-welcome',owner:k,requires:[k],kind:'welcome',title:HOUSE_INFO[k].name+'的第一封信',line:k==='health'?'我是呦呦，住在晨露小站。桌上有手帐，窗边有水杯，有空过来坐坐。':k==='post'?'我是啾啾。大家寄来的信放在这里，拆开后还可以收进册子。':'我是'+HOUSE_INFO[k].who+'，住在'+HOUSE_INFO[k].name+'。'+HOUSE_INFO[k].line,image:HEAD_ART[k],thumb:HEAD_ART[k]})).concat(POSTCARD_SCENES);
+let ISLAND_ZOOM=1,ISLAND_SELECTED='health';
+function islandToday(){const a=TODAY.split('.').map(Number);return Math.floor(Date.UTC(a[0],a[1]-1,a[2])/86400000);}
+function islandDate(n){const d=new Date(n*86400000);return d.getUTCFullYear()+'.'+(d.getUTCMonth()+1)+'.'+d.getUTCDate();}
+function islandOpen(k){return ['post','cycles','someday'].includes(k)||(['work','study'].includes(k)?!!tplGroupName(k):isleOn(k));}
+function islandRoster(){return ISLAND_OWNERS.filter(islandOpen);}
+function islandTick(){if(!SEEN.onboard)return;if(islandAdvance(ISLAND,islandToday(),islandRoster(),POSTCARDS,Math.floor(Math.random()*4294967295)))scheduleSave();}
+function islandGo(name,tab){cur={name,tab};render();}
+function islandCard(id){return POSTCARDS.find(c=>c.id===id);}
+function islandArrived(id){return ISLAND.inbox.find(r=>r.id===id)||ISLAND.album.find(r=>r.id===id);}
+function islandCommit(){scheduleSave();saveNow();}
+function islandNav(active){
+ const d=document.createElement('div');d.className='island-nav';
+ [['island','逛岛'],['inbox','信箱'+(ISLAND.inbox.length?' · '+ISLAND.inbox.length:'')],['album','明信片册'],['cal','日历']].forEach(([key,label])=>{
+  const b=document.createElement('button');b.className='chip'+(key===active?' on':'');b.textContent=label;b.setAttribute('aria-current',key===active?'page':'false');
+  b.onclick=()=>key==='cal'?islandGo('cal'):key==='island'?islandGo('panorama'):islandGo('postoffice',key);d.appendChild(b);
+ });return d;
+}
+function islandDrawer(){
+ const d=document.createElement('div');d.className='island-drawer';
+ d.innerHTML='<button id="openPanorama"><span>🏝</span><b>逛逛全景岛</b><small>去住户门前看看</small></button><button id="openMailbox"><span>✉</span><b>信箱与明信片</b><small>'+ (ISLAND.inbox.length?ISLAND.inbox.length+' 封等你拆开':'收藏 '+ISLAND.album.length+' 张')+'</small></button>';
+ d.querySelector('#openPanorama').onclick=()=>{closeDrawer();islandGo('panorama');};d.querySelector('#openMailbox').onclick=()=>{closeDrawer();islandGo('postoffice','inbox');};return d;
+}
+function islandDoor(k){
+ if(!islandOpen(k)){
+  if(['work','study'].includes(k)){const g=k==='work'?'工作':'学习';if(!extraGroups.includes(g))extraGroups.push(g);SET.gtpl=SET.gtpl||{};SET.gtpl[g]=k;}
+  else isleSet(k,true);
+  islandCommit();islandTick();
+ }
+ if(k==='post')islandGo('postoffice','inbox');
+ else if(k==='cycles')islandGo('cycles');
+ else if(k==='someday'){cur={name:'agg',key:'someday'};render();}
+ else if(['work','study'].includes(k)){cur={name:'group',g:tplGroupName(k)};render();}
+ else isleGo(k);
+}
+function islandVisitLine(k){
+ const scenes=POSTCARD_SCENES.filter(c=>c.owner===k&&c.kind==='daily');
+ if(!scenes.length)return HOUSE_INFO[k].line;
+ return scenes[islandHash(k+'|'+islandToday())%scenes.length].line;
+}
+function renderPanorama(){
+ topTitle.textContent='全景岛';reviewBtn.textContent='回今日';view.appendChild(islandNav('island'));
+ const d=document.createElement('section');d.className='island-page';
+ const night=new Date().getHours()>=19||new Date().getHours()<6;
+ const plots={...OB_PLOT,health:OB_PLOT.e1,post:[OB_PLAZA[0],OB_PLAZA[1],290]};delete plots.e1;delete plots.e2;
+ const buttons=Object.keys(plots).sort((a,b)=>plots[a][1]-plots[b][1]).map(k=>{
+  const [x,y,w]=plots[k],on=islandOpen(k),h=HOUSE_INFO[k];
+  return '<button class="island-house '+(on?'built':'unbuilt')+(ISLAND_SELECTED===k?' selected':'')+'" data-island-house="'+k+'" aria-label="'+h.name+'，'+h.who+(on?'':'，未开启')+'" aria-pressed="'+(ISLAND_SELECTED===k)+'" style="left:'+x/1086*100+'%;top:'+y/1448*100+'%;width:'+w/1086*100+'%"><img draggable="false" src="'+(on?HEAD_ART[k]:OBIMG.sign)+'" alt=""><span>'+h.name+'</span>'+(ISLAND.inbox.some(r=>islandCard(r.id)?.owner===k)?'<i class="island-mail-dot" aria-label="有来信">✉</i>':'')+'</button>';
+ }).join('');
+ d.innerHTML='<div class="island-heading"><div><b>岛上的'+(night?'夜晚':'今天')+'</b><small>点建筑选住户，放大后可以拖动地图</small></div><div class="island-zoom"><button id="islandZoomOut" aria-label="缩小地图">−</button><output id="islandZoomValue">'+Math.round(ISLAND_ZOOM*100)+'%</output><button id="islandZoomIn" aria-label="放大地图">＋</button></div></div><div class="island-viewport" id="islandViewport" tabindex="0" aria-label="全景岛地图，可滚动"><div class="island-world '+(night?'night':'')+'" style="width:'+ISLAND_ZOOM*100+'%"><img class="island-ground" src="'+OBIMG.ob_isle+'" alt="岛上的道路、草地和码头" draggable="false">'+buttons+'</div></div><div id="islandVisitor" aria-live="polite"></div><details class="island-house-list"><summary>按建筑查看</summary><div>'+ISLAND_OWNERS.map(k=>'<button class="chip" data-island-list="'+k+'">'+HOUSE_INFO[k].name+'</button>').join('')+'</div></details>';
+ view.appendChild(d);
+ const select=k=>{ISLAND_SELECTED=k;d.querySelectorAll('[data-island-house]').forEach(b=>{b.classList.toggle('selected',b.dataset.islandHouse===k);b.setAttribute('aria-pressed',b.dataset.islandHouse===k?'true':'false');});islandVisitor();};
+ d.querySelectorAll('[data-island-house]').forEach(b=>b.onclick=()=>select(b.dataset.islandHouse));d.querySelectorAll('[data-island-list]').forEach(b=>b.onclick=()=>{select(b.dataset.islandList);$('#islandVisitor').scrollIntoView({block:'nearest',behavior:'smooth'});});
+ const vp=$('#islandViewport'),world=vp.firstElementChild;
+ const zoom=step=>{const x=(vp.scrollLeft+vp.clientWidth/2)/world.clientWidth,y=(vp.scrollTop+vp.clientHeight/2)/world.clientHeight;ISLAND_ZOOM=Math.max(1,Math.min(2,+(ISLAND_ZOOM+step).toFixed(2)));world.style.width=ISLAND_ZOOM*100+'%';$('#islandZoomValue').textContent=Math.round(ISLAND_ZOOM*100)+'%';vp.scrollLeft=x*world.clientWidth-vp.clientWidth/2;vp.scrollTop=y*world.clientHeight-vp.clientHeight/2;syncZoom();};
+ const syncZoom=()=>{$('#islandZoomOut').disabled=ISLAND_ZOOM<=1;$('#islandZoomIn').disabled=ISLAND_ZOOM>=2;};syncZoom();$('#islandZoomOut').onclick=()=>zoom(-.25);$('#islandZoomIn').onclick=()=>zoom(.25);
+ // Touch uses native scrolling; mouse dragging also works without triggering a building click.
+ let drag=null,dragged=false;
+ vp.onpointerdown=e=>{if(e.pointerType!=='mouse'||e.button!==0)return;drag={x:e.clientX,y:e.clientY,l:vp.scrollLeft,t:vp.scrollTop};dragged=false;};
+ vp.onpointermove=e=>{if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>5){dragged=true;vp.scrollLeft=drag.l-dx;vp.scrollTop=drag.t-dy;e.preventDefault();}};
+ vp.onpointerup=()=>{drag=null;};vp.onpointerleave=()=>{drag=null;};vp.addEventListener('click',e=>{if(dragged){e.stopPropagation();e.preventDefault();dragged=false;}},true);
+ islandVisitor();
+}
+function islandVisitor(){
+ const k=ISLAND_SELECTED,h=HOUSE_INFO[k],on=islandOpen(k),box=$('#islandVisitor');if(!box)return;
+ box.innerHTML='<div class="island-visitor"><img src="'+HEAD_ART[k]+'" alt="'+h.who+'"><div><small>'+h.name+'</small><h3>'+h.who+'</h3><p id="islandSpeech">'+vEsc(on?islandVisitLine(k):'这里还没开启。搬进来后，就能使用这栋房子。')+'</p><div class="island-actions"><button class="chip on" id="islandEnter">'+(on?'进入'+h.name:'开启这栋房子')+'</button><button class="chip" id="islandChat" '+(on?'':'disabled')+'>打个招呼</button><button class="chip" id="islandCards">看明信片</button></div></div></div>';
+ $('#islandEnter').onclick=()=>islandDoor(k);$('#islandChat').onclick=()=>{$('#islandSpeech').textContent=h.who+'：'+HOUSE_INFO[k].line;};$('#islandCards').onclick=()=>{cur={name:'postoffice',tab:'album',key:k};render();};
+}
+function postcardMedia(c,thumb){return '<div class="postcard-media '+(c.kind==='welcome'?'welcome':'')+'"><img '+(thumb?'loading="lazy"':'')+' src="'+(thumb?c.thumb:c.image)+'" alt="'+vEsc(c.title)+'"><div class="postcard-image-error" hidden><span>图片还没加载，来信和收藏都在。</span>'+(thumb?'':'<button class="chip" data-image-retry>重新加载图片</button>')+'</div></div>';}
+function postcardBindImages(root){root.querySelectorAll('.postcard-media').forEach(box=>{const im=box.querySelector('img'),msg=box.querySelector('.postcard-image-error');const fail=()=>{im.hidden=true;msg.hidden=false;};im.onerror=fail;im.onload=()=>{im.hidden=false;msg.hidden=true;};if(im.complete&&!im.naturalWidth)fail();const retry=box.querySelector('[data-image-retry]');if(retry)retry.onclick=()=>{msg.hidden=true;im.hidden=false;im.src=im.getAttribute('src');};});}
+function renderPostoffice(){
+ topTitle.textContent='信风邮局';reviewBtn.textContent='回今日';const header=letterHouseHead('post');header.querySelector('p').textContent='啾啾：来信都在这里，拆开后可以收进册子。';view.appendChild(header);
+ const tab=cur.tab==='album'?'album':'inbox';view.appendChild(islandNav(tab));
+ const section=document.createElement('section');section.className='postoffice';
+ if(tab==='inbox'){
+  section.innerHTML='<div class="island-heading"><div><b>'+ISLAND.inbox.length+' 封来信</b><small>收进册子后，随时可以再翻</small></div><button class="chip" id="mailSettings">来信设置</button></div>';
+  if(!ISLAND.enabled)section.innerHTML+='<p class="postcard-note">已暂停新来信，已有的信和收藏保留。</p>';
+  if(!ISLAND.inbox.length)section.innerHTML+='<div class="postcard-empty">'+jjImg('nest',72)+'<p>信箱里暂时没有新信。</p><small>岛民隔一两天寄一张，回来时再看看。<br>当前可寄的都收齐后，会等有新卡片再寄。</small><button class="chip" id="mailToAlbum">翻翻明信片册</button></div>';
+  for(const r of ISLAND.inbox){const c=islandCard(r.id);if(!c)continue;const b=document.createElement('button');b.className='postcard-envelope';b.dataset.openCard=c.id;
+   b.innerHTML='<img src="'+HEAD_ART[c.owner]+'" alt=""><span><small>'+HOUSE_INFO[c.owner].who+'寄来 · '+islandDate(r.day)+'</small><b>'+vEsc(c.title)+'</b><em>拆开看看 →</em></span><i aria-hidden="true">啾</i>';section.appendChild(b);}
+ }else{
+  const known=ISLAND.album.filter(r=>islandCard(r.id)).length;
+  section.innerHTML='<div class="island-heading"><div><b>明信片册</b><small>已收藏 '+known+' / '+POSTCARDS.length+' 张</small></div></div><label class="postcard-filter">翻谁的来信 <select id="postcardOwner"><option value="all">全部岛民</option>'+ISLAND_OWNERS.map(k=>'<option value="'+k+'">'+HOUSE_INFO[k].who+'</option>').join('')+'<option value="story">岛上的小故事</option></select></label>';
+  const owner=ISLAND_OWNERS.includes(cur.key)||cur.key==='story'?cur.key:'all';
+  const cards=POSTCARDS.filter(c=>owner==='all'||(owner==='story'?c.kind==='story':c.owner===owner));
+  const grid=document.createElement('div');grid.className='postcard-grid';
+  for(const c of cards){const received=ISLAND.album.find(r=>r.id===c.id),waiting=ISLAND.inbox.some(r=>r.id===c.id),b=document.createElement('button');b.className='postcard-tile'+(received?'':' locked');b.dataset.openCard=c.id;
+   b.innerHTML=received?postcardMedia(c,true)+'<b>'+vEsc(c.title)+'</b><small>'+HOUSE_INFO[c.owner].who+' · '+islandDate(received.day)+'</small>':'<div class="postcard-unknown">'+(waiting?'✉':'?')+'</div><b>'+vEsc(c.title)+'</b><small>'+(waiting?'已到信箱，待收藏':c.requires.every(islandOpen)?'等一封来信':'住户搬进来后可寄来')+'</small>';
+   grid.appendChild(b);
+  }section.appendChild(grid);
+  section.querySelector('#postcardOwner').value=owner;section.querySelector('#postcardOwner').onchange=e=>{cur.key=e.target.value;navFromBack=true;render();};
+ }
+ view.appendChild(section);postcardBindImages(section);
+ section.querySelectorAll('[data-open-card]').forEach(b=>b.onclick=()=>{const id=b.dataset.openCard;if(islandArrived(id)){cur={name:'postcard',id};render();}else{const c=islandCard(id);toast(c.requires.every(islandOpen)?'这张还没寄来，先看看其他来信':c.requires.filter(k=>!islandOpen(k)).map(k=>HOUSE_INFO[k].who).join('、')+'搬进来后可寄来');}});
+ if($('#mailSettings'))$('#mailSettings').onclick=islandMailSettings;if($('#mailToAlbum'))$('#mailToAlbum').onclick=()=>islandGo('postoffice','album');
+}
+function renderPostcard(){
+ const c=islandCard(cur.id),r=islandArrived(cur.id);topTitle.textContent='一封来信';reviewBtn.textContent='回今日';
+ if(!c||!r){const p=document.createElement('p');p.className='postcard-note';p.textContent='这封信还没收到，回信箱看看吧。';view.appendChild(p);return;}
+ const pending=ISLAND.inbox.some(x=>x.id===c.id),d=document.createElement('article');d.className='postcard-detail';
+ d.innerHTML='<div class="postcard-from"><span>FROM · '+HOUSE_INFO[c.owner].who+'</span><small>'+islandDate(r.day)+'</small></div>'+postcardMedia(c,false)+'<div class="postcard-letter"><small>'+({welcome:'搬来岛上的第一封信',story:'岛上的小故事',travel:'岛外的小旅行',daily:'岛上的日子'}[c.kind])+'</small><h2>'+vEsc(c.title)+'</h2><p>'+vEsc(c.line)+'</p><div class="postcard-sign">—— '+HOUSE_INFO[c.owner].who+'</div></div><div class="island-actions"><button class="rv-confirm" id="postcardCollect" '+(pending?'':'disabled')+'>'+(pending?'收进明信片册':'已收藏')+'</button><button class="chip" id="postcardShare">保存分享图</button><button class="chip" id="postcardBack">'+(pending?'回信箱':'回明信片册')+'</button></div><p id="postcardShareStatus" class="postcard-note" role="status"></p><div id="postcardShareResult"></div>';
+ view.appendChild(d);postcardBindImages(d);
+ $('#postcardCollect').onclick=()=>{if(islandCollect(ISLAND,c.id,islandToday())){islandCommit();navFromBack=true;render();toast('已收进明信片册');}};
+ $('#postcardBack').onclick=()=>{cur={name:'postoffice',tab:pending?'inbox':'album',key:c.owner};render();};
+ $('#postcardShare').onclick=()=>postcardShare(c,r);
+}
+async function postcardShare(c,r){
+ const status=$('#postcardShareStatus'),button=$('#postcardShare');button.disabled=true;status.textContent='正在制作分享图…';
+ try{
+  const im=new Image();im.src=c.image;await im.decode();
+  const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1160;const cx=canvas.getContext('2d');cx.fillStyle='#f8f1e5';cx.fillRect(0,0,1080,1160);
+  const ratio=Math.min(960/im.width,640/im.height),w=im.width*ratio,h=im.height*ratio;cx.drawImage(im,(1080-w)/2,55+(640-h)/2,w,h);
+  cx.fillStyle='#887963';cx.font='24px sans-serif';cx.fillText('啾啾岛来信 · '+islandDate(r.day),60,740);cx.fillStyle='#423a2e';cx.font='36px serif';cx.fillText(c.title,60,800);
+  cx.font='28px sans-serif';let line='',y=862;for(const ch of c.line){if(cx.measureText(line+ch).width>950){cx.fillText(line,60,y);line='';y+=43;}line+=ch;}if(line)cx.fillText(line,60,y);
+  cx.font='26px serif';cx.textAlign='right';cx.fillText('—— '+HOUSE_INFO[c.owner].who,1020,1060);cx.font='20px sans-serif';cx.fillStyle='#887963';cx.fillText('啾啾岛 Jotbird',1020,1120);
+  const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('image')),'image/png'));
+  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='啾啾岛-'+c.id+'.png';a.textContent='下载分享图';a.className='chip';const result=$('#postcardShareResult');result.replaceChildren(a);const preview=document.createElement('img');preview.src=url;preview.alt='分享图预览';preview.style.width='100%';result.appendChild(preview);a.click();status.textContent='分享图已生成，也可以长按下方图片保存。';setTimeout(()=>URL.revokeObjectURL(url),300000);
+ }catch(_){status.textContent=location.protocol==='file:'?'浏览器限制了本地图片导出。上传完整文件夹到 GitHub Pages 后即可使用分享图；来信仍可正常查看。':'图片暂时没加载成功，联网后再试。';}
+ finally{button.disabled=false;}
+}
+function islandMailSettings(){
+ const s=healthSheet('来信设置','<p>住户搬进来时寄一封问候。平时每隔一两天一封，信箱最多留 5 封；先寄没收到过的。</p><p>暂停时不补积来信，重新开启后从当天继续。收藏不会删除。</p><button class="rv-confirm" id="islandMailToggle">'+(ISLAND.enabled?'暂停新来信':'开启新来信')+'</button>');
+ s.querySelector('#islandMailToggle').onclick=()=>{ISLAND.enabled=!ISLAND.enabled;ISLAND.lastDay=Math.max(ISLAND.lastDay||0,islandToday());ISLAND.nextDay=ISLAND.lastDay+1;islandCommit();closeSheet();navFromBack=true;render();};
 }
 
 /* ============ 启动 ============ */
