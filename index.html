@@ -955,6 +955,30 @@
 
 .resident-name{color:#a64b35;font-weight:600}.postcard-letter p+p{margin-top:16px}.hl-postcard p+p{margin-top:13px}.mail-bulk-actions{position:sticky;bottom:0;z-index:2;margin-top:20px;padding:12px 0 max(10px,env(safe-area-inset-bottom));background:var(--paper,#f8f1e5);border-top:1px solid var(--line-strong)}.mail-bulk-actions .island-actions{display:flex;flex-wrap:nowrap}.mail-bulk-actions button{flex:1;min-width:0;min-height:44px}.mail-bulk-actions small{display:block;color:var(--ink-soft);font-size:10px;line-height:1.7;margin-top:8px}.mail-bulk-actions button:disabled{opacity:.45;cursor:default}
 
+/* Reuse the app's paper, ink, accent and existing button styles. */
+.food-header .daynav{display:none}
+.food-header #topTitle{white-space:nowrap}
+.food-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0 24px}
+.food-actions .chip{padding:13px 8px;font-size:15px;text-align:center;white-space:normal}
+.food-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+.food-heading h2{font-size:20px;margin:0;letter-spacing:1px}
+.food-textbtn{border:0;background:none;color:var(--ink-soft);font:inherit;font-size:12px;padding:8px 0;cursor:pointer}
+.food-filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--line-strong)}
+.food-filter{border:0;border-bottom:2px solid transparent;background:none;color:var(--ink-soft);font:inherit;padding:12px 0;font-size:13px;cursor:pointer}
+.food-filter small{font-size:11px;margin-left:4px}
+.food-filter.on{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+.food-store{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);background:none;padding:15px 2px;font:inherit;color:var(--ink);cursor:pointer}
+.food-store b{display:block;font-size:15px;font-weight:500;overflow-wrap:anywhere}
+.food-store small{display:block;font-size:12px;color:var(--ink-faint);margin-top:6px;line-height:1.6}
+.food-more{margin:12px 0 22px;color:var(--ink-faint);font-size:12px}
+.food-more summary{cursor:pointer;padding:8px 0;width:fit-content}
+.food-more .rp-tabs{margin:8px 0}
+.food-note{display:block;margin-top:12px;color:var(--ink-soft);font-size:12px}
+.food-note textarea{display:block;width:100%;box-sizing:border-box;margin-top:6px;resize:vertical;min-height:72px;font-size:16px}
+.food-form-more{margin:12px 0}
+.food-form-more summary{padding:9px 0;cursor:pointer;color:var(--ink-faint);font-size:12px}
+.food-price-help{font-size:11px;line-height:1.6;color:var(--ink-faint);margin:6px 2px}
+
 </style>
 </head>
 <body>
@@ -2529,7 +2553,9 @@ function renderCal(){
 /* ============ 视图渲染 ============ */
 function renderGroupBody(){
     const tpl = tplOf(cur.g);
-    if (!cur.rngSel) cur.rngSel = 'year';
+    if (!cur.rngSel) cur.rngSel = tpl === 'food' ? 'all' : 'year';
+    if (tpl === 'food') renderFoodOverview();
+    else {
     const tabs = document.createElement('div'); tabs.className = 'rp-tabs'; tabs.style.marginTop = '16px';
     const canRec = tpl === 'movie' || tpl === 'book' || tpl === 'fun' || tpl === 'food';
     if (canRec){   /* v3.1 房子里记一条，哪天的事记哪天 */
@@ -2572,6 +2598,7 @@ function renderGroupBody(){
     }
     view.appendChild(tabs);
     if (tpl && !TPL_PLAIN[tpl]) renderTplPanel(cur.g, tpl);
+    }
     const rows2 = tplRows(cur.g, null);
     if (!rows2.length){ const d = document.createElement('div'); d.className = 'empty-hint';
       d.textContent = cur.name === 'food'
@@ -2609,13 +2636,14 @@ function renderGroupBody(){
         view.appendChild(more);
       }
       const tip = document.createElement('div'); tip.className = 'readonly-tip';
-      tip.textContent = tpl ? '小签是从你的原话里读出来的 · 点字直接改 · 点日子去那天' : '这就是自动长出来的「集子」 · 点字直接改 · 点日子去那天';
+      tip.textContent = tpl === 'food' ? '点字修改原话 · 点人均调整参考价 · 点日子去那天' : tpl ? '小签是从你的原话里读出来的 · 点字直接改 · 点日子去那天' : '这就是自动长出来的「集子」 · 点字直接改 · 点日子去那天';
       view.appendChild(tip);
     }
   }
 function render(){
   islandMailboxPrepare();
   closeRowPop(); topTitle.classList.remove('has-wx');
+  topTitle.parentElement.classList.toggle('food-header',cur.name === 'food' || (cur.name === 'group' && tplOf(cur.g) === 'food'));
   if (cur.name === 'health'){ const tabs = HEALTH.order.filter(k => !HEALTH.hidden.includes(k)); if (!tabs.includes(cur.tab)) cur.tab = tabs[0] || null; }
   if (cur.name === 'meals'){ cur.name = 'food'; if (!cur.tab) cur.tab = 'meal'; }   /* v2.23 三餐并入美食板块 */
   (() => {   /* v2.18 导航栈：自动记来路，二级页左上角变「‹ 返回」 */
@@ -2703,13 +2731,10 @@ function render(){
     if (!foodGroupName() && !extraGroups.includes('美食')) extraGroups.push('美食');
     cur.g = foodGroupName() || '美食';
     { const hh = houseHead('food', cur.g); if (hh) view.appendChild(hh); }   /* v3.0 */
-    const ftb = document.createElement('div'); ftb.className = 'ftabs';
-    ftb.innerHTML = '<div class="ftab' + (cur.tab === 'ji' ? ' on' : '') + '" data-ft="ji">🗂 集子</div>'
-      + '<div class="ftab' + (cur.tab === 'pick' ? ' on' : '') + '" data-ft="pick">🎲 吃什么</div>'
-      + (SET.mods.mealLog === true ? '<div class="ftab' + (cur.tab === 'meal' ? ' on' : '') + '" data-ft="meal">🍚 三餐</div>' : '');
-    ftb.querySelectorAll('.ftab').forEach(t2 => t2.onclick = () => {
-      if (cur.tab !== t2.dataset.ft){ cur.tab = t2.dataset.ft; navFromBack = true; render(); } });
-    view.appendChild(ftb);
+    if (cur.tab !== 'ji'){
+      const back = document.createElement('button'); back.className = 'chip'; back.id = 'foodBack'; back.textContent = '‹ 我的店单';
+      back.onclick = () => {cur.tab = 'ji'; render();}; view.appendChild(back);
+    }
     if (cur.tab === 'meal') renderMeals();
     else if (cur.tab === 'pick') renderPick();
     else renderGroupBody();
@@ -2796,7 +2821,7 @@ function render(){
     });
     setRow('主题色', accWrap, null);
     setRow('功能手册 · 实验室', setSub('›'), labSheet);
-    setRow('版本记录', setSub('v3.5.2 ›'), showChangelog);
+    setRow('版本记录', setSub('v3.5.3 ›'), showChangelog);
   }
   else if (cur.name === 'isle'){   /* v3.1 岛上的房子：开关、置顶 */
     topTitle.textContent = '岛上的房子'; reviewBtn.textContent = '回今日';
@@ -3918,7 +3943,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v3.5.2（当前 · 2026.11.13）\n【来信与信箱整理】\n· 14封初见介绍信更新，三段排版、岛民姓名使用强调色\n· 未读消息在前、已读沉底，支持一键领取与删除已读\n· 清理消息不删除明信片，旧记录和收藏继续保留\n\n'
+    + 'v3.5.3（当前 · 2026.11.14）\n【海边饭馆】\n· 顶部简化为记美食、今天吃什么和我的店单，底部保留全部原始记录\n· 人均参考独立保存，可修改清空，不计入账房；旧支出保留\n· 抽卡沿用原来的独立页面，更多收起分享与三餐入口\n\n'
+    + 'v3.5.2（2026.11.13）\n【来信与信箱整理】\n· 14封初见介绍信更新，三段排版、岛民姓名使用强调色\n· 未读消息在前、已读沉底，支持一键领取与删除已读\n· 清理消息不删除明信片，旧记录和收藏继续保留\n\n'
     + 'v3.5.1（2026.11.13）\n【首页信箱】\n· 首页右上改为信箱，未读消息显示圆点；复盘移到侧栏更多\n· 全部、岛民来信、系统消息分类，已读与收藏分别保存\n· 早安照片看到后不重复提示，旧收藏与来信保留\n\n'
     + 'v3.5.0（2026.11.13）\n【全景岛与明信片】\n· 14栋建筑可点选进入，支持地图放大和拖动，加入晨露小站与呦呦\n· 简约版可直接打开信箱和明信片册，收信、收藏、筛选与分享\n· 14张入住问候、42张岛民生活与故事、4张呦呦场景，共60张\n· 当天打开早安卡附一张明信片，每日一次；没打开不发、不补发，已收卡片保留\n\n'
     + 'v3.4.0（2026.11.12）\n【晨露小站】\n· 体重、围度、经期、饮水记录与变化图，支持修改、删除、补记\n· 身体指标估算、个人周期预计、水杯进度，计算说明收在页底\n· 四个板块可排序、移除和恢复，健康记录纳入完整备份\n【小岛页头】\n· 14栋建筑统一信纸式门楣，换上住户与建筑的新组合图\n【文案修订 · 11.13】\n· 上岛引导、岛民台词、消息回复与早晚提示改为具体简短的说法\n\n'
@@ -4080,6 +4106,10 @@ function parseEntry(e){
   const sig = PARSE_GEN + ':' + peopleSet().size + ':' + storeSet().size;   /* 普通保存不再全量重算；熟店簿/熟人簿长大才整体失效（保住追溯识别） */
   if (e._pc && e._pc.t === t && e._pc.g === sig) return e._pc.r;
   const r = parseLine(t);
+  if (e.foodChoice && e.foodChoice.text === t && ['宝藏','吃过','避雷','想吃'].includes(e.foodChoice.value)){
+    const choice = e.foodChoice.value; r.want = choice === '想吃';
+    r.verdict = r.want ? null : choice; r.vNeg = choice === '避雷'; delete r.score;
+  }
   e._pc = {t, g:sig, r};
   return r;
 }
@@ -4545,10 +4575,11 @@ function ptagRow(r, tpl, scoredSet){
     if (p.delivery) add('', '外卖');
     else if (p.city) add('', p.city);
     if (p.score != null) add('sc', '★ ' + p.score + '分');
-    (p.prices || []).slice(0, 2).forEach(v => add('sc', '¥' + v));
+    (p.prices || []).slice(0, 2).forEach(v => add('sc', '支出 ¥' + v));
+    if (p.store) add('ask', foodPriceLabel(r.e) || '＋ 人均', ev => {ev.stopPropagation(); foodPriceSheet(r.e);});
   }
   if (tpl === 'money') (p.prices || []).forEach(v => add('sc', '¥' + v));
-  if (tpl && !TPL_PLAIN[tpl] && !(p.prices || []).length)
+  if (tpl && tpl !== 'food' && !TPL_PLAIN[tpl] && !(p.prices || []).length)
     add('ask', '¥ 补一笔', ev => { ev.stopPropagation(); openAmtSheet(r.e); });
   if (tpl === 'food' && p.want) add('want', '📌 想吃');   /* v3.3.5 */
   else if (p.verdict){
@@ -4676,7 +4707,7 @@ function openHowSheet(tpl){
   const S = $('#gsheet');
   const row = (t, ex, note) => '<div class="hw-row"><b>' + t + '</b><code>' + ex + '</code>' + (note ? '<span>' + note + '</span>' : '') + '</div>';
   const per = {
-    food: row('美食', '在「烤匠」吃了麻辣烤鱼（鱼皮酥脆），人均¥89，8.5分，会再来', '「」里是店名 · 括号里评价菜，不算店的整体表态 · 整体表态放句末'),
+    food: row('美食', '在「烤匠」吃了麻辣烤鱼（鱼皮酥脆），8.5分，会再来', '人均参考在「记美食」里填；实际支出到铜板账房记录。「」里是店名 · 括号里评价菜，不算店的整体表态 · 整体表态放句末'),
     movie: row('电影', '《沙丘2》9分，和赵赵二刷', '《》里是片名 · X分=评分 · 和X=同行人'),
     book: row('读书', '《毫无意义的工作》读完，8分', '《》里是书名 · X分=评分'),
     money: row('花销', '打车 23元，咖啡 ¥18', '写 元 / ¥ 就自动记账'),
@@ -7288,7 +7319,7 @@ function storeIndex(){
     o.days.add(k); o.recs.push({k, e, p});
   });
   Object.values(map).forEach(o => {
-    o.recs.sort((a, b) => parseKey(b.k) - parseKey(a.k));
+    o.recs.sort((a, b) => parseKey(b.k) - parseKey(a.k) || (b.e._id || 0) - (a.e._id || 0));
     o.cnt = o.days.size; o.last = o.recs[0].k;
     const op = o.recs.find(r => r.p.verdict || r.p.score != null);   /* 以最近一次表态为准 */
     o.op = op || null;
@@ -7319,7 +7350,7 @@ function wantIndex(){   /* v3.3.5 想吃：写过想吃 / 想去 / 种草…、�
     o.recs.push({k, e, p});
   });
   Object.values(map).forEach(o => {
-    o.recs.sort((a, b) => parseKey(b.k) - parseKey(a.k));
+    o.recs.sort((a, b) => parseKey(b.k) - parseKey(a.k) || (b.e._id || 0) - (a.e._id || 0));
     o.last = o.recs[0].k; o.since = o.recs[o.recs.length - 1].k;
     o.delivery = o.recs.some(r => r.p.delivery);
     const cr = o.recs.find(r => r.p.city);
@@ -7543,42 +7574,83 @@ function pickDone(t){
 }
 
 /* ---- 记一家店 ---- */
-function storeSheet(prefill){
-  const S = $('#gsheet');
-  const cities = wxCfg().cities.map(c => c.n).filter(n => n !== '我这儿');
-  const pc = (pickSt && pickSt.city) || (cities[0] || '');
-  S.innerHTML = '<div class="gs-title">记一家店</div>'
-    + '<input class="vt-in" id="ssName" placeholder="店名" value="' + escAttr(prefill || '') + '">'
-    + '<div class="gs-chips" id="ssV" style="margin:10px 0 2px">'
-    + [['宝藏', '★ 宝藏'], ['吃过', '😐 吃过'], ['避雷', '👎 避雷'], ['想吃', '📌 想吃']].map(([w, lab]) => '<button class="gs-chip" data-w="' + w + '">' + lab + '</button>').join('') + '</div>'
-    + '<label class="ss-f"><span>一句话</span><input id="ssLine" placeholder="好在哪 / 坑在哪（可不填）"></label>'
-    + '<div style="display:flex;gap:8px"><label class="ss-f" style="flex:1"><span>必点</span><input id="ssMust" placeholder="可不填"></label><label class="ss-f" style="flex:1"><span>别点</span><input id="ssAvoid" placeholder="可不填"></label></div>'
-    + '<div class="gs-chips" id="ssCity" style="margin:10px 0 0">'
-    + cities.map(n => '<button class="gs-chip' + (n === pc ? ' on' : '') + '" data-c="' + escAttr(n) + '">' + vEsc(n) + '</button>').join('')
-    + '<button class="gs-chip" data-c="">城市不填</button><button class="gs-chip" id="ssDel">外卖</button></div>'
-    + '<label class="ss-f"><span>花了 ¥</span><input id="ssAmt" inputmode="decimal" placeholder="可不填"></label>'
-    + '<button class="gs-done" id="ssSave">记下</button>';
-  let vsel = null, csel = pc, deliv = false;
-  S.querySelectorAll('#ssV [data-w]').forEach(b => b.onclick = () => { vsel = b.dataset.w; S.querySelectorAll('#ssV [data-w]').forEach(x => x.classList.toggle('on', x === b)); });
-  S.querySelectorAll('#ssCity [data-c]').forEach(b => b.onclick = () => { csel = b.dataset.c; S.querySelectorAll('#ssCity [data-c]').forEach(x => x.classList.toggle('on', x === b)); });
-  $('#ssDel').onclick = () => { deliv = !deliv; $('#ssDel').classList.toggle('on', deliv); };
-  $('#ssSave').onclick = () => {
-    const nm = $('#ssName').value.trim().replace(/[「」“”"『』]/g, '');
-    if (!nm){ toast('先写店名'); return; }
-    if (!vsel){ toast('选一下：宝藏 / 吃过 / 避雷 / 想吃'); return; }
-    const line = $('#ssLine').value.trim(), mu = $('#ssMust').value.trim(), av = $('#ssAvoid').value.trim();
-    const amt = parseFloat($('#ssAmt').value);
-    const text = '「' + nm + '」 ' + vsel + (line ? '：' + line : '') + (mu ? ' · 必点' + mu : '') + (av ? ' · 别点' + av : '')
-      + (csel ? ' · ' + csel : '') + (deliv ? ' · 外卖' : '') + (vsel !== '想吃' && isFinite(amt) && amt > 0 ? ' ' + amt + '元' : '');   /* v3.3.5 想吃的还没花钱 */
-    const fg = foodGroupName() || '美食';
-    if (!foodGroupName() && !extraGroups.includes(fg)) extraGroups.push(fg);
-    P().flow.push({sym:'event', text, groups:[fg], _id:++uid});
-    scheduleSave(); closeSheet(); render();
-    toast(vsel === '避雷' ? '记下了 · 这家不会再被抽到，写到它时我会提醒你' : vsel === '宝藏' ? '记下了 · 已进卡池' : vsel === '想吃' ? '记下了 · 收进想吃，吃什么里能抽到它' : '记下了');
-  };
-  S.classList.add('on'); $('#mask').classList.add('on');
-  setTimeout(() => { const i = $('#ssName'); if (i && !prefill) i.focus(); }, 60);
+function foodPrice(e){
+  return typeof e.foodPerPerson === 'number' && Number.isFinite(e.foodPerPerson) && e.foodPerPerson >= 0 ? e.foodPerPerson : null;
 }
+function foodPriceLabel(e){const n=foodPrice(e); return n === null ? '' : '人均 ¥' + n;}
+function foodReadPrice(input){
+  const raw=input.value.trim();
+  if (!raw) return null;
+  if (!/^\d+(?:\.\d{1,2})?$/.test(raw) || !Number.isFinite(Number(raw))){toast('人均填 0 或正数，最多两位小数');input.focus();return false;}
+  return Number(raw);
+}
+function renderFoodOverview(){
+  const g=cur.g, box=document.createElement('section'); box.className='food-overview';
+  box.innerHTML='<div class="food-actions"><button class="chip on" id="foodAdd">＋ 记美食</button><button class="chip" id="foodPick">🎲 今天吃什么</button></div>'
+    +'<div class="food-heading"><h2>我的店单</h2><button class="food-textbtn" id="foodMap">美食地图 ↗</button></div><div class="food-filters" role="group" aria-label="店单筛选"></div><div id="foodStoreList"></div>'
+    +'<details class="food-more"><summary>更多</summary><div class="rp-tabs"><button class="chip" id="foodShare">分享店单</button><button class="chip" id="foodHelp">怎么记</button>'+(SET.mods.mealLog===true?'<button class="chip" id="foodMeals">三餐记录</button>':'')+'</div></details>';
+  box.querySelector('#foodAdd').onclick=()=>storeSheet();
+  box.querySelector('#foodPick').onclick=()=>{cur={name:'food',tab:'pick'};render();};
+  box.querySelector('#foodMap').onclick=()=>openFoodMap(g);
+  box.querySelector('#foodShare').onclick=()=>openShare(statsPayload(g,'food',tplStats('food',tplRows(g,null)),'all'));
+  box.querySelector('#foodHelp').onclick=()=>openHowSheet('food');
+  const meal=box.querySelector('#foodMeals'); if(meal)meal.onclick=()=>{cur={name:'food',tab:'meal'};render();};
+  // Same store definitions as the map and card pool; never filter the original record stream.
+  const belongs=o=>o.recs.some(r=>(r.e.groups||[]).includes(g));
+  const visited=Object.values(storeIndex()).filter(belongs), wanted=Object.values(wantIndex()).filter(belongs);
+  const lists={been:visited,bao:visited.filter(o=>o.gold),lei:visited.filter(o=>o.avoid),want:wanted};
+  if(!lists[cur.foodFilter])cur.foodFilter='been';
+  const list=box.querySelector('#foodStoreList'), filters=box.querySelector('.food-filters');
+  [['been','去过'],['bao','宝藏'],['lei','避雷'],['want','想吃']].forEach(([key,label])=>{
+    const b=document.createElement('button'); b.className='food-filter'+(cur.foodFilter===key?' on':'');b.dataset.foodFilter=key;b.setAttribute('aria-pressed',String(cur.foodFilter===key));
+    b.innerHTML=label+'<small>'+lists[key].length+'</small>';
+    b.onclick=()=>{cur.foodFilter=key;cur.foodExpanded=false;navFromBack=true;render();};filters.appendChild(b);
+  });
+  const items=lists[cur.foodFilter].slice().sort((a,b)=>parseKey(b.last)-parseKey(a.last));
+  if(!items.length){const hint=document.createElement('div');hint.className='empty-hint';hint.textContent={been:'吃过的店会记在这里。',bao:'喜欢的店，记一句「宝藏」。',lei:'不想再去的店，记一句「避雷」。',want:'想尝的新店，先记在这里。'}[cur.foodFilter];list.appendChild(hint);}
+  items.slice(0,cur.foodExpanded?items.length:5).forEach(o=>{
+    const row=document.createElement('button');row.className='food-store';
+    const priced=o.recs.find(r=>foodPrice(r.e)!==null);
+    const meta=[o.city,o.want?'想吃 · '+fmtKey(o.since)+' 收的':('去过 '+o.cnt+' 天'),o.gold?'宝藏':o.avoid?'避雷':'',priced?foodPriceLabel(priced.e):''].filter(Boolean).join(' · ');
+    row.innerHTML='<b>'+vEsc(o.name)+'</b><small>'+vEsc(meta)+'</small>';
+    row.onclick=()=>openTileSheet(vEsc(o.name),o.recs.map(r=>({nm:vEsc(r.e.text),sub:vEsc(fmtKey(r.k)+(foodPriceLabel(r.e)?' · '+foodPriceLabel(r.e):'')),d:r.k,id:r.e._id})));
+    list.appendChild(row);
+  });
+  if(items.length>5){const more=document.createElement('button');more.className='food-textbtn';more.textContent=cur.foodExpanded?'收起店单':'展开其余 '+(items.length-5)+' 家';more.onclick=()=>{cur.foodExpanded=!cur.foodExpanded;navFromBack=true;render();};list.appendChild(more);}
+  view.appendChild(box);
+}
+function storeSheet(prefill){
+  const S=$('#gsheet'), iso=k=>k.split('.').map((n,i)=>i?String(n).padStart(2,'0'):n).join('-');
+  S.innerHTML='<div class="gs-title">记美食</div><label class="ss-f"><span>店名</span><input id="ssName" placeholder="必填" value="'+escAttr(prefill||'')+'"></label>'
+    +'<div class="gs-chips" id="ssV" style="margin:12px 0">'+[['宝藏','宝藏'],['吃过','吃过'],['避雷','避雷'],['想吃','想吃']].map(([v,t])=>'<button class="gs-chip'+(v==='吃过'?' on':'')+'" data-w="'+v+'">'+t+'</button>').join('')+'</div>'
+    +'<label class="ss-f"><span>人均 ¥</span><input id="ssPerPerson" inputmode="decimal" placeholder="参考价，可不填"></label><div class="food-price-help">供下次选店参考，不计入账房。</div>'
+    +'<label class="food-note" for="ssLine">一句话</label><textarea class="vt-in" id="ssLine" rows="2" placeholder="想点什么、喜欢哪道菜……可不填"></textarea>'
+    +'<details class="food-form-more"><summary>补充城市、日期、外卖</summary><label class="ss-f"><span>城市</span><input id="ssCity" placeholder="可不填"></label><label class="ss-f"><span>日期</span><input id="ssDate" type="date" max="'+iso(TODAY)+'" value="'+iso(TODAY)+'"></label><div class="gs-chips" style="margin-top:10px"><button class="gs-chip" id="ssDel" aria-pressed="false">外卖</button></div></details><button class="gs-done" id="ssSave">记下</button>';
+  let choice='吃过', delivery=false;
+  S.querySelectorAll('#ssV [data-w]').forEach(b=>b.onclick=()=>{choice=b.dataset.w;S.querySelectorAll('#ssV [data-w]').forEach(x=>x.classList.toggle('on',x===b));});
+  $('#ssDel').onclick=()=>{delivery=!delivery;$('#ssDel').classList.toggle('on',delivery);$('#ssDel').setAttribute('aria-pressed',String(delivery));};
+  $('#ssSave').onclick=()=>{
+    const name=$('#ssName').value.trim().replace(/[「」“”"『』]/g,'');if(!name){toast('先写店名');$('#ssName').focus();return;}
+    const price=foodReadPrice($('#ssPerPerson'));if(price===false)return;
+    const date=$('#ssDate').value;if(!date||date>iso(TODAY)){toast('选今天或之前的日期');S.querySelector('details').open=true;return;}
+    const key=date.split('-').map(Number).join('.'), note=$('#ssLine').value.trim(),city=$('#ssCity').value.trim();
+    const text='「'+name+'」 '+choice+(note?'：'+note:'')+(city?' · '+city:'')+(delivery?' · 外卖':'');
+    const g=cur.g&&tplOf(cur.g)==='food'?cur.g:(foodGroupName()||'美食');
+    snapshot('记美食');if(!foodGroupName()&&!extraGroups.includes(g))extraGroups.push(g);
+    const e={sym:'event',text,groups:[g],_id:++uid,foodChoice:{value:choice,text}};
+    if(price!==null)e.foodPerPerson=price;
+    if(!PAGES[key])PAGES[key]={plan:[],flow:[]};PAGES[key].flow.push(e);
+    scheduleSave();closeSheet();render();toast(choice==='想吃'?'记下了 · 收进想吃，吃什么里能抽到它':'记下了');
+  };
+  S.classList.add('on');$('#mask').classList.add('on');
+}
+function foodPriceSheet(e){
+  const S=$('#gsheet'),price=foodPrice(e);
+  S.innerHTML='<div class="gs-title">人均参考 · '+vEsc(parseEntry(e).store||'这条记录')+'</div><label class="ss-f"><span>人均 ¥</span><input id="foodPriceEdit" inputmode="decimal" placeholder="留空可清除" value="'+(price===null?'':price)+'"></label><div class="food-price-help">只修改这条记录的人均参考，不改动实际支出。</div><button class="gs-done" id="foodPriceSave">保存</button>';
+  $('#foodPriceSave').onclick=()=>{const n=foodReadPrice($('#foodPriceEdit'));if(n===false)return;snapshot('修改人均');if(n===null)delete e.foodPerPerson;else e.foodPerPerson=n;scheduleSave();closeSheet();render();toast(n===null?'已清除人均参考':'人均参考已更新');};
+  S.classList.add('on');$('#mask').classList.add('on');
+}
+
 
 /* ---- 避雷红签：又写到避雷过的店时提醒一句 ---- */
 function foodWarn(e){
