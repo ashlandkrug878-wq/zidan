@@ -958,19 +958,34 @@
 /* Reuse the app's paper, ink, accent and existing button styles. */
 .food-header .daynav{display:none}
 .food-header #topTitle{white-space:nowrap}
-.food-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0 24px}
-.food-actions .chip{padding:13px 8px;font-size:15px;text-align:center;white-space:normal}
-.food-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
-.food-heading h2{font-size:20px;margin:0;letter-spacing:1px}
+.food-overview{--food-edge:#d8b78c;--food-honey:#f1dfbf;--food-red:#a95335;--food-bowl:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40' fill='none' stroke='%23a95335' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 21h26c-1 8-6 12-13 12S8 29 7 21ZM14 35h12M15 8c-5 4 4 5 0 9m6-12c-5 4 4 5 0 9m6-6c-5 4 4 5 0 9'/%3E%3C/svg%3E")}
+.food-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0 22px}
+.food-actions .chip{padding:14px 8px;font-size:15px;text-align:center;white-space:normal;border-radius:14px;border:1px solid var(--food-edge);box-shadow:0 3px 0 var(--food-honey);background:var(--card)}
+.food-actions .chip.on{background:var(--accent);border-color:var(--accent);color:var(--card);box-shadow:0 3px 0 var(--accent-soft)}
+.food-actions .chip:active{transform:translateY(2px);box-shadow:none}
+.food-menu{position:relative;padding:26px 12px 0;border:1px solid var(--food-edge);border-radius:16px;background:var(--card);box-shadow:0 4px 0 var(--food-honey),inset 0 0 0 4px var(--card),inset 0 0 0 5px var(--line);margin-bottom:26px;overflow:hidden}
+.food-menu::before{content:'';position:absolute;inset:0 0 auto;height:11px;border-bottom:1px solid var(--food-edge);background-color:#fbefd8;background-image:repeating-linear-gradient(90deg,transparent 0 12px,#c9805540 12px 24px),repeating-linear-gradient(0deg,transparent 0 6px,#c9805530 6px 12px);pointer-events:none}
+.food-heading{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:15px}
+.food-heading h2{display:flex;align-items:center;gap:7px;font-size:19px;margin:0;letter-spacing:1px}
+.food-heading h2::before{content:'';width:30px;height:30px;flex:none;background:var(--food-bowl) center/contain no-repeat}
 .food-textbtn{border:0;background:none;color:var(--ink-soft);font:inherit;font-size:12px;padding:8px 0;cursor:pointer}
-.food-filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--line-strong)}
-.food-filter{border:0;border-bottom:2px solid transparent;background:none;color:var(--ink-soft);font:inherit;padding:12px 0;font-size:13px;cursor:pointer}
+.food-filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;padding:4px;background:var(--bg);border:1px solid var(--line-strong);border-radius:10px;margin-bottom:12px}
+.food-filter{border:1px solid transparent;border-radius:7px;background:none;color:var(--ink-soft);font:inherit;padding:8px 0;font-size:13px;cursor:pointer}
 .food-filter small{font-size:11px;margin-left:4px}
-.food-filter.on{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
-.food-store{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);background:none;padding:15px 2px;font:inherit;color:var(--ink);cursor:pointer}
-.food-store b{display:block;font-size:15px;font-weight:500;overflow-wrap:anywhere}
-.food-store small{display:block;font-size:12px;color:var(--ink-faint);margin-top:6px;line-height:1.6}
-.food-more{margin:12px 0 22px;color:var(--ink-faint);font-size:12px}
+.food-filter.on{color:var(--accent);border-color:var(--line-strong);background:var(--card);box-shadow:0 1px 2px #754b2210;font-weight:600}
+.food-store{position:relative;display:block;width:100%;text-align:left;border:1px solid var(--line-strong);border-left:3px solid var(--food-edge);border-radius:5px 11px 11px 5px;background:var(--card);padding:12px 11px;margin:9px 0;font:inherit;color:var(--ink);cursor:pointer}
+.food-store[data-tier=bao]{border-left-color:var(--food-red);background:linear-gradient(100deg,#f9ecd890,var(--card) 60%)}
+.food-store[data-tier=want]{border-left-color:#b59459}
+.food-store-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.food-store b{display:block;font-size:15px;font-weight:600;overflow-wrap:anywhere}
+.food-stamp{flex:none;display:inline-block;border:1px solid var(--food-edge);border-radius:4px;padding:2px 5px;font-size:10px;line-height:1.2;letter-spacing:1px;color:var(--ink-soft)}
+[data-tier=bao] .food-stamp{border-color:#c59172;color:var(--food-red);background:#fbecdb;transform:rotate(-5deg)}
+[data-tier=lei] .food-stamp{color:var(--ink-soft);background:var(--bg)}
+.food-store small{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px 8px;font-size:11px;color:var(--ink-faint);margin-top:10px;padding-top:8px;border-top:1px dashed var(--line-strong);line-height:1.6}
+.food-store-price{color:var(--food-red);white-space:nowrap}
+.food-menu .empty-hint{border:1px dashed var(--food-edge);border-radius:12px;margin:12px 0;padding:22px 10px;text-align:center;background:var(--bg);font-size:12px}
+.food-menu .empty-hint::before{content:'';display:block;width:46px;height:46px;margin:0 auto 10px;background:var(--food-bowl) center/contain no-repeat;opacity:.7}
+.food-more{margin:10px 0 5px;padding:0 2px;color:var(--ink-faint);font-size:12px}
 .food-more summary{cursor:pointer;padding:8px 0;width:fit-content}
 .food-more .rp-tabs{margin:8px 0}
 .food-note{display:block;margin-top:12px;color:var(--ink-soft);font-size:12px}
@@ -978,6 +993,7 @@
 .food-form-more{margin:12px 0}
 .food-form-more summary{padding:9px 0;cursor:pointer;color:var(--ink-faint);font-size:12px}
 .food-price-help{font-size:11px;line-height:1.6;color:var(--ink-faint);margin:6px 2px}
+@media(max-width:350px){.food-menu{padding-left:9px;padding-right:9px}.food-heading h2{font-size:17px;gap:4px}.food-heading h2::before{width:25px;height:25px}.food-heading .food-textbtn{font-size:11px}.food-filter{font-size:12px}.food-filter small{margin-left:2px}}
 
 </style>
 </head>
@@ -2821,7 +2837,7 @@ function render(){
     });
     setRow('主题色', accWrap, null);
     setRow('功能手册 · 实验室', setSub('›'), labSheet);
-    setRow('版本记录', setSub('v3.5.3 ›'), showChangelog);
+    setRow('版本记录', setSub('v3.5.4 ›'), showChangelog);
   }
   else if (cur.name === 'isle'){   /* v3.1 岛上的房子：开关、置顶 */
     topTitle.textContent = '岛上的房子'; reviewBtn.textContent = '回今日';
@@ -3943,7 +3959,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v3.5.3（当前 · 2026.11.14）\n【海边饭馆】\n· 顶部简化为记美食、今天吃什么和我的店单，底部保留全部原始记录\n· 人均参考独立保存，可修改清空，不计入账房；旧支出保留\n· 抽卡沿用原来的独立页面，更多收起分享与三餐入口\n\n'
+    + 'v3.5.4（当前 · 2026.11.14）\n【海边饭馆样式】\n· 店单加上菜单边框、格纹纸边和热汤小图案\n· 店铺改为餐票卡片，标记和人均更清楚，保留原记录与独立抽卡\n\n'
+    + 'v3.5.3（2026.11.14）\n【海边饭馆】\n· 顶部简化为记美食、今天吃什么和我的店单，底部保留全部原始记录\n· 人均参考独立保存，可修改清空，不计入账房；旧支出保留\n· 抽卡沿用原来的独立页面，更多收起分享与三餐入口\n\n'
     + 'v3.5.2（2026.11.13）\n【来信与信箱整理】\n· 14封初见介绍信更新，三段排版、岛民姓名使用强调色\n· 未读消息在前、已读沉底，支持一键领取与删除已读\n· 清理消息不删除明信片，旧记录和收藏继续保留\n\n'
     + 'v3.5.1（2026.11.13）\n【首页信箱】\n· 首页右上改为信箱，未读消息显示圆点；复盘移到侧栏更多\n· 全部、岛民来信、系统消息分类，已读与收藏分别保存\n· 早安照片看到后不重复提示，旧收藏与来信保留\n\n'
     + 'v3.5.0（2026.11.13）\n【全景岛与明信片】\n· 14栋建筑可点选进入，支持地图放大和拖动，加入晨露小站与呦呦\n· 简约版可直接打开信箱和明信片册，收信、收藏、筛选与分享\n· 14张入住问候、42张岛民生活与故事、4张呦呦场景，共60张\n· 当天打开早安卡附一张明信片，每日一次；没打开不发、不补发，已收卡片保留\n\n'
@@ -7587,8 +7604,8 @@ function foodReadPrice(input){
 function renderFoodOverview(){
   const g=cur.g, box=document.createElement('section'); box.className='food-overview';
   box.innerHTML='<div class="food-actions"><button class="chip on" id="foodAdd">＋ 记美食</button><button class="chip" id="foodPick">🎲 今天吃什么</button></div>'
-    +'<div class="food-heading"><h2>我的店单</h2><button class="food-textbtn" id="foodMap">美食地图 ↗</button></div><div class="food-filters" role="group" aria-label="店单筛选"></div><div id="foodStoreList"></div>'
-    +'<details class="food-more"><summary>更多</summary><div class="rp-tabs"><button class="chip" id="foodShare">分享店单</button><button class="chip" id="foodHelp">怎么记</button>'+(SET.mods.mealLog===true?'<button class="chip" id="foodMeals">三餐记录</button>':'')+'</div></details>';
+    +'<div class="food-menu"><div class="food-heading"><h2>我的店单</h2><button class="food-textbtn" id="foodMap">美食地图 ↗</button></div><div class="food-filters" role="group" aria-label="店单筛选"></div><div id="foodStoreList"></div>'
+    +'<details class="food-more"><summary>更多</summary><div class="rp-tabs"><button class="chip" id="foodShare">分享店单</button><button class="chip" id="foodHelp">怎么记</button>'+(SET.mods.mealLog===true?'<button class="chip" id="foodMeals">三餐记录</button>':'')+'</div></details></div>';
   box.querySelector('#foodAdd').onclick=()=>storeSheet();
   box.querySelector('#foodPick').onclick=()=>{cur={name:'food',tab:'pick'};render();};
   box.querySelector('#foodMap').onclick=()=>openFoodMap(g);
@@ -7611,8 +7628,9 @@ function renderFoodOverview(){
   items.slice(0,cur.foodExpanded?items.length:5).forEach(o=>{
     const row=document.createElement('button');row.className='food-store';
     const priced=o.recs.find(r=>foodPrice(r.e)!==null);
-    const meta=[o.city,o.want?'想吃 · '+fmtKey(o.since)+' 收的':('去过 '+o.cnt+' 天'),o.gold?'宝藏':o.avoid?'避雷':'',priced?foodPriceLabel(priced.e):''].filter(Boolean).join(' · ');
-    row.innerHTML='<b>'+vEsc(o.name)+'</b><small>'+vEsc(meta)+'</small>';
+    const tier=o.want?'want':o.gold?'bao':o.avoid?'lei':'been';row.dataset.tier=tier;
+    const meta=[o.city,o.want?(fmtKey(o.since)+' 收的'):('去过 '+o.cnt+' 天')].filter(Boolean).join(' · ');
+    row.innerHTML='<span class="food-store-top"><b>'+vEsc(o.name)+'</b><span class="food-stamp">'+({want:'想吃',bao:'宝藏',lei:'避雷',been:'吃过'}[tier])+'</span></span><small><span>'+vEsc(meta)+'</span>'+(priced?'<span class="food-store-price">'+vEsc(foodPriceLabel(priced.e))+'</span>':'')+'</small>';
     row.onclick=()=>openTileSheet(vEsc(o.name),o.recs.map(r=>({nm:vEsc(r.e.text),sub:vEsc(fmtKey(r.k)+(foodPriceLabel(r.e)?' · '+foodPriceLabel(r.e):'')),d:r.k,id:r.e._id})));
     list.appendChild(row);
   });
