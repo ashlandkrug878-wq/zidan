@@ -953,6 +953,8 @@
 .mail-filters{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0}.mail-filters .chip{min-height:40px;font-size:12px}.mail-heading{align-items:flex-start;flex-wrap:wrap}.mail-heading>.island-actions{flex:1;justify-content:flex-end}.mail-heading>.island-actions .chip{font-size:11px}
 .mail-system-envelope{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:18px 15px;margin:12px 0;border:1px solid var(--line-strong);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;position:relative;cursor:pointer}.mail-system-icon{width:50px;flex:none;text-align:center;font-size:28px;color:var(--ink-soft)}.mail-envelope-text{min-width:0;flex:1;padding-right:12px}.mail-envelope-text b{overflow-wrap:anywhere}.mail-system-envelope small{display:block;font-size:10px;color:var(--ink-soft)}.mail-system-envelope b{display:block;font:600 17px/1.6 'Songti SC',serif;margin:5px 0}.mail-system-envelope em{font-size:11px;color:var(--accent);font-style:normal}.mail-envelope .mail-unread-dot{position:absolute;right:13px;top:14px;bottom:auto;width:7px;height:7px;border:0;border-radius:50%;background:var(--accent);transform:none}.mail-system-body{white-space:pre-wrap;overflow-wrap:anywhere}.drawer-more{margin:10px 0}.drawer-more summary{padding:12px 5px;color:var(--ink-soft);font-size:13px;cursor:pointer}.drawer-more button{width:100%;font:inherit;background:transparent;border:0;color:var(--ink);text-align:left;min-height:44px}
 
+.resident-name{color:#a64b35;font-weight:600}.postcard-letter p+p{margin-top:16px}.hl-postcard p+p{margin-top:13px}.mail-bulk-actions{position:sticky;bottom:0;z-index:2;margin-top:20px;padding:12px 0 max(10px,env(safe-area-inset-bottom));background:var(--paper,#f8f1e5);border-top:1px solid var(--line-strong)}.mail-bulk-actions .island-actions{display:flex;flex-wrap:nowrap}.mail-bulk-actions button{flex:1;min-width:0;min-height:44px}.mail-bulk-actions small{display:block;color:var(--ink-soft);font-size:10px;line-height:1.7;margin-top:8px}.mail-bulk-actions button:disabled{opacity:.45;cursor:default}
+
 </style>
 </head>
 <body>
@@ -1219,10 +1221,10 @@ let PAGES = {}, SEEN = {}, GCOLOR = {};
 let extraGroups = ['工作', '健康', '恋爱'];
 const SET = {recog:true, accent:0};
 /* A postcard is granted only when today's greeting is opened. No elapsed-time delivery. */
-function islandDefaults(){return {version:3,enabled:true,seed:0,daily:null,inbox:[],album:[],messages:[]};}
+function islandDefaults(){return {version:4,enabled:true,seed:0,daily:null,inbox:[],album:[],messages:[]};}
 function islandNormalize(raw){
  if(raw==null)return islandDefaults();
- if(!raw||typeof raw!=='object'||![1,2,3].includes(raw.version))throw Error('Unsupported island backup');
+ if(!raw||typeof raw!=='object'||![1,2,3,4].includes(raw.version))throw Error('Unsupported island backup');
  const s=islandDefaults(),validDay=n=>Number.isInteger(n)&&n>=0&&n<200000;
  if(typeof raw.enabled!=='boolean'||!Number.isInteger(raw.seed)||raw.seed<0||raw.seed>4294967295||!Array.isArray(raw.inbox)||!Array.isArray(raw.album))throw Error('Invalid island backup');
  if(raw.inbox.length>2000||raw.album.length>2000)throw Error('Invalid island size');
@@ -1237,18 +1239,20 @@ function islandNormalize(raw){
   if(!validId(raw.daily.id)||!validDay(raw.daily.day)||!seen.has(raw.daily.id))throw Error('Invalid daily postcard');
   s.daily={day:raw.daily.day,id:raw.daily.id};
  }
- if(raw.version===3){
+ if(raw.version>=3){
   if(!Array.isArray(raw.messages)||raw.messages.length>6000)throw Error('Invalid messages');
   const ids=new Set();
   s.messages=raw.messages.map(m=>{
    if(!m||typeof m.id!=='string'||m.id.length>100||ids.has(m.id)||!validDay(m.day)||typeof m.read!=='boolean')throw Error('Invalid message');
+   if(m.deleted!==undefined&&(typeof m.deleted!=='boolean'||(m.deleted&&!m.read)))throw Error('Invalid deleted message');
+   const deletion=m.deleted===undefined?{}:{deleted:m.deleted};
    ids.add(m.id);
    if(m.kind==='card'){
     if(!validId(m.cardId)||m.id!=='card:'+m.cardId||!seen.has(m.cardId))throw Error('Invalid card message');
-    return {id:m.id,kind:'card',cardId:m.cardId,day:m.day,read:m.read};
+    return {id:m.id,kind:'card',cardId:m.cardId,day:m.day,read:m.read,...deletion};
    }
    if(m.kind!=='system'||!/^system:[a-z0-9-]+$/.test(m.id)||typeof m.title!=='string'||!m.title.trim()||m.title.length>150||typeof m.body!=='string'||!m.body.trim()||m.body.length>6000)throw Error('Invalid system message');
-   return {id:m.id,kind:'system',day:m.day,read:m.read,title:m.title,body:m.body};
+   return {id:m.id,kind:'system',day:m.day,read:m.read,title:m.title,body:m.body,...deletion};
   });
  }
  islandSyncMessages(s); // Migrate old collected cards as read; pending cards remain unread.
@@ -1268,7 +1272,16 @@ function islandSystemMessage(s,id,day,title,body){
  s.messages.push({id,kind:'system',day,read:false,title,body});return true;
 }
 function islandReadMessage(s,id){const m=s.messages.find(m=>m.id===id);if(!m||m.read)return false;m.read=true;return true;}
-function islandUnread(s){return s.messages.filter(m=>!m.read).length;}
+function islandUnread(s){return s.messages.filter(m=>!m.deleted&&!m.read).length;}
+function islandVisibleMessages(s,kind='all'){
+ return s.messages.map((m,i)=>({...m,order:i})).filter(m=>!m.deleted&&(kind==='all'||m.kind===kind)).sort((a,b)=>Number(a.read)-Number(b.read)||b.day-a.day||b.order-a.order);
+}
+function islandDeleteRead(s){
+ let n=0;for(const m of s.messages)if(m.read&&!m.deleted){m.deleted=true;n++;}return n;
+}
+function islandCollectAll(s,day){
+ const ids=s.inbox.map(r=>r.id);let n=0;for(const id of ids)if(islandCollect(s,id,day))n++;return n;
+}
 function islandHash(str){let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
 function islandGrantDaily(s,day,roster,catalog,seed){
  if(!Number.isInteger(day)||day<0||day>=200000)return false;
@@ -2783,7 +2796,7 @@ function render(){
     });
     setRow('主题色', accWrap, null);
     setRow('功能手册 · 实验室', setSub('›'), labSheet);
-    setRow('版本记录', setSub('v3.5.1 ›'), showChangelog);
+    setRow('版本记录', setSub('v3.5.2 ›'), showChangelog);
   }
   else if (cur.name === 'isle'){   /* v3.1 岛上的房子：开关、置顶 */
     topTitle.textContent = '岛上的房子'; reviewBtn.textContent = '回今日';
@@ -3905,7 +3918,8 @@ function showChangelog(){
   R.innerHTML = '<div class="rv-head"><div class="rv-title">版本记录</div>'
     + '<button class="pill-btn" id="clClose">收起</button></div>'
     + '<div class="rp-body"><div class="rp-text">'
-    + 'v3.5.1（当前 · 2026.11.13）\n【首页信箱】\n· 首页右上改为信箱，未读消息显示圆点；复盘移到侧栏更多\n· 全部、岛民来信、系统消息分类，已读与收藏分别保存\n· 早安照片看到后不重复提示，旧收藏与来信保留\n\n'
+    + 'v3.5.2（当前 · 2026.11.13）\n【来信与信箱整理】\n· 14封初见介绍信更新，三段排版、岛民姓名使用强调色\n· 未读消息在前、已读沉底，支持一键领取与删除已读\n· 清理消息不删除明信片，旧记录和收藏继续保留\n\n'
+    + 'v3.5.1（2026.11.13）\n【首页信箱】\n· 首页右上改为信箱，未读消息显示圆点；复盘移到侧栏更多\n· 全部、岛民来信、系统消息分类，已读与收藏分别保存\n· 早安照片看到后不重复提示，旧收藏与来信保留\n\n'
     + 'v3.5.0（2026.11.13）\n【全景岛与明信片】\n· 14栋建筑可点选进入，支持地图放大和拖动，加入晨露小站与呦呦\n· 简约版可直接打开信箱和明信片册，收信、收藏、筛选与分享\n· 14张入住问候、42张岛民生活与故事、4张呦呦场景，共60张\n· 当天打开早安卡附一张明信片，每日一次；没打开不发、不补发，已收卡片保留\n\n'
     + 'v3.4.0（2026.11.12）\n【晨露小站】\n· 体重、围度、经期、饮水记录与变化图，支持修改、删除、补记\n· 身体指标估算、个人周期预计、水杯进度，计算说明收在页底\n· 四个板块可排序、移除和恢复，健康记录纳入完整备份\n【小岛页头】\n· 14栋建筑统一信纸式门楣，换上住户与建筑的新组合图\n【文案修订 · 11.13】\n· 上岛引导、岛民台词、消息回复与早晚提示改为具体简短的说法\n\n'
     + 'v3.3.5（2026.11.12）\n【美食 · 想吃】\n· 写「想去吃「店名」」「种草了「店名」」「收藏一家「店名」」「下次去吃「店名」」，记成想吃，不再算成去过一次\n· 集子里四格并排：去过 · 宝藏 · 避雷 · 想吃；「记一家店」也能选想吃\n· 吃什么：宝藏和想吃都会抽到；想吃的卡写着「还没去过 · 哪天收的」，吃完点 ✓ 评价，就从想吃挪到去过\n· 美食地图里也有想吃的店，后面标一个「想吃」\n\n'
@@ -9482,6 +9496,79 @@ function healthAbout(){
  healthSheet('关于这些数字','<h4>体重与BMI</h4><p>BMI＝体重kg÷身高m²。中国一般成人参考区间为18.5≤BMI＜24；不依性别改变，也不能单凭BMI判断个人健康。<a href="https://www.nhc.gov.cn/jkj/s10045/200907/943149b60565497bb3e25783a0e3de68.shtml" target="_blank" rel="noopener noreferrer">计算依据</a></p>'+range+'<h4>预计代谢</h4><p>这里是静息能量消耗估算，不是实测基础代谢、全天总消耗或建议摄入热量。Mifflin公式：10×体重kg＋6.25×身高cm－5×年龄，男性再加5，女性减161。结果按10kcal/天取整。<a href="https://pubmed.ncbi.nlm.nih.gov/2305711/" target="_blank" rel="noopener noreferrer">研究来源</a></p><p>当前一般估算限定18—64岁、非孕哺期且无特殊体重管理要求的成人；资料不全或不适用时显示“—”，仍能记录。体脂率仅凭身高体重推算误差较大，本页不提供估计值。</p><h4>经期预计日期</h4><p>上次实际开始日＋你填写的周期天数。周期可能变化，日期仅作参考，不用于判断排卵或避孕。预计日期不会自动生成实际经期记录。<a href="https://www.nhs.uk/symptoms/irregular-periods/" target="_blank" rel="noopener noreferrer">周期说明</a></p><h4>饮水建议</h4><p>温和气候、低身体活动水平的一般成年男性1700ml、女性1500ml，为直接饮水量，不含食物中的水。气候和活动等会影响需要量；有特殊限水要求时按医嘱自定。杯子只统计已记录量，达到目标后按需饮水。<a href="https://www.ndcpa.gov.cn/jbkzzx/c100040/common/content/content_2104761364364300288.html" target="_blank" rel="noopener noreferrer">建议来源</a></p><h4>记录与备份</h4><p>记录保存在本机，随完整JSON备份一起导出；启用GitHub云备份时也会包含健康记录。Markdown导出仅包含手帐正文，不含这里的结构化记录。移除板块保留数据；修改记录里可以单独删除。</p>');
 }
 
+const WELCOME_LETTERS = {
+  "post": [
+    "岛主，我是负责给你收发记录的啾啾，住在海边的信风邮局。",
+    "今天要办的事、刚发生的小事，或者突然冒出来的一句话，随手发我就行；想翻从前看日历，岛上大伙儿的来信也都在我这儿收。",
+    "信有点多，我再数一遍……嗯，你这封没送错。"
+  ],
+  "food": [
+    "岛主，吃过了没？我是管吃喝的阿饱，海边饭馆归我掌勺。",
+    "吃着顺口的好店、刷到想尝的新馆子，还有下回不想再去的，全记我这儿；到了饭点拿不定主意，就来抽一张店卡。",
+    "我先给你盛碗热汤，菜单咱们坐下慢慢看。"
+  ],
+  "movie": [
+    "我是管看电影的阿影，守着小岛影院。",
+    "看过哪部片子、打几分、和谁一块儿看的，都能留这儿；散场后心里那点劲儿没过去，也能顺手写两句。白天来找我，可能得多敲两下门。",
+    "晚上我一般坐在最后一排——手边这盒纸巾，是给观众备着的。"
+  ],
+  "book": [
+    "你好，我是管读书的酥酥，平时就在小岛书屋。",
+    "最近在读的书、划下来的句子，还有读完的一点想法，都能搁这儿慢慢攒着，靠窗那张椅子空着，你可以坐那儿翻。",
+    "桌上的黄油曲奇也能拿。……啊，我嘴角还沾着碎屑？刚那一章看得太入神，没顾上擦。"
+  ],
+  "people": [
+    "岛主好，我是替你记着亲友的团团……在茶屋头回见面，先喝口热茶吧。",
+    "你常念叨的人，可以在这儿留个名字，把他们的生日、你们一块吃过的饭，还有舍不得忘的日子都收进来。",
+    "我不太会招呼生客，不过你多来坐坐，下回你坐哪把椅子，我就记住了。"
+  ],
+  "money": [
+    "我是管记账的小铜板，铜板账房归我管。",
+    "买菜、打车，还是路过顺手带的那杯奶茶，带上数儿记一句，月底就能看出钱花在了哪儿。你只管记，算账的活交给我。",
+    "至于这笔值不值，我可不说教——我自己抽屉里也攒着几件舍不得退的小玩意儿。"
+  ],
+  "cycles": [
+    "笃、笃。岛主好，我是负责敲钟提醒的笃笃，刚给滴答钟楼上完油。",
+    "生日、纪念日、还款日，还有隔几天就得办一回的琐事，都能来我这儿上发条，日子改了拨一格就好。",
+    "想让手机到点真响起来，顺手把提醒连进手机日历，到点我再敲钟叫你。"
+  ],
+  "notes": [
+    "我是帮你把碎念头理成笔记的阿鼠，住在竹林边的记事小亭。",
+    "你平时在「随想」里只写了一两句的想法，可以先搁我亭子的架子上，哪天想接着往下写了，挑几条出来就能理成一篇整文章。",
+    "亭子晚上也留着灯，我常在里头改稿，敲门没应的话，稍等我把这句写完。"
+  ],
+  "vault": [
+    "嘘，我是替你看管密码和秘密的松松，守着这个秘屋树洞。",
+    "账号、密码，还有那些总记岔的小备注，先定好主口令就能收进来，要用了再来开锁，存好以后也能随时改。",
+    "我秋天藏的橡子可多了，冬天照样一颗不差找回来。门口那颗蓝玻璃珠？那个是我自己的宝贝。"
+  ],
+  "work": [
+    "岛主，我是管工作的大力，这是我的大力工坊。",
+    "工作上的待办、手头项目的进度，还有开会记的几句要点，都可以扔进来，周五写周报时再一块儿翻。大木桌我已经擦干净了，大事小事都搁得下。",
+    "我说话慢半拍，干活还算稳当。你先说第一件，我听着。"
+  ],
+  "study": [
+    "我是管学习的翘翘！海风学堂就在前面。",
+    "课堂上划的重点、作业、错题本，还有备考时零碎记下的东西，全放我这儿就行，考前翻起来可快了。",
+    "我这会儿正在背单词，要不要听我念一遍？咦，刚才卡壳那个词我突然想通了——你看，我头顶这撮毛是不是又翘起来了！"
+  ],
+  "someday": [
+    "我是替你收着心愿和延期大事小事的阿兜，住在海边灯塔。",
+    "一直想学的手艺、想去逛的地方，还有眼下实在顾不上的待办，先往我这儿放就行，哪天闲下来挑一件点「今天做」就能领回去。",
+    "我嘴兜地方大着呢，你慢慢攒。刚海湾漂回来的那只瓶子，也是放了好久今天才拆。"
+  ],
+  "fun": [
+    "嗯……岛主来啦。我是管吃喝玩乐的……不对，是专门替你记娱乐和消遣的小卡，守着这间温泉汤屋。",
+    "看展、唱歌、打游戏，或者纯粹出去瞎逛了一下午，回来都可以在汤屋记两句，以后翻翻自己是怎么开心的。",
+    "你先坐，我把头顶那颗橘子拿下来。要一块儿泡会儿吗？"
+  ],
+  "health": [
+    "岛主好，我是陪你记录身体和健康的呦呦，平时就在晨露小站。",
+    "体重、身体围度、经期和每天喝了多少水，都能记在这里翻图表看变化；用不上的格子先收进抽屉，最常看的几项排到前面就行。",
+    "软尺在桌肚里，水杯在窗台边。我习惯把东西放回原处，下回你来才好找。"
+  ]
+}
+;
 const POSTCARD_SCENES = [
   {
     "id": "food-1",
@@ -10044,7 +10131,7 @@ const POSTCARD_SCENES = [
 ];
 /* Full island and the same mailbox/album accessible directly from the simple notebook. */
 const ISLAND_OWNERS=['post','health','food','movie','book','people','money','cycles','notes','vault','work','study','someday','fun'];
-const POSTCARDS=ISLAND_OWNERS.map(k=>({id:k+'-welcome',owner:k,requires:[k],kind:'welcome',title:HOUSE_INFO[k].name+'的第一封信',line:k==='health'?'我是呦呦，住在晨露小站。桌上有手帐，窗边有水杯，有空过来坐坐。':k==='post'?'我是啾啾。大家寄来的信放在这里，拆开后还可以收进册子。':'我是'+HOUSE_INFO[k].who+'，住在'+HOUSE_INFO[k].name+'。'+HOUSE_INFO[k].line,image:HEAD_ART[k],thumb:HEAD_ART[k]})).concat(POSTCARD_SCENES);
+const POSTCARDS=ISLAND_OWNERS.map(k=>({id:k+'-welcome',owner:k,requires:[k],kind:'welcome',title:HOUSE_INFO[k].name+'的第一封信',line:WELCOME_LETTERS[k].join('\n\n'),image:HEAD_ART[k],thumb:HEAD_ART[k]})).concat(POSTCARD_SCENES);
 let ISLAND_ZOOM=1,ISLAND_SELECTED='health',ISLAND_HELLO_OBSERVER=null;
 function islandToday(){const a=TODAY.split('.').map(Number);return Math.floor(Date.UTC(a[0],a[1]-1,a[2])/86400000);}
 function islandDate(n){const d=new Date(n*86400000);return d.getUTCFullYear()+'.'+(d.getUTCMonth()+1)+'.'+d.getUTCDate();}
@@ -10146,6 +10233,10 @@ function islandVisitor(){
  box.innerHTML='<div class="island-visitor"><img src="'+HEAD_ART[k]+'" alt="'+h.who+'"><div><small>'+h.name+'</small><h3>'+h.who+'</h3><p id="islandSpeech">'+vEsc(on?islandVisitLine(k):'这里还没开启。搬进来后，就能使用这栋房子。')+'</p><div class="island-actions"><button class="chip on" id="islandEnter">'+(on?'进入'+h.name:'开启这栋房子')+'</button><button class="chip" id="islandChat" '+(on?'':'disabled')+'>打个招呼</button><button class="chip" id="islandCards">看明信片</button></div></div></div>';
  $('#islandEnter').onclick=()=>islandDoor(k);$('#islandChat').onclick=()=>{$('#islandSpeech').textContent=h.who+'：'+HOUSE_INFO[k].line;};$('#islandCards').onclick=()=>{cur={name:'postoffice',tab:'album',key:k};render();};
 }
+function postcardName(text,who){
+ const i=text.indexOf(who);return i<0?vEsc(text):vEsc(text.slice(0,i))+'<strong class="resident-name">'+vEsc(who)+'</strong>'+vEsc(text.slice(i+who.length));
+}
+function postcardParagraphs(c){return c.line.split('\n\n').map(t=>'<p>'+postcardName(t,HOUSE_INFO[c.owner].who)+'</p>').join('');}
 function postcardMedia(c,thumb){return '<div class="postcard-media '+(c.kind==='welcome'?'welcome':'')+'"><img '+(thumb?'loading="lazy"':'')+' src="'+(thumb?c.thumb:c.image)+'" alt="'+vEsc(c.title)+'"><div class="postcard-image-error" hidden><span>图片还没加载，来信和收藏都在。</span>'+(thumb?'':'<button class="chip" data-image-retry>重新加载图片</button>')+'</div></div>';}
 function postcardBindImages(root){root.querySelectorAll('.postcard-media').forEach(box=>{const im=box.querySelector('img'),msg=box.querySelector('.postcard-image-error');const fail=()=>{im.hidden=true;msg.hidden=false;};im.onerror=fail;im.onload=()=>{im.hidden=false;msg.hidden=true;};if(im.complete&&!im.naturalWidth)fail();const retry=box.querySelector('[data-image-retry]');if(retry)retry.onclick=()=>{msg.hidden=true;im.hidden=false;im.src=im.getAttribute('src');};});}
 function renderPostoffice(){
@@ -10154,9 +10245,9 @@ function renderPostoffice(){
  const section=document.createElement('section');section.className='postoffice';
  if(tab==='inbox'){
   const filter=['all','card','system'].includes(cur.key)?cur.key:'all';
-  section.innerHTML='<div class="island-heading mail-heading"><div><b>信箱</b><small>'+islandUnread(ISLAND)+' 条未读 · '+ISLAND.messages.length+' 条消息</small></div><div class="island-actions"><button class="chip" id="mailToday">今天的早安卡</button><button class="chip" id="mailSettings">来信设置</button></div></div><div class="mail-filters" role="group" aria-label="消息分类">'+[['all','全部'],['card','岛民来信'],['system','系统消息']].map(([k,label])=>'<button class="chip'+(filter===k?' on':'')+'" data-mail-filter="'+k+'" aria-pressed="'+(filter===k)+'">'+label+'</button>').join('')+'</div>';
+  section.innerHTML='<div class="island-heading mail-heading"><div><b>信箱</b><small>'+islandUnread(ISLAND)+' 条未读 · '+islandVisibleMessages(ISLAND).length+' 条消息</small></div><div class="island-actions"><button class="chip" id="mailToday">今天的早安卡</button><button class="chip" id="mailSettings">来信设置</button></div></div><div class="mail-filters" role="group" aria-label="消息分类">'+[['all','全部'],['card','岛民来信'],['system','系统消息']].map(([k,label])=>'<button class="chip'+(filter===k?' on':'')+'" data-mail-filter="'+k+'" aria-pressed="'+(filter===k)+'">'+label+'</button>').join('')+'</div>';
   if(!ISLAND.enabled)section.innerHTML+='<p class="postcard-note">已暂停早安明信片，系统消息仍可接收，已有的信和收藏保留。</p>';
-  const messages=ISLAND.messages.map((m,i)=>({...m,order:i})).filter(m=>filter==='all'||m.kind===filter).sort((a,b)=>b.day-a.day||b.order-a.order);
+  const messages=islandVisibleMessages(ISLAND,filter);
   if(!messages.length)section.innerHTML+='<div class="postcard-empty">'+jjImg('nest',72)+'<p>'+(filter==='system'?'暂时没有系统消息。':filter==='card'?'暂时没有岛民来信。':'信箱里暂时没有消息。')+'</p><small>当天打开早安卡，会收到一张明信片。</small><button class="chip" id="mailToAlbum">翻翻明信片册</button></div>';
   for(const m of messages){
    const c=m.kind==='card'?islandCard(m.cardId):null,b=document.createElement('button');
@@ -10169,6 +10260,12 @@ function renderPostoffice(){
    b.innerHTML=(c?'<img src="'+HEAD_ART[c.owner]+'" alt="">':'<span class="mail-system-icon" aria-hidden="true">✉</span>')+'<span class="mail-envelope-text"><small>'+vEsc(from)+' · '+islandDate(m.day)+'</small><b>'+vEsc(title)+'</b><em>'+state+'</em></span>'+(!m.read?'<i class="mail-unread-dot" aria-hidden="true"></i>':'');
    section.appendChild(b);
   }
+  const actions=document.createElement('div');actions.className='mail-bulk-actions';
+  const pending=ISLAND.inbox.length,read=ISLAND.messages.filter(m=>m.read&&!m.deleted).length;
+  actions.innerHTML='<div class="island-actions"><button class="chip on" id="mailCollectAll" '+(pending?'':'disabled')+'>一键领取'+(pending?'（'+pending+'）':'')+'</button><button class="chip" id="mailDeleteRead" '+(read?'':'disabled')+'>删除已读'+(read?'（'+read+'）':'')+'</button></div><small>操作全部分类；删除消息不影响明信片，未领取的仍可领取。</small>';
+  section.appendChild(actions);
+  actions.querySelector('#mailCollectAll').onclick=()=>{const n=islandCollectAll(ISLAND,islandToday());if(n){islandCommit();navFromBack=true;render();toast('已领取 '+n+' 张明信片');}};
+  actions.querySelector('#mailDeleteRead').onclick=()=>{const n=islandDeleteRead(ISLAND);if(n){islandCommit();navFromBack=true;render();toast('已删除 '+n+' 条已读消息，明信片保留');}};
   section.querySelectorAll('[data-mail-filter]').forEach(b=>b.onclick=()=>{cur.key=b.dataset.mailFilter;navFromBack=true;render();});
   section.querySelectorAll('[data-open-message]').forEach(b=>b.onclick=()=>{cur={name:'mailmessage',id:b.dataset.openMessage};render();});
  }else{
@@ -10192,7 +10289,7 @@ function renderPostcard(){
  if(!c||!r){const p=document.createElement('p');p.className='postcard-note';p.textContent='这封信还没收到，回信箱看看吧。';view.appendChild(p);return;}
  islandReadCard(c.id);
  const pending=ISLAND.inbox.some(x=>x.id===c.id),d=document.createElement('article');d.className='postcard-detail';
- d.innerHTML='<div class="postcard-from"><span>FROM · '+HOUSE_INFO[c.owner].who+'</span><small>'+islandDate(r.day)+'</small></div>'+postcardMedia(c,false)+'<div class="postcard-letter"><small>'+({welcome:'搬来岛上的第一封信',story:'岛上的小故事',travel:'岛外的小旅行',daily:'岛上的日子'}[c.kind])+'</small><h2>'+vEsc(c.title)+'</h2><p>'+vEsc(c.line)+'</p><div class="postcard-sign">—— '+HOUSE_INFO[c.owner].who+'</div></div><div class="island-actions"><button class="rv-confirm" id="postcardCollect" '+(pending?'':'disabled')+'>'+(pending?'收进明信片册':'已收藏')+'</button><button class="chip" id="postcardShare">保存分享图</button><button class="chip" id="postcardBack">'+(pending?'回信箱':'回明信片册')+'</button></div><p id="postcardShareStatus" class="postcard-note" role="status"></p><div id="postcardShareResult"></div>';
+ d.innerHTML='<div class="postcard-from"><span>FROM · '+HOUSE_INFO[c.owner].who+'</span><small>'+islandDate(r.day)+'</small></div>'+postcardMedia(c,false)+'<div class="postcard-letter"><small>'+({welcome:'搬来岛上的第一封信',story:'岛上的小故事',travel:'岛外的小旅行',daily:'岛上的日子'}[c.kind])+'</small><h2>'+vEsc(c.title)+'</h2>'+postcardParagraphs(c)+'<div class="postcard-sign">—— <strong class="resident-name">'+HOUSE_INFO[c.owner].who+'</strong></div></div><div class="island-actions"><button class="rv-confirm" id="postcardCollect" '+(pending?'':'disabled')+'>'+(pending?'收进明信片册':'已收藏')+'</button><button class="chip" id="postcardShare">保存分享图</button><button class="chip" id="postcardBack">'+(pending?'回信箱':'回明信片册')+'</button></div><p id="postcardShareStatus" class="postcard-note" role="status"></p><div id="postcardShareResult"></div>';
  view.appendChild(d);postcardBindImages(d);
  $('#postcardCollect').onclick=()=>{if(islandCollect(ISLAND,c.id,islandToday())){islandCommit();navFromBack=true;render();toast('已收进明信片册');}};
  $('#postcardBack').onclick=()=>{cur={name:'postoffice',tab:pending?'inbox':'album',key:c.owner};render();};
@@ -10202,11 +10299,18 @@ async function postcardShare(c,r){
  const status=$('#postcardShareStatus'),button=$('#postcardShare');button.disabled=true;status.textContent='正在制作分享图…';
  try{
   const im=new Image();im.src=c.image;await im.decode();
-  const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1160;const cx=canvas.getContext('2d');cx.fillStyle='#f8f1e5';cx.fillRect(0,0,1080,1160);
+  const canvas=document.createElement('canvas');canvas.width=1080;let cx=canvas.getContext('2d');cx.font='28px sans-serif';
+  const lines=[];for(const [i,para] of c.line.split('\n\n').entries()){
+   if(i)lines.push('');let line='';for(const ch of para){if(cx.measureText(line+ch).width>950){lines.push(line);line='';}line+=ch;}if(line)lines.push(line);
+  }
+  canvas.height=Math.max(1160,862+(lines.length-1)*43+165);cx=canvas.getContext('2d');cx.fillStyle='#f8f1e5';cx.fillRect(0,0,1080,canvas.height);
   const ratio=Math.min(960/im.width,640/im.height),w=im.width*ratio,h=im.height*ratio;cx.drawImage(im,(1080-w)/2,55+(640-h)/2,w,h);
   cx.fillStyle='#887963';cx.font='24px sans-serif';cx.fillText('啾啾岛来信 · '+islandDate(r.day),60,740);cx.fillStyle='#423a2e';cx.font='36px serif';cx.fillText(c.title,60,800);
-  cx.font='28px sans-serif';let line='',y=862;for(const ch of c.line){if(cx.measureText(line+ch).width>950){cx.fillText(line,60,y);line='';y+=43;}line+=ch;}if(line)cx.fillText(line,60,y);
-  cx.font='26px serif';cx.textAlign='right';cx.fillText('—— '+HOUSE_INFO[c.owner].who,1020,1060);cx.font='20px sans-serif';cx.fillStyle='#887963';cx.fillText('啾啾岛 Jotbird',1020,1120);
+  cx.font='28px sans-serif';let y=862;const who=HOUSE_INFO[c.owner].who;
+  for(const line of lines){const i=line.indexOf(who);cx.fillStyle='#423a2e';if(i<0)cx.fillText(line,60,y);else{
+   const before=line.slice(0,i),after=line.slice(i+who.length),x=60+cx.measureText(before).width;cx.fillText(before,60,y);cx.fillStyle='#a64b35';cx.fillText(who,x,y);cx.fillStyle='#423a2e';cx.fillText(after,x+cx.measureText(who).width,y);
+  }y+=43;}
+  cx.font='26px serif';cx.textAlign='right';cx.fillStyle='#a64b35';cx.fillText('—— '+who,1020,canvas.height-100);cx.font='20px sans-serif';cx.fillStyle='#887963';cx.fillText('啾啾岛 Jotbird',1020,canvas.height-40);
   const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('image')),'image/png'));
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='啾啾岛-'+c.id+'.png';a.textContent='下载分享图';a.className='chip';const result=$('#postcardShareResult');result.replaceChildren(a);const preview=document.createElement('img');preview.src=url;preview.alt='分享图预览';preview.style.width='100%';result.appendChild(preview);a.click();status.textContent='分享图已生成，也可以长按下方图片保存。';setTimeout(()=>URL.revokeObjectURL(url),300000);
  }catch(_){status.textContent=location.protocol==='file:'?'浏览器限制了本地图片导出。上传完整文件夹到 GitHub Pages 后即可使用分享图；来信仍可正常查看。':'图片暂时没加载成功，联网后再试。';}
@@ -10226,7 +10330,7 @@ function islandHelloGift(){
  const block=document.createElement('section');block.className='hl-postcard';block.id='hlPostcard';
  if(!card){block.innerHTML='<p class="postcard-note">'+(ISLAND.enabled?'今天没有新的明信片。':'已暂停早安明信片，原来的收藏都在。')+'</p>';host.prepend(block);return;}
  const collected=ISLAND.album.some(r=>r.id===card.id);
- block.innerHTML=postcardMedia(card,true)+'<h3>'+vEsc(card.title)+'</h3><p>'+vEsc(card.line)+'</p><small>—— '+HOUSE_INFO[card.owner].who+' · 今天这一张</small><button class="chip" id="hlPostcardCollect" '+(collected?'disabled':'')+'>'+(collected?'已在明信片册中':'收进明信片册')+'</button>';
+ block.innerHTML=postcardMedia(card,true)+'<h3>'+vEsc(card.title)+'</h3>'+postcardParagraphs(card)+'<small>—— <strong class="resident-name">'+HOUSE_INFO[card.owner].who+'</strong>'+' · 今天这一张</small><button class="chip" id="hlPostcardCollect" '+(collected?'disabled':'')+'>'+(collected?'已在明信片册中':'收进明信片册')+'</button>';
  host.prepend(block);postcardBindImages(block);islandHelloSeen(block,card.id);
  $('#hlPostcardCollect').onclick=()=>{
   if(islandCollect(ISLAND,card.id,islandToday())){islandCommit();const btn=$('#hlPostcardCollect');btn.textContent='已收进明信片册';btn.disabled=true;if(cur.name==='postoffice'&&cur.tab!=='album'){navFromBack=true;render();}}

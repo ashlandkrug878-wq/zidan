@@ -1,5 +1,5 @@
 /* App shell: network first. Bundled postcard art: cache on first successful read. */
-const CACHE='bujo-cache-v351';
+const CACHE='bujo-cache-v352';
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['./','./index.html','./icon-dot.png']).catch(()=>{})));});
 self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));
 self.addEventListener('fetch',e=>{
