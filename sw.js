@@ -1,15 +1,16 @@
-/* App shell: network first. Bundled postcard art: cache on first successful read. */
-const CACHE='bujo-cache-v355';
-self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['./','./index.html','./icon-dot.png']).catch(()=>{})));});
+const CACHE='bujo-core-v360-a886638a4963a23c', ART='bujo-art-v360';
+const CORE=["./index.html", "./assets/app/app-a886638a4963a23c.js", "./icon-dot.png"];
+self.addEventListener('install',e=>{e.waitUntil((async()=>{const c=await caches.open(CACHE);await c.addAll(CORE);await self.skipWaiting();})());});
 self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));
 self.addEventListener('fetch',e=>{
- if(e.request.method!=='GET')return;
- const url=new URL(e.request.url);if(url.origin!==self.location.origin)return;
- const art=url.pathname.includes('/assets/postcards/');
+ if(e.request.method!=='GET')return;const u=new URL(e.request.url);if(u.origin!==self.location.origin)return;
  e.respondWith((async()=>{
-  const cache=await caches.open(CACHE),hit=await cache.match(e.request);
-  if(art&&hit)return hit;
-  try{const res=await fetch(e.request);if(res.ok){await cache.put(e.request,res.clone());return res;}if(hit)return hit;return res;}
-  catch(_){if(hit)return hit;if(e.request.mode==='navigate'){const shell=await cache.match('./index.html');if(shell)return shell;}return new Response('',{status:503,statusText:'Offline'});}
+  const shell=e.request.mode==='navigate';const app=u.pathname.includes('/assets/app/');
+  const art=u.pathname.includes('/assets/ui/')||u.pathname.includes('/assets/postcards/');
+  if(!shell&&!app&&!art)return fetch(e.request);
+  const c=await caches.open(art?ART:CACHE),key=shell?'./index.html':e.request;
+  const hit=await c.match(key);if(hit)return hit;
+  try{const r=await fetch(e.request);if(r.ok){await c.put(key,r.clone());}return r;}
+  catch(_){return new Response('Offline',{status:503});}
  })());
 });
