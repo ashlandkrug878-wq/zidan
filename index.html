@@ -1015,6 +1015,15 @@
 
 
 .friend-date{display:flex;gap:8px}.friend-date .vt-in{min-width:0;width:30%;flex:1}.friend-fields label,#gsheet label{display:block;font-size:14px}.friend-mark{margin-top:6px}#frOverwriteBox[hidden],#frTargetBox[hidden]{display:none}
+.journal-sub{font-weight:400;letter-spacing:0;color:var(--ink-soft);margin-left:.6em;font-size:.92em}
+.journal-group{display:grid;grid-template-columns:4.2em minmax(0,1fr);gap:.4em;position:relative;padding:2px 0}
+.journal-group:before{content:'';position:absolute;top:0;bottom:0;left:4.3em;border-left:1px solid var(--line);pointer-events:none}
+.journal-time,.journal-origin,.journal-home,.journal-water{font:inherit;background:transparent;border:0;text-align:left;color:inherit;cursor:pointer}
+.journal-time{color:var(--ink-soft);align-self:start;min-height:34px;font-size:13px;font-variant-numeric:tabular-nums;padding:3px 4px;text-decoration:underline dotted;text-underline-offset:4px}
+.journal-content,.journal-ref{min-width:0}.journal-content .children{margin-left:8px}
+.journal-origin{font-size:var(--read-size);overflow-wrap:anywhere;padding:5px 0}.journal-home,.journal-ref summary,.journal-water{display:block;color:var(--ink-soft);font-size:13px}.journal-ref summary{cursor:pointer}
+.journal-child-time{margin-left:4px}.journal-child-time .journal-time{min-height:22px}
+
 </style>
 </head>
 <body>
@@ -1055,6 +1064,6 @@
   <div id="ob"></div>
   <div id="toast"></div>
 </div>
-<script defer src="assets/app/app-40ac6c9183bfbed6.js" onerror="document.getElementById('bootStatus').textContent='程序文件未加载，请检查上传是否完整并重新打开。'"></script>
+<script defer src="assets/app/app-4d3176fe7c6ab60e.js" onerror="document.getElementById('bootStatus').textContent='程序文件未加载，请检查上传是否完整并重新打开。'"></script>
 </body>
 </html>

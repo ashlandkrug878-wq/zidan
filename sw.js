@@ -1,5 +1,5 @@
-const CACHE='bujo-core-v370-40ac6c9183bfbed6', ART='bujo-art-v360';
-const CORE=["./index.html", "./assets/app/app-40ac6c9183bfbed6.js", "./icon-dot.png"];
+const CACHE='bujo-core-v380-4d3176fe7c6ab60e', ART='bujo-art-v360';
+const CORE=["./index.html", "./assets/app/app-4d3176fe7c6ab60e.js", "./icon-dot.png"];
 self.addEventListener('install',e=>{e.waitUntil((async()=>{const c=await caches.open(CACHE);await c.addAll(CORE.map(p=>new Request(p,{cache:'reload'})));const html=await (await c.match('./index.html')).text();if(!html.includes('src="'+CORE[1].slice(2)+'"'))throw new Error('App version mismatch');await self.skipWaiting();})());});
 self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));
 self.addEventListener('fetch',e=>{
