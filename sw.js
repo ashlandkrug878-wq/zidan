@@ -1,6 +1,6 @@
-const CACHE='bujo-core-v3102-6150c1e45c64bacc', ART='bujo-art-v360';
-const CORE=["./index.html", "./assets/app/app-6150c1e45c64bacc.js", "./icon-dot.png"];
-self.addEventListener('install',e=>{e.waitUntil((async()=>{const c=await caches.open(CACHE);await c.addAll(CORE.map(p=>new Request(p,{cache:'reload'})));const html=await (await c.match('./index.html')).text();if(!html.includes('src="'+CORE[1].slice(2)+'"'))throw new Error('App version mismatch');await self.skipWaiting();})());});
+const CACHE = "bujo-core-75fc8c22758fd7a2", ART = "bujo-art-v360";
+const CORE = ["./index.html","./assets/app/app-DPa1A-P-.js","./assets/app/abu-data-DfA2KwJp.js","./styles/app-ff5af9f1d98969c4.css","./icon-dot.png"];
+self.addEventListener('install',e=>{e.waitUntil((async()=>{const c=await caches.open(CACHE);await c.addAll(CORE.map(p=>new Request(p,{cache:'reload'})));const html=await (await c.match('./index.html')).text();if(!CORE.filter(path => /\.(?:js|css)$/.test(path)).every(path => html.includes(path)))throw new Error('App version mismatch');await self.skipWaiting();})());});
 self.addEventListener('activate', event => {
  event.waitUntil((async () => {
   const names = await caches.keys();
@@ -12,7 +12,7 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch',e=>{
  if(e.request.method!=='GET')return;const u=new URL(e.request.url);if(u.origin!==self.location.origin)return;
  e.respondWith((async()=>{
-  const shell=e.request.mode==='navigate';const app=u.pathname.includes('/assets/app/');
+  const shell=e.request.mode==='navigate';const app=CORE.some(path => new URL(path,self.registration.scope).href === u.href);
   const art=u.pathname.includes('/assets/ui/')||u.pathname.includes('/assets/postcards/');
   if(!shell&&!app&&!art)return fetch(e.request);
   const c=await caches.open(art?ART:CACHE),key=shell?'./index.html':e.request;
