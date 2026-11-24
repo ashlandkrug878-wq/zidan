@@ -1,5 +1,5 @@
-const CACHE = "bujo-core-a4bbdebde832d5dd", ART = "bujo-art-v360";
-const CORE = ["./index.html","./assets/app/app-C-Ma6ZRR.js","./assets/app/abu-data-DfA2KwJp.js","./styles/app-dd2e6b4d7d17cbc1.css","./icon-dot.png","./assets/ui/brain-char.webp","./assets/ui/brain-combo.webp","./assets/ui/brain-celebrate.webp","./assets/ui/ob-family-16.webp"];
+const CACHE = "bujo-core-8322aaf249bce32e", ART = "bujo-art-v360";
+const CORE = ["./index.html","./assets/app/app-RAiUUVwX.js","./assets/app/abu-data-DfA2KwJp.js","./styles/app-05acba34104fcff4.css","./icon-dot.png","./assets/ui/brain-char.webp","./assets/ui/brain-pure.webp","./assets/ui/brain-combo.webp","./assets/ui/brain-celebrate.webp","./assets/ui/ob-family-16.webp"];
 self.addEventListener('install',e=>{e.waitUntil((async()=>{const c=await caches.open(CACHE);await c.addAll(CORE.map(p=>new Request(p,{cache:'reload'})));const html=await (await c.match('./index.html')).text();if(!CORE.filter(path => /\.(?:js|css)$/.test(path)).every(path => html.includes(path)))throw new Error('App version mismatch');await self.skipWaiting();})());});
 self.addEventListener('activate', event => {
  event.waitUntil((async () => {
